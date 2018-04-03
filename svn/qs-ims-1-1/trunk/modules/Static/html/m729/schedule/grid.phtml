@@ -1,0 +1,128 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	rowCLK($('tr [elid="'+$.cookie('event_selected')+'"]')[0]);
+});
+</script>
+<?php
+$arrCount = array(1=>'meeting',2=>'call',3=>'email',4=>'task',5=>'event',6=>'other');
+$arrStatus = array(0=>'chưa bắt đầu',1=>'đang làm',2=>'hoàn thành',3=>'hủy');
+?>
+<table class="grid_navigator">
+	<tr>
+		<td align="center" style="border-right: 0pt none; width: 100px;"></td>
+		<td align="right">Nhóm theo: <select onchange="rowSearch();"
+			id="qss_form_groupby">
+				<option value="0" />
+				<option <?php if($this->groupby == 1) echo 'selected'?> value="1">Loại</option>
+				<option <?php if($this->groupby == 3) echo 'selected'?> value="3">Ngày</option>
+				<option <?php if($this->groupby == 4) echo 'selected'?> value="4">Người
+					tạo</option>
+				<option <?php if($this->groupby == 5) echo 'selected'?> value="5">Người
+					thực hiện</option>
+				<option <?php if($this->groupby == 6) echo 'selected'?> value="6">Tình
+					trạng</option>
+		</select> Trang: <select style="" onchange="rowSearch();"
+			id="qss_form_pageno">
+			<?php for($i = 1;$i <= ceil($this->recordcount/$this->limit);$i++):?>
+				<option <?php if($i == $this->pageno) echo 'selected';?>>
+				<?php echo $i?>
+				</option>
+				<?php endfor;?>
+		</select> / 1 Hiển thị: <select onchange="rowSearch();" style=""
+			id="qss_form_perpage">
+				<option <?php if($this->limit == 10) echo 'selected'?>>10</option>
+				<option <?php if($this->limit == 20) echo 'selected'?>>20</option>
+				<option <?php if($this->limit == 50) echo 'selected'?>>50</option>
+				<option <?php if($this->limit == 100) echo 'selected'?>>100</option>
+		</select></td>
+	</tr>
+</table>
+<table class="grid">
+	<tr>
+		<th class="nocount"><a href="#!" onclick="rowSort(1)">Loại <?php if($this->orderid == 1):?>
+				<img border="0"
+				src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" />
+				<?php endif;?> </a></th>
+		<th width="250"><a href="#!" onclick="rowSort(2)">Tiêu đề <?php if($this->orderid == 2):?>
+				<img border="0"
+				src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" />
+				<?php endif;?> </a></th>
+		<th width="80"><a href="#!" onclick="rowSort(3)">Ngày <?php if($this->orderid == 3):?>
+				<img border="0"
+				src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" />
+				<?php endif;?> </a></th>
+		<th width="100">Thời gian</th>
+		<th width="120"><a href="#!" onclick="rowSort(5)">Người tạo <?php if($this->orderid == 4):?>
+				<img border="0"
+				src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" />
+				<?php endif;?> </a></th>
+		<th width="120"><a href="#!" onclick="rowSort(4)">Người thực hiện <?php if($this->orderid == 5):?>
+				<img border="0"
+				src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" />
+				<?php endif;?> </a></th>
+		<!--        <th width="40">Nhắc</th>-->
+		<th width="80"><a href="#!" onclick="rowSort(6)">Tình trạng <?php if($this->orderid == 6):?>
+				<img border="0"
+				src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" />
+				<?php endif;?> </a></th>
+		<th width="120" colspan="5">Hành động</th>
+	</tr>
+	<?php $group = null?>
+	<?php foreach ($this->events as $event):?>
+	<?php if(isset(Qss_Model_Event::$arrField[$this->groupby])):?>
+	<?php if($group != $event->{Qss_Model_Event::$arrField[$this->groupby]}):?>
+	<tr>
+		<td class="groupby" colspan="11"><?php if($this->groupby == 3) echo Qss_Lib_Date::mysqltodisplay($event->{Qss_Model_Event::$arrGroup[$this->groupby]}); elseif($this->groupby == 6)echo $arrStatus[$event->{Qss_Model_Event::$arrGroup[$this->groupby]}]; else echo $event->{Qss_Model_Event::$arrGroup[$this->groupby]};?>
+		</td>
+	</tr>
+	<?php endif;?>
+	<?php $group = $event->{Qss_Model_Event::$arrField[$this->groupby]}?>
+	<?php endif;?>
+	<tr rights="63" id="<?php echo $event->EventID;?>"
+		elid="<?php echo $event->ELID;?>" onclick="rowCLK(this);">
+		<td class="nocount <?php echo $arrCount[$event->EventType];?>"></td>
+		<td><?php echo $event->Title;?></td>
+		<td class="center"><?php echo Qss_Model_Event::getDateDisplay($event->Date)?>
+		</td>
+		<td class="center"><?php echo substr($event->STime, 0,5)?> - <?php echo substr($event->ETime, 0,5)?>
+		</td>
+		<td><?php echo $event->CreatedName?></td>
+		<td><?php echo $event->UserName?></td>
+		<!--        <td class="<?php echo $event->Alarm?'bell':'no-bell';?>"></td>-->
+		<td
+			class="center <?php if ($event->Status==2) echo 'done'; elseif ($event->Status == 1 && $event->TimeDone > time()) echo 'doing'; elseif($event->Time <= time() && $event->Status != null) echo 'error'?>"><?php echo $arrStatus[(int)$event->Status]?>
+		</td>
+		<td><div class="note">
+				<a
+					class="<?php if ($event->Status == null || $event->Rights != 1) echo 'disabled'; ?>"
+					onclick="eventNote(this,<?php echo @$event->ELID?>)"
+					title="<?php echo $event->Note?$event->Note:'Ghi chú'?>" href="#!">Ghi
+					chú</a>
+			</div></td>
+		<td><div class="start">
+				<a
+					class="<?php if ($event->Status == null || $event->Status == 1 || $event->Rights != 1) echo 'disabled'; ?>"
+					title="Bắt đầu" href="#!"
+					onclick="eventAction(this,<?php echo @$event->ELID?>,1)">Bắt đầu</a>
+			</div></td>
+		<td><div class="finish">
+				<a
+					class="<?php if ($event->Status == null || $event->Status == 2 || $event->Rights != 1) echo 'disabled'; ?>"
+					title="Kết thúc" href="#!"
+					onclick="eventAction(this,<?php echo @$event->ELID?>,2)">Kết thúc</a>
+			</div></td>
+		<td><div class="cancel">
+				<a
+					class="<?php if ($event->Status == null || $event->Status == 3 || $event->Rights != 1) echo 'disabled'; ?>"
+					title="Hủy" href="#!"
+					onclick="eventAction(this,<?php echo @$event->ELID?>,3)">Hủy</a>
+			</div></td>
+		<td><div class="delete">
+				<a
+					class="<?php if ($event->Status == null || $event->Rights != 1) echo 'disabled'; ?>"
+					title="Xóa" href="#!"
+					onclick="eventLogDelete(this,<?php echo @$event->ELID?>)">Xóa</a>
+			</div></td>
+	</tr>
+	<?php endforeach;?>
+</table>

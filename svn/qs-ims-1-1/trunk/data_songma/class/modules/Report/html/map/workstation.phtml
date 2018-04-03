@@ -1,0 +1,75 @@
+<link rel="stylesheet" href="/css/themes/base/jquery.ui.core.css" type='text/css'/>
+<link rel="stylesheet" href="/css/themes/base/jquery.ui.base.css" type='text/css'/>
+<link rel="stylesheet" href="/css/themes/base/jquery.ui.all.css" type='text/css'/>
+<link rel="stylesheet" href="/css/themes/base/jquery.ui.dialog.css" type='text/css'/>
+<link rel="stylesheet" href="/css/print.css" type='text/css'/>
+
+<div id="workstation-wrap">
+        <h2>
+                <?php echo @$this->workstation->LopBanDo;?>
+        </h2>               
+        <table border="1" cellpadding="0" cellspacing="0" class="">
+         
+                <tr>
+                        <th> Tên trạm </th>
+                        <td> <?php echo @$this->workstation->TenTram;?> </td>
+                </tr>
+                
+                <tr>    
+                        <th> Kinh độ </th>
+                        <td> <?php echo @$this->workstation->KinhDo;?> </td>
+                </tr>         
+                
+                <tr>    
+                        <th> Vĩ độ </th>
+                        <td> <?php echo @$this->workstation->ViDo;?> </td>
+                </tr>                
+                
+                <tr>
+                        <th> Năm lượng mưa: </th>
+                        <td>
+                                <?php 
+                                        $comma = 0;
+                                        foreach(@$this->LuongMua as $val):
+                                                if($comma) 
+                                                {
+                                                        echo ',';
+                                                        
+                                                } 
+                                                else 
+                                                {
+                                                        $comma=1;
+                                                }
+                                ?>
+                                <a  style="color:#0b55c4" href="#1" onclick="openLinkModule('LuongMua','/user/form?fid=LuongMua&filter_LuongMua_Tram=<?php echo $this->workstation->TenTram;?>&filter_LuongMua_Ngay_S=<?php echo '01-01-'.$val->Year;?>&filter_LuongMua_Ngay_E=<?php echo '31-12-'.$val->Year;?>')">
+                                        <?php echo $val->Year;?>
+                                </a>
+                                <?php        endforeach; ?>
+                               
+                                
+                        </td>
+                </tr>
+                <tr>
+                        <th> Năm lưu lượng: </th>
+                        <td>
+                                <?php 
+                                        $comma = 0;
+                                        foreach(@$this->LuuLuong as $val):
+                                                if($comma) 
+                                                {
+                                                        echo ',';
+                                                        
+                                                } 
+                                                else 
+                                                {
+                                                        $comma=1;
+                                                }
+                                ?>
+                                <a  style="color:#0b55c4" href="#1" onclick="openLinkModule('LuuLuong','/user/form?fid=LuuLuong&filter_LuuLuong_Tram=<?php echo $this->workstation->TenTram;?>&filter_LuuLuong_Ngay_S=<?php echo '01-01-'.$val->Year;?>&filter_LuuLuong_Ngay_E=<?php echo '31-12-'.$val->Year;?>')">
+                                        <?php echo $val->Year;?>
+                                </a>
+                                <?php        endforeach; ?>
+                        </td>
+                </tr>
+        </table>
+</div><!-- end #workstation-wrap -->

@@ -1,0 +1,142 @@
+<?php
+$widths = array(1, 5, 2, 1.5, 2, 1, 2, 2, 5);
+
+$widths = Qss_Lib_Report::changeWidthToFitScreen($widths, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+?>
+
+<?php $stt = 0;?>
+
+<div class="landscape">
+    <!-- REPORT TITLE -->
+    <div id="head_print">
+        <?php echo $this->views->Common->Landscape() ?>
+        <?php //echo $this->views->Common->Legal() ?>
+        <h2 class="center">KẾ HOẠCH BẢO DƯỠNG THIẾT BỊ <?php echo $this->location;?> / MAINTENANCE SCHEDULE FOR <?php echo $this->location;?></h2>
+        <h2 class="center">NĂM / YEAR <?php echo $this->year;?></h2>
+    </div><!-- end div#head_print -->
+    <br/>
+
+    <!-- REPORT DATA -->
+    <div id="container">
+        <div class="fr italic" style="padding-right: 180px;">
+            Lập ngày/Updated: <?php echo $this->date;?>
+        </div>
+
+        <!-- General -->
+        <table cellpadding="0" cellspacing="0" border="1" class="border" style="table-layout: fixed; width: 100%">
+            <?php $begin = 0;?>
+            <col style="width: <?php echo $widths[$begin++];?>px;"/>
+            <col style="width: <?php echo $widths[$begin++];?>px;"/>
+            <col style="width: <?php echo $widths[$begin++];?>px;"/>
+            <col style="width: <?php echo $widths[$begin++];?>px;"/>
+            <col style="width: <?php echo $widths[$begin++];?>px;"/>
+            <col style="width: <?php echo $widths[$begin++];?>px;"/>
+            <col style="width: <?php echo $widths[$begin++];?>px;"/>
+            <col style="width: <?php echo $widths[$begin++];?>px;"/>
+            <col style="width: <?php echo $widths[$begin++];?>px;"/>
+
+            <?php $begin = 0;?>
+            <tr class="bggrey">
+                <th rowspan="2" style="width:<?php echo $widths[$begin];?>px; padding:0; margin: 0;">
+                    TT<br>No
+                </th>
+
+                <th rowspan="2" style="width:<?php echo $widths[$begin];?>px; padding:0; margin: 0;">
+                    Tên thiết bị<br>Equipment name
+                </th>
+
+                <th rowspan="2" style="width:<?php echo $widths[$begin];?>px; padding:0; margin: 0;">
+                    Số serial/<br>Type
+                </th>
+
+                <th rowspan="2" style="width:<?php echo $widths[$begin];?>px; padding:0; margin: 0;">
+                    Mã tài sản<br>ID
+                </th>
+
+                <?php $widthsFi = $widths[$begin] + $widths[$begin + 1] + $widths[$begin + 2] + $widths[$begin + 3] + $widths[$begin + 4];?>
+                <th colspan="5" style="width:<?php echo $widthsFi;?>px; padding:0; margin: 0;">
+                    Đơn vị thực hiện - Thời gian thực hiện<br>Name of service provider/Period of performance
+                </th>
+            </tr>
+
+            <tr class="bggrey">
+                <th style="width:<?php echo $widths[$begin];?>px; padding:0; margin: 0;">
+                    NCCDV<br>Serv. provider
+                </th>
+
+                <th style="width:<?php echo $widths[$begin];?>px; padding:0; margin: 0;">
+                    BD<br>MAN
+                </th>
+
+                <th style="width:<?php echo $widths[$begin];?>px; padding:0; margin: 0;">
+                    Times per year
+                </th>
+
+                <th style="width:<?php echo $widths[$begin];?>px; padding:0; margin: 0; ">
+                    DKTH<br>Est. Time
+                </th>
+
+                <th style="width:<?php echo $widths[$begin];?>px; padding:0; margin: 0;">
+                    Ngày BD thực tế<br>Actual perfm. date
+                </th>
+            </tr>
+
+            <?php foreach ($this->report as $item):?>
+
+            <tr>
+                <!-- TT -->
+                <td class="center" align="top"><?php echo ++$stt;?></td>
+
+                <!-- TÊN THIẾT BỊ -->
+                <td class="left" align="top"><?php echo $item->TenThietBi;?></td>
+
+                <!-- KÍ HIỆU -->
+                <td class="left" align="top"><?php echo $item->MaThietBi;?></td>
+
+                <!-- MÃ TÀI SẢN -->
+                <td class="left" align="top"><?php echo $item->MaTaiSan;?></td>
+
+                <!-- NCCDV -->
+                <td class="left" align="top"><?php echo @$item->DoiTac;?></td>
+
+                <!-- BD Man -->
+                <td class="center" align="top"> <?php echo @$item->DoiTac?'':'X';?>&nbsp;</td>
+
+                <!-- Time/Year -->
+                <td class="right" align="top">&nbsp;<?php echo @$item->SoLanTrenNam;?> </td>
+
+                <!-- DKTH<br>Est. Time -->
+                <td class="left" align="top"> <?php echo @$item->DuKienThucHien;?> </td>
+
+                <!-- Ngày BD thực tế -->
+                <td class="left" align="top"> <?php echo @$item->NgayBaoDuongThucTe;?></td>
+            </tr>
+            <?php endforeach;?>
+        </table>
+        <br/>
+        <br/>
+
+        <table cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <th class="bold" style="width: 33%;">GIÁM ĐỐC</th>
+                <th class="bold" style="width: 33%;">T/P BẢO DƯỠNG</th>
+                <th class="bold" style="width: 33%;">NGƯỜI LẬP BIỂU</th>
+            </tr>
+        </table>
+
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+    </div><!-- end div#container -->
+</div><!-- END REPORT -->
+
+
+
+
+

@@ -1,0 +1,38 @@
+<option id="" onclick="popupFormInsert('M316',{}, function(ele) {
+    M182_Handover.load_employees();
+})"
+        class="italic green tag-selected createnew" value="0">Tạo mới</option>
+<?php foreach($this->employees as $item):?>
+    <?php
+    $titleBoPhan  = $item->TenBoPhan;
+    $titleBoPhan .= $item->TenBoPhan && $item->TenPhongBan?' - ':'';
+    $titleBoPhan .= $item->TenPhongBan;
+    ?>
+
+    <option value="<?php echo $this->clawback?$item->Ref_NhanVien:$item->IOID;?>"
+        groupmarker="0"
+        refTaiSan="<?php echo $this->asset?$this->asset->IOID:0;?>"
+        maTaiSan="<?php echo $this->asset?$this->asset->Ma:'';?>"
+        tenTaiSan="<?php echo $this->asset?$this->asset->Ten:'';?>"
+        refDonViTinh="<?php echo $this->asset?$this->asset->Ref_DonViTinh:0;?>"
+        donViTinh="<?php echo $this->asset?$this->asset->DonViTinh:'';?>"
+        refNhanVien="<?php echo $this->clawback?$item->Ref_NhanVien:$item->IOID;?>"
+        maNhanVien="<?php echo $item->MaNhanVien;?>"
+        refNhaMay="<?php echo $item->Ref_MaPhongBan;?>"
+        refBoPhan="<?php echo $item->Ref_MaBoPhan;?>"
+        tenNhanVien="<?php echo $item->TenNhanVien;?>"
+        donGia="<?php echo $this->asset?($this->asset->NguyenGia?$this->asset->NguyenGia/1000:0):0;?>"
+
+        <?php if($this->clawback != 0):?>
+            soLuong="<?php echo $item->SoLuongConLai;?>"
+            phanTramKhauHao="<?php echo $item->PhanTramKhauHaoThuHoi;?>"
+            thoiGianSuDung="<?php echo $item->ThoiGianDaSuDung;?>"
+        <?php else:?>
+            soLuong="<?php echo $this->qty;?>"
+            phanTramKhauHao="100"
+            thoiGianSuDung="0"
+        <?php endif;?>
+    >
+        <?php echo $item->MaNhanVien;?> - <?php echo $item->TenNhanVien;?> (<?php echo $titleBoPhan;?>)
+    </option>
+<?php endforeach;?>

@@ -1,0 +1,225 @@
+<?php
+$excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$row       = 2;
+$totalCol  = 8;
+$sumWeight = 0;
+$sumMoney = 0;
+$stt = 1;
+$widthPx   = array(1,5,2,2,3);
+$widthEx   = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($widthPx);
+$widthPx   = Qss_Lib_Report::changeWidthToFitScreen($widthPx);
+$subTitle       = array();
+$subTitleStr    = '';
+?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="portrait">
+	<excel orientation="portrait" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+
+	<div id="head_print">
+	<?php echo $this->views->Common->Portrait() ?>
+	<?php if($this->monthStart != $this->monthEnd):?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center">
+					<?php echo $this->_translate(1).' '.$this->monthStart.' - '.$this->monthEnd.$this->_translate(23).$this->year ?></xls>
+			</h2>
+		</center>
+	<?php else:?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center">
+					<?php echo $this->_translate(1).' '.$this->monthStart.$this->_translate(23).$this->year ?></xls>
+			</h2>
+		</center>
+	<?php endif;?>
+	<?php $row++ ?>
+
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $subTitleStr ?></xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++ ?>
+
+	<div id="container">
+		<table width="" cellpadding="0" cellspacing="0" class="border" border="1">
+			<tr class="bggrey center">
+			<?php $begin = 0; ?>
+				<th width="<?php echo $widthPx[$begin];?>px">
+					<!-- STT --> 
+					<xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(2) ?></xls>
+				</th>
+				<th width="<?php echo $widthPx[$begin];?>px">
+					<!-- Tên đơn vị tiêu thụ nước --> 
+					<xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(3) ?></xls>
+				</th>
+				<th width="<?php echo $widthPx[$begin];?>px">
+					<!-- Khối lượng nước tiêu thụ --> 
+					<xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(4) ?></xls>
+				</th>
+				<th width="<?php echo $widthPx[$begin];?>px">
+					<!--Đơn giá--> 
+					<xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(5) ?></xls>
+				</th>
+				<th width="<?php echo $widthPx[$begin];?>px">
+					<!-- Thành tiền --> <xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(6) ?></xls>
+				</th>
+				<?php $begin = 0;?>
+				<?php $row++ ?>
+			</tr>
+			<?php $sumWeight = 0;//tổng khối lượng?>
+			<?php $sumMoney = 0;//tổng tiền?>
+			<?php $price = 0;?>
+			<?php $stt = 1;?>
+			<?php foreach ($this->sumMetter as $sumMetter):?>
+				<tr>
+					<!-- Stt -->
+					<td class="right">
+						 <xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="right" v-align="center" border="1" > <?php echo $stt; ?></xls>
+					</td>
+					<?php $stt++;?>
+					<!-- Cấp đến : Đơn vị-->
+					<td class="left">
+						 <xls row="<?php echo $row ?>"
+							width="<?php echo $widthEx[$begin];?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1" > <?php echo $sumMetter->CapDen; echo " : "; echo $sumMetter->DonVi ?></xls>
+					</td>
+					<!-- Số lượng-->
+					<td class="right">
+						 <xls row="<?php echo $row ?>"
+							width="<?php echo $widthEx[$begin];?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="right" v-align="center" border="1" > <?php echo Qss_Lib_Util::formatInteger($sumMetter->SoLuong); ?></xls>
+					</td>
+					<?php $sumWeight += $sumMetter->SoLuong;?>
+					<!-- Đơn giá -->
+					<?php if($sumMetter->SoLuong != 0):?>
+						<?php  $price = ($sumMetter->ThanhTien)/($sumMetter->SoLuong)?>
+						<td class="right">
+							 <xls row="<?php echo $row ?>"
+							width="<?php echo $widthEx[$begin];?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="right" v-align="center" border="1" > <?php echo Qss_Lib_Util::formatInteger($price); ?></xls>
+						</td>
+					<?php else:?>
+						<td class="right">
+							 <xls row="<?php echo $row ?>"
+							width="<?php echo $widthEx[$begin];?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="right" v-align="center" border="1" ></xls>
+						</td>
+					<?php endif;?>
+					<!-- Thành tiền -->
+					<td class="right">
+						 <xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="right" v-align="center" border="1" > <?php echo Qss_Lib_Util::formatInteger($sumMetter->ThanhTien); ?></xls>
+					</td>
+					<?php $sumMoney += $sumMetter->ThanhTien;?>
+					<?php $begin = 0?>
+					<?php $row++?>
+				</tr>
+			<?php endforeach;?>
+			<tr>
+				<?php $begin=0;?>
+				<td class="center bold" colspan="2">
+					 <xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"  column-merge="<?php echo $excel_col[$begin+1];?>"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(21); ?></xls>
+				</td>
+				<?php $begin += 1?>
+				<!-- Tổng số lượng-->
+				<td class="right bold ">
+					 <xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="right" v-align="center" border="1" bold="1"> <?php echo Qss_Lib_Util::formatInteger($sumWeight) ?></xls>
+				</td>
+				<!-- Đơn giá -->
+				<td class="right">
+					 <xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="right" v-align="center" border="1" bold="1"></xls>
+				</td>
+				<!-- Thành tiền -->
+				<td class="right bold">
+					 <xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="right" v-align="center" border="1" bold="1"> <?php echo Qss_Lib_Util::formatInteger($sumMoney)?></xls>
+				</td>
+				<?php $begin = 0?>
+				<?php $row += 2;?>
+			</tr>
+		</table>
+		 <table style="margin-top: 20px">
+        	<tr class="center">
+	            <th  class="center" style="width: 45%;">
+	                <xls
+	                    row="<?php echo $row?>"
+	                    column="<?php echo $excel_col[2]?>"
+	                    wrap-text="1"
+	                    v-align="center"
+	                    h-align="center"
+	                    bold="1">LẬP BIỂU</xls>
+	
+	            </th>
+	
+				<th class="center">
+	                <xls
+	                    row="<?php echo $row?>"
+	                    column="<?php echo $excel_col[5]?>"
+	                    wrap-text="1"
+	                    v-align="center"
+	                    h-align="center"
+	                    bold="1">QUẢN ĐỐC</xls>
+	            </th>
+	
+	            <th class="center">
+	                <xls
+	                    row="<?php echo $row?>"
+	                    column="<?php echo $excel_col[8]?>"
+	                    wrap-text="1"
+	                    v-align="center"
+	                    h-align="center"
+	                    bold="1">PHÒNG CƠ ĐIỆN VI TÍNH</xls>
+	            </th>
+	        </tr>
+   		 </table>
+	</div>
+	</div>
+</div>

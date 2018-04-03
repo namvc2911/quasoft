@@ -1,0 +1,65 @@
+<?php 
+function diff($a1, $a2) {
+	$r = array(); 
+    foreach ($a1 as $k => $v) 
+    {
+     	if(isset($a2[$k]))
+     	{
+     		$v2 = $a2[$k];
+     		foreach ($v as $kk=>$vv)
+     		{
+		        if ($v2->{$kk} != $vv) 
+		        {
+		        	
+		        	if(!isset($r[$k]))
+		        	{
+		        		$r[$k] = new stdClass();
+		        	}
+		            $r[$k]->{$kk} = $vv; 
+		        }
+     		}
+     	} 
+    } 
+    return $r; 
+}
+?>
+<form method="post" id="qss_copy_form">
+<?php $arrcopyobject = array_values($this->copyobject)?>
+<?php $copyobject = $arrcopyobject[0]?>
+<input type="hidden" value="<?php echo $copyobject->ObjectCode?>" name="objid">
+<h2><?php echo $copyobject->ObjectCode?> - <?php echo $copyobject->ObjectName?> <?php if(!count($this->object)):?><span class="red">(Not installed)</span><?php endif;?></h2>
+<?php $diff = diff($this->object,$this->copyobject);?>
+<?php foreach ($this->copyobject as $item):?>
+	<?php if($item->ObjectCode && (!in_array($item->FieldCode,$this->fields)|| isset($diff[$item->FieldCode]))):?>
+		<?php $class="green"?>
+		<?php if(!is_array(@$this->object) || !array_key_exists($item->ObjectCode,$this->object)):?>
+			<?php $class = 'red'?>
+		<?php endif;?>
+		<div>
+		<h3 style="padding-left: 30px;" class="<?php echo $class;?>"><?php echo $item->FieldCode?> - <?php echo $item->FieldName?> <?php if(!in_array($item->FieldCode,$this->fields)):?><span class="red">(Not installed)</span><?php endif;?></h3>
+		<p style="padding-left: 100px;"><input type="checkbox" name="copy_<?php echo $item->FieldCode?>" value="1" onclick="selectCopy(this)"> Copy</p>
+		<p style="padding-left: 100px;"><input disabled type="checkbox" name="effect_<?php echo $item->FieldCode?>" value="1" <?php if($item->Effect):?>checked<?php endif;?>> Hoạt động</p>
+		<p style="padding-left: 100px;"><input disabled type="checkbox" name="required_<?php echo $item->FieldCode?>" value="1" <?php if($item->Required):?>checked<?php endif;?>> Yêu cầu</p>
+		<p style="padding-left: 100px;"><input disabled type="checkbox" name="readonly_<?php echo $item->FieldCode?>" value="1" <?php if($item->ReadOnly):?>checked<?php endif;?>> Chỉ đọc</p>
+		<p style="padding-left: 100px;"><input disabled type="checkbox" name="bGrid_<?php echo $item->FieldCode?>" value="1" <?php if($item->Grid & 1):?>checked<?php endif;?>> Hiển thị trên bảng</p>
+		<p style="padding-left: 100px;"><input disabled type="checkbox" name="Mobile_<?php echo $item->FieldCode?>" value="1" <?php if($item->Grid & 2):?>checked<?php endif;?>> Hiển thị mobile</p>
+		<p style="padding-left: 100px;"><input disabled type="checkbox" name="eGrid_<?php echo $item->FieldCode?>" value="1" <?php if($item->Grid & 4):?>checked<?php endif;?>> Ẩn khi sửa trên destop</p>
+		<p style="padding-left: 100px;"><input disabled type="checkbox" name="eMobile_<?php echo $item->FieldCode?>" value="1" <?php if($item->Grid & 8):?>checked<?php endif;?>> Ẩn khi sửa trên mobile</p>
+		</div>
+	<?php endif;?>
+<?php endforeach;?>
+<p>&nbsp;</p>
+<p align="center"><button type="button" class="btn" onclick="copyField()">Copy</button></p>
+<p>&nbsp;</p>
+</form>
+<script>
+function selectCopy(el){
+	if($(el).is(':checked')){
+		$(el).parent().parent().find('input').prop('disabled',false);
+	}
+	else{
+		$(el).parent().parent().find('input').prop('disabled',true);
+		$(el).prop('disabled',false);
+	}
+}
+</script>

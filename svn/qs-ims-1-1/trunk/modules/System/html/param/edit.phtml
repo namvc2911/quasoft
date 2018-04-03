@@ -1,0 +1,50 @@
+<form id="qss_param" method="post">
+	<div id="horizontal-toolbar" class="horizontal-toolbar">
+		<div id="btnSAVE" class="btn_main_top"
+			title="<?php echo $this->_translate(34)?>" onclick="paramSave()">
+			<a href="#1" class="icon-32-apply"></a>
+		</div>
+		<div class="btn_main_top " title="<?php echo $this->_translate(32)?>"
+			onclick="paramBack()">
+			<a href="#1" class="icon-32-back"></a>
+		</div>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<div id="item-actions">
+			<ul>
+				<li class="item-action active"><a href="#1"><span><?php echo $this->_translate(67)?>
+					</span>
+				</a>
+				</li>
+			</ul>
+		</div>
+		<table border="0">
+			<tr>
+				<th><?php echo $this->_translate(68)?>
+				</th>
+				<td><input type="text"
+				<?php if(@$this->param->PID) echo 'disabled'?>
+					value="<?php echo @$this->param->PID?>" style="width: 200px;"
+					name="PID" /> <?php if(@$this->param->PID):?> <input type="hidden"
+					value="<?php echo @$this->param->PID?>" name="PID" /> <?php endif;?>
+				</td>
+			</tr>
+			<tr>
+				<th><?php echo $this->_translate(69)?>
+				</th>
+				<td><input type="text" value="<?php echo @$this->param->Value?>"
+					style="width: 200px;" name="Value" />
+				</td>
+			</tr>
+			<tr>
+				<th><?php echo $this->_translate(64)?>
+				</th>
+				<td><textarea name="Description" cols="40" rows="7">
+						<?php echo @$this->param->Description?>
+					</textarea>
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>

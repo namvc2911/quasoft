@@ -1,0 +1,362 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	$(".ui_box").hide();
+	$(".ui_box").first().fadeIn();
+	$(".tabs-menu a").click(function(event) {
+	        event.preventDefault();
+	        $(this).parent().addClass("active");
+	        $(this).parent().siblings().removeClass("active");
+	        var tab = $(this).attr("href");
+	        $(".ui_box").not(tab).css("display", "none");
+	        $(tab).find('fieldset').show();
+	        $(tab).fadeIn();
+	});
+	if(<?php echo $this->form->i_IFID?> == 0){
+		if(bLS){
+			var data = localStorage.getItem('<?php echo $this->form->FormCode?>');
+			if(data != null){
+				data = JSON.parse(data);
+				$.each(data, function() {
+					$('#'+this.name).val(this.value);
+				});
+				rowEditRefresh();
+			}
+		}
+	}
+	$.cookie('form_selected','<?php echo $this->form->i_IFID?>',{path:'/'});
+	//load object grid
+	
+	var objid = $.cookie('form_<?php echo $this->form->FormCode?>_object_selected');
+	if(objid === undefined || ($('#'+objid).length && $('#'+objid).is(":visible") === false)){
+		objid = '';
+	}
+	if(<?php echo $this->form->i_IFID?> != 0){
+		if(objid != -1 && objid != -2 && objid != -3 && <?php echo count($this->activesubobjects)?> != 0 ){
+			//check nếu có trong array object
+			<?php if(count($this->subobjects)):?>
+				if(objid == ''){
+					<?php $arrSub = array_keys($this->subobjects)?>
+					objid = '<?php echo $arrSub[0];?>';
+				}
+			<?php endif;?>
+			var ref = $('#'+objid+'_ref_form_code').val();
+			if(ref != ''){
+				rowFormSearch(ref,<?php echo $this->form->i_IFID?>,objid);
+			}
+			else{
+				rowObjectSearch(<?php echo $this->form->i_IFID?>, <?php echo $this->form->i_DepartmentID?>,objid);
+			}
+		}
+		else if(objid == -1){
+			rowDocument();
+		}
+		else if(objid == -2){
+			rowSecure();
+		}
+		else if(objid == -3){
+			rowComment();
+		}
+		else if('<?php echo $this->form->document?>' != '0'){
+			rowDocument();
+		}
+		else if('<?php echo $this->form->comment?>' != '0'){
+			rowComment();
+		}
+		else if('<?php echo $this->form->bSecure?>' != '0'){
+			rowSecure();
+		}
+	}
+	if(<?php echo $this->form->i_IFID?> == 0){
+		$('#tabs_sub').css('opacity',0.5);
+	}
+	$(function() {
+		// Display the first tab content
+		// Set the first tab as start tab onload: if you want to set no start tab
+		// comment it.
+		// DisplayTabContent(10);
+		// get index of the clicked navigation item in the list
+		$("ul.tabslist_sub li a").click(
+				function() {
+					// if animation has finished: meaning size()==0 then allow for
+					// other clicks
+					var ifid = $('#ifid').val();
+					var deptid = $('#deptid').val();
+					if(ifid && ifid != 0){
+						if ($('div.tabscontent_container > div.tabcontent:animated')
+								.size() == 0) {
+							$("ul.tabslist_sub li").removeClass('current');
+							var $listItem = $(this).parent().addClass('current');
+							var objid = $(this).parent().attr('objid');
+							var fieldid = $(this).parent().attr('fieldid');
+							var vid = $(this).parent().attr('vid');
+							var ioid = $(this).parent().attr('ioid');
+							var html = $(this).children().html();
+							if (ifid && deptid && objid) {
+								DisplayTabContent(ifid, deptid, objid, fieldid, vid,
+										ioid, html);
+							}
+						}	
+					}
+				});
+		return false;
+	});
+	$('#qss_form').find('fieldset').each(function(){
+			$(this).children('legend:first').click(function(){
+				$(this).parent().find('.ui_box_line').toggle();	
+				$(this).parent().find('.element').toggle();
+			});
+	});
+	$('input.integer:not(.raw)').number( true, 0 );
+	$('input.decimal').each(function(){
+		var decimals		= (typeof $(this).attr('precision') !== 'undefined' ) ? $(this).attr('precision') : 2;
+		$(this).number( true, decimals);
+	});
+	$('input.money').each(function(){
+		var thousands_sep	= (typeof $(this).attr('thousandssep') !== 'undefined') ? $(this).attr('thousandssep') : thousands_sep;
+		var dec_point		= (typeof $(this).attr('decpoint') !== 'undefined') ? $(this).attr('decpoint') : dec_point;
+		var decimals		= (typeof $(this).attr('precision') !== 'undefined' ) ? $(this).attr('precision') : decimals;
+		$(this).number( true, decimals,dec_point,thousands_sep);
+	});
+	<?php $fields = $this->form->o_fGetMainObject()->loadFields()?>
+	<?php foreach ($fields as $field):?>
+		<?php if($field->bGrid & 4):?>
+			$('.<?php echo $field->ObjectCode?>_<?php echo $field->FieldCode?>').hide();
+		<?php endif;?>
+	<?php endforeach;?>
+	$('fieldset').each(function(){
+		if($(this).find('.ui_box_line:visible').length == 0){
+			$(this).hide();
+		}
+	});
+	//onchange set fedit = true;
+	$('#form_<?php echo $this->form->FormCode?>_edit').on('keyup change',function(){
+		fedit = true;
+		toggleFormSave();
+	});
+});
+
+</script>
+<div id="horizontal-toolbar" class="horizontal-toolbar">
+	<button id="btnSAVE" type="button" class="btn btn_main_top"
+		onclick="formSave('<?php
+				echo $this->form->FormCode?>',<?php
+				echo $this->form->i_IFID?>,'<?php
+				echo $this->form->i_DepartmentID?>');">
+		<?php echo $this->_translate(34)?>
+	</button>
+	<button id="btnSAVEBACK" type="button" class="btn btn_main_top"
+		onclick="formSave('<?php
+				echo $this->form->FormCode?>',<?php
+				echo $this->form->i_IFID?>,'<?php
+				echo $this->form->i_DepartmentID?>',1);">
+		<?php echo $this->_translate(35)?>
+	</button>
+	
+	<button id="btnFDELETE" type="button" class="btn btn_main_top" <?php if(!$this->form->i_IFID || !($this->rights & 8)):?>disabled<?php endif;?>
+		onclick="formDelete('<?php echo $this->form->FormCode?>');">
+		<?php echo $this->_translate(14)?>
+	</button>
+	
+	<button id="btnDETAIL" type="button" class="btn btn_main_top" <?php if(!$this->form->i_IFID):?>disabled<?php endif;?>
+		onclick="formTrace()">
+		<?php echo $this->_translate(17)?>
+	</button>
+
+
+	<!--<div class="btn_main_top <?php if(!$this->form->i_IFID):?>btn_disabled<?php endif;?>"
+	onclick="rowValidate(<?php echo $this->form->FormCode?>)"
+	title="<?php echo $this->_translate(16)?>" id="btnVALIDATE"><a href="#1"
+	class="icon-32-validate"></a></div>-->
+
+	<?php if($this->form->hasPrint()):?>
+	<button id="btnDETAIL" type="button" class="btn btn_main_top" <?php if(!$this->form->i_IFID):?>disabled<?php endif;?>
+		onclick="rowPrint('<?php echo $this->form->FormCode?>')">
+		<?php echo $this->_translate(15)?>
+	</button>
+	<?php endif;?>
+	
+	<?php if($this->form->i_Type == Qss_Lib_Const::FORM_TYPE_MODULE):?>
+	<div class="icon-32_separator"></div>
+	<?php $lang = Qss_Translation::getInstance()->getLanguage();?>
+	<?php $lang = ($lang=='vn')?'':'_'.$lang;?>
+	
+	<?php if($this->form->i_IFID && $this->step->intStepType):?>
+		<?php foreach ($this->approvers as $item):?>
+		<?php if($item->AUID && $item->UID):?>
+			<?php if($item->AUID == $this->user_id):?>
+				<button id="btnAPPROVE" type="button" class="btn btn_main_top" style="color: red"
+					onclick="reject(<?php echo $item->SAID?>,<?php echo $this->form->i_IFID?>,<?php echo $this->form->i_DepartmentID?>)">
+					Hủy "<?php echo $item->Name?>"
+				</button>
+			<?php else:?>
+				<button id="btnAPPROVE" type="button" class="btn btn_main_top" style="color: green" disabled>
+					Đã "<?php echo $item->Name?>"
+				</button>
+			<?php endif;?>
+		<?php elseif($item->UID == $this->user_id):?>	
+			<button id="btnAPPROVE" type="button" class="btn btn_main_top" style="color: green"
+				onclick="approve(<?php echo $item->SAID?>,<?php echo $this->form->i_IFID?>,<?php echo $this->form->i_DepartmentID?>)">
+				<?php echo $item->Name?>
+			</button>
+		<?php endif;?>
+		<?php endforeach;?>
+	<?php endif;?>
+	<?php if(($this->rights & 31))://!count($this->arrNotApproved) && !count($this->arrApproved) && $this->form->i_IFID && ?>
+		<div class="dropdown" style="float:left;">
+		<button id="btnWORKFLOW" type="button" class="btn btn_main_top" <?php if(!$this->form->i_IFID):?>disabled<?php endif;?>
+			onclick="rowWorkflow(this);">
+			<?php echo $this->_translate(1)?>
+			<span style="display: block;" class="downarrowclass">&nbsp;</span>
+		</button>
+			<ul class="dropdown-content">
+	
+		  	</ul>
+		</div> 
+	<?php endif;?>
+	<?php endif;?>
+	<!--
+<div class="icon-32_separator"></div>
+<div class="btn_main_top <?php if(!$this->form->i_IFID):?>btn_disabled<?php endif;?>" onclick="rowRecord()"
+	title="<?php echo $this->_translate(76)?>" id="btnDOCUMENT"><div id="action_document" class="action_notify"><?php if($this->documentcount) echo $this->documentcount?></div><a href="#1" class="icon-32-document"></a></div>
+<?php if ( $this->form->i_Type == Qss_Lib_Const::FORM_TYPE_PROCESS):?>
+<div class="btn_main_top <?php if(!$this->form->i_IFID):?>btn_disabled<?php endif;?>" onclick="rowCalendar()"
+	title="<?php echo $this->_translate(78)?>" id="btnEVENT"><div id="action_event" class="action_notify"><?php if($this->eventcount) echo $this->eventcount?></div><a href="#1" class="icon-32-event"></a></div>
+<?php endif;?>	
+<?php if($this->form->getCalendar()):?>
+<div class="btn_main_top" onclick="rowEvent('<?php echo $this->form->FormCode?>')"
+	title="<?php echo $this->_translate(79)?>" id="btnEVENT"><div id="action_event" class="action_notify"></div><a href="#1" class="icon-32-event"></a></div>	
+<?php endif;?>	
+<?php if($this->form->hasDesign()):?>
+<div class="btn_main_top <?php if(!$this->form->i_IFID):?>btn_disabled<?php endif;?>" onclick="rowEmail()"
+	title="<?php echo $this->_translate(80)?>" id="btnEMAIL"><a href="#1" class="icon-32-email"></a></div>
+<?php endif;?>	
+-->
+<?php //if($this->form->i_IFID):?>
+	<div class="icon-32_separator"></div>
+
+	<?php /*<?php if($this->prev):?>//window.location.href='/user/form/edit?ifid=<?php echo $this->prev->IFID?>&deptid=<?php echo $this->prev->DepartmentID?>'<?php endif;?>*/?>
+	<button id="btnPREV" type="button" class="btn btn_main_top icon-32-prev" <?php if(!$this->prev):?>disabled<?php endif;?>
+		onclick="<?php if($this->prev):?>openModule('','/user/form/edit?ifid=<?php echo $this->prev->IFID?>&deptid=<?php echo $this->prev->DepartmentID?>');<?php endif;?>"
+		title="<?php echo $this->_translate(36)?>">
+		&nbsp;
+	</button>
+	<?php /*<?php if($this->next):?>window.location.href='/user/form/edit?ifid=<?php echo $this->next->IFID?>&deptid=<?php echo $this->next->DepartmentID?>'<?php endif;?>*/?>
+	<button id="btnNEXT" type="button" class="btn btn_main_top icon-32-next" <?php if(!$this->next):?>disabled<?php endif;?>
+		onclick="<?php if($this->next):?>openModule('','/user/form/edit?ifid=<?php echo $this->next->IFID?>&deptid=<?php echo $this->next->DepartmentID?>');<?php endif;?>"
+		title="<?php echo $this->_translate(37)?>">
+		&nbsp;
+	</button>
+	<?php //endif;?>
+	<?php if(count((array)$this->bashes)):?>
+	<div class="icon-32_separator"></div>
+	<?php foreach($this->bashes as $item):?>
+	<?php $steps = explode(',', $item->Step);?>
+	<?php if($item->Record && ( (in_array(1,$steps) && !$this->form->i_Status) || in_array($this->form->i_Status, $steps)) ):?>
+	<?php switch($item->Type):
+case 2:?>
+<?php case 3:?>
+	<button type="button" class="btn extra-button-record"  <?php if(!$this->form->i_IFID):?>disabled<?php endif;?> 
+		steps="<?php echo $item->Step?>"
+		onclick="formbashRun(<?php echo $item->BID?>,'<?php echo $item->BashName?>',this,0)">
+		<?php echo $item->BashName?>
+	</button>
+	<?php break;?>
+	<?php case 4:?>
+	<button type="button" class="btn extra-button-record"  <?php if(!$this->form->i_IFID):?>disabled<?php endif;?> 
+		steps="<?php echo $item->Step?>"
+		onclick="formpopupOther('<?php echo $item->FormCode?>','<?php echo $item->Class?>',this)">
+		<?php echo $item->BashName?>
+	</button>
+	<?php break;?>
+	<?php case 5:?>
+	<button type="button" class="btn extra-button-record"  <?php if(!$this->form->i_IFID):?>disabled<?php endif;?> 
+		steps="<?php echo $item->Step?>"
+		onclick="formopenOther('<?php echo $item->FormCode?>','<?php echo $item->Class?>',this)">
+		<?php echo $item->BashName?>
+	</button>
+	<?php break;?>
+	<?php endswitch;?>
+	<?php endif;?>
+	<?php endforeach;?>
+	<?php endif;?>
+	
+	<div style="float: right;">
+	<button id="btnBACK" type="button" class="btn btn_main_top"
+		onclick="formBack('<?php echo $this->form->FormCode?>');">
+		<?php echo $this->_translate(32)?>
+	</button>
+	
+	<button id="btnSEARCH" type="button" class="btn btn_main_top"
+		onclick="showSearch();">
+		<?php echo $this->_translate(24)?>
+	</button>
+	</div>
+</div>
+
+<div class="clear"></div>
+<div id="view">
+	<div id="div-search" class="clearfix" style="display: none;">
+		<?php echo $this->searchform;?>
+		<div>
+			<div class="btn-custom center" style="width:70px" onclick="rowSearch('<?php echo $this->form->FormCode;?>');"><?php echo $this->_translate(81)?></div>
+			<div class="btn-custom center" style="width:70px" onclick="rowCleanSearch('<?php echo $this->form->FormCode;?>');"><?php echo $this->_translate(82)?></div>
+			<div class="btn-custom center" style="width:70px" onclick="showSearch();"><?php echo $this->_translate(83)?></div>
+		</div>
+	</div>
+	<form id="form_<?php echo $this->form->FormCode?>_edit" method="post" autocomplete="off">
+		<input type="hidden" name="fid" id="fid" value="<?php echo $this->form->FormCode?>"> 
+		<input type="hidden" name="ifid" id="ifid" value="<?php echo $this->form->i_IFID?>"> 
+		<input type="hidden" name="deptid" id="deptid" value="<?php echo $this->form->i_DepartmentID?>">
+		<?php foreach ($this->subobjects as $sub):?>
+			<input type="hidden" id="<?php echo $sub->ObjectCode?>_ref_form_code" value="<?php echo $sub->RefFormCode?>">
+		<?php endforeach;?>
+		<div id="qss_form">
+			<?php echo $this->formedit;?>
+		</div>
+	</form>
+	<div class="ui_box_s100">
+		<div id="einfo_maintain_plan_tab" class="navmenutab">
+			<ul>
+				<?php foreach ($this->subobjects as $item):?>
+				<li class="splash" <?php if($item->bPublic & 1):?>style="display:none;"<?php endif;?>></li>
+				<li id="<?php echo $item->ObjectCode?>" class="<?php if($this->subobject->ObjectCode == $item->ObjectCode):?>active<?php endif;?> normal"
+					<?php if($item->bPublic & 1):?>style="display:none;"<?php endif;?>><a
+					class="einfo_maintain_plan_tab <?php if($this->subobject->ObjectCode == $item->ObjectCode):?>active<?php endif;?>"
+					id="einfo_maintain_plan_tab_<?php echo $item->ObjectCode?>"
+					onclick="rowObject('<?php echo $item->ObjectCode?>',this)"
+					ondblclick="rowObjectToggle()" href="#"> <span><?php echo $item->sz_Name?>
+					</span> </a>
+				</li>
+				<?php endforeach;?>
+				<?php if($this->form->document):?>
+				<li class="splash"></li>
+				<li class="<?php if(!count($this->subobject)):?>active<?php endif;?> normal"><a
+					class="einfo_maintain_plan_tab <?php if(!count($this->subobject)):?>active<?php endif;?>"
+					id="einfo_maintain_plan_tab_document" onclick="rowDocument(this)"
+					ondblclick="rowObjectToggle()" href="#"> <span><?php echo $this->_translate(76)?> </span> </a>
+				</li>
+				<?php endif;?>
+				<?php if($this->form->bSecure):?>
+				<li class="splash"></li>
+				<li class="<?php if(!count($this->subobject)):?>active<?php endif;?> normal"><a
+					class="einfo_maintain_plan_tab <?php if(!count($this->subobject)):?>active<?php endif;?>"
+					id="einfo_maintain_plan_tab_secure" onclick="rowSecure(this)"
+					ondblclick="rowObjectToggle()" href="#"> <span><?php echo $this->_translate(2)?> </span> </a>
+				</li>
+				<?php endif;?>
+				<?php if($this->form->comment):?>
+				<li class="splash"></li>
+				<li class="<?php if(!count($this->subobject)):?>active<?php endif;?> normal"><a
+					class="einfo_maintain_plan_tab <?php if(!count($this->subobject)):?>active<?php endif;?>"
+					id="einfo_maintain_plan_tab_comment" onclick="rowComment(this)"
+					ondblclick="rowObjectToggle()" href="#"> <span><?php echo $this->_translate(16)?> </span> </a>
+				</li>
+				<?php endif;?>
+			</ul>
+		</div>
+		<div class="clearfix">&nbsp;</div>
+		<div id="qss_object" style="border-top: 1px solid #999"></div>
+	</div>
+</div>
+<div id="qss_combo" title="<?php echo $this->form->sz_Name?>"></div>
+<div id="qss_trace" title="<?php echo $this->form->sz_Name?>"></div>

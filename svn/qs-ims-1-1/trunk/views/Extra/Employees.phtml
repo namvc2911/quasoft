@@ -1,0 +1,32 @@
+<?php /*
+<select
+    onchange="rowSearch('<?php echo $this->form->FormCode?>');"
+    <?php if($this->selected):?>class="bglightgreen"<?php endif;?>
+    name="filter_employee"
+    id="filter_employee"
+    style="width: 180px;">
+
+    <option value="0" <?php echo ((int)$this->selected == 0)?'selected':'';?>>--- Chọn người thực hiện ---</option>
+    <option value="-1" <?php echo ((int)$this->selected == -1)?'selected':'';?>>Chưa giao việc</option>
+
+    <?php foreach ($this->htmlUsers as $item):?>
+        <option
+            <?php echo ((int)$this->selected == (int)$item->IOID)?'selected':'';?>
+            value="<?php echo $item->IOID?>">
+            <?php echo $item->TenNhanVien; ?> - <?php echo $item->MaNhanVien; ?>
+        </option>
+    <?php endforeach;?>
+</select>
+ */?>
+<?php echo $this->views->Report->SimpleListBox('filter_employee'
+			, '/filter/odanhsachnhanvien/index/'
+			, 'onchange="rowSearch(\''.$this->form->FormCode.'\');"'
+			, ''
+			, (int)$this->selectedID
+			, $this->selectedText
+			, $this->_translate(1));?>
+<script>
+	if($('#filter_employee').val() != 0){
+		$('#filter_employee_tag').addClass('bglightgreen');
+	}
+</script>

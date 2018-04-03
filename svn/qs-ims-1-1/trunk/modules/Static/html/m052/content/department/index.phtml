@@ -1,0 +1,23 @@
+<!-- Hiển thị thông tin của phòng ban bộ phận -->
+
+<!-- Các tab trong phần thông tin phòng ban, tạm thời không có tab nào -->
+<div id="m052_nav">
+    <div class="navmenutab" id="einfo_maintain_plan_tab">
+        <ul>
+            <li class="splash"></li>
+            <li class=""><a href="#"
+                            onclick="einfo_show_maintain_plan_tab_for_location(1)"
+                            id="einfo_maintain_plan_tab_1" class="einfo_maintain_plan_tab"
+                            tab="1" objid="OCongViecBT"> <span>Thông tin chung
+                    </span> </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="clear">&nbsp;</div>
+
+<!-- Hiển thị thông tin phòng ban theo các tab chọn -->
+<div id="m052_department_detail">
+    <?php echo $this->main;?>
+</div>

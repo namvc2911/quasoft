@@ -1,0 +1,229 @@
+<?php
+$excel_col     = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg            = "#EEEEEE";
+$row           = 2;
+$pxWidthArr    = array(1, 5, 1.5, 1.5, 1.5, 2.5, 3);
+$totalColumn   = count($pxWidthArr);
+$excelWidthArr = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($pxWidthArr);
+$pxWidthArr    = Qss_Lib_Report::changeWidthToFitScreen($pxWidthArr);
+$ngayBaoCao    = $this->many?"{$this->start} - {$this->end}":$this->start;
+$hoTenNhanVien = $this->employee?$this->employee->TenNhanVien:'';
+$caLamViec     = $this->shift?$this->shift->TenCa:'';
+?>
+
+<style>
+    <!--
+    table td,table th
+    {
+        font-size: 13px;
+    }
+
+    table.border tr td
+    {
+        height: 150px;
+        vertical-align: top;
+    }
+
+    .padding_indent {
+        padding-left: 50px;
+    }
+    -->
+</style>
+
+<script>
+    function excelRender() {
+        $('#report').submit();
+    }
+</script>
+
+
+<div class="portrait">
+    <form id="report" method="post" action="/button/m182_handover/excel"
+          target="new">
+        <input type="hidden" id="content" name="content" value="">
+        <input type="hidden" id="ifid" name="ifid" value="<?php echo $this->ifid;?>">
+        <input type="hidden" id="deptid" name="deptid" value="<?php echo $this->deptid;?>">
+        <input type="hidden" id="eid" name="eid" value="<?php echo $this->eid;?>">
+        <input type="hidden" name="popup" value="1">
+    </form>
+
+    <excel orientation="portrait" font-name="Arial" font-size="10"
+           margin-left="0.5" margin-right="0.5" margin-top="0.75"
+           margin-bottom="0.75" />
+
+    <div id="head_print">
+        <?php echo $this->views->Common->Portrait() ?>
+        <h2 class="report-title center">BIÊN BẢN GIAO NHẬN</h2>
+        <p class="center bold">Số: <?php echo @$this->objPhieuBanGiao->SoPhieu;?></p>
+    </div>
+    <br/>
+
+    <div class="clear"></div>
+
+    <div id="container">
+        <p class="padding_indent">
+            Hôm nay ngày <?php echo date('d');?> tháng <?php echo date('m');?> năm <?php echo date('Y');?> chúng tôi gồm có :
+        </p>
+
+        <p class="padding_indent bold">
+            Bên giao: CÔNG TY CỔ PHẦN NHỰA VÀ MÔI TRƯỜNG XANH AN PHÁT
+        </p>
+
+        <p class="padding_indent">
+        <div class="overflow padding_indent">
+            <div class="fl" style="width: 33%;">
+                Đại diện: Ông (bà):
+            </div>
+
+            <div class="fl" style="width: 67%;">
+                Chức vụ:
+            </div>
+        </div>
+        </p>
+
+        <p class="padding_indent bold">
+            Bên nhận bàn giao: <?php echo @$this->objPhieuBanGiao->NhaMay;?>
+        </p>
+
+        <p class="padding_indent">
+        <div class="overflow padding_indent">
+            <div class="fl" style="width: 33%;">
+                Đại diện: Ông (bà): <?php echo $this->objNhanVien->TenNhanVien;?>
+            </div>
+
+            <div class="fl" style="width: 33%;">
+                Chức vụ:
+            </div>
+
+            <div class="fl" style="width: 33%;">
+                Bộ phận: <?php echo $this->objNhanVien->BoPhan;?>
+            </div>
+        </div>
+        </p>
+
+        <p class="padding_indent bold">
+            Người làm chứng (nếu có): <?php echo $this->objPhieuBanGiao->NhaMay;?>
+        </p>
+
+        <p class="padding_indent">
+        <div class="overflow padding_indent">
+            <div class="fl" style="width: 33%;">
+                Đại diện: Ông (bà):
+            </div>
+
+            <div class="fl" style="width: 33%;">
+                Chức vụ:
+            </div>
+
+            <div class="fl" style="width: 33%;">
+                Bộ phận:
+            </div>
+        </div>
+        </p>
+
+
+        <p class="padding_indent bold">
+            Cùng tiến hành lập biên bản xác nhận việc bàn giao số tài sản sau :
+        </p>
+
+        <br/>
+        <br/>
+
+
+        <table cellspacing="0" cellpadding="0" border="1" id="" class="border">
+            <tr class="bggrey">
+                <?php $begin = 0; ?>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">STT</th>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">TÊN VẬT TƯ</th>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">ĐVT</th>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">SỐ LƯỢNG</th>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">TÌNH TRẠNG</th>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">Thời gian cấp đổi ko quy trách nhiệm cá nhân</th>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">Ghi chú</th>
+            </tr>
+
+            <?php $stt = 0;?>
+            <?php foreach ($this->objBanGiao as $item): // In danh sach ngay?>
+                <tr>
+                    <td class="center">
+                        <?php echo ++$stt;?>
+                    </td>
+                    <td class="left">
+                        <?php echo $item->TenTaiSan;?>
+                    </td>
+                    <td class="left">
+                        <?php echo $item->DonViTinh;?>
+                    </td>
+                    <td class="right">
+                        <?php echo Qss_Lib_Util::formatNumber($item->SoLuong);?>
+                    </td>
+                    <td class="left">
+                        <?php // echo @$item->TinhTrang;?>
+                    </td>
+                    <td class="left">
+                        <?php // echo $item->ThoiGian;?>
+                    </td>
+                    <td class="left">
+                        <?php // echo ++$stt;?>
+                    </td>
+
+                </tr>
+            <?php endforeach;?>
+        </table>
+        <br />
+    </div>
+    <br/>
+
+    <p class="padding_indent bold red">
+        Chú ý: Kho CCDC chỉ bàn giao tài sản  khi có xác nhận của trưởng bộ phận đối với những trường hợp giá trị  tài sản thấp, đối với tài sản giá trị lớn cần có xác nhận của LĐNM.
+    </p>
+
+    <p class="padding_indent bold" style="text-decoration: underline; ">
+        Trách nhiệm của người nhận:
+    </p>
+
+    <p class="padding_indent">
+        - Quản lý, sử dụng và bảo quản số tài sản được bàn giao theo đúng quy định của Công ty.
+    </p>
+
+    <p class="padding_indent">
+        - Chịu trách nhiệm sửa chữa, bồi thường khi để xảy ra hỏng hóc, mất mát do lỗi của cá nhân sử dụng.
+
+    </p>
+
+
+    <p class="padding_indent">
+        - Có trách nhiệm bàn giao đầy đủ số tài sản đã nhận cho bên A Khi chấm dứt hợp đồng lao động, hoặc khi hoàn thành các công việc được giao.
+
+    </p>
+    <br/>
+
+    <p class="padding_indent red">
+        Biên bản có hiệu lực kể từ ngày các bên có tên trên ký xác nhận vào biên bản. Biên bản được lập thành 03 bản có giá trị như nhau mỗi bên giữ 01 bản, 1 bản gửi phòng kế toán.
+
+    </p>
+
+    <br/>
+
+    <div class="padding_indent">
+        <table cellspacing="0" cellpadding="0" border="0" class="bold">
+            <tr>
+                <td style="width: 33%;">ĐẠI DIỆN BÊN GIAO</td>
+                <td style="width: 33%;">ĐẠI DIỆN BIÊN NHẬN</td>
+                <td style="width: 33%;">NGƯỜI LÀM CHỨNG</td>
+            </tr>
+        </table>
+    </div>
+
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+
+
+
+
+    <div id="qss_trace"></div>
+</div>

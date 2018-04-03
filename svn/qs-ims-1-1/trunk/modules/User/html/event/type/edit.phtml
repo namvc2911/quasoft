@@ -1,0 +1,136 @@
+<style>
+<!--
+input {
+	cursor: pointer;
+}
+
+#template_upload {
+	float: left;
+	line-height: 20px;
+}
+
+#template_exists {
+	float: left;
+	line-height: 20px;
+	margin-left: 5px;
+}
+
+#deleteTemplate:before {
+	content: ' | '
+}
+
+#downloadTemplate:before {
+	content: ' | '
+}
+-->
+</style>
+<script>
+function eventTypeSave()
+{
+	var url = sz_BaseUrl + '/user/event/type/save';
+	var data = $('#qss_form').serialize();
+	qssAjax.call(url, data, function(jreturn) {
+		//window.location.href = sz_BaseUrl + '/user/event/type';
+                openModule('',sz_BaseUrl + '/user/event/type');
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+}
+function eventTypeBack() {
+	var url = sz_BaseUrl + '/user/event/type';
+	//window.location.href = url;
+        openModule('',url);
+}
+</script>
+<form id="qss_form" method="post">
+	<input type="hidden" value="<?php echo @$this->eventtype->TypeID?>"
+		name="id" id="id">
+	<div id="horizontal-toolbar" class="horizontal-toolbar">
+		<div id="btnSAVE" onclick="eventTypeSave()" class="btn_main_top"
+			title="<?php echo $this->_translate(34,'Cập nhật')?>">
+			<a class="icon-32-save" href="#"></a>
+		</div>
+		<div onclick="eventTypeBack()" class="btn_main_top"
+			title="<?php echo $this->_translate(32,'Trở lại')?>">
+			<a class="icon-32-back" href="#"></a>
+		</div>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<div id="item-actions">
+			<ul>
+				<li class="item-action active"><a href="#"><span>Loại công việc & sự
+							kiện</span> </a></li>
+			</ul>
+		</div>
+		<table class="detail">
+			<tr>
+				<th width="200"><?php echo $this->_translate(64,'Mô tả')?></th>
+				<td><input value="<?php echo @$this->eventtype->TypeName?>"
+					style="width: 200px;" name="name" /></td>
+			</tr>
+			<tr>
+				<th width="200">Trực thuộc</th>
+				<td><select name="intParentID" style="width: 400px;">
+						<option value="0">--- Không trực thuộc ---</option>
+						<?php foreach($this->types as $item):?>
+						<option <?php if($item->TypeID == @$this->eventtype->TypeID):?>
+							selected <?php endif;?> value="<?php echo $item->TypeID?>">
+							<?php echo $item->TypeName?>
+						</option>
+						<?php endforeach;?>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<th width="200">Mẫu</th>
+				<td>
+
+					<div id="template_upload">
+						<a id="upload" href="#!">Tải lên</a> <input type="hidden"
+							id="szFile" name="szFile">
+					</div> <?php if (@$this->eventtype->File && file_exists(QSS_DATA_DIR.'/documents/event/'.@$this->eventtype->TypeID.'.'.@$this->eventtype->File)):?>
+					<div id="template_exists">
+						<a id="deleteTemplate" href="#!"
+							onclick="deleteTemplate(<?php echo $this->eventtype->TypeID?>)">Xóa
+							mẫu</a> <a id="downloadTemplate" href="#!"
+							onclick="downloadTemplate(<?php echo $this->eventtype->TypeID?>)"><span
+							class="<?php echo @$this->eventtype->File?> unknown"
+							style="display: inline-block !important; width: 18px;"
+							title="tải về">&nbsp;</span> </a>
+					</div> <?php endif;?>
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>
+<script>
+$(function() {
+	$('#upload').file(function(inp) {
+		inp.id = inp.name = 'myFileInput';
+		disabledLayout();
+		/* Upload file by ajax */
+		$('button').attr('disabled', true);
+		$.ajaxFileUpload({
+			url : sz_BaseUrl + '/user/field/uploadfile',
+			secureuri : false,
+			fileElementId : inp,
+			dataType : 'json',
+			success : function(data, status) {
+				/* Upload file successfully */
+				if (data.error) {
+					qssAjax.alert(data.message);
+				} else {
+					$('#szFile').val(data.image);
+					$('button').attr('disabled', false);
+				}
+				enabledLayout();
+			},
+			error : function(data, status, e) {
+				/* If upload error */
+				qssAjax.alert(e);
+			}
+		});
+	});
+});
+</script>

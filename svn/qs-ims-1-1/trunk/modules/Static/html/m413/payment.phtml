@@ -1,0 +1,63 @@
+<?php 
+$widths   = array(1,2,2,2,2,2,2,5,2);
+$width    = 1200;
+$padding  = 2;
+$fit      = Qss_Lib_Report::changeWidthToFitScreen2($widths, $width, $padding);
+?>
+
+<div id="M413_payment_wrap">
+    <h3>
+        Thanh toán
+    </h3>  
+    
+    <div>
+        <button type="button" class="btn btn-custom" onclick="M413.createPayment();"> Tạo thanh toán </button>
+    </div>
+    <br/>
+    
+    <div class="clear"></div>
+    <table 
+        class="border_table" 
+        cellpadding="0" 
+        cellspacing="0" 
+        border="0" 
+        style="width:<?php echo $width;?>px; table-layout: fixed;" >
+        <?php $begin = 0; ?>
+        <?php $stt   = 0;?>
+        <tr>
+            <th style="width:<?php echo $fit[$begin++];?>px">STT</th>
+            <th style="width:<?php echo $fit[$begin++];?>px">Số chứng từ</th>
+            <th style="width:<?php echo $fit[$begin++];?>px">Ngày thanh toán</th>
+            <th style="width:<?php echo $fit[$begin++];?>px">Số hóa đơn</th>
+            <th style="width:<?php echo $fit[$begin++];?>px">Phương thưc thanh toán</th>
+            <th style="width:<?php echo $fit[$begin++];?>px">Số tiền</th>
+            <th style="width:<?php echo $fit[$begin++];?>px">Tình trạng</th>
+            <th style="width:<?php echo $fit[$begin++];?>px">Nội dung</th>
+            <th style="width:<?php echo $fit[$begin++];?>px">Thanh toán</th>
+        </tr> 
+        
+        <?php foreach($this->payments as $item):?>
+        <tr>
+            <td class="center"><?php echo ++$stt;?></td>
+            <td class="left"><?php echo $item->SoChungTu;?></td>
+            <td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item->NgayThanhToan);?></td>
+            
+            <?php // Hien thi so hoa don neu co hoac hien thi chon hoa don neu khong co?>
+            <?php if($item->SoHoaDon):?>
+                <td class="left"><?php echo $item->SoHoaDon;?></td>
+            <?php else:?>
+                <td class="center">
+                    <button type="button" class="btn btn-custom" onclick=""> Gắn hóa đơn </button>
+                </td>
+            <?php endif;?>
+            
+            <td class="left"><?php echo $item->PhuongThucTT;?></td>
+            <td class="right"><?php echo Qss_Lib_Util::formatMoney($item->SoTienDaTT);?></td>
+            <td class="center <?php echo $item->Color?>"><?php echo $item->Name;?></td>
+            <td class="left"><?php echo $item->NoiDungThanhToan;?></td>
+            <td class="center"><button type="button" class="btn btn-custom" onclick=""> Thanh toán </button></td>
+        </tr>
+        <?php endforeach;?>   
+    </table>
+    <br/>
+</div><!-- end #M413_invoice_wrap -->

@@ -1,0 +1,61 @@
+<script>
+    function printPreview(){
+        var month = $('#month').val();
+        var year   = $('#year').val();
+        var msg   = '';
+
+        msg += common_checkEmpty(month, '<?php echo $this->_translate(5)?>');
+        msg += common_checkEmpty(year, '<?php echo $this->_translate(2)?>6');
+
+        if(msg)
+        {
+            qssAjax.alert(msg);
+            return;
+        }
+        else
+        {
+            var url = sz_BaseUrl + '/static/m155/show';
+            var data = $('#report').serialize();
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#print-area').html(jreturn);
+                removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+            });
+        }
+    }
+</script>
+<div class="clear"></div>
+<div id="view">
+    <div class="line-hr">
+        <span><?php echo Qss_Lib_System::getReportTitle('M155');?> </span>
+    </div>
+    <form id="report" method="get"
+          action="/static/m155/show">
+        <table class="detail">
+            <tr>
+                <th width="20%" class="report-param-label"><?php echo $this->_translate(5)?>:</th>
+                <td><?php echo $this->views->Report->SelectMonth('start');?><span
+                        class="bold red">(*)</span></td>
+            </tr>
+            
+            <tr>
+                <th width="20%" class="report-param-label"><?php echo $this->_translate(7)?>:</th>
+                <td><?php echo $this->views->Report->SelectMonth('end');?><span
+                        class="bold red">(*)</span></td>
+            </tr> 
+            <tr>
+                <th width="20%" class="report-param-label"><?php echo $this->_translate(6)?>:</th>
+                <td><?php echo $this->views->Report->SelectYear('year');?><span
+                        class="bold red">(*)</span></td>
+            </tr>
+
+        </table>
+    </form>
+    <p>
+
+
+    <hr>
+    <?php echo $this->views->Report->PrintToolbar();?>
+    <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>

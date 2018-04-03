@@ -1,0 +1,64 @@
+<table cellpadding="0" cellspacing="0" class="border_table"
+	style="width: 100%;" id=''>
+	<tr class="bggrey center">
+		<th style="width: 5%"><?php echo $this->_translate(1);?>
+			<!-- Số phiếu --></th>
+		<th style="width: 10%"><?php echo $this->_translate(2);?>
+			<!-- Ngày yêu cầu --></th>
+		<th style="width: 10%"><?php echo $this->_translate(3);?>
+			<!-- Ngày thực hiện --></th>
+		<th style="width: 10%"><?php echo $this->_translate(11);?>
+			<!-- Ngày thực hiện --></th>
+		<th style="width: 10%"><?php echo $this->_translate(6);?>
+			<!-- Loại bảo trì --></th>
+		<th style="width: 10%"><?php echo $this->_translate(9);?>
+			<!-- Người thực hiện --></th>
+		<th style="width: 8%"><?php echo $this->_translate(10);?>
+			<!-- Chi tiết --></th>
+	</tr>
+
+	<?php $CountLine = 0; ?>
+	<?php foreach ($this->history as $h): ?>
+	<tr class="pointer einfo-historytab-row"
+		ondblclick="einfo_rowDetail(this)"
+		onclick="einfo_select_history_row(this)"
+		ifid="<?php echo $h->IFID_M759 ?>"
+		deptid="<?php echo $this->deptid ?>"
+		title="Click đúp để xem chi tiết bảo trì thiết bị!">
+		<td class="left"><?php echo $h->SoPhieu; ?>
+		</td>
+		<td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($h->NgayYeuCau); ?>
+		</td>
+		<td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($h->NgayBatDau); ?>
+		</td>
+		<td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($h->Ngay); ?>
+		</td>
+		<td class="left"><?php echo $h->LoaiBaoTri; ?>
+		</td>
+		<td class="left"><?php echo $h->NguoiThucHien; ?>
+		</td>
+		<td class="center">
+			<button type="button" class="btn-custom"
+				onclick="einfo_rowDetail(<?php echo $h->IFID_M759 ?>)"
+				ifid="<?php echo $h->IFID_M759 ?>"
+				deptid="<?php echo $this->deptid ?>">Chi tiết</button>
+		</td>
+	</tr>
+	<?php $CountLine++; ?>
+	<?php endforeach; ?>
+
+	<?php if ($CountLine <= 20): ?>
+	<?php for ($i = $CountLine; $i < 20; $i++): ?>
+	<tr class="pointer einfo-historytab-row"
+		onclick="einfo_select_history_row(this)">
+		<td class="left">&nbsp;</td>
+		<td class="center">&nbsp;</td>
+		<td class="center">&nbsp;</td>
+		<td class="left">&nbsp;</td>
+		<td class="left">&nbsp;</td>
+		<td class="left">&nbsp;</td>
+		<td class="left">&nbsp;</td>
+	</tr>
+	<?php endfor; ?>
+	<?php endif; ?>
+</table>

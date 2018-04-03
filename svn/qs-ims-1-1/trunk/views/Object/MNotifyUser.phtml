@@ -1,0 +1,47 @@
+<script>
+    function save() {
+        var sz_BaseUrl = 'http://' + location.host;
+        var url        = sz_BaseUrl + '/static/m856/saveuser';
+        var data       = $('form#ONhanVienNhanThongBao').serialize();
+
+        return qssAjax.call(url, data, function(jreturn) {
+            if(jreturn.message != '')
+            {
+                qssAjax.alert(jreturn.message);
+            }
+        }, function(jreturn) {
+            qssAjax.alert(jreturn.message);
+        });
+    }
+    function checkAll(el){
+		$('.user_notify').prop('checked',$(el).prop('checked'));
+    }
+    function checkGroup(id,el){
+		$('.group_'+id).prop('checked',$(el).prop('checked'));
+    }
+</script>
+
+<form id="ONhanVienNhanThongBao">
+    <input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" />
+    <table id="grid" cellspacing="0" class="grid grid_edit tablescroll_body">
+    	<tr class="bggrey">
+    		<td class="bold" colspan="2">Chọn danh sách người gửi đi</td>
+            <td><input <?php if($this->form->i_Status == 2):?>disabled<?php endif;?> type="checkbox" onchange="checkAll(this);"></td>
+		</tr>
+    	<?php $phongban = 0?>
+        <?php foreach ($this->data as $item):?>
+        	<?php if($phongban != $item->Ref_MaPhongBan):?>
+        		<tr class="bglightblue">
+               		<td class="bold" colspan="2"><?php echo $item->MaPhongBan;?></td>
+               		<td><input <?php if($this->form->i_Status == 2):?>disabled<?php endif;?> type="checkbox" onchange="checkGroup('<?php echo (int)$item->Ref_MaPhongBan;?>',this);"></td>
+				</tr>
+        	<?php endif;?>
+            <tr>
+                <td><?php echo $item->MaNhanVien;?></td>
+                <td><?php echo $item->TenNhanVien;?></td>
+                <td><input <?php if($this->form->i_Status == 2):?>disabled<?php endif;?> class="user_notify group_<?php echo (int)$item->Ref_MaPhongBan;?>" type="checkbox" name="ONhanVienNhanThongBao_ID[]" value="<?php echo $item->IOID;?>" <?php echo $item->SelectedID?'checked':'';?> /></td>
+            </tr>
+            <?php $phongban = $item->Ref_MaPhongBan?>
+        <?php endforeach;?>
+    </table>
+</form>

@@ -1,0 +1,105 @@
+<!-- Module: Theo doi san xuat -->
+
+<!-- CSS -->
+<link
+	rel="stylesheet" href="/css/extra/production/info/style.css" />
+
+<!-- JS -->
+<script
+	src="/js/hightchart/highcharts.js" type="text/javascript"></script>
+<script src="/js/common.js"></script>
+<script
+	src="/js/extra/production/info/script.js"></script>
+
+<!-- PHTML -->
+<?php
+$common = new Qss_Model_Extra_Extra();
+$start  = (isset($_COOKIE['pinfo_start']) && $_COOKIE['pinfo_start'])?$_COOKIE['pinfo_start']:date('d-m-Y'); // Co the se luu vao cookie
+$end    = (isset($_COOKIE['pinfo_end']) && $_COOKIE['pinfo_start'])?$_COOKIE['pinfo_end']:date('d-m-Y'); // Co the se luu vao cookie
+$po    = (isset($_COOKIE['pinfo_po']) && $_COOKIE['pinfo_po'])?explode(',', $_COOKIE['pinfo_po']):array(); // Co the se luu vao cookie
+//echo '<pre>'; print_r($po); die;
+?>
+
+<div class="clear"></div>
+<div id="view">
+	<div class="overflow">
+		<div class="fl" style="width: 60%">
+			<!-- Loc theo lenh san xuat -->
+			<div id="pinfo_filter_orders">
+				<!-- Cac input loc theo ma lenh san xuat, loc toi da theo 10 lenh sx -->
+				<!-- <input type="hidden" name="pinfo_filter_order[]" class="pinfo_filter_order" value="" />-->
+			<?php foreach ($this->oldpo as $o):?>
+				<div
+					class="pinfo_filter_by_po_ele pinfo_filter_by_po_ele_<?php echo $o->IOID?> pointer">
+					<div class="pinfo_filter_order_label">
+					<?php echo $o->MaLenhSX?>
+						<input type="hidden" name="pinfo_filter_order[]"
+							class="pinfo_filter_order" value="<?php echo $o->IOID?>" /> <a
+							href="#1" onclick="pinfo_remove_po_filter(<?php echo $o->IOID?>)"
+							class="pinfo_filter_order_remove"> <img
+							src="/images/event/close.png" /> </a>
+					</div>
+				</div>
+				<?php endforeach;?>
+			</div>
+			<!-- End #pinfo_filter_orders -->
+
+			<!-- Loc theo ngay thang + phan trang -->
+			<div id="pinfo_filter_other">
+				<table cellpadding="0" cellspacing="0" border="0"
+					style="width: 78%;">
+					<tr>
+						<td style="width: 10%;">Từ ngày:</td>
+						<td style="width: 25%;"><input type="text" name="pinfo_start"
+							id="pinfo_start" class="datepicker" value="<?php echo $start?>" />
+						</td>
+						<td style="width: 10%;">Đến ngày:</td>
+						<td style="width: 25%;"><input type="text" name="pinfo_end"
+							id="pinfo_end" class="datepicker" value="<?php echo $end?>" /></td>
+						<td style="width: 8%;">Hiển thị:</td>
+						<td style="width: 5%;"><select name="pinfo_display"
+							id="pinfo_display">
+								<option value="5">5</option>
+								<option value="10" selected="selected">10</option>
+								<option value="20">20</option>
+								<option value="50">50</option>
+								<option value="100">100</option>
+						</select>
+						</td>
+						<td style="width: 8%;">Trang:</td>
+						<td style="width: 5%;"><select name="pinfo_page" id="pinfo_page">
+								<option value="1">1</option>
+						</select>
+						</td>
+						<td>
+							<button type="button" onclick="pinfo_filter()" class="btn-custom">Lọc</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<!-- End #pinfo_filter_other -->
+
+			<!-- Hien thi phieu giao viec -->
+			<div id="pinfo_work_orders"></div>
+			<!-- end #pinfo_work_orders -->
+
+			<!-- Hien thi lenh san xuat theo day chuyen -->
+			<div id="pinfo_production_order_by_line"></div>
+			<!-- end #pinfo_work_orders -->
+		</div>
+		<!-- Ket thuc cot trai -->
+
+		<div class="fl" style="width: 40%;">
+			<!-- Bao cao: Bieu do tron - phieu giao viec theo tinh trang -->
+			<div id="count_wo_by_step"
+				style="height: 300px; width: 90%; margin: auto;"></div>
+
+			<!-- Bao cao: Bieu do cot ve san pham - Yeu cau, da lam, sp loi -->
+			<div id="item_statistic"
+				style="height: 300px; width: 90%; margin: 10px auto;"></div>
+		</div>
+		<!-- Ket thuc cot phai -->
+	</div>
+	<!-- Ket thuc bao ngoai toan bo noi dung -->
+</div>
+<div id="qss_trace"></div>

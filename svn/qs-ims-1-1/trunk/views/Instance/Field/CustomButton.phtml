@@ -1,0 +1,13 @@
+<?php if($this->field->intInputType == 12):?>
+	<?php echo $this->value?>
+<?php else:?>
+	<?php if($this->object->b_Main):?>
+		<button type="button" class="<?php echo $this->field->szFValue?>" 
+				<?php if($this->field->bReadOnly && $this->field->szFValue == 'custom-button-field'):?>disabled<?php endif;?> 
+				onclick="formpopupOther(<?php echo $this->object->FormCode?>,'<?php echo $this->field->szTValue?>',this)"><?php echo $this->field->szFieldName?></button>
+	<?php else:?>
+		<button type="button" class="<?php echo $this->field->szFValue?>" 
+				<?php if($this->field->bReadOnly && $this->field->szFValue == 'custom-button-field'):?>disabled<?php endif;?> 
+				onclick="popupOther(<?php echo $this->object->i_IFID?>,'<?php echo $this->object->ObjectCode?>','<?php echo $this->field->szTValue?>',this)"><?php echo $this->field->szFieldName?></button>
+	<?php endif;?>
+<?php endif;?>

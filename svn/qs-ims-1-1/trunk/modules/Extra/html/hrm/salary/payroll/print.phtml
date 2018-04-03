@@ -1,0 +1,42 @@
+<!-- Báo cáo chấm công theo ngày  -->
+
+<script type="text/javascript">
+<!--
+// Xem báo cáo chấm công theo tháng
+function printPreview()
+{
+	$('#report').submit(function() {
+
+        window.open('', 'formpopup', 'statusbar=no,resizable=yes,scrollbars=yes, addressbar=no,maximize=yes');
+        this.target = 'formpopup';
+    });
+	$('#report').submit();
+}
+//-->
+</script>
+
+<!-- html -->
+<?php //echo '<pre>'; print_r($this->empl); die;?>
+<div class="line-hr">
+	<span><?php echo $this->_translate(1)?> </span>
+</div>
+<form id="report" method="get" action="/extra/hrm/salary/payroll/print1">
+	<table class="detail">
+		<tr>
+			<th width="20%"><?php echo $this->_translate(2)?></th>
+			<td><?php echo $this->views->Report->ComboBox('department', 'M319', 'OPhongBan', 'IOID', array('MaPhongBan', 'TenPhongBan') );?>
+			</td>
+		</tr>
+		<tr>
+			<th width="20%"><?php echo $this->_translate(4)?></th>
+			<td><?php echo $this->views->Report->ComboBox('employee','M306','ODanhSachNhanVien','IOID',array('MaNhanVien','TenNhanVien'))?>
+				<input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" />
+			</td>
+		</tr>
+	</table>
+</form>
+<p>
+<hr>
+<button type="button" onclick="printPreview()" class="btn-custom">
+<?php echo $this->_translate(5)?>
+</button>

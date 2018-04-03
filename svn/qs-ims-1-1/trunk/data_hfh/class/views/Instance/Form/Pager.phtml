@@ -1,0 +1,81 @@
+<table class="grid_navigator">
+	<tr>
+		<td align="center" style="border-right: 0;width:auto; text-align: left;">
+		<?php if($this->form->i_Type < Qss_Lib_Const::FORM_TYPE_MODULE):?>
+			<?php echo $this->_translate(32);?>
+		<?php endif;?>
+		</td>
+		<td align="right">
+			<form id="form_<?php echo $this->form->FormCode?>_extra" style="display: inline;">
+			<?php 
+				$classname = 'Qss_View_Extra_Search_'.$this->form->FormCode;
+				if(class_exists($classname))
+				{
+					echo $this->views->Extra->Search->{$this->form->FormCode}($this->form);
+				}
+			?>
+			<?php if($this->form->i_Type == Qss_Lib_Const::FORM_TYPE_MODULE):?>
+				<select id="qss_form_status"
+					onchange="rowSearch('<?php echo $this->form->FormCode;?>');">
+					<option value="">
+						---
+						<?php echo $this->_translate(10)?>
+						---
+					</option>
+					<?php foreach($this->steps as $item):?>
+					<option class="<?php echo $item->Color?>"
+						value="<?php echo $item->StepNo?>">
+						<?php echo $item->{'Name'.((Qss_Register::get('userinfo')->user_lang != 'vn')?('_'.Qss_Register::get('userinfo')->user_lang):'')}?>
+						<?php if(in_array($item->StepNo,$this->status)):?>*<?php endif;?>
+					</option>
+					<?php endforeach;?>
+				</select>
+
+			<?php endif;?>
+			
+			</form>
+			<select id="qss_form_groupby"
+			onchange="rowSearch('<?php echo $this->form->FormCode;?>');">
+			<option value="0">--- <?php echo $this->_translate(26,'Nhóm theo')?> ---</option>
+			<?php if($this->form->i_Type == Qss_Lib_Const::FORM_TYPE_MODULE):?>
+			<option value="-1" style="color:green" <?php if (in_array(-1,$this->groupby)) echo 'class="bglightgreen"';?>><?php echo $this->_translate(31,'Tình trạng')?></option>
+			<?php endif;?>
+
+			<?php foreach($this->mainobjects as $item)://objects?>
+			<?php $fields = $item->loadFields();?>
+			<?php foreach ( $fields as $field):	?>
+			<?php if($field->bGrid & $field->intFieldType != 17):?>
+			<option value="<?php echo $field->FieldCode?>"
+			<?php
+			if ( in_array($field->FieldCode,$this->groupby))
+			echo 'class="bglightgreen"';
+			?>><?php
+			echo $field->szFieldName;
+			?></option>
+			<?php endif;?>
+			<?php endforeach;?>
+			<?php endforeach;//objects?>
+		</select> 
+		<?php echo $this->_translate(30,'Trang')?>:
+			<a title="Trang trước" class="bold" href="#" onclick="$('#qss_form_pageno').val('<?php echo ($this->currentpage - 1)?($this->currentpage - 1):1;?>');rowSearch('<?php echo $this->form->FormCode;?>');"><<</a> 
+			<input id="qss_form_pageno" onchange="rowSearch('<?php echo $this->form->FormCode;?>');"
+			style="width: 20px !important; text-align: center;" value="<?php echo $this->currentpage;?>">/<?php echo $this->pagecount?> 
+			<a title="Trang sau" class="bold" href="#" onclick="$('#qss_form_pageno').val('<?php echo ($this->currentpage < $this->pagecount)?($this->currentpage + 1):$this->pagecount;?>');rowSearch('<?php echo $this->form->FormCode;?>');">>></a>
+			<?php echo $this->_translate(28,'Hiển thị')?>: <select id="qss_form_perpage"
+			style="width: 100;"
+			onchange="rowSearch('<?php echo $this->form->FormCode;?>');">
+			<?php
+			$arr = array(200, 100, 50);
+			foreach ($arr as $val):?>
+			<option
+			<?php
+			if ( $val == $this->limit )
+			echo 'selected';
+			?>><?php
+			echo $val;
+			?></option>
+			<?php endforeach;?>
+		</select></td>
+	</tr>
+</table>
+

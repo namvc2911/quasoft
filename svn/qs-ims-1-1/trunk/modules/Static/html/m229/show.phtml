@@ -1,0 +1,327 @@
+<style>
+<!--
+.qss_block {
+	border: 1pt solid #c8c8c8;
+	margin-bottom: 10px;
+	line-height: 20px
+}
+
+.qss_block .topbox {
+	background: url("/images/bg_th.gif") repeat-x scroll 0 0;
+	font-weight: bold;
+	height: 24px;
+	padding-left: 20px;
+}
+
+table.datagrid {
+	border-color: #eee
+}
+
+table.datagrid tr td,table.datagrid tr th {
+	border-color: #ccc;
+	padding: 0 5px
+}
+
+.slidingDiv {
+	position: absolute;
+	background: #fff;
+	right: 0;
+	width: 250px;
+	border: 1pt solid #ccc;
+	z-index: 1000
+}
+
+.q_setting {
+	background: #f1f1f1;
+	font-weight: normal;
+}
+
+.q_setting .datagrid tr:hover {
+	background: #fff
+}
+
+.box_das2 {
+	float: left;
+	padding: 2px;
+}
+
+.box_das2 .inside_das2 {
+	width: 590px;
+	height: 300px;
+	border: 1pt solid #ccc; /*background:#fff*/
+}
+
+.box_das2 .name_box_das2 {
+	background: #fff;
+	padding: 2px 10px;
+	text-align: center;
+	font-weight: bold;
+	border: 1pt solid #ccc;
+	border-top: none;
+	position: relative
+}
+
+a.hide_box_das2 {
+	background: url('/images/event/close.png') no-repeat 0px 0px;
+	border: medium none;
+	display: block;
+	float: right;
+	height: 15px;
+	position: absolute;
+	right: 3px;
+	text-indent: 5000em;
+	top: 4px;
+	width: 15px;
+}
+-->
+</style>
+<?php 
+	$val = (int)$this->report[0]/1000000;
+	$tongthu = (int)$this->tongthu->TongThu/1000000;
+	$tongchi = (int)$this->tongchi->TongChi/1000000;
+	$chicothue = (int)$this->tongchi->ChiCoThue/1000000;
+	$loinhuan = $tongthu - $tongchi;
+	$loinhuantinhthue = $tongthu - $chicothue;
+?>
+<script type="text/javascript">
+<!--
+$(document).ready(function() {
+
+	// chart 1
+	var column = new Highcharts.Chart({
+        chart: {
+        	renderTo: 'thuchi',
+            type: 'column',
+            height:'300'
+        },
+        title: {
+            text: '<?php echo $this->_translate(1)?>'
+        },
+        xAxis: {
+            categories: [
+             	'<?php echo $this->_translate(5)//tổng thu?>',
+             	'<?php echo $this->_translate(6)//tổng chi?>',
+             	'<?php echo $this->_translate(7)//lợi nhuận?>',
+             	'<?php echo $this->_translate(8)//chi có hóa đơn?>',
+             	'<?php echo $this->_translate(9)//lợi nhuân tính thế?>'
+            ]
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'tr.'
+            }
+        },
+        tooltip: {
+	         formatter: function() {
+		            return '<b>'+ this.x +'</b>: '+ this.y + 'tr.';
+		         }
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        legend: {
+        	enabled: false
+        },
+        series: [{
+            name: '',
+            data: [
+					{y:<?php echo $tongthu;?>, color:'blue'},
+					{y:<?php echo $tongchi;?>, color:'yellow'},
+					{y:<?php echo $loinhuan;?>, color:'green'},
+					{y:<?php echo $chicothue;?>, color:'red'},
+					{y:<?php echo $loinhuantinhthue;?>, color:'orange'}
+                  ]
+        }]
+    });
+<?php if(count($this->thuduan)):?>
+	// chart 2
+	var pie = new Highcharts.Chart({
+        chart: {
+        	renderTo: 'thuduan',
+        	height:'300',
+	         plotBackgroundColor: null,
+	         plotBorderWidth: null,
+	         plotShadow: false
+        },
+        title: {
+            text: '<?php echo $this->_translate(2)?>'
+        },
+        tooltip: {
+	         formatter: function() {
+		            return '<b>'+ this.point.name +'</b>: '+ this.y+'tr.';
+		         }
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    color: '#000000',
+                    connectorColor: '#000000',
+		               formatter: function() {
+			                  return '<b>'+ this.point.name +'</b> ';
+			               }
+                }
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: '',
+            data: [
+                <?php $first = true;?>
+                <?php foreach($this->thuduan as $item):?>
+                <?php if(!$first):?>
+                	,
+                <?php endif;?>
+                {
+                    name:'<?php echo $item->DuAn?$item->DuAn:'Thu khác'?>' ,  
+                    y:<?php echo number_format($item->TongThu/1000000,2,".","");?>
+                }
+                <?php $first = false;?>
+                <?php endforeach;?>
+            ]
+        }]
+    });
+<?php endif;?>
+<?php if(count($this->chiduan)):?>
+// chart 2
+var pie = new Highcharts.Chart({
+    chart: {
+    	renderTo: 'chiduan',
+    	height:'300',
+         plotBackgroundColor: null,
+         plotBorderWidth: null,
+         plotShadow: false
+    },
+    title: {
+        text: '<?php echo $this->_translate(3)?>'
+    },
+    tooltip: {
+         formatter: function() {
+	            return '<b>'+ this.point.name +'</b>: '+ this.y+'tr.';
+	         }
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: true,
+                color: '#000000',
+                connectorColor: '#000000',
+	               formatter: function() {
+		                  return '<b>'+ this.point.name +'</b> ';
+		               }
+            }
+        }
+    },
+    series: [{
+        type: 'pie',
+        name: '',
+        data: [
+			<?php $first = true;?>
+            <?php foreach($this->chiduan as $item):?>
+            <?php if(!$first):?>
+	        	,
+	        <?php endif;?>
+            {
+                name:'<?php echo $item->DuAn?$item->DuAn:'Chi phí khác'?>' ,  
+                y:<?php echo number_format($item->TongChi/1000000,2,".","");?>
+            }
+            <?php $first = false;?>
+            <?php endforeach;?>
+        ]
+    }]
+});
+<?php endif;?>
+<?php if(count($this->chitrungtam)):?>
+//chart 2
+var pie = new Highcharts.Chart({
+ chart: {
+ 	renderTo: 'chitrungtam',
+ 	height:'300',
+      plotBackgroundColor: null,
+      plotBorderWidth: null,
+      plotShadow: false
+ },
+ title: {
+     text: '<?php echo $this->_translate(4)?>'
+ },
+ tooltip: {
+      formatter: function() {
+	            return '<b>'+ this.point.name +'</b>: '+ this.y+'tr.';
+	         }
+ },
+ plotOptions: {
+     pie: {
+         allowPointSelect: true,
+         cursor: 'pointer',
+         dataLabels: {
+             enabled: true,
+             color: '#000000',
+             connectorColor: '#000000',
+	               formatter: function() {
+		                  return '<b>'+ this.point.name +'</b> ';
+		               }
+         }
+     }
+ },
+ series: [{
+     type: 'pie',
+     name: '',
+     data: [
+		<?php $first = true;?>
+         <?php foreach($this->chitrungtam as $item):?>
+         <?php if(!$first):?>
+	     	,
+	     <?php endif;?>
+         {
+             name:'<?php echo $item->TrungTamChiPhi?$item->TrungTamChiPhi:'Chi phí khác'?>' ,  
+             y:<?php echo number_format($item->TongChi/1000000,2,".","");?>
+         }
+         <?php $first = false;?>
+         <?php endforeach;?>
+     ]
+ }]
+});
+<?php endif;?>
+});    
+//-->
+</script>
+<div id="report_2">
+	<div class="box_das2">
+		<div class="inside_das2" id="thuchi">
+		
+	
+		</div>
+	</div>
+</div>
+<div id="report_2">
+	<div class="box_das2">
+		<div class="inside_das2" id="thuduan">
+		
+	
+		</div>
+	</div>
+</div>
+<div id="report_2">
+	<div class="box_das2">
+		<div class="inside_das2" id="chiduan">
+		
+	
+		</div>
+	</div>
+</div>
+<div id="report_2">
+	<div class="box_das2">
+		<div class="inside_das2" id="chitrungtam">
+		
+	
+		</div>
+	</div>
+</div>

@@ -1,0 +1,39 @@
+<?php if($this->filter == 'OVERDUE'): // Cac thong so den han?>
+    <?php foreach($this->data as $item):?>
+        <?php
+            $title = '';
+            $title.= ($item->Ref_BoPhan)?'Bộ phận: '.$item->BoPhan."\n":'';
+            $title.= 'Loại HC: '.Qss_Lib_System::getFieldRegxByVal('OHieuChuanKiemDinh', 'Loai', $item->Loai)."\n";
+            $title.= 'Chu kỳ: '.Qss_Lib_System::getFieldRegxByVal('OHieuChuanKiemDinh', 'ChuKy', $item->ChuKy)."\n";
+        ?>
+
+        <option value="<?php echo $item->ThietBiIOID;?>"
+            equipcode="<?php echo $item->MaThietBi;?>"
+            equipname="<?php echo $item->TenThietBi;?>"
+            equipifid="<?php echo $item->IFID_M705;?>"
+            groupmarker="OVERDUE"
+            title="<?php echo $title;?>">
+            <?php echo $item->MaThietBi;?> - <?php echo $item->TenThietBi;?>
+        </option>
+    <?php endforeach;?>
+<?php elseif($this->filter == 'EQUIP'): // Danh sach thiet bi?>
+    <?php foreach($this->data as $item):?>
+        <option value="<?php echo $item->IOID;?>"
+            equipcode="<?php echo $item->MaThietBi;?>"
+            equipname="<?php echo $item->TenThietBi;?>"
+            equipifid="<?php echo $item->IFID_M705;?>"
+            groupmarker="EQUIP">
+            <?php echo $item->MaThietBi;?> - <?php echo $item->TenThietBi;?>
+        </option>
+    <?php endforeach;?>
+<?php endif;?>
+
+<script>
+    $(document).ready(function(){
+        // Xoa cac mat hang da duoc chon vao trong danh sach
+        $('.selected_line').each(function(){
+            var equip = $(this).find('.equip').val();
+            $('#select_m753_material_box #m753_multi_equips option[value="'+equip+'"]').remove();
+        });
+    });
+</script>

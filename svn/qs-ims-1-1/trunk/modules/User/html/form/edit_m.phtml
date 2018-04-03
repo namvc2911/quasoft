@@ -1,0 +1,299 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	$(".ui_box").hide();
+	$(".ui_box").first().fadeIn();
+	$(".tabs-menu a").click(function(event) {
+	        event.preventDefault();
+	        $(this).parent().addClass("active");
+	        $(this).parent().siblings().removeClass("active");
+	        var tab = $(this).attr("href");
+	        $(".ui_box").not(tab).css("display", "none");
+	        $(tab).find('fieldset').show();
+	        $(tab).fadeIn();
+	});
+	if(<?php echo $this->form->i_IFID?> == 0){
+		if(bLS){
+			var data = localStorage.getItem('<?php echo $this->form->FormCode?>');
+			if(data != null){
+				data = JSON.parse(data);
+				$.each(data, function() {
+					$('#'+this.name).val(this.value);
+				});
+				rowEditRefresh();
+			}
+		}
+	}
+	$.cookie('form_selected','<?php echo $this->form->i_IFID?>',{path:'/'});
+	//load object grid
+	
+	var objid = $.cookie('form_<?php echo $this->form->FormCode?>_object_selected');
+	if(objid === undefined || $('#combo-subobject').find('option[value='+objid+']').length == 0 ){
+		objid = '';
+	}
+	if(<?php echo $this->form->i_IFID?> != 0){
+		if(objid != -1 && objid != -2 && objid != -3 && <?php echo count($this->activesubobjects)?> != 0 ){
+			//check nếu có trong array object
+			if(objid == ''){
+				<?php $arrSub = array_keys($this->subobjects)?>
+				objid = '<?php echo $arrSub[0];?>';
+			}
+			var ref = $('#'+objid+'_ref_form_code').val();
+			if(ref != ''){
+				rowFormSearch(ref,<?php echo $this->form->i_IFID?>,objid);
+			}
+			else{
+				rowObjectSearch(<?php echo $this->form->i_IFID?>, <?php echo $this->form->i_DepartmentID?>,objid);
+			}
+		}
+		else if(objid == -1){
+			rowDocument();
+		}
+		else if(objid == -2){
+			rowSecure();
+		}
+		else if(objid == -3){
+			rowComment();
+		}
+		else if('<?php echo $this->form->document?>' != ''){
+			rowDocument();
+		}
+		else if('<?php echo $this->form->comment?>' != ''){
+			rowComment();
+		}
+	}
+	$('#combo-subobject').val(objid);
+	
+	if(<?php echo $this->form->i_IFID?> == 0){
+		$('#tabs_sub').css('opacity',0.5);
+	}
+	$(function() {
+		// Display the first tab content
+		// Set the first tab as start tab onload: if you want to set no start tab
+		// comment it.
+		// DisplayTabContent(10);
+		// get index of the clicked navigation item in the list
+		$("ul.tabslist_sub li a").click(
+				function() {
+					// if animation has finished: meaning size()==0 then allow for
+					// other clicks
+					var ifid = $('#ifid').val();
+					var deptid = $('#deptid').val();
+					if(ifid && ifid != 0){
+						if ($('div.tabscontent_container > div.tabcontent:animated')
+								.size() == 0) {
+							$("ul.tabslist_sub li").removeClass('current');
+							var $listItem = $(this).parent().addClass('current');
+							var objid = $(this).parent().attr('objid');
+							var fieldid = $(this).parent().attr('fieldid');
+							var vid = $(this).parent().attr('vid');
+							var ioid = $(this).parent().attr('ioid');
+							var html = $(this).children().html();
+							if (ifid && deptid && objid) {
+								DisplayTabContent(ifid, deptid, objid, fieldid, vid,
+										ioid, html);
+							}
+						}	
+					}
+				});
+		return false;
+	});
+	$('#qss_form').find('fieldset').each(function(){
+			$(this).children('legend:first').click(function(){
+				$(this).parent().find('.ui_box_line').toggle();	
+				$(this).parent().find('.element').toggle();
+			});
+	});
+	/*$('input.integer').number( true, 0 );
+	$('input.decimal').each(function(){
+		var decimals		= (typeof $(this).attr('precision') !== 'undefined' ) ? $(this).attr('precision') : 2;
+		$(this).number( true, decimals);
+	});
+	$('input.money').each(function(){
+		var thousands_sep	= (typeof $(this).attr('thousandssep') !== 'undefined') ? $(this).attr('thousandssep') : thousands_sep;
+		var dec_point		= (typeof $(this).attr('decpoint') !== 'undefined') ? $(this).attr('decpoint') : dec_point;
+		var decimals		= (typeof $(this).attr('precision') !== 'undefined' ) ? $(this).attr('precision') : decimals;
+		$(this).number( true, decimals,dec_point,thousands_sep);
+	});*/
+	<?php $fields = $this->form->o_fGetMainObject()->loadFields()?>
+	<?php foreach ($fields as $field):?>
+		<?php if($field->bGrid & 8):?>
+			$('.<?php echo $field->ObjectCode?>_<?php echo $field->FieldCode?>').hide();
+			//$('.<?php echo $field->ObjectCode?>_<?php echo $field->FieldCode?>').closest('.element').hide();
+		<?php endif;?>
+	<?php endforeach;?>
+	$('fieldset').each(function(){
+		if($(this).find('.ui_box_line:visible').length == 0){
+			$(this).hide();
+		}
+	});
+	//onchange set fedit = true;
+	$('#form_<?php echo $this->form->FormCode?>_edit').on('keyup change',function(){
+		fedit = true;
+		toggleFormSave();
+	});
+});
+function moreAction(el){
+	if($('.dropdown-action').is(':visible')){
+		$('.dropdown-action').hide();
+	}
+	else{
+		setTimeout(function(){
+			$('.dropdown-action').show();
+		},50);
+		
+	}
+}
+function changeObject(el){
+	var val = $(el).val();
+	if(val == -3){
+		rowComment();
+	}
+	else if(val == -2){
+		rowSecure();
+	}
+	else if(val == -1){
+		rowDocument();
+	}
+	else{
+		rowObject(val);
+	}
+}
+</script>
+<div class="control-box right control-box-wo">
+    <div class="btn-in-control-box">
+       <button id="btnSAVE" type="button" class="btn btn_main_top"
+			onclick="formSave('<?php
+					echo $this->form->FormCode?>',<?php
+					echo $this->form->i_IFID?>,'<?php
+					echo $this->form->i_DepartmentID?>');">
+			<?php echo $this->_translate(34)?>
+		</button>
+		<button id="btnSAVEBACK" type="button" class="btn btn_main_top"
+			onclick="formSave('<?php
+					echo $this->form->FormCode?>',<?php
+					echo $this->form->i_IFID?>,'<?php
+					echo $this->form->i_DepartmentID?>',1);">
+			<?php echo $this->_translate(35)?>
+		</button>
+		<button id="btnBACK" type="button" class="btn btn_main_top"
+			onclick="formBack('<?php echo $this->form->FormCode?>');">
+			<?php echo $this->_translate(32)?>
+		</button>
+		<button id="btnMORE" type="button" class="btn btn_main_top" onclick="moreAction(this);">
+			...
+		</button>
+    </div>
+</div>
+
+<ul class="dropdown-action" style="display: none;">	
+	<li class="normal" onclick="formDelete('<?php echo $this->form->FormCode?>');">
+		<span><?php echo $this->_translate(14)?></span> 
+	</li>
+	<li class="normal" onclick="formTrace()">
+		<span><?php echo $this->_translate(17)?></span> 
+	</li>
+	<li class="hr">
+		
+	</li>
+	<?php if($this->form->i_IFID && $this->step->intStepType):?>
+	<?php foreach ($this->approvers as $item):?>	
+		<?php if($item->AUID):?>
+			<?php if($item->AUID == $this->user_id && $item->UID):?>
+				<li class="normal red" onclick="reject(<?php echo $item->SAID?>,<?php echo $this->form->i_IFID?>,<?php echo $this->form->i_DepartmentID?>)">
+					Hủy "<?php echo $item->Name?>"
+				</li>
+			<?php else:?>
+				<li class="normal green disabled">
+					<?php echo $item->Name?>
+				</li>
+			<?php endif;?>
+		<?php elseif($item->UID == $this->user_id):?>
+			<li class="normal green" onclick="approve(<?php echo $item->SAID?>,<?php echo $this->form->i_IFID?>,<?php echo $this->form->i_DepartmentID?>)">
+				<?php echo $item->Name?>
+			</li>
+		<?php endif;?>
+	<?php endforeach;?>
+	<?php endif;?>
+	<?php if($this->form->i_Type == Qss_Lib_Const::FORM_TYPE_MODULE):?>
+		<?php $lang = Qss_Translation::getInstance()->getLanguage();?>
+		<?php $lang = ($lang=='vn')?'':'_'.$lang;?>
+		<?php foreach($this->allsteps as $step):?>
+				<li class="normal <?php if(!in_array($step->StepNo,$this->allow)):?>disabled<?php endif;?>" <?php if(in_array($step->StepNo,$this->allow)):?>onclick="sendRequest('<?php echo $this->form->FormCode?>','<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $step->StepNo?>','<?php echo $step->Mix?>')"<?php endif;?>>
+				<?php echo $step->{"Name".$lang}?><?php if($step->StepNo == $this->step->intStepNo):?>(*)<?php endif;?>
+				</li>
+		<?php endforeach;?>
+	<?php endif;?>
+	
+	<?php if(count((array)$this->bashes)):?>
+	<li class="hr"></li>
+	<?php foreach($this->bashes as $item):?>
+	<?php $steps = explode(',', $item->Step);?>
+	<?php if($item->Record && ( (in_array(1,$steps) && !$this->form->i_Status) || in_array($this->form->i_Status, $steps)) ):?>
+	<?php switch($item->Type):
+case 2:?>
+<?php case 3:?>
+	<li class="normal extra-button-record <?php if(!$this->form->i_IFID):?>disabled<?php endif;?>" <?php if($this->form->i_IFID):?>onclick="formbashRun(<?php echo $item->BID?>,'<?php echo $item->BashName?>',this,0)"<?php endif;?> steps="<?php echo $item->Step?>">
+		<?php echo $item->BashName?>
+	</li>
+	<?php break;?>
+	<?php case 4:?>
+	<li class="normal extra-button-record <?php if(!$this->form->i_IFID):?>disabled<?php endif;?>" <?php if($this->form->i_IFID):?>onclick="formpopupOther('<?php echo $item->FormCode?>','<?php echo $item->Class?>',this)"<?php endif;?>
+		steps="<?php echo $item->Step?>">
+		<?php echo $item->BashName?>
+	</li>
+	<?php break;?>
+	<?php case 5:?>
+	<li class="normal extra-button-record <?php if(!$this->form->i_IFID):?>disabled<?php endif;?>" <?php if($this->form->i_IFID):?>onclick="formopenOther('<?php echo $item->FormCode?>','<?php echo $item->Class?>',this)"<?php endif;?> 
+		steps="<?php echo $item->Step?>">
+		<?php echo $item->BashName?>
+	</li>
+	<?php break;?>
+	<?php endswitch;?>
+	<?php endif;?>
+	<?php endforeach;?>
+	<?php endif;?>
+</ul>
+<div class="clear"></div>
+<div id="view">
+	<div id="div-search" class="clearfix" style="display: none;">
+	<?php echo $this->searchform;?>
+	</div>
+	<form id="form_<?php echo $this->form->FormCode?>_edit" method="post">
+		<input type="hidden" name="fid" id="fid" value="<?php echo $this->form->FormCode?>"> 
+		<input type="hidden" name="ifid" id="ifid" value="<?php echo $this->form->i_IFID?>"> 
+		<input type="hidden" name="deptid" id="deptid" value="<?php echo $this->form->i_DepartmentID?>">
+		<?php foreach ($this->subobjects as $sub):?>
+			<input type="hidden" id="<?php echo $sub->ObjectCode?>_ref_form_code" value="<?php echo $sub->RefFormCode?>">
+		<?php endforeach;?>
+		<div id="qss_form">
+			<?php echo $this->formedit;?>
+		</div>
+	</form>
+	<div class="ui_box_s100">
+		<div id="einfo_maintain_plan_tab" class="navmenutab">
+		<?php if(count($this->subobjects) || $this->form->document || $this->form->bSecure):?>
+			<select id="combo-subobject" onchange="changeObject(this)">
+				<?php foreach ($this->subobjects as $item):?>
+				<?php if(!($item->bPublic & 2)):?>
+					<option value="<?php echo $item->ObjectCode?>"><?php echo $item->sz_Name?></option>
+				<?php endif;?>
+				<?php endforeach;?>
+				<?php if($this->form->document):?>
+					<option value="-1"><?php echo $this->_translate(76)?> </option>
+				<?php endif;?>
+				<?php if($this->form->bSecure):?>
+					<option value="-2"><?php echo $this->_translate(2)?> </option>
+				<?php endif;?>
+				<?php if($this->form->comment):?>
+					<option value="-3"><?php echo $this->_translate(16)?> </option>
+				<?php endif;?>
+			</select>
+		<?php endif;?>
+		</div>
+		<div class="clearfix">&nbsp;</div>
+		<div id="qss_object" style="border-top: 1px solid #999"></div>
+	</div>
+	<div style="float:left;" id="mobile-fix-form">&nbsp;</div>
+</div>
+<div id="qss_combo" title="<?php echo $this->form->sz_Name?>"></div>
+<div id="qss_trace" title="<?php echo $this->form->sz_Name?>"></div>

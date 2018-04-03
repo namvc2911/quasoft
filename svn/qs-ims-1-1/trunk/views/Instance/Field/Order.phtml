@@ -1,0 +1,55 @@
+<?php if($this->field->bReadOnly):?>
+<input value="<?php echo @$this->up->{$this->field->RefFieldCode};?>" type="text" name="<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_order_textbox" id="<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_order_textbox" class="readonly" readonly style="width: <?php echo $this->field->intFieldWidth?>px;">
+<input value="<?php echo @$this->up->IOID;?>" type="hidden" name="<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_order" id="<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_order">
+<?php else:?>
+<div style="position: relative !important;">
+<input value="<?php echo @$this->up->{$this->field->RefFieldCode};?>" type="text" name="<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_order_textbox" id="<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_order_textbox" style="width: <?php echo $this->field->intFieldWidth?>px;" onchange="if($(this).val() != '') $(this).addClass('bgpink'); else $(this).removeClass('bgpink');">
+<input value="<?php echo @$this->up->IOID;?>" type="hidden" name="<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_order" id="<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_order">
+</div> 
+<script>
+$(function () {
+	var url = sz_BaseUrl + '/user/field/order?fieldid=<?php echo $this->field->FieldCode?>';
+	<?php if($this->object->b_Main):?>
+		var data = $('#form_<?php echo $this->object->FormCode?>_edit').serialize();
+		 $('#form_<?php echo $this->object->FormCode?>_edit').find('input[type=checkbox]').each(function(){
+			if(!$(this).is(':checked')){
+				data += '&' + $(this).attr('name') +'=';
+			}
+		});
+	<?php else:?>
+		var data = $('#object_<?php echo $this->field->ObjectCode?>_edit').serialize();
+		$('#object_<?php echo $this->field->ObjectCode?>_edit').find('input[type=checkbox]').each(function(){
+			if(!$(this).is(':checked')){
+				data += '&' + $(this).attr('name') +'=';
+			}
+		});
+	<?php endif;?>
+    $('#<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_order_textbox').tagSuggest({
+        url: url,
+        data: data,
+        delay: 500,
+        separator : '*',
+        tagContainer: 'div',
+        callback: function(workingTags,id){
+            workingTags = workingTags.toString().replace(/&nbsp;/g,'');
+        	$('#<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_order_textbox').val(workingTags);
+        	var newid = $('#<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_order').val();
+        	if(newid == '0'){
+				newid = 0;
+            } 
+            if(id != newid){
+	        	if(id){
+	        		$('#<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_order').val(id);
+	        	}
+	        	else{
+		        	$('#<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_order').val(0);
+	        	}
+	        	$('#<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_order_textbox').blur();
+	        	$('#<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_order_textbox').removeClass('bgpink');
+	        	$('#<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_order_textbox').focus();
+        	}
+        }
+    });
+});
+</script>
+<?php endif;?>

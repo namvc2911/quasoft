@@ -1,0 +1,219 @@
+<style>
+
+    /* Phần hiển thị lấy từ đâu */
+    #m715_from
+    {
+        float:left;
+        width:44.5%;
+    }
+
+    #m715_from #m715_from_filter
+    {
+
+    }
+
+    #m715_from_filter #m715_from_filter_select_box
+    {
+        width:100%;
+        margin-bottom: 5px;
+    }
+
+    #m715_from #m715_from_select
+    {
+
+    }
+
+    #m715_from_select #m715_from_select_dial_box
+    {
+        width:100%;
+        height: 250px;
+    }
+
+    /* Phần hiển thị nút di chuyển */
+    #m715_move
+    {
+        margin-top:2%;
+        width:11%;
+        float:left;
+    }
+
+    #m715_move .m715_move_button
+    {
+        margin: 3% 0 2% 26%;
+    }
+
+    /* Phần hiển thị chuyển đến */
+    #m715_to
+    {
+        float:left;
+        width:44.5%;
+    }
+
+    #m715_to #m715_to_filter
+    {
+
+    }
+
+    #m715_to_filter #m715_to_filter_select_box
+    {
+        width:100%;
+        margin-bottom: 5px;
+    }
+
+    #m715_to #m715_to_select
+    {
+
+    }
+
+    #m715_to_select #m715_to_select_dial_box
+    {
+        width:100%;
+        height: 280px;
+    }
+</style>
+
+<script>
+$(document).ready(function(){
+$('.datepicker').each(function(){
+$(this).datepicker();
+});
+})
+</script>
+
+<form id="m715_add_form">
+    <div id="">
+        <div>
+
+            <div id="">
+
+                <div class="m715_filter">
+
+                    <div class="m715_filter">
+
+                        <div class="m715_filter_box">
+                            <div class="m715_filter_box_title">
+                                Bắt đầu:
+                            </div>
+
+                            <div class="m715_filter_box_dat">
+                                <?php echo $this->views->Report->Datepicker('startDate', date('d-m-Y')); ?>
+                                <input type="text" class="" value="" placeholder="hh:mm" name="startTime"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="clear"></div>
+
+
+                    <div class="m715_filter">
+
+                        <div class="m715_filter_box">
+                            <div class="m715_filter_box_title">
+                                Kết thúc:
+                            </div>
+
+                            <div class="m715_filter_box_dat">
+                                <?php echo $this->views->Report->Datepicker('endDate', date('d-m-Y')); ?>
+                                <input type="text" class="" value="" placeholder="hh:mm" name="endTime"/>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="m715_filter_box">
+                        <div class="m715_filter_box_title">
+                        </div>
+
+                        <div class="m715_filter_box_dat">
+                            <button onclick="m715.save()" class="btn btn-custom" type="button"> Cập nhật </button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="clear"></div>
+
+                <div class="m715_filter">
+
+
+                    <!--  Nguyên nhân  -->
+                    <div class="m715_filter_box">
+                        <div class="m715_filter_box_title">
+                            Nguyên nhân:
+                        </div>
+
+                        <div class="m715_filter_box_dat required">
+                            <?php echo $this->views->Report->SimpleComboBox('reason1', $this->reasons);?>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+                <div class="clear"></div>
+                <div class="clear"></div>
+            </div>
+        </div>
+
+        <br/>
+        <hr/>
+        <br/>
+
+
+        <!-- Thiết bị lấy từ -->
+        <div id="m715_from">
+            <div id="m715_from_filter">
+                <select id="m715_from_filter_select_box" style="" name="location" onchange="m715.loadEquip(this);" name="fromid">
+                    <option value="0">--- Chọn khu vực --- </option>
+                    <?php foreach($this->locations as $key=>$display):?>
+                        <option value="<?php echo $key;?>"><?php echo $display;?></option>
+                    <?php endforeach;?>
+                </select>
+            </div>
+
+            <div id="m715_from_select">
+                <select id="m715_from_select_dial_box" size="12" multiple="multiple" name="fromvalue[]">
+                    <option value="0"></option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Các nút di chuyển thiết bị -->
+        <div id="m715_move">
+            <div class="m715_move_button">
+                <button onclick="m715.add()" class="btn-custom" type="button"> &gt;&gt; </button>
+            </div>
+
+            <div class="m715_move_button">
+                <button onclick="m715.remove()" class="btn-custom"type="button"> &lt;&lt; </button>
+            </div>
+
+            <div class="m715_move_button">
+                <button onclick="m715.add(1)" class="btn-custom"type="button"> &gt;&gt;&gt;&gt; </button>
+            </div>
+
+            <div class="m715_move_button">
+                <button onclick="m715.remove(1)" class="btn-custom" type="button"> &lt;&lt;&lt;&lt; </button>
+            </div>
+        </div>
+
+        <!-- Thiết bị chuyển đến -->
+        <div id="m715_to">
+            <div id="m715_to_filter">
+
+            </div>
+
+            <div id="m715_to_select">
+                <select id="m715_to_select_dial_box" size="12" multiple="multiple" name="tovalue[]">
+                    <option value="0"></option>
+                </select>
+            </div>
+        </div>
+
+
+
+    </div>
+</form>

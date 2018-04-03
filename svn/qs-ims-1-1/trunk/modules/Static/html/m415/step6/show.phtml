@@ -1,0 +1,210 @@
+<script>
+    $(document).ready(function(){
+        M415.step6.validSupplier2();
+
+        $('.kythuat_checkbox').click(function(){
+            if($(this).is(':checked'))
+            {
+                $(this).parent().find('.kythuat_val').val(1);
+            }
+            else
+            {
+                $(this).parent().find('.kythuat_val').val(0);
+            }
+        });
+
+
+        $('.khongchaogia_checkbox').click(function(){
+            if($(this).is(':checked'))
+            {
+                $(this).parent().find('.khongchaogia_val').val(1);
+            }
+            else
+            {
+                $(this).parent().find('.khongchaogia_val').val(0);
+            }
+        });
+    });
+
+</script>
+
+<?php
+    $stepInputQuotation = 6;
+    if(!count($this->quotations))
+    {
+        echo '<div>Không có báo giá!</div>';
+        die;
+    }
+?>
+
+<?php
+    $no = 0;
+    $oldRequest      = '';
+    $oldQuote        = '';
+    $requestWidthArr = array(1,5,5,2,2,3,3,1, 1);
+    $totalCol        = count($requestWidthArr);
+    $width           = 850;
+    $padding         = 2;
+    $formNo          = 0;
+    $oldSupplier     = '';
+    $fit             = Qss_Lib_Report::changeWidthToFitScreen2($requestWidthArr, $width, $padding);
+?>
+    <form id="M415_step6_quotation_form">
+        <?php foreach($this->quotations as $item):?>
+
+        <?php // echo '<pre>'; print_r($item); die;?>
+
+            <!-- IN NHA CUNG CAP  -->
+            <?php if($oldSupplier != $item->Ref_MaNCC):?>
+
+                <?php if($oldSupplier !== ''):?>
+                </table>
+                <br/>
+                <?php endif;?>
+
+                <p class="bold">
+                    NCC: <?php echo $item->TenNCC?>
+
+                    <?php if(isset($_SESSION['M415Step']) && $_SESSION['M415Step'] != $stepInputQuotation):?>
+                        <button class="btn btn-custom btn-disabled" type="button" disabled>
+                            Import excel
+                        </button>
+                    <?php else:?>
+                        <button class="btn btn-custom"  type="button"
+                                onclick="M415.rowIOExcel1('<?php echo $item->IFID_M406;?>','<?php echo $this->deptid;?>','ODSBGMuaHang');">
+                            Import excel
+                        </button>
+                    <?php endif;?>
+
+
+                </p>
+
+                <p>
+
+                </p>
+
+                <p>
+                    <label style="position:relative; display:inline-block; vertical-align:middle; ">Không hợp lệ:</label>
+
+
+                    <input type="checkbox" value="" style="position:relative; vertical-align:middle; "
+                        onclick="M415.step6.validSupplier(this, <?php echo $item->Ref_MaNCC?>)"
+                        class="Invalid_Supplier_<?php echo $item->Ref_MaNCC?> Invalid_Supplier"
+                        supplier="<?php echo $item->Ref_MaNCC?>"
+                        <?php if(isset($_SESSION['M415Step']) && $_SESSION['M415Step'] != $stepInputQuotation):?> disabled <?php endif;?>/>
+
+                </p>
+                <br/>
+
+                <table class="border_table" cellpadding="0" cellspacing="0" border="0" style="width:<?php echo $width;?>px">
+                    <?php $begin = 0;?>
+                    <tr>
+                        <th style="width:<?php echo $fit[$begin++];?>px;"> STT </th>
+                        <th style="width:<?php echo $fit[$begin++];?>px;"> Mã mặt hàng </th>
+                        <th style="width:<?php echo $fit[$begin++];?>px;"> Tên mặt hàng </th>
+                        <th style="width:<?php echo $fit[$begin++];?>px;"> ĐVT </th>
+                        <th style="width:<?php echo $fit[$begin++];?>px;"> Số lượng </th>
+                        <th style="width:<?php echo $fit[$begin++];?>px;"> Đơn giá </th>
+                        <th style="width:<?php echo $fit[$begin++];?>px;"> Thời gian giao hàng (Ngày) </th>
+                        <th style="width:<?php echo $fit[$begin++];?>px;"> Kỹ thuật <br/> (Đạt/Không đạt) </th>
+                        <th style="width:<?php echo $fit[$begin++];?>px;"> Không chào giá </th>
+                    </tr>
+            <?php endif;?>
+
+
+            <?php if($oldQuote != $item->IFID_M406):?>
+                <?php $stt = 0; // reset?>
+                    <tr>
+                        <td class="bold left" colspan="<?php echo $totalCol;?>">
+                            <?php echo $item->SoChungTu;?>
+                            - Loại tiền: <?php echo $item->LoaiTien?>
+                            - Ngày yêu cầu: <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayYeuCau);?>
+                            - Ngày báo giá: <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayBaoGia); ?>
+
+
+                            <?php if(isset($_SESSION['M415Step']) && $_SESSION['M415Step'] == $stepInputQuotation):?>
+                                &nbsp;&nbsp;
+                                <a href="#1"
+                                   onclick="popupWindowFormEdit(<?php echo $item->IFID_M406;?>, <?php echo $this->deptid;?>, {}, function(){ M415.step6.show(); })">
+                                    Sửa thông tin báo giá
+                                </a>
+                                &nbsp;&nbsp;
+                            <?php endif;?>
+
+
+                            <script>
+                                var ifid = [], deptid = [];
+                                ifid.push(<?php echo $item->IFID_M406;?>);
+                                deptid.push(<?php echo $this->deptid;?>);
+                            </script>
+
+
+<!--                            <a href="#1"-->
+<!--                               onclick="deleteForm(ifid, deptid, function(){ M415.step6.show(); })">-->
+<!--                                Xóa báo giá-->
+<!--                            </a>-->
+
+                            <input type="hidden" name="quoteifidformain[]" value="<?php echo $item->IFID_M406;?>" />
+                            <input type="hidden" value="<?php echo (int)$item->KhongHopLe;?>" name="invalid[]" class="Supplier_<?php echo $item->Ref_MaNCC;?> " />
+                        </td>
+                    </tr>
+            <?php endif;?>
+
+
+                    <?php if($item->Ref_MaSP):?>
+                    <tr>
+                        <td class="center"> <?php echo ++$stt;?> </td>
+                        <td class="left"> <?php echo $item->MaSP;?> </td>
+                        <td class="left"> <?php echo $item->TenSP;?> </td>
+                        <td class="left"> <?php echo $item->DonViTinh;?> </td>
+                        <td class="right"> <?php echo $item->SoLuong;?> </td>
+                        <td class="center">
+                            <?php if(!isset($_SESSION['M415Step']) || $_SESSION['M415Step'] == $stepInputQuotation):?>
+                                <input type="text" size="12" name="price[]" class="right" value="<?php echo Qss_Lib_Util::formatMoney($item->DonGia);?>">
+                                <input type="hidden" name="quoteifid[]" value="<?php echo $item->IFID_M406;?>" />
+                                <input type="hidden" name="quotelineioid[]" value="<?php echo $item->QuoteLineIOID;?>" />
+                            <?php else:?>
+                                <input type="text" size="12" class="right readonly" value="<?php echo Qss_Lib_Util::formatMoney($item->DonGia);?>" disabled>
+                            <?php endif;?>
+                        </td>
+
+                        <td>
+                            <?php if(!isset($_SESSION['M415Step']) || $_SESSION['M415Step'] == $stepInputQuotation):?>
+                                <input type="text" size="12" name="days[]" class="right" value="<?php echo $item->ThoiGian;?>">
+                            <?php else:?>
+                                <input type="text" size="12" class="right readonly" value="<?php echo $item->ThoiGian;?>" disabled>
+                            <?php endif;?>
+                        </td>
+
+                        <td class="center">
+                            <?php if(!isset($_SESSION['M415Step']) || $_SESSION['M415Step'] == $stepInputQuotation):?>
+                                <input type="checkbox" class="kythuat_checkbox" value="<?php echo $item->KyThuat;?>" <?php echo (int)$item->KyThuat?'checked':'';?>>
+                                <input type="hidden" name="pass[]" class="kythuat_val" value="<?php echo (int)$item->KyThuat;?>">
+                            <?php else:?>
+                                <input type="checkbox" class="right readonly" disabled <?php echo (int)$item->KyThuat?'checked':'';?>>
+                            <?php endif;?>
+                        </td>
+
+
+                        <td class="center">
+                            <?php if(!isset($_SESSION['M415Step']) || $_SESSION['M415Step'] == $stepInputQuotation):?>
+                                <input type="checkbox" class="khongchaogia_checkbox" value="<?php echo @$item->KhongChaoGia;?>" <?php echo @(int)$item->KhongChaoGia?'checked':'';?>>
+                                <input type="hidden" name="ignore[]" class="khongchaogia_val" value="<?php echo @(int)$item->KhongChaoGia;?>">
+                            <?php else:?>
+                                <input type="checkbox" class="right readonly" disabled <?php echo @(int)$item->KhongChaoGia?'checked':'';?>>
+                            <?php endif;?>
+                        </td>
+                    </tr>
+                    <?php endif;?>
+            <?php $oldSupplier = $item->Ref_MaNCC; ?>
+            <?php $oldQuote    = $item->IFID_M406; ?>
+        <?php endforeach;?>
+        
+        <?php if(count($this->quotations)):?>
+                </table>
+        <?php endif;?>
+    </form>
+
+    <br/>
+<br/>
+<br/>

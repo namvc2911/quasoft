@@ -1,0 +1,39 @@
+<?php
+$width  = 1200;
+$widths = array(4,2,2,4);
+$widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+?>
+<div>
+    <table id="grid" cellspacing="0" cellpadding="0" border="0" class="grid" >
+        <?php $begin = 0;?>
+        <thead>
+            <tr>
+                <th style="width:<?php echo $widths[$begin++];?>%">Cơ hội</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Giao dịch gần nhất</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Ngày tiếp theo</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Nội dung</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <?php $ci = 0;?>
+            <?php foreach($this->trans as $item):?>
+                <tr class="" <?php echo ++$ci%2==0?'bgcolor="#f7f9f9"':'';?>>
+                    <td class="left">
+                        <a href="#1" onclick="popupFormDetail('<?php echo $item->IFID_M504;?>', '<?php echo $this->deptid;?>')"><?php echo $item->TenCoHoi;?></a></td>
+                    <td class="left"><?php echo Qss_Lib_Date::mysqltodisplay($item->Ngay);?></td>
+                    <td class="left"><?php echo Qss_Lib_Date::mysqltodisplay($item->NgayKetThuc);?></td>
+                    <td class="left"><?php echo $item->NoiDung;?></td>
+                </tr>
+            <?php endforeach;?>
+        </tbody>
+
+    </table>
+</div>
+
+<script>
+    $(document).ready(function() {
+        var height = $(window).height() - 210 - $('#grid thead').height();//-8
+        $('#grid').tableScroll({height:height,width:'100%'});
+    });
+</script>

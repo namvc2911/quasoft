@@ -1,0 +1,59 @@
+<?php
+class Qss_Bin_Validation_M605_Step2 extends Qss_Lib_Warehouse_WValidation
+{
+	/**
+	 * 1. Danh sách còn trống ?
+	 * 3. Đã cập nhật hết lot và serial chưa ?
+	 * 4. Có thuộc tính nào bắt buộc mà chưa cập nhật hay không?
+	 * 5. Thuộc tính trong bảng lot & serial có giống thuộc tính trên line hay không ?
+	 * 6. Kiểm tra xem có thể đáp ứng được không ?
+	 */
+	public function onNext()
+	{
+		parent::init();
+		$danhSach       = $this->_params->ODanhSachXuatKho;
+		$model 			= new Qss_Model_Extra_Warehouse();
+		$product        = new Qss_Model_Extra_Products();
+		$deliveryDate   = $this->_params->Ngay;
+		
+		// Danh sach don hang phai co it nhat mot dong san pham
+		if(count((array)$danhSach) == 0) {
+			$this->setError();
+			$this->setMessage($this->_translate(1));
+		}
+		
+		// Ngay chuyen hang phai co
+		if(!$deliveryDate || $deliveryDate == '0000-00-00')
+		{
+			$this->setError();
+			$this->setMessage($this->_translate(2));
+		}
+				
+		// Kiểm tra xem có thuộc tính bắt buộc hay ko ?
+		foreach ($danhSach as $value) {
+			$checkRequires = $product->checkAttributeRequires($value->MaMatHang);
+			if(!$value->ThuocTinh && $checkRequires)
+			{
+				$this->setError();
+				$this->setMessage(" {$this->_translate(4)} {$value->MaMatHang} {$this->_translate(5)}");
+			}
+
+		}
+	}
+	
+	/*
+	 * Create outgoing
+	 */
+	public function next()
+	{
+		parent::init();
+		$field = array('MaMatHang', 'ThuocTinh', 'SoLuong', 'Ngay', 'DonGia', '', '', '' ,'SoPhieu','DonViTinh') ;
+		$insertFieldLabel = array('Partner'=>'MaDoiTac', 'Date'=>'Ngay', 
+								  'Item'=>'MaSP', 'Attr'=>'ThuocTinh', 
+								  'Qty'=>'SoLuong', 'Price'=>'DonGia',
+								  'Module'=>'Module', 'Des'=>'MoTa'
+                                                                    ,'UOM'=>'DonViTinh');
+		$this->insertIncomingOutgoing($field, $insertFieldLabel, 'OHangDoiXuat', 'ODanhSachXuatKho', 
+									  'OXuatKhoBaoTri' , 'M605', 'M611', '', false);
+	}
+}

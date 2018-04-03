@@ -1,0 +1,960 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="shortcut icon" href="/images/qs-ims.ico" />
+<link type="text/css" href="/css/calendar.css" rel="stylesheet"/>
+<link type="text/css" href="/css/template.css" rel="stylesheet"/>
+<link type="text/css" href="/css/themes/base/jquery.ui.all.css" rel="stylesheet"/>
+<link type="text/css" href="/css/themes/base/jquery.ui.datepicker.css" rel="stylesheet"/>
+<link type="text/css" href="/css/themes/base/jquery.ui.dialog.css" rel="stylesheet"/>
+<link type="text/css" href="/css/ddsmoothmenu.css" rel="stylesheet"/>
+<link type="text/css" href="/css/layout.css" rel="stylesheet"/>
+<link type="text/css" href="/css/dashboad.css" rel="stylesheet"/>
+<link type="text/css" href="/css/form.css" rel="stylesheet"/>
+
+<script src="/js/jquery-1.8.0.js"></script>
+<script src="/js/jquery.cookie.js"></script>
+<script src="/js/core-ajax.js"></script>
+<script src="/js/index.js"></script>
+<title>Quasoft Helper 1.2</title>
+</head>
+<body>
+
+
+
+	<style>
+/* reset */
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: arial;
+	font-size: 11px;
+	font-color: #000;
+	background: #ccc;
+	overflow: auto;
+}
+
+a {
+	text-decoration: none;
+}
+
+ul,ol {
+	list-style: none;
+}
+
+img {
+	border: 0;
+}
+
+/* layout */
+#languages {
+	position: absolute;
+	top: 5px;
+	right: 21px;
+}
+
+#wrap {
+	width: 100%;
+	overflow: auto;
+	display: block;
+	font-size: 13px;
+	line-height: 18px;
+}
+
+#banner {
+	width: 100%;
+	clear: both;
+}
+
+#primary {
+	width: 100%;
+	clear: both;
+	overflow-y: auto;
+	overflow-x: hidden;
+	color: #1A1A1A;
+}
+
+#menu {
+	width: 20%;
+	padding: 10px;
+	border: 1px #999 solid;
+	background: #fff;
+	float: left;
+	position: fixed;
+	top: 0;
+	left: 0;
+}
+
+#company_info {
+	
+}
+
+#logo {
+	
+}
+
+#logo_image {
+	max-height: 90px;
+	max-width: 100%;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#slogan {
+	display: none;
+	color: #999;
+	margin-left: 44px;
+}
+
+#tree_menu {
+	overflow: auto;
+	margin-top: 20px;
+}
+
+#tree_menu a {
+	line-height: 16px;
+	font-size: 13px;
+}
+
+#tree_menu ul {
+	padding-left: 5px;
+}
+
+#tree_menu li {
+	padding: 2px;
+}
+
+#tree_menu li:last-child {
+	padding-bottom: 10px;
+}
+
+#tree_menu ul ul {
+	padding-left: 10px;
+}
+
+#tree_menu ul ul ul {
+	padding-left: 15px;
+}
+
+#tree_menu ul ul ul ul {
+	padding-left: 20px;
+}
+
+#menubar {
+
+	float: right;
+	height: auto;
+	margin: 10px 10px 0px 0px;
+	overflow: hidden;
+	padding: 0 25px;
+	width: 72%;
+
+}
+
+#menubar a{
+
+    font-size: 14px;
+}
+/*
+                    #version
+                    {
+                        float:right;
+                    }
+                    #control-bar-for-small-monitor
+                    {
+                        float: left;
+                    }
+                    #qs-start
+                    {
+                        float:left;
+                    }
+                    #qs-workflow
+                    {
+                        float:left;
+                    }
+                    #qs-edit
+                    {
+                        float:left;
+                    }
+                    #qs-dashboard
+                    {
+                        float:left;
+                    }					
+                    #qs-back
+                    {
+                        float:left;
+                    }
+					#qs-next
+                    {
+                        float:left;
+                    }
+					*/
+#main {
+	width: 68%;
+	/*  font-size: 13px;
+                    line-height: 18px;
+                    height:auto;
+                    margin: 20px 20px 20px 20px;*/
+	margin: 10px 15px 0px 0px;
+	padding: 50px 50px 50px 50px;
+	border: 1px #999 solid;
+	background: #fff;
+	float: right;
+	overflow: auto;
+	overflow-x: hidden;
+}
+
+#info {
+	width: 100%;
+	clear: both;
+}
+
+#objects {
+	width: 100%;
+	margin-top: 20px;
+	clear: both;
+}
+
+#objects-title {
+	margin-top: 20px;
+}
+
+.object-des {
+    margin: 0.9em 0 0.75em;
+}
+
+.object {
+    padding-left: 20px ;
+}
+
+.object-title {
+	
+}
+
+.field-list {
+    padding-left: 40px ;
+}
+
+
+#steps {
+	width: 100%;
+	margin-top: 20px;
+	clear: both;
+}
+
+#steps-title {
+	
+}
+
+.step {
+	
+}
+
+.step-title {
+	
+}
+
+.step-des {
+	
+}
+
+#extra_button {
+	width: 100%;
+	margin-top: 20px;
+	clear: both;
+}
+
+#extra-button-title {
+	
+}
+
+.extra-button {
+	
+}
+
+.extra-button-title {
+	
+}
+
+.extra-button-des {
+	
+}
+
+#footer {
+	color: #666;
+	float: right;
+	height: auto;
+	overflow: hidden;
+	padding: 10px 42px;
+	width: 72%;
+}
+
+/* Common */
+.small_monitor {
+	font-size: 16px !important;
+	line-height: 20px !important;
+}
+
+.help_image {
+	border: 1px #ccc solid;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
+	margin-bottom: 10px;
+	max-width: 90%;
+}
+
+.help_image_title {
+	clear: both;
+	margin-bottom: 10px;
+	text-align: center;
+	font-weight: bold;
+}
+
+.remove-effect {
+	font-size: 13px;
+	line-height: 18px;
+	font-family: arial;
+	font-weight: normal;
+	color: #1A1A1A;
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+}
+
+.anchor {
+	cursor: pointer;
+}
+
+a,.anchor {
+	color: rgb(0, 0, 238);
+}
+
+.menubar-href {
+	/*font-weight: bold;*/
+	padding-right: 15px;
+}
+
+.visible {
+	visibility: hidden;
+}
+
+.main-title {
+	font-size: 2.5em;
+	line-height: 1.5em;
+	letter-spacing: -0.015em;
+	margin: 0 0 1em 0;
+	font-family: Time new romans;
+	font-weight: bold;
+}
+
+.main-title a{
+    font-size: 1em;
+    line-height: 1.5em;
+    letter-spacing: -0.015em;
+    margin: 0 0 1em 0;
+    font-family: Time new romans;
+    font-weight: bold;
+}
+
+.sub-title {
+	font-size: 1.35em;
+	line-height: 1.5em;
+	letter-spacing: -0.015em;
+	margin: 0.9em 0 0.75em 0;
+	font-family: Time new romans;
+	font-weight: bold;
+}
+
+.light-grey {
+	background: #f5f5f5;
+}
+
+.bggreen {
+	background: green;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.red {
+	color: red;
+}
+
+.white {
+	background: #ffffff;
+}
+
+.helper-table {
+	
+}
+
+.border tr td {
+	border: 1px solid black;
+	border-bottom: none;
+	border-right: none;
+}
+
+.border tr th {
+	border: 1px solid black;
+	border-bottom: none;
+	border-right: none;
+
+}
+
+.border tr td,.border tr th {
+	word-wrap: break-word;
+	min-width: 25px;
+	padding: 2px;
+}
+
+.border {
+	border-top: none;
+	border-left: none;
+	table-layout: fixed;
+	border-bottom: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	width: 100%;
+}
+
+.border tr td:first-child {
+	width: 20%;
+}
+
+.btn-custom {
+	background-color: #58a;
+	border-bottom: 1pt solid #ccc;
+	border-right: 1pt solid #ccc;
+	color: white;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 11px;
+	min-width: 60px;
+	padding: 2px 8px;
+	text-align: center;
+	white-space: nowrap;
+}
+
+#search_module {
+	text-align: center;
+	padding: 5px 0px 0px 0px;
+}
+
+#search_module_code {
+	
+}
+
+.fl {
+	float: left;
+}
+
+.fr {
+	float: right;
+}
+</style>
+<?php /*
+<script src='/js/<?php echo $this->lang;?>.js' type='text/javascript'></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src='/js/jquery.cookie.js' type='text/javascript'></script>
+<script src='/js/core-ajax.js' type='text/javascript'></script>
+<script src='/js/menu.js' type='text/javascript'></script>
+<script src='/js/blue/treemenu.js' type='text/javascript'></script>
+<script src='/js/index.js' type='text/javascript'></script>
+*
+*/
+?>
+	<link type="text/css" href="/css/themes/base/jquery.ui.all.css"
+		rel="stylesheet">
+	<link type="text/css" href="/css/themes/base/jquery.ui.dialog.css"
+		rel="stylesheet">
+	<script src='/js/<?php echo $this->lang;?>.js' type='text/javascript'></script>
+	<script src='/js/jquery-1.4.2.js' type='text/javascript'></script>
+	<script src='/js/jquery.cookie.js' type='text/javascript'></script>
+	<script type="text/javascript" src="/js/ui/jquery-ui-1.8.1.custom.js"></script>
+
+	<script>
+        var row = null;
+        var sz_BaseUrl = 'http://' + location.host;
+        var ctrlDown = false;
+        var ctrlKey = 17, f5Key = 116, rKey = 82;
+        var f1Key = 112;
+        var urlArr;
+        var url, screenWidth, bigWidth, smallWidth, andchorID;
+        var menuEx = 0;
+        
+        jQuery(document).ready(function($){
+//            url    = document.URL;
+//            urlArr = url.split('#');
+//            if($('#module').val() && $('#module').val() !== urlArr[1]) {
+//                loadHelper(urlArr[1])
+//            }
+
+
+            $(window).focus(function(){
+
+                url = document.URL;
+                urlArr = url.split('#');
+
+                if(urlArr[1] && $('#module').val() != urlArr[1])
+                {
+                    loadHelper(urlArr[1]);
+                }
+
+            });
+
+            responsive();
+			
+			$('#search_module_code').bind("enterKey",function(e){
+				go_to_module();
+			 });
+			 $('#search_module_code').keyup(function(e){
+				 if(e.keyCode == 13)
+				 {
+					 $(this).trigger("enterKey");
+				 }
+			 });		
+            
+//           // Xoa logo khi qua nho init va resize 
+//                          screenWidth = $(window).width();
+//               bigWidth = (screenWidth/100) * 71;
+//               smallWidth = (screenWidth/100) * 19;
+//               padding20px = (screenWidth/100) * 1.5;
+//               padding15px = (screenWidth/100) * 1;
+//               padding50px = (screenWidth/100) * 3;
+//               //$('#logo_image').css('width',$('#logo').width()); 
+//               $('#menu').css({'width': smallWidth+'px', 'padding': padding15px+'px'}); 
+//               $('#menubar').css({'width':bigWidth+'px', 'margin':padding15px+'px '+ padding15px+ 'px 0 0', 'padding':'0 '+padding20px+'px'}); 
+//               $('.menubar-href').css('padding',padding15px+'px' ); 
+//               $('#main').css({'width':bigWidth+'px', 'padding': padding50px+'px '+padding15px+'px', 'margin':padding50px+'px'}); 
+//
+//            
+            $(window).resize(function(){
+                responsive();
+               
+//               screenWidth = $(window).width();
+//               bigWidth = (screenWidth/100) * 71;
+//               smallWidth = (screenWidth/100) * 19;
+//               padding20px = (screenWidth/100) * 1.5;
+//               padding15px = (screenWidth/100) * 1;
+//               padding50px = (screenWidth/100) * 3;
+//               //$('#logo_image').css('width',$('#logo').width()); 
+//               $('#menu').css({'width': smallWidth+'px', 'padding': padding15px+'px'}); 
+//               $('#menubar').css({'width':bigWidth+'px', 'margin':padding15px+'px '+ padding15px+ 'px 0 0', 'padding':'0 '+padding20px+'px'}); 
+//                $('.menubar-href').css('padding',padding15px+'px' );
+//               $('#main').css({'width':bigWidth+'px', 'padding': padding50px+'px '+padding15px+'px', 'margin':padding50px+'px'}); 
+            
+               
+            });
+            
+            url = document.URL;
+            urlArr = url.split('#');
+            loadHelper(urlArr[1]);
+            
+            // lap lai de dung cho truong hop help da duoc bat len nhung nguoi dung an f1 o mot module khac
+            // boi f1 ko load lai trang chi thay doi duong dan
+//            setInterval(function(){
+//                    url = document.URL;
+//                    urlArr = url.split('#');
+//                    if($('#module').val() && $('#module').val() !== urlArr[1])
+//                    {
+//                        loadHelper(urlArr[1])
+//            }},500);
+        
+            
+//            $('.treemenu').show(); 
+//            $.cookie('keepLastActive', $.cookie('lastActiveModule'), {path:'/'});
+            
+            
+//            // xu ly reload lai trang
+//            $(document).keydown(function( e ) {
+//                
+//                if( e.keyCode == f5Key )
+//                {
+//                    //F5 pressed. Copy your code here or try
+//                    //window.location   = window.location;
+//                    //It will avoid if-modified-since requests.
+//                     //e.preventDefault( );
+//                    //e.preventDefault( );
+//                     
+//                     
+//                }
+//
+//                if( e.keyCode == ctrlKey )
+//                    ctrlDown = true;
+//                if( ctrlDown && ( e.keyCode == rKey ) )
+//                {
+//                    //Ctrl + R pressed. Do whatever you want
+//                    //or copy the same code here that you did above
+//                     //e.preventDefault( );
+//                     //e.preventDefault( );
+//                     
+//                }
+//
+//            }).keyup(function(e) {
+//                if (e.keyCode == ctrlKey)
+//                    ctrlDown = false;
+//            });
+            
+            
+            // xu ly hien thi 
+//            $('.helper-table tr:odd').addClass('light-grey');
+//            $('.helper-table tr:even').addClass('white');
+            
+            
+        });
+        
+        
+        function responsive()
+        {
+        	$('#wrap').height($(window).height());
+            var xheight = $( window ).height() - $('#comany_info').height() - $('#search_module').height() - 50;
+            $('#tree_menu').css({height: xheight + 'px'});
+            $('#tree_menu').show();
+            
+            var yheight = $( window ).height();
+            $('#main').css({'min-height': yheight + 'px'});
+            
+//            $('#version').text($(window).width()+'px - '+$(window).height()+'px');
+            if($(window).width() <= 1000)
+            {
+                $('#menu').hide();
+                $('#menubar').css({'width':'92%', 'float':'none', 'margin':'0px auto', 'padding':'2% 1%', 'border-collapse': 'collapse'});
+                $('#main').css({'width':'92%', 'float':'none', 'margin':'0px auto', 'padding':'5% 2%', 'border-collapse': 'collapse'});
+                
+                if(menuEx == 0)
+                {
+                    $('#control-bar-for-small-monitor').append('<span id="short-menu" class="menubar-href anchor" onclick="showmenu()"> Menu </span>');
+                    menuEx = 1;
+                }
+                $('.menubar-href ').css('font-size','15px');
+                
+
+                if($(window).width() <= 600 )
+                {
+                	$('#main').addClass('small_monitor');
+                }
+                else
+                {
+                	$('#main').removeClass('small_monitor');
+                }
+                
+                if($(window).width() <= 550 )
+                {
+                    $('.menubar').each(function(){$(this).hide();});
+                }
+                else
+                {
+                    $('.menubar').each(function(){$(this).show();});
+                }
+                
+                if($(window).width() <= 300 )
+                {
+                    $('#version').hide();
+                }
+                else
+                {
+                    $('#version').show();
+                }
+            }
+            else
+            {
+                $('#menu').show();
+                $('#menubar').removeAttr('style');
+                $('#main').removeAttr('style');
+                $('.menubar-href ').removeAttr('style');
+                $('#main').removeClass('small_monitor');
+                $('#version').show();
+                $('.menubar').each(function(){$(this).show();});
+                
+                $('#short-menu').remove();
+                if(menuEx == 1)
+                {
+                    menuEx = 0;
+                }
+                
+                
+                $('#main').css({'width':'68%', 'margin':'0% 1%', 'padding':'3%'});
+                $('#menubar').css({'width':'69%', 'margin':'0% 4%', 'padding':'1% 1%'});
+                $('#menu').css({'width':'20%', 'margin':'0px auto', 'padding':'1% 1%'});
+            }
+        }
+        
+        function showmenu()
+        {
+            
+            $( "#tree_menu" ).dialog();
+            $('a').each(function(){ $(this).addClass('anchor')});
+        }
+        
+        function openImg(url)
+        {
+            window.location.href = url;
+        }
+
+
+        function loadHelper(fileName)
+        {
+            if(fileName == '' || fileName == undefined)
+            {
+                fileName = 'M000';
+				window.location.href = window.location.href + '#M000';
+            }
+            $.cookie('helperFile' ,fileName,{path:'/'});
+            $('#module').val(fileName);
+            
+            
+            var data = {
+                            file:fileName
+                            ,lang:'<?php echo $this->lang;?>'
+                       }; 
+            var url = sz_BaseUrl + '/extra/help/show'; 
+            
+            jQuery.ajax(
+			{
+				type: 'POST',
+				url: url,
+				dataType: "html",
+				data: data,
+				success: function(jreturn){
+					try {
+						json = jQuery.parseJSON(jreturn);
+						// Redirect 
+						if(json.redirect != null) {
+							window.location.href = json.redirect;
+						} 
+					} 
+					catch (e) {
+						// not json
+						// In case of success, execute callback function
+                                                $('#main').html(jreturn);
+//                                                $('.helper-table tr:odd').addClass('light-grey');
+//                                                $('.helper-table tr:even').addClass('white');
+//                                                $('.helper-table tr td:even').addClass('bold');
+                                                $('#wrap').height($(window).height());
+
+                                                $('.help_image').each(function(){
+                                                    $(this).attr('title', '<?php echo $this->_translate(4);?>');
+                                                    $(this).wrap( "<a href='"+$(this).attr('src')+"' title='<?php echo $this->_translate(4);?>'></a>" );
+                                                });
+                                                
+
+                                                
+                                                var percentageToScroll = 100;
+                                                var percentage = percentageToScroll/100;
+                                                var height = $(document).scrollTop();
+                                                var scrollAmount = height * (1 - percentage);
+
+                                                $('html,body, #wrap').animate({ scrollTop: scrollAmount }, 'slow'
+                                                , function () {});
+                                                
+                                                $( "#tree_menu" ).dialog('close');
+
+					}
+					// Reload common js to re-inintialize the javascript effect
+				},
+				error: function() {
+					
+				}
+			});
+            
+            
+//            var data = {
+//                            file:fileName
+//                            ,lang:'<?php echo $this->lang;?>'
+//                       }; 
+//            var url = sz_BaseUrl + '/extra/help/show'; 
+//            qssAjax.getHtml(url, data, function(jreturn) {
+//                $('#main').html(jreturn);
+//                $('.helper-table tr:odd').addClass('light-grey');
+//                $('.helper-table tr:even').addClass('white');
+//                
+//                xheight = $('#info').height() + $('#objects').height();
+//                xheight += ($('#steps').height() != undefined && $('#steps').height() != '')?$('#steps').height():0;
+//                xheight += ($('#extra_button').height() != undefined && $('#extra_button').height() != '')?$('#extra_button').height():0;
+//                qssAjax.alert(xheight);
+//                $('#wrap').css({'height': xheight + 'px'});
+//                
+//            });
+        }
+		
+		function go_to_module()
+		{
+			var module = $('#search_module_code').val();
+			if(module)
+			{
+				var res = module.match(/[MmCc]\d{1,}/g);
+				
+				if(res)
+				{
+					window.location = sz_BaseUrl + '/extra/help/index#' + res;
+
+                    url = document.URL;
+                    urlArr = url.split('#');
+                    loadHelper(urlArr[1]);
+				}
+				else
+				{
+					alert('Mã module không đúng chuẩn. Mã module bắt đầu bằng ký tự "M" hoặc "C" và kết thúc bắng số.')
+				}
+			}
+		}
+		
+
+</script>
+
+	<!--<div id="languages">
+        <select name="language">
+            <option value="vn"> Tiếng Việt </option>
+            <option value="en"> English </option>
+        </select>
+    </div> end #languages -->
+	<input type="hidden" name="module" id="module" value="" />
+	<div id="wrap">
+
+
+		<!-- ##### banner #####-->
+		<div id="banner"></div>
+		<!-- end #banner -->
+
+
+
+
+		<!-- ##### Primary #####-->
+		<div id="primary">
+			<div id="menu">
+
+				<div id="comany_info">
+					<div id="logo">
+						<img src="/images/logoQS.png" id="logo_image" />
+
+						<!--                        <h1>
+                            <a title="Quasoft Company" class="visible" href="http://www.quasoft.vn">Quasoft Company</a>
+                        </h1>-->
+					</div>
+					<!--                    <div id="slogan">Chất Lượng Để Phát Triển Bền Vững</div>-->
+				</div>
+				<!-- end #company_info -->
+
+				<div id="search_module">
+					<input type="text" name="search_module_code"
+						id="search_module_code" placeholder="Nhập mã module" />
+					<button class="btn-custom" type="button" onclick="go_to_module()">Tìm</button>
+				</div>
+				<!-- end #company_info -->
+
+
+				<div id="tree_menu" title="Menu">
+				<?php echo $this->menu;?>
+				</div>
+				<!-- end #tree_menu -->
+			</div>
+			<!-- end #menu -->
+
+			<div id="menubar">
+				<div id="control-bar-for-small-monitor"></div>
+				<div id="qs-start" class="menubar fl">
+					<a class="menubar-href" href="/help/doc/QUASOFT_CMMS_GUIDE.pdf">
+                        <img src="/images/extension/doc.png">
+                        Tải tài liệu hướng dẫn
+					</a>
+				</div>
+
+
+				<div id="version" class="fr">Quasoft Helper 3.0</div>
+			</div>
+
+			<div id="main">
+			<?php /*
+			<div id="info">
+			<div id="info-title" class="main-title"> M706 - Phiếu bảo trì định kỳ </div>
+			<table class="border helper-table" cellpadding="0" cellspacing="0" border="1">
+			<tr>
+			<td> <span class="info_title"> Module: <!-- trans --></span> </td>
+			<td> M706 - Phiếu bảo trì định kỳ <!-- trans from database --> </td>
+			</tr>
+			<tr>
+			<td> <span class="info_title"> Mô tả: <!-- trans --></span> </td>
+			<td>
+			M706 xử lý các phiếu bảo trì và cài đặt thiết bị được đặt lịch theo "Kế hoạch bảo trì"
+			<!-- trans -->
+			</td>
+			</tr>
+			</table>
+			</div><!-- end #info -->
+
+
+			<div id="objects">
+			<div id="objects-title" class="main-title"> Danh sách đối tượng </div>
+			<div class="object">
+			<div class="object-title sub-title"> Phiếu bảo trì định kỳ </div>
+			<table class="border helper-table" cellpadding="0" cellspacing="0" border="1">
+			<tr>
+			<td> Số phiếu  </td>
+			<td> Là số phiếu của phiếu bảo trì. Có thể config điền tự động hoặc nhập bằng tay.  </td>
+			</tr>
+			</table>
+			</div>
+			</div><!-- end #objects -->
+
+
+
+			<div id="steps">
+			<div id="steps-title" class="main-title"> Danh sách các bước </div>
+			<div class="step">
+			<div class="step-title sub-title"> Bước 1: Soạn thảo </div><!-- end .step-title -->
+			<div class="step-des">
+			Thong tin
+			</div><!-- end .step-des-->
+			</div><!-- end .step -->
+
+			</div><!-- end #steps -->
+
+
+			<div id="extra_button">
+			<div id="extra-button-title" class="main-title"> Các nút mở rộng </div>
+			<div class="extra-button">
+			<div class="extra-button-title sub-title"> Nút: Tạo yêu cầu bảo trì từ yêu cầu </div><!-- end .extra-button-title -->
+			<div class="extra-button-des">
+			Thong tin
+			</div><!-- end .extra-button-des-->
+			</div><!-- end .extra-button -->
+			</div><!-- end #extra_button -->
+
+			*/?>
+			</div>
+			<!-- end #main -->
+		</div>
+		<!-- end #primary -->
+
+
+		<!-- ##### Footer #####-->
+		<div id="footer">Copyright© 2013 by Quasoft - Công ty TNHH Phần Mềm
+			Chất lượng</div>
+		<!-- end #footer -->
+	</div>
+	<!-- end #wrap -->
+
+	<?php /*if(!isset($this->module) || $this->module == ''):?>
+	<script>
+	var xfile = $.cookie('lastActiveModule');
+	loadHelper(xfile);
+	$('.treemenu').show();
+	</script>
+	<?php else:?>
+	<script>
+	var xfile = $.cookie('helperFile');
+	loadHelper(xfile);
+	$('.treemenu').show();
+	</script>
+	<?php endif; */?>
+
+
+</body>
+</html>

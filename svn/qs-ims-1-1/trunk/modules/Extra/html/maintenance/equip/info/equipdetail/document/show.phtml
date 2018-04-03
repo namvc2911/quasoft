@@ -1,0 +1,101 @@
+<tr class="bggrey center">
+	<td class="w05" style="width: 10%"><?php echo $this->_translate(1);?>
+		<!-- Kiểu --></td>
+	<!-- end .cell 5-->
+	<td class="w2" style="width: 22.5%"><?php echo $this->_translate(2);?>
+		<!-- Loại tài liệu --></td>
+	<!-- end .cell 2-->
+	<td class="w2" style="width: 22.5%"><?php echo $this->_translate(3);?>
+		<!-- Bản mềm --></td>
+	<!-- end .cell 3-->
+	<td class="w2" style="width: 22.5%"><?php echo $this->_translate(4);?>
+		<!-- Bản cứng --></td>
+	<!-- end .cell 4-->
+	<td class="w15" style="width: 22.5%"><?php echo $this->_translate(5);?>
+		<!-- Ngày cập nhật --></td>
+	<!-- end .cell 6-->
+</tr>
+
+<?php $j = 0;?>
+<?php foreach ($this->data as $dat):?>
+
+<?php
+$j++;
+// Hien thi phan mo rong
+if ($dat->Ext)
+{
+	$ext = '<span class="' . $dat->Ext . ' unknown">&nbsp;</span>';
+}
+else
+{
+	$ext = '<span class="unknown">&nbsp;</span>';
+}
+
+// Hien thi loai
+if($dat->Code)
+{
+	$type = $dat->Code . ' - ' . $dat->Type;
+}
+else
+{
+	$type = $this->_translate(6);
+}
+
+// Hien thi ten tai lieu
+if ($dat->docname)
+{
+	$docname = '<a href="#!" onclick="downloadDoc(' . $dat->DID . ')">' . $dat->docname . '</a>';
+}
+else
+{
+	$docname =  '&nbsp';
+}
+
+// Hien thi thoi gian
+if ($dat->DDate)
+{
+	$micro      = strtotime($dat->DDate);
+	$timeString = date('h:i:s', $micro);
+	$dateString = date('d-m-Y', $micro);
+	$time       = $dateString .' ( <span class="notify_time">' . $timeString . '</span> )';
+
+}
+else
+{
+	$time       = '';
+}
+
+
+?>
+
+<tr>
+	<td><?php echo $ext;?>
+	</td>
+
+	<td><?php echo $type;?>
+	</td>
+
+	<td><?php echo $docname;?>
+	</td>
+
+	<td><?php echo $dat->Reference;?>
+	</td>
+
+	<td><?php echo $time;?>
+	</td>
+</tr>
+<?php endforeach;?>
+
+
+
+<?php if ($j < 20):?>
+<?php for ($k = $j; $k < 20; $k++):?>
+<tr>
+	<td class="center">&nbsp;</td>
+	<td class="center">&nbsp;</td>
+	<td class="center">&nbsp;</td>
+	<td class="center">&nbsp;</td>
+	<td class="center">&nbsp;</td>
+</tr>
+<?php endfor;?>
+<?php endif;?>

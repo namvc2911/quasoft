@@ -1,0 +1,516 @@
+<?php
+$excel_col      = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg             = Qss_Lib_Extra_Const::REPORT_EXCEL_THEAD_COLOR;
+$row            = 2;
+$totalColumn    = 5;
+$colWidths      = array(43, 400, 60, 240, 256);
+$excelColWidths = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($colWidths);
+$autoFit        = Qss_Lib_Report::changeWidthToFitScreen($colWidths);
+
+$genTotalColumn    = 3;
+$genColWidths      = array(1, 1, 1);
+$genExcelColWidths = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($genColWidths);
+$genAutoFit        = Qss_Lib_Report::changeWidthToFitScreen($genColWidths);
+
+$infoTotalColumn    = 2;
+$infoColWidths      = array(1, 1);
+$infoExcelColWidths = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($infoColWidths);
+$infoAutoFit        = Qss_Lib_Report::changeWidthToFitScreen($infoColWidths);
+
+$reportTotalColumn    = 3;
+$reportColWidths      = array(1, 18, 8);
+$reportExcelColWidths = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($reportColWidths);
+$reportAutoFit        = Qss_Lib_Report::changeWidthToFitScreen($reportColWidths);
+
+$dealTotalColumn    = 3;
+$dealColWidths      = array(1, 18, 8);
+$dealExcelColWidths = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($dealColWidths);
+$dealAutoFit        = Qss_Lib_Report::changeWidthToFitScreen($dealColWidths);
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+    <input type="hidden" id="content" name="content" value="">
+</form>
+
+<div
+    class="portrait">
+    <excel
+        orientation="<?php echo Qss_Lib_Extra_Const::REPORT_ORIENTATION_PORTRAIT;?>"
+        font-name="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_NAME;?>"
+        font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_SIZE;?>"
+        margin-left="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_LEFT;?>"
+        margin-right="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_RIGHT;?>"
+        margin-top="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_TOP;?>"
+        margin-bottom="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_BOTTOM;?>" />
+
+    <!-- REPORT TITLE -->
+    <div id="head_print">
+        <?php echo $this->views->Common->Portrait() ?>
+        <?php echo $this->views->Common->Legal() ?>
+        <center>
+            <h2>
+                <xls row="<?php echo $row ?>" column="A"
+                     column-merge="<?php echo $excel_col[$totalColumn] ?>"
+                     font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_TITLE_FONT_SIZE;?>"
+                     wrap-text="1" bold="1" h-align="center" v-align="center"> <?php echo $this->_translate(1);?>
+                </xls>
+            </h2>
+        </center>
+    </div>
+    <!-- end div#head_print -->
+    <?php $row++ ?>
+
+    <!-- REPORT DATA -->
+    <div id="container">
+
+        <!-- SU CO -->
+        <table cellpadding="0" cellspacing="0" border="0" class="" style="">
+            <!-- COLUMN TITLE -->
+            <tr class="">
+                <?php $begin = 0;?>
+                <?php $genBegin = 0;?>
+                <?php
+                $breakdownByTime = ''; // Hư hỏng tự nhiên
+                $breakdownInUse  = ''; // Hư hỏng do sự cố
+                $lostEquip       = ''; // Mất thiết bị
+
+                switch(@(int)$this->params->SuCo)
+                {
+                    case 1: $breakdownByTime = 'x'; break; // hu hong tu nhien
+                    case 2: $lostEquip       = 'x'; break; // Mat thiet bi
+                    case 3: $breakdownInUse  = 'x'; break; // Hư hỏng do sự cố
+                }
+                ?>
+                <!-- Hư hỏng tự nhiên -->
+                <td class="left" style="width:<?php echo $genAutoFit[$genBegin];?>px">
+                    <p style="display: none;">
+                        <xls row="<?php echo $row?>"
+                             column="<?php echo $excel_col[++$begin]?>"
+                             column-merge="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+                             v-align="center" h-align="left"> <b><?php echo $this->_translate(2)?>:</b>
+                            <?php echo $breakdownByTime;?></xls>
+                    </p>
+                    <b><?php echo $this->_translate(2)?>:</b>
+                    <input type="checkbox" <?php if($breakdownByTime):?>checked="TRUE"<?php endif;?>>
+                </td>
+
+                <!-- Hư hỏng do sự cố -->
+                <td class="left" style="width:<?php echo $genAutoFit[$genBegin];?>px">
+                    <p style="display: none;">
+                        <xls row="<?php echo $row?>"
+                             column="<?php echo $excel_col[++$begin]?>"
+                             column-merge="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+                             v-align="center" h-align="left"> <b><?php echo $this->_translate(3)?>:</b>
+                            <?php echo $breakdownInUse;?></xls>
+                    </p>
+                    <b><?php echo $this->_translate(3)?>:</b>
+                    <input type="checkbox" <?php if($breakdownInUse):?>checked="TRUE"<?php endif;?>>
+                </td>
+
+                <!-- Mất thiết bị -->
+                <td class="left" style="width:<?php echo $genAutoFit[$genBegin];?>px">
+                    <p style="display: none;">
+                        <xls row="<?php echo $row?>"
+                             column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+                             v-align="center" h-align="left"> <b><?php echo $this->_translate(4)?>:</b>
+                            <?php echo $lostEquip;?></xls>
+                    </p>
+                    <b><?php echo $this->_translate(4)?>:</b>
+                    <input type="checkbox" <?php if($lostEquip):?>checked="TRUE"<?php endif;?>>
+                </td>
+            </tr>
+            <?php $row++;?>
+        </table>
+        <!-- end table.border -->
+
+        <!--------------------------------------------------------------------->
+
+        <?php $row++;?>
+        <!-- THONG TIN THIET BI -->
+        <div class="left bold default_size">
+            <br />
+            <xls row="<?php echo $row?>" column="<?php echo $excel_col[1];?>"
+                 column-merge="<?php echo $excel_col[$totalColumn]; ?>" wrap-text="1"
+                 v-align="center" h-align="left" border="0" bold="1"> <?php echo $this->_translate(5)?></xls>
+        </div>
+        <?php $row++;?>
+        <br />
+        <?php $row++;?>
+
+        <table cellpadding="0" cellspacing="0" border="0" class="border"
+               style="">
+            <!-- COLUMN TITLE -->
+            <tr class="">
+                <!-- Số báo cáo -->
+                <td class="left" colspan="2"><xls row="<?php echo $row?>"
+                                                  column="<?php echo $excel_col[1]?>"
+                                                  column-merge="<?php echo $excel_col[$totalColumn]; ?>"
+                                                  wrap-text="1" v-align="center" h-align="left" border="1">1. <?php echo $this->_translate(6)?>:</xls>
+                </td>
+            </tr>
+            <?php $row++;?>
+
+            <tr class="">
+                <?php $begin = 0;?>
+                <?php $infoBegin = 0;?>
+                <!-- Tên thiết bị -->
+                <td class="left" style="width:<?php echo $infoAutoFit[$infoBegin];?>px">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         column-merge="<?php echo $excel_col[($begin + 2)]?>" wrap-text="1"
+                         v-align="center" h-align="left" border="1">2. <?php echo $this->_translate(7)?>:
+                        <?php //echo $this->eq->TenThietBi;?> </xls>
+                </td>
+                <?php $begin += 2;?>
+
+                <!-- Ngày đưa vào sử dụng -->
+                <td class="left" style="width:<?php echo $infoAutoFit[$infoBegin];?>px">
+                    <?php /*
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         column-merge="<?php echo $excel_col[($begin + 1)]?>" wrap-text="1"
+                         v-align="center" h-align="left" border="1"> <?php echo $this->_translate(8)?>:
+                        <?php echo Qss_Lib_Date::mysqltodisplay($this->eq->NgayDuaVaoSuDung);?>
+                    </xls>
+                    */?>
+                    &nbsp;
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         column-merge="<?php echo $excel_col[($begin + 1)]?>" wrap-text="1"
+                         v-align="center" h-align="left" border="1">  </xls>
+                </td>
+                <?php $begin += 1;?>
+            </tr>
+            <?php $row++;?>
+
+            <tr class="">
+                <?php $begin = 0;?>
+                <?php $infoBegin = 0;?>
+                <!-- Mã số -->
+                <td class="left" style="width:<?php echo $infoAutoFit[$infoBegin];?>px">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         column-merge="<?php echo $excel_col[($begin + 2)]?>" wrap-text="1"
+                         v-align="center" h-align="left" border="1">3. <?php echo $this->_translate(9)?>:
+                        <?php //echo $this->eq->MaThietBi;?> </xls>
+                </td>
+                <?php $begin += 2;?>
+
+                <!-- Số xêri  -->
+                <td class="left" style="width:<?php echo $infoAutoFit[$infoBegin];?>px">
+                    <?php /*
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         column-merge="<?php echo $excel_col[($begin + 1)]?>" wrap-text="1"
+                         v-align="center" h-align="left" border="1"> <?php echo $this->_translate(10)?>:
+                        <?php echo $this->eq->Serial?$this->eq->Serial:'N/A';?> </xls>
+                    */?>
+                    &nbsp;
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         column-merge="<?php echo $excel_col[($begin + 1)]?>" wrap-text="1"
+                         v-align="center" h-align="left" border="1">  </xls>
+                </td>
+                <?php $begin += 1;?>
+            </tr>
+            <?php $row++;?>
+
+            <?php /*
+            <tr class="">
+                <?php $begin = 0;?>
+                <?php $infoBegin = 0;?>
+                <!-- Giá trị -->
+                <td class="left" style="width:<?php echo $infoAutoFit[$infoBegin];?>px">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         column-merge="<?php echo $excel_col[($begin + 2)]?>" wrap-text="1"
+                         v-align="center" h-align="left" border="1">4. <?php echo $this->_translate(11)?>:
+                        <?php echo $this->eq->NguyenGia?Qss_Lib_Util::formatMoney($this->eq->NguyenGia):'';?> </xls>
+                </td>
+                <?php $begin += 2;?>
+
+                <!-- Giá trị còn lại  -->
+                <td class="left" style="width:<?php echo $infoAutoFit[$infoBegin];?>px">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         column-merge="<?php echo $excel_col[($begin + 1)]?>" wrap-text="1"
+                         v-align="center" h-align="left" border="1"> <?php echo $this->_translate(12)?>:
+                        <?php //echo $this->bookVal?Qss_Lib_Util::formatMoney($this->bookVal):'';?> </xls>
+                </td>
+                <?php $begin += 1;?>
+            </tr>
+            <?php $row++;?>
+            <?php */?>
+
+            <tr class="">
+                <!-- Đơn vị quản lý thiết bị -->
+                <td class="left" colspan="2"><xls row="<?php echo $row?>"
+                                                  column="<?php echo $excel_col[1]?>"
+                                                  column-merge="<?php echo $excel_col[$totalColumn]; ?>"
+                                                  wrap-text="1" v-align="center" h-align="center" border="1">4. <?php echo $this->_translate(13)?>:
+                        <?php //echo $this->manage; ?></xls>
+                </td>
+            </tr>
+            <?php $row++;?>
+
+            <?php /*
+            <tr class="">
+                <!-- Đơn vị sử dụng thiết bị tại thời điểm xảy ra hư hỏng/ mất thiết bị -->
+                <td class="left" colspan="2"><xls row="<?php echo $row?>"
+                                                  column="<?php echo $excel_col[1]?>"
+                                                  column-merge="<?php echo $excel_col[$totalColumn]; ?>"
+                                                  wrap-text="1" v-align="center" h-align="center" border="1">6. <?php echo $this->_translate(14)?>:</xls>
+                </td>
+            </tr>
+            <?php $row++;?>
+            */?>
+        </table>
+        <!-- end table.border -->
+        <?php $row++;?>
+        <br />
+
+
+        <!--------------------------------------------------------------------->
+        <div class="left bold default_size">
+            <br />
+            <xls row="<?php echo $row?>" column="<?php echo $excel_col[1];?>"
+                 column-merge="<?php echo $excel_col[$totalColumn]; ?>" wrap-text="1"
+                 v-align="center" h-align="left" border="0" repeat="1" bold="1"> <?php echo $this->_translate(15)?></xls>
+        </div>
+        <?php $row++;?>
+        <br />
+        <?php $row++;?>
+
+        <table cellpadding="0" cellspacing="0" border="0" class="border"
+               style="">
+            <?php $begin = 0;?>
+            <?php $infoBegin2 = 0;?>
+            <tr>
+                <td
+                    style="width:<?php echo $reportAutoFit[$begin++];?>px"
+                    valign="top"
+                    class="center"><xls row="<?php echo $row?>"
+                                        column="<?php echo $excel_col[++$infoBegin2]?>" wrap-text="1"
+                                        v-align="top" h-align="center" border="1">1.</xls>
+                </td>
+
+                <!-- Mo ta -->
+                <td
+                    style="width:<?php echo $reportAutoFit[$begin++];?>px;"
+                    valign="top"
+                    class="left"><xls row="<?php echo $row?>"
+                                      column="<?php echo $excel_col[++$infoBegin2]?>"
+                                      column-merge="<?php echo $excel_col[($infoBegin2 + 2)]?>"
+                                      wrap-text="1" v-align="top" h-align="left" border="1">- <?php echo $this->_translate(16)?>: <?php echo $this->params->DuAn;?> <?php echo $this->params->DiaDiem;?>
+                        <br />
+                        - <?php echo $this->_translate(17)?>: <?php echo Qss_Lib_Date::mysqltodisplay($this->params->Ngay);?> <?php echo $this->params->ThoiGian;?> <br />
+                        - <?php echo $this->_translate(18)?>:<?php echo $this->params->GhiChu;?> <br />
+                    </xls>
+                </td>
+                <?php $infoBegin2 += 2;?>
+
+                <!-- Nguoi bao cao  -->
+                <td
+                    style="width:<?php echo $reportAutoFit[$begin++];?>px"
+                    valign="top"
+                    class="center"><xls row="<?php echo $row?>"
+                                        column="<?php echo $excel_col[++$infoBegin2]?>" wrap-text="1"
+                                        v-align="top" h-align="center" border="1"> <b> <?php echo $this->_translate(19)?>
+                        </b> <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <b> <?php echo $this->_translate(20)?> </b> <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <?php echo $this->_translate(21)?>:……./………/……</xls>
+                </td>
+            </tr>
+            <?php $row++;?>
+
+            <?php $infoBegin2 = 0;?>
+            <tr>
+                <td valign="top" class="center"><xls row="<?php echo $row?>"
+                                                     column="<?php echo $excel_col[++$infoBegin2]?>" wrap-text="1"
+                                                     v-align="top" h-align="center" border="1">2.</xls>
+                </td>
+
+                <td valign="top" class="left"><xls row="<?php echo $row?>"
+                                                   column="<?php echo $excel_col[++$infoBegin2]?>"
+                                                   column-merge="<?php echo $excel_col[($infoBegin2 + 2)]?>"
+                                                   wrap-text="1" v-align="top" h-align="left" border="1"> <?php echo $this->_translate(22)?>:
+                    </xls>
+                </td>
+                <?php $infoBegin2 += 2;?>
+
+
+                <td valign="top" class="center"><xls row="<?php echo $row?>"
+                                                     column="<?php echo $excel_col[++$infoBegin2]?>" wrap-text="1"
+                                                     v-align="top" h-align="center" border="1"> <b><?php echo $this->_translate(23)?>
+                        </b> <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <?php echo $this->_translate(21)?>:……./………/……</xls>
+                </td>
+
+            </tr>
+        </table>
+        <br />
+        <?php $row++;?>
+
+        <!--------------------------------------------------------------------->
+        <?php $row++;?>
+        <div class="left bold default_size">
+            <br />
+            <xls row="<?php echo $row?>" column="<?php echo $excel_col[1];?>"
+                 column-merge="<?php echo $excel_col[$totalColumn]; ?>" wrap-text="1"
+                 v-align="center" h-align="left" border="0" repeat="1" bold="1"> <?php echo $this->_translate(24)?></xls>
+        </div>
+        <?php $row++;?>
+        <br />
+        <?php $row++;?>
+
+        <table cellpadding="0" cellspacing="0" border="0" class="border"
+               style="">
+            <?php $begin = 0;?>
+            <?php $dealBegin2 = 0;?>
+            <tr>
+                <td
+                    style="width:<?php echo $dealAutoFit[$begin++];?>px"
+                    valign="top"
+                    class="center"><xls row="<?php echo $row?>"
+                                        column="<?php echo $excel_col[++$dealBegin2]?>" wrap-text="1"
+                                        v-align="top" h-align="center" border="1">1.</xls>
+                </td>
+
+                <td
+                    style="width:<?php echo $dealAutoFit[$begin++];?>px"
+                    valign="top"
+                    class="left"><xls row="<?php echo $row?>"
+                                      column="<?php echo $excel_col[++$dealBegin2]?>"
+                                      column-merge="<?php echo $excel_col[($dealBegin2 + 2)]?>"
+                                      wrap-text="1" v-align="top" h-align="left" border="1"> <b>Bộ phận
+                            bảo hiểm:</b> </xls>
+                </td>
+                <?php $dealBegin2 += 2;?>
+
+                <td
+                    style="width:<?php echo $dealAutoFit[$begin++];?>px"
+                    valign="top"
+                    class="center"><xls row="<?php echo $row?>"
+                                        column="<?php echo $excel_col[++$dealBegin2]?>" wrap-text="1"
+                                        v-align="top" h-align="center" border="1"> <b>Bộ phận bảo hiểm</b>
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <?php echo $this->_translate(21)?>:……./………/……</xls>
+                </td>
+            </tr>
+            <?php $row++;?>
+
+            <?php $dealBegin2 = 0;?>
+            <tr>
+                <td valign="top" class="center"><xls row="<?php echo $row?>"
+                                                     column="<?php echo $excel_col[++$dealBegin2]?>" wrap-text="1"
+                                                     v-align="top" h-align="center" border="1">2.</xls>
+                </td>
+
+                <td valign="top" class="left"><xls row="<?php echo $row?>"
+                                                   column="<?php echo $excel_col[++$dealBegin2]?>"
+                                                   column-merge="<?php echo $excel_col[($dealBegin2 + 2)]?>"
+                                                   wrap-text="1" v-align="top" h-align="left" border="1"> <b>Phòng Kỹ
+                            thuật:</b> </xls>
+                </td>
+                <?php $dealBegin2 += 2;?>
+
+                <td valign="top" class="center"><xls row="<?php echo $row?>"
+                                                     column="<?php echo $excel_col[++$dealBegin2]?>" wrap-text="1"
+                                                     v-align="top" h-align="center" border="1"> <b>Phòng Kỹ thuật</b> <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <?php echo $this->_translate(21)?>:……./………/……</xls>
+                </td>
+            </tr>
+            <?php $row++;?>
+
+            <?php $dealBegin2 = 0;?>
+            <tr>
+                <td valign="top" class="center"><xls row="<?php echo $row?>"
+                                                     column="<?php echo $excel_col[++$dealBegin2]?>" wrap-text="1"
+                                                     v-align="top" h-align="center" border="1">3.</xls>
+                </td>
+
+                <td valign="top" class="left">
+
+                    <p style="display: none">
+                        <xls row="<?php echo $row?>"
+                             column="<?php echo $excel_col[++$dealBegin2]?>"
+                             column-merge="<?php echo $excel_col[($dealBegin2 + 2)]?>"
+                             wrap-text="1" v-align="top" h-align="left" border="1"> <b>Ban giám
+                                đốc phê duyệt:</b> <br />
+                            Đồng ý với biện pháp khắc phục <br />
+                            Không đồng ý, đề nghị: </xls>
+                    </p>
+
+                    <b>Ban giám đốc phê duyệt:</b> <br />
+                    <input type="checkbox"/> Đồng ý với biện pháp khắc phục <br />
+                    <input type="checkbox"/> Không đồng ý, đề nghị: <br />
+                </td>
+                <?php $dealBegin2 += 2;?>
+
+                <td valign="top" class="center"><xls row="<?php echo $row?>"
+                                                     column="<?php echo $excel_col[++$dealBegin2]?>" wrap-text="1"
+                                                     v-align="top" h-align="center" border="1"> <b>Ban Giám đốc</b> <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <?php echo $this->_translate(21)?>:……./………/……</xls>
+                </td>
+            </tr>
+        </table>
+        <br />
+    </div>
+    <!-- end div#container -->
+
+    <!-- Xac dinh do rong cot  -->
+    <div>
+
+        <?php $begin = 0;?>
+        <xls row="<?php echo $row?>"
+             width="<?php echo $excelColWidths[$begin];?>"
+             column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+             v-align="center" h-align="center" border="1"></xls>
+        <xls row="<?php echo $row?>"
+             width="<?php echo $excelColWidths[$begin];?>"
+             column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+             v-align="center" h-align="center" border="1"></xls>
+        <xls row="<?php echo $row?>"
+             width="<?php echo $excelColWidths[$begin];?>"
+             column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+             v-align="center" h-align="center" border="1"></xls>
+        <xls row="<?php echo $row?>"
+             width="<?php echo $excelColWidths[$begin];?>"
+             column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+             v-align="center" h-align="center" border="1"></xls>
+        <xls row="<?php echo $row?>"
+             width="<?php echo $excelColWidths[$begin];?>"
+             column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+             v-align="center" h-align="center" border="1"></xls>
+    </div>
+</div>
+<!-- END REPORT -->

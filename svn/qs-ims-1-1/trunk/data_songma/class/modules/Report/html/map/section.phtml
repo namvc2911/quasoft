@@ -1,0 +1,85 @@
+<link rel="stylesheet" href="/css/themes/base/jquery.ui.core.css" type='text/css'/>
+<link rel="stylesheet" href="/css/themes/base/jquery.ui.base.css" type='text/css'/>
+<link rel="stylesheet" href="/css/themes/base/jquery.ui.all.css" type='text/css'/>
+<link rel="stylesheet" href="/css/themes/base/jquery.ui.dialog.css" type='text/css'/>
+<link rel="stylesheet" href="/css/print.css" type='text/css'/>
+
+<div id="section-wrap">
+	<h2>
+		Mặt cắt <?php echo @$this->section->Ma; ?>
+	</h2>               
+	<table border="1" cellpadding="0" cellspacing="0" class="left">
+
+		<tr>
+			<th style="width: 30%"> Mã </th>
+			<td> <?php echo @$this->section->Ma; ?> </td>
+		</tr>
+
+		<tr>    
+			<th> Tên </th>
+			<td> <?php echo @$this->section->Ten; ?> </td>
+		</tr>         
+
+		<tr>    
+			<th> Tuyến sông </th>
+			<td> <?php echo @$this->section->TuyenSong; ?> </td>
+		</tr>    
+		
+		<tr>    
+			<th> Lớp bản đồ </th>
+			<td> <?php echo @$this->section->LopBanDo; ?> </td>
+		</tr>    
+		
+		<tr>    
+			<th> Biểu đồ </th>
+			<td> 
+				<a  style="color:#0b55c4" 
+					href="#1" 
+					onclick="openLinkModule('BieuDoMatCat', '/report/section/chart?section=<?php echo @$this->section->Ma; ?>')">
+					Xem biểu đồ
+				</a>
+			
+			</td>
+		</tr>    	
+		
+		<tr>    
+			<th> Tọa độ điểm đầu (Ox - Oy - Oz)</th>
+			<td> 
+				<?php echo @$this->section->XDau?$this->section->XDau:0; ?> 
+				- <?php echo @$this->section->YDau?$this->section->YDau:0; ?> 
+				- <?php echo @$this->section->ZDau?$this->section->ZDau:0; ?>  
+			</td>
+		</tr> 	
+		
+		<tr>    
+			<th> Tọa độ điểm cuối (Ox - Oy - Oz)</th>
+			<td> 
+				<?php echo @$this->section->XCuoi?$this->section->XCuoi:0; ?> 
+				- <?php echo @$this->section->YCuoi?$this->section->YCuoi:0; ?> 
+				- <?php echo @$this->section->ZCuoi?$this->section->ZCuoi:0; ?>  
+			</td>
+		</tr> 	
+		
+		<tr>    
+			<th> Dữ liệu năm</th>
+			<td> 
+				<?php
+				$comma = 0;
+				foreach (@$this->sectionData as $val):
+					if ($comma)
+					{
+						echo ',';
+					} else
+					{
+						$comma = 1;
+					}
+					?>
+					<a  style="color:#0b55c4" href="#1" onclick="openLinkModule('MatCat', '/user/form?fid=MatCat&filter_Ma_1119=%<?php echo @$this->section->Ma; ?>%&filter_Ngay_1126_S=<?php echo '01-01-' . $val->Year; ?>&filter_Ngay_1126_E=<?php echo '31-12-' . $val->Year; ?>')">
+					<?php echo $val->Year; ?>
+					</a>
+					<?php endforeach; ?>
+			</td>
+		</tr> 			
+
+	</table>
+</div><!-- end #section-wrap -->

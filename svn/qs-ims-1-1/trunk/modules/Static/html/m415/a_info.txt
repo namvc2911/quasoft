@@ -1,0 +1,67 @@
+(*) Màn hình 1: Danh sách session
+
+(1) [Button: Thêm ]
+<K>	Ấn thêm hỏi có làm không? Có thì chuyển sang màn hình chỉnh sửa session vừa tạo <Ok>
+-------------------------------------------------------------------------------------------	
+(2) Bảng
+	STT === Ngày === Sửa === Xóa
+	
+<K>	NV1: Hiển thị danh sách session xếp theo ngày từ lớn đến nhỏ của nhân viên - Ok 
+<K>	NV2: Nút sửa, khi ấn chuyển sang màn hình chỉnh sửa session vừa tạo như nút thêm <Ok>
+<W>	NV3: Nút xóa <Waiting>	
+===========================================================================================	
+
+(*) Màn hình 2: Chỉnh sửa session
+(1) Các nút điều khiển: Tình trạng + Trở lại
+	<Control>
+		<Bên trái> 
+		Nhập yêu cầu 
+		>> Hợp đồng nguyên tắc 
+		>>  Kiểm tra đơn hàng 
+		>> Lập KHMS 
+		>> Chào giá 
+		>>  Nhập báo giá 
+		>> So sánh báo giá 
+		>> Kết thúc
+		
+		<Bên phải>
+<K>		[Button: Trở lại] - Khi ấn trở lại màn hình 1 <Ok>
+	</Control>
+	
+<W>	NV1: Cần kiểm tra xem có thể chuyển bước được không <Waiting>
+<K> NV2: Khi chuyển bước cần phải lưu lại bước hiện tại vào csdl
+<K>	NV2: Viết nút trở lại khi ấn trở lại màn hình 1 <Ok>
+<W> NV4: Khi chuyển bước cần thay đổi CSS của các tình trạng
+	
+(2) Màn hình 2.1 - Nhập yêu cầu
+	(2.1) [Button Nhập yêu cầu] 
+		- Nhập yêu cầu từ excel, yêu cầu này khi được nhập chuyển sang bước 2 luôn <duyệt>, bước duyệt cần phải xóa được. 
+		- Sau khi đóng excel cần save lại yêu cầu của user vào UID <tạm thời lấy hết theo UID của các bản ghi chưa lưu>
+		- Sau khi lưu lại tải lại bước
+<W>	(2.2) Bảng: Danh sách yêu cầu đã có 
+		- Số lượng còn lại = Số lượng yêu cầu - Số lượng đã lên kế hoạch - Số lượng đã đặt hàng không có kế hoạch
+		- Thêm nút xóa yêu cầu: Khi xóa cần kiểm tra số lượng còn lại nếu số lượng còn lại còn nguyên (= số lượng yêu cầu)
+		thì mới xóa được đi
+		
+(3) Màn hình 2.2 - Hợp đồng nguyên tắc
+		- Trong hợp đồng nguyên tăc cần xem xét lấy hợp đồng nguyên tắc nào?
+		(?) Hợp đồng nguyên tắc nhiều nhà cung cấp cho cùng một mặt hàng
+		(?) Hợp đồng nguyên tắc thời gian giao nhau hoặc nhiều hợp đồng thời gian ở tương lai
+		(?) Nếu số lượng còn lại về 0 thì lên làm gì?
+		
+		Nhà cung cấp
+		
+				
+		Tích chọn|Số yêu cầu|Mã mặt hàng|Tên mặt hàng|ĐVT|	Số lượng YC|Đã lập KH|Đặt hàng|Còn lại|Số lượng|Đơn giá|Thành tiền|Chi tiết 
+		
+		[Button: Tạo đơn hàng]
+		
+		NV1: Hiển thị hợp đồng nguyên tắc nếu có, nếu ko có sp nào có hđ nguyên tắc thì báo ko có
+		NV2: Chuyển common js sang để chạy được hàm tick
+		NV3: Nút tạo đơn hàng: Sau khi tao can phai save don hang vao phien xu ly
+		NV4: Nếu không có số lượng còn lại thì làm gì? Cho tạo tiếp đơn hàng hay không?
+		
+(4) Mành hình 2.3 - Kiểm tra đơn hàng 6 tháng
+		=) Giống với màn hình 2.2 
+		=) Chỉ ấp dụng với đơn hàng trong 6 tháng		
+	

@@ -1,0 +1,143 @@
+<?php
+    $no = 0;
+    $oldRequest      = '';
+    $oldQuote        = '';
+    $requestWidthArr = array(4,4,2,2);
+    $totalCol        = 4;
+    $width           = 800;
+    $padding         = 2;
+    $formNo          = 0;
+    $oldSupplier     = '';
+    $fit             = Qss_Lib_Report::changeWidthToFitScreen2($requestWidthArr, $width, $padding);
+    $stt             = 0;
+?>
+
+<div id="M415_step5_wrap">
+    <form id="M415_step5_quotation1_form">    
+        <div id="M415_step5_control">
+        
+            <input type="hidden" name="planioid" value="<?php echo $this->planioid;?>"/>   
+        
+            <?php if(!isset($_SESSION['M415Step']) || $_SESSION['M415Step'] == 5):?>
+                <?php echo $this->views->Report->SimpleComboBox('partnerioid', $this->suppliers, ' style="width:300px"');?>
+                <button type="button" class="btn btn-custom" onclick="M415.step5.createQuotation();"> Thêm đơn vị chào giá </button>
+            <?php else:?>
+                <?php echo $this->views->Report->SimpleComboBox('partnerioid', $this->suppliers, 'disabled style="width:300px"');?>
+                <button type="button" class="btn btn-custom btn-disabled" disabled> Thêm đơn vị chào giá </button>
+            <?php endif;?>
+            
+            
+            <!-- <button type="button" class="btn btn-custom" onclick="M415.step5.showAddQuotationScreen();"> Thêm chào giá </button> -->
+            &nbsp;<span id="M415_step5_quotation_notify" class="bold red"></span>
+        </div><!-- end #M415_step5_control -->
+        <br/>
+    
+        <div id="M415_step5_show">
+        
+        <p><b>Danh sách đơn vị chào giá</b></p>
+        <br/>        
+        
+        <table class="border_table" cellpadding="0" cellspacing="0" border="0" style="width:<?php echo $width;?>px">
+            <?php if(!count($this->quotations)):?>
+            <div>Không có chào giá!</div>
+            <?php endif;?>
+        
+        
+            <?php foreach($this->quotations as $item):?>
+            <?php //echo '<Pre>'; print_r($item); die;?>
+                <!-- IN NHA CUNG CAP  -->
+                <?php if($oldSupplier != $item->Ref_MaNCC):?>
+                    <tr class="M415_step5_supplier">
+                        <th class="bold left" colspan="<?php echo $totalCol;?>"> <?php echo ++$stt;?>. <?php echo $item->TenNCC?></th>
+                    </tr>           
+                <?php endif;?>
+                
+                
+                <?php /*if($oldQuote != $item->IFID_M406):?>
+                    <tr>
+                        <td class=" left" colspan="<?php echo $totalCol;?>">
+                            <b><?php echo $item->SoChungTu;?> </b>
+                            &nbsp;&nbsp;<a href="#1" onclick="popupFormDetail(<?php echo $item->IFID_M406;?>, <?php echo $this->deptid;?>)"><?php echo $this->_translate(10);?></a>
+                            <!-- &nbsp;&nbsp;<a href="#1" onclick="popupFormDetail(<?php echo $item->IFID_M406;?>, <?php echo $this->deptid;?>)">Xóa</a> -->
+                        </td> 
+                    </tr>
+                <?php endif; */?>
+                
+                <?php $oldSupplier = $item->Ref_MaNCC; ?>
+                <?php $oldQuote = $item->IFID_M406; ?>
+            <?php endforeach;?>
+        </table> 
+        
+        <br/>
+        <p><b>Danh sách chào giá</b></p>
+        <br/>
+        
+        <table class="border_table" cellpadding="0" cellspacing="0" border="0" style="width:<?php echo $width;?>px">
+        
+            <tr>
+                <?php $begin = 0;?>
+                <th  style="width:<?php echo $fit[$begin++];?>px">Mã mặt hàng</th>
+                <th  style="width:<?php echo $fit[$begin++];?>px">Tên mặt hàng</th>
+                <th  style="width:<?php echo $fit[$begin++];?>px">Đơn vị tính</th>
+                <th  style="width:<?php echo $fit[$begin++];?>px">Số lượng</th>
+            </tr>
+        
+            <?php foreach ($this->quotations2 as $dat):?>
+                <input type="hidden" name="itemioid[]" value="<?php echo $dat->Ref_MaSP;?>"  /> 
+                <input type="hidden" name="uomioid[]" value="<?php echo $dat->Ref_DonViTinh;?>" />     
+                <input type="hidden" name="qty[]" value="<?php echo $dat->SoLuongYeuCau;?>" />     
+                
+                <tr>
+                    <td class=" left">
+                        <?php echo $dat->MaSP;?>
+                    </td>                 
+                
+                    <td class=" left" >
+                        <?php echo $dat->TenSP;?>
+                    </td> 
+                    
+                    <td class=" left">
+                        <?php echo $dat->DonViTinh;?>
+                    </td>       
+                    
+                    <td class=" right" >
+                        <?php echo $dat->SoLuongYeuCau;?>
+                    </td>                                       
+                </tr>                 
+            <?php endforeach;?>
+
+        </table>        
+        
+        
+        </div><!-- end #M415_step5_show -->
+        
+        <div id="M411_step5_add_quotation"></div>
+    </form>
+</div><!-- end #M415_step5_wrap -->
+                            
+<script>
+var len   = $('.M415_step5_supplier').length;
+var title = '';
+
+if(len)
+{
+	$('.M415_step5_supplier').each(function(){
+		var temp = $(this).find('th').text();
+
+		if(temp)
+		{
+			title += $(this).find('th').text() + "\n";
+		}
+	});
+	$('#M415_step5_quotation_notify').html('(*) Đã chào giá đến '+len+' nhà cung cấp');
+}
+else
+{
+	$('#M415_step5_quotation_notify').html('');
+}
+$('#M415_step5_quotation_notify').attr('title', title);
+
+</script>
+
+
+

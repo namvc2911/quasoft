@@ -1,0 +1,42 @@
+<div class="einfo-main-info" id="einfo-show-equip-info">
+	<div id="einfo-tabs" class="navmenutab">
+		<ul>
+			<li class=""><a id="einfo_tab_1"
+				onclick="einfo_load_tab_for_component(1)" href="#" tab="1"
+				class="einfo_tab"> <span><?php echo $this->_translate(1);?>
+						<!-- Thông tin chung -->
+				</span> </a></li>
+
+			<li class=""><a id="einfo_tab_2"
+				onclick="einfo_load_tab_for_component(2)" href="#" tab="2"
+				class="einfo_tab"> <span><?php echo $this->_translate(2);?>
+						<!-- Kế hoạch bảo trì -->
+				</span> </a></li>
+			<li class=""><a id="einfo_tab_3"
+				onclick="einfo_load_tab_for_component(3)" href="#" tab="3"
+				class="einfo_tab"> <span><?php echo $this->_translate(3);?>
+						<!-- Lịch sử bảo trì -->
+				</span> </a></li>
+
+            <?php if(Qss_Lib_System::fieldActive('OCauTrucThietBi', 'ThongSoKyThuat')):?>
+                <li class=""><a id="einfo_tab_4"
+                                onclick="einfo_load_tab_for_component(4)" href="#" tab="4"
+                                class="einfo_tab"> <span><?php echo $this->_translate(4);?>
+                            <!-- Lịch sử bảo trì -->
+				</span> </a></li>
+            <?php endif;?>
+
+		</ul>
+	</div>
+	<!-- end #einfo-tabs -->
+
+	<!-- NOI HIEN THI THONG TIN BO PHAN -->
+	<div id="einfo-info-table">
+		<div class="bgwhite" id="einfo_inner_show_info"></div>
+
+		<script>
+		einfo_load_tab_for_component();
+	</script>
+	</div>
+	<!-- end #einfo-info-table -->
+</div>

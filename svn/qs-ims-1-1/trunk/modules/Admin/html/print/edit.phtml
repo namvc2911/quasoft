@@ -1,0 +1,49 @@
+<form id="qss_form" method="post">
+	<input type="hidden" value="<?php echo @$this->design->FPID?>"
+		name="FPID" />
+	<div id="horizontal-toolbar" class="horizontal-toolbar">
+		<button id="btnSAVE" type="button" class="btn btn_main_top"
+			onclick="printSave('<?php echo $this->fid?>')">
+			<?php echo $this->_translate(34)?>
+		</button>
+		
+		<button type="button" class="btn btn_main_top"
+			onclick="templateFormPrintBack('<?php echo $this->fid?>')">
+			<?php echo $this->_translate(32)?>
+		</button>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<table class="detail">
+		<?php foreach ($this->languages as $language):?>
+			<tr>
+				<th><?php echo $this->_translate(44,'Tên')?> <?php echo $language->Name?>
+				</th>
+				<?php if($language->Code == 'vn'):?>
+				<td><input type="text" value="<?php echo @$this->design->Name?>"
+					style="width: 400px;" name="Name" />
+				</td>
+				<?php else:?>
+				<td><input type="text"
+					value="<?php echo @$this->design->{"Name_$language->Code"}?>"
+					style="width: 400px;" name="Name_<?php echo $language->Code?>" />
+				</td>
+				<?php endif;?>
+			</tr>
+			<?php endforeach;?>
+			<tr>
+				<th><?php echo $this->_translate(95,'Đường dẫn')?>
+				</th>
+				<td><input type="text" value="<?php echo @$this->design->Path?>"
+					name="Path" style="width: 400px;" />
+				</td>
+			</tr>
+			<tr>
+				<th>Các bước</th>
+				<td><input type="text" value="<?php echo @$this->design->Step?>"
+					name="Step" style="width: 200px;" />
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>

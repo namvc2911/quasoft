@@ -1,0 +1,74 @@
+
+<form id="filter_mytimecard_detail">
+    <div class="fr" style="width: 50%;">
+        <div class="fr" style="padding: 3px;">
+            <button type="button" class="btn" onclick="Static_M043.showTimeCard();" > Xem </button> &nbsp;&nbsp;
+        </div>
+
+
+        <div class="fr" style="padding: 5px;">
+            <!-- Du An --> <?php
+            $id            = 'kycong';
+            $getDataObject = array('OKyCong'=>array('MaKyCong', 'TenKyCong'));
+            $getFields     = array('num'=>2,
+                'objects'=>array('OKyCong'=>array(
+                    'id'=>'IOID'
+                ,'display1'=>'MaKyCong'
+                ,'display2'=>'TenKyCong')) );
+            $selectedID   = $this->kyCong;
+            $selectedText = $this->strKyCong;
+
+            echo $this->views->Report->ListBox(
+                $id, $getDataObject, $getFields, array(), array(), '', $selectedText, $selectedID
+            );
+            ?>
+
+
+        </div>
+
+        <div class="fr bold"  style="padding: 8px;">
+            Kỳ công:
+        </div>
+
+
+    </div>
+
+    <div class="clear"></div>
+    <br/>
+</form>
+
+
+<table class="border" cellpadding="0" cellspacing="0" border="0">
+    <tr class="bggrey">
+        <th class="bold">Ngày công</th>
+        <th class="bold">Ca làm việc</th>
+        <th class="bold">Ca đi làm thực tế</th>
+        <th class="bold">Loại ngày nghỉ</th>
+        <th class="bold">Ngày vào</th>
+        <th class="bold">Giờ vào</th>
+        <th class="bold">Ngày ra</th>
+        <th class="bold">Giờ ra</th>
+        <th class="bold">Lý do thiếu In/Out</th>
+        <th class="bold">Vào muộn</th>
+        <th class="bold">Ra sớm</th>
+        <th class="bold">Tổng phút muộn sớm</th>
+    </tr>
+
+    <?php foreach ($this->data as $item):?>
+        <tr>
+            <td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item->NgayCong);?></td>
+            <td class="left"><?php echo $item->CaLamViec;?></td>
+            <td class="left"><?php echo $item->CaDiLamThucTe;?></td>
+            <td class="left"><?php echo $item->LoaiNgayNghi;?></td>
+            <td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item->NgayVao);?></td>
+            <td class="center"><?php echo $item->GioVao;?></td>
+            <td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item->NgayRa);?></td>
+            <td class="center"><?php echo $item->GioRa;?></td>
+            <td class="left"><?php echo $item->LyDoThieuInOut;?></td>
+            <td class="right"><?php echo Qss_Lib_Util::formatNumber($item->VaoMuon);?></td>
+            <td class="right"><?php echo Qss_Lib_Util::formatNumber($item->RaSom);?></td>
+            <td class="right"><?php echo Qss_Lib_Util::formatNumber($item->TongPhutMuonSom);?></td>
+        </tr>
+    <?php endforeach;?>
+
+</table>

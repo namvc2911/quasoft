@@ -1,0 +1,18 @@
+<?php if(!$this->htmlAttribute) $this->htmlAttribute = 'style="width:180px;"'; ?>
+<?php $count = count((array)$this->data);?>
+
+<select name = "<?php echo $this->name?$this->name:$this->id?>" id= "<?php echo $this->id?>" <?php echo $this->htmlAttribute?>>
+    <option value="0">--- <?php echo $this->_translate(1);?> --- </option>
+    <?php foreach($this->data as $key=>$display):?>
+        <option value="<?php echo $key;?>" <?php if($this->default && $this->default == $key) { echo 'selected'; }?> >
+            <?php echo $display;?>
+        </option>
+    <?php endforeach;?>
+</select>
+
+<script>
+    $('#<?php echo $this->id?>').change(function(){
+        $(this).attr('title','');
+        $(this).attr('title', $(this).find('option:selected').text());
+    });
+</script>

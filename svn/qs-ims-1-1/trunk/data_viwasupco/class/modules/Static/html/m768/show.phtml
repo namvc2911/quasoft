@@ -1,0 +1,305 @@
+<?php $excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);?>
+<?php $bg = "#EEEEEE";?>
+<?php $no = 1;?>
+
+<?php
+$excel_col   = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg          = "#EEEEEE";
+$row         = 2;
+
+$columnWidth = array(1,4, 6,1, 4, 2, 2, 2);
+$totalColumn = count($columnWidth);
+$excelWidth  = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($columnWidth);
+$fitScreen   = Qss_Lib_Report::changeWidthToFitScreen($columnWidth);
+?>
+<?php $row = 9;?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="portrait">
+	<excel orientation="portrait" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+	<div id="head_print">
+
+        <div>
+            <div class="overflow" style=" overflow: hidden; width: 100%">
+                <div class="fl center" style="width: 40%">
+                    <xls row="<?php echo $row?>" column="A" column-merge="C" font-size="11" h-align="center" v-align="center" >ĐỘI BẢO TRÌ SỮA CHỮA & XÂY DỰNG</xls>
+                    <br/>
+                    <xls row="<?php echo ($row + 1)?>" column="A" column-merge="B" font-size="11" h-align="center" v-align="center">BM03.QT02.BTSC</xls>
+                    <br/>
+                </div>
+
+                <div class="fr center" style="width: 50%">
+                    <p style="font-size: 16px; line-height: 18px;">
+                        <b>
+                            <xls row="<?php echo $row?>" column="D" column-merge="H" font-size="16" h-align="center" v-align="center" bold="1">CÔNG TY CỔ PHẦN ĐẦU TƯ NƯỚC SẠCH SÔNG ĐÀ</xls>
+                        </b>
+                    </p>
+                    <xls row="<?php echo ($row + 1)?>" column="D" column-merge="H" font-size="11" h-align="center" v-align="center"  >Xóm Vật Lại, xã Phú Minh, huyện Kỳ Sơn, tỉnh Hòa Bình; </xls>
+                    <br/>
+                    <xls row="<?php echo ($row + 2)?>" column="D" column-merge="H" font-size="11" h-align="center" v-align="center"  >Điện thoại: 0218.3.840.152-0218.3.840.148; Fax 0218.3.840.148; </xls>
+                    <br/>
+                </div>
+
+                <?php $row = $row + 2;?>
+            </div>
+        </div>
+        <?php $row++;?>
+        <?php $row++;?>
+        <br/>
+
+
+
+		<center>
+			<h2>
+				<xls row="<?php echo $row?>" column="A"
+					column-merge="<?php echo $excel_col[6]?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(1)?>
+				(<?php echo $this->_translate(2)?> <?php echo $this->start?> <?php echo $this->_translate(3)?>
+				<?php echo $this->end?>) </xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++?>
+
+	<div id="container">
+		<table cellspacing="0" cellpadding="0" border="" id="" class="border">
+
+		<?php $begin = 0; ?>
+			<tr class="bggrey">
+				<!-- STT -->
+				<th style="width:<?php echo $fitScreen[$begin]?>px;" ><xls
+						row="<?php echo $row?>" width="<?php echo $excelWidth[$begin]?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1" repeat="1">STT</xls>
+				</th>
+
+				<!-- Tên thiết bị cần bảo dưỡng/ có khả năng xay ra hư hỏng  -->
+				<th style="width:<?php echo $fitScreen[$begin]?>px;" ><xls
+						row="<?php echo $row?>" width="<?php echo $excelWidth[$begin]?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1" repeat="1">Tên thiết bị cần bảo dưỡng/ có khả năng xảy ra hư hỏng </xls>
+				</th>
+
+				<!--  Tên/ mã hiệu/ Chủng loại /Quy cách vật tư phụ kiện dự trù  -->
+				<th style="width:<?php echo $fitScreen[$begin]?>px;" ><xls
+						row="<?php echo $row?>" width="<?php echo $excelWidth[$begin]?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1" repeat="1"> Tên/ mã hiệu/ Chủng loại /Quy cách vật tư phụ kiện dự trù </xls>
+				</th>
+
+				<!-- Đơn vị tính  -->
+				<th style="width:<?php echo $fitScreen[$begin]?>px;" ><xls
+						row="<?php echo $row?>" width="<?php echo $excelWidth[$begin]?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1" repeat="1">Đơn vị tính</xls>
+				</th>
+
+				<!-- số lượng / yêu cầu riêng biệt  -->
+				<th style="width:<?php echo $fitScreen[$begin]?>px;" ><xls
+						row="<?php echo $row?>" width="<?php echo $excelWidth[$begin]?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1" repeat="1">số lượng / yêu cầu riêng biệt </xls>
+				</th>
+
+				<!-- Định mức vât tư  -->
+				<th style="width:<?php echo $fitScreen[$begin]?>px;" ><xls
+						row="<?php echo $row?>" width="<?php echo $excelWidth[$begin]?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1" repeat="1">Định mức vât tư </xls>
+				</th>
+
+				<!-- số lượng bảo dưởng thực tế  -->
+				<th style="width:<?php echo $fitScreen[$begin]?>px;" >
+					<!-- STT --> <xls row="<?php echo $row?>"
+						width="<?php echo $excelWidth[$begin]?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1" repeat="1">Số lượng bảo dưởng thực tế </xls>
+				</th>
+
+                <!-- Ghi chú  -->
+                <th style="width:<?php echo $fitScreen[$begin]?>px;" >
+                    <!-- STT --> <xls row="<?php echo $row?>"
+                                      width="<?php echo $excelWidth[$begin]?>"
+                                      column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+                                      h-align="center" v-align="center" border="1" bold="1" repeat="1">Ghi chú </xls>
+                </th>
+			</tr>
+			<?php $row++?>
+
+            <?php $stt = 0;?>
+            <?php $oldKhuVuc = '';?>
+			<?php foreach($this->print as $item): // In bao cao?>
+			<?php
+			$qty = 0;
+			$inventory = 0;
+			?>
+
+
+			<!-- ITEM TITLTE -->
+                <?php if($item->IFID_M720 != $oldKhuVuc) :?>
+			<tr>
+				<th class="left" colspan="<?php echo $totalColumn?>"><xls
+						row="<?php echo $row?>" column="<?php echo $excel_col[1]?>"
+						merge-column="<?php echo $excel_col[$totalColumn]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $item->Ten;?>
+					- <?php echo $item->MaKhuVuc;?></xls>
+				</th>
+			</tr>
+			<?php $row++?>
+                    <?php endif;?>
+                <?php $oldKhuVuc = $item->IFID_M720;?>
+
+
+
+			<?php $begin = 0; ?>
+			<tr>
+				<!-- STT -->
+				<td class="center"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo ++$stt;?></xls>
+				</td>
+
+				<!-- Tên thiết bị cần bảo dưỡng/ có khả năng xay ra hư hỏng  -->
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $item->TenThietBi;?> (<?php echo $item->MaThietBi;?>)</xls>
+				</td>
+
+				<!-- Tên/ mã hiệu/ Chủng loại /Quy cách vật tư phụ kiện dự trù -->
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $item->TenVatTu;?> (<?php echo $item->MaVatTu;?>)</xls>
+				</td>
+
+				<!-- đơn vị tính -->
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $item->DonViTinh;?></xls>
+				</td>
+
+				<!-- số lượng / yêu cầu riêng biệt  -->
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> </xls>
+				</td>
+
+				<!-- Định mức vât tư  -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatNumber($item->SoLuong);?></xls>
+				</td>
+
+				<!-- số lượng bảo dưởng thực tế  -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> </xls>
+				</td>
+
+                <!-- Ghi chú -->
+                <td class="right"><xls row="<?php echo $row?>"
+                                       column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+                                       h-align="right" v-align="center" border="1"></xls>
+                </td>
+			</tr>
+			<?php $row++?>
+
+			<?php endforeach; // In bao cao ?>
+
+
+
+			<?php /*
+			<tr class="bggrey">
+			<!-- STT --><th class="center"><xls row="<?php echo $row?>" column="<?php echo $excel_col[1]?>"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"  repeat="1" bgcolor="<?php echo $bg;?>"><?php echo $this->_translate(12)?></xls></th>
+			<!-- Mã VT/PT --><th class="center"><xls row="<?php echo $row?>" column="<?php echo $excel_col[2]?>"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"  repeat="1" bgcolor="<?php echo $bg;?>"><?php echo $this->_translate(4)?></xls></th>
+			<!-- Tên VT/PT --><th class="center"><xls row="<?php echo $row?>" column="<?php echo $excel_col[3]?>"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"  repeat="1" bgcolor="<?php echo $bg;?>"><?php echo $this->_translate(5)?></xls></th>
+			<!-- Thuộc Tính --><th class="center"><xls row="<?php echo $row?>" column="<?php echo $excel_col[4]?>"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"  repeat="1" bgcolor="<?php echo $bg;?>"><?php echo $this->_translate(6)?></xls></th>
+			<!-- Đơn Vị Tinh --><th class="center"><xls row="<?php echo $row?>" column="<?php echo $excel_col[5]?>"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"  repeat="1" bgcolor="<?php echo $bg;?>"><?php echo $this->_translate(7)?></xls></th>
+			<!-- Số lượng --><th class="center"><xls row="<?php echo $row?>" column="<?php echo $excel_col[6]?>"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"  repeat="1" bgcolor="<?php echo $bg;?>"><?php echo $this->_translate(8)?></xls></th>
+			</tr>
+			<?php $row++?>
+
+			<?php if(isset($this->print['Material'])): // Neu co vat tu?>
+			<tr>
+			<th class="left" colspan="6"><xls row="<?php echo $row?>" column="<?php echo $excel_col[1]?>" column-merge="<?php echo $excel_col[6]?>"  wrap-text="1"  v-align="center" h-align="left" border="1" repeat="1" bold="1"  repeat="1"><?php echo $this->_translate(10)?></xls></th>
+			</tr>
+			<?php $row++?>
+			<?php foreach ($this->print['Material'] as $item): // In danh sach vat tu ?>
+			<tr>
+			<!-- STT --><td class="center" width="50px"><xls row="<?php echo $row?>" column="<?php echo $excel_col[1]?>" width="8"  wrap-text="1"  v-align="center" h-align="center" border="1"><?php echo $no?></xls></td>
+			<!-- Mã VT/PT --><td class="left" width="150px"><xls row="<?php echo $row?>" column="<?php echo $excel_col[2]?>" width="25"  wrap-text="1"  v-align="center" h-align="left" border="1"><?php echo $item['Code']?></xls></td>
+			<!-- Tên VT/PT --><td class="left" width="250px"><xls row="<?php echo $row?>" column="<?php echo $excel_col[3]?>" width="35" wrap-text="1"  v-align="center" h-align="left" border="1"><?php echo $item['Name']?></xls></td>
+			<!-- Thuộc tính --><td class="left" width="150px"><xls row="<?php echo $row?>" column="<?php echo $excel_col[4]?>" width="25" wrap-text="1"  v-align="center" h-align="left" border="1"><?php echo $item['Attr']?></xls></td>
+			<!-- Đơn vị tính --><td class="left" width="100px"><xls row="<?php echo $row?>" column="<?php echo $excel_col[5]?>" width="10" wrap-text="1"  v-align="center" h-align="left" border="1"><?php echo $item['Uom']?></xls></td>
+			<!-- Số lượng --><td class="right" width="80px"><xls row="<?php echo $row?>" column="<?php echo $excel_col[6]?>" width="10"  wrap-text="1"  v-align="center" h-align="right" border="1"><?php echo $item['Qty']?></xls></td>
+			</tr>
+			<?php $no++;?>
+			<?php $row++?>
+			<?php endforeach; // In danh sach vat tu ?>
+			<?php endif;// Neu co vat tu?>
+
+			<?php /*if(isset($this->print['SparePart'] )): // Neu co phu tung?>
+			<tr>
+			<th class="left" colspan="6"><xls row="<?php echo $row?>" column="<?php echo $excel_col[1]?>" column-merge="<?php echo $excel_col[6]?>"  wrap-text="1"  v-align="center" h-align="left" border="1" repeat="1" bold="1"  repeat="1"><?php echo $this->_translate(11)?></xls></th>
+			</tr>
+			<?php $row++?>
+			<?php $no = 1;?>
+			<?php foreach ($this->print['SparePart'] as $item): // In danh sach  phu tung?>
+			<tr>
+			<!-- STT --><td class="center" width="50px"><xls row="<?php echo $row?>" column="<?php echo $excel_col[1]?>" width="8"  wrap-text="1"  v-align="center" h-align="center" border="1"><?php echo $no?></xls></td>
+			<!-- Mã VT/PT --><td class="left" width="150px"><xls row="<?php echo $row?>" column="<?php echo $excel_col[2]?>" width="25"  wrap-text="1"  v-align="center" h-align="left" border="1"><?php echo $item['Code']?></xls></td>
+			<!-- Tên VT/PT --><td class="left" width="250px"><xls row="<?php echo $row?>" column="<?php echo $excel_col[3]?>" width="35" wrap-text="1"  v-align="center" h-align="left" border="1"><?php echo $item['Name']?></xls></td>
+			<!-- Thuộc tính --><td class="left" width="150px"><xls row="<?php echo $row?>" column="<?php echo $excel_col[4]?>" width="25" wrap-text="1"  v-align="center" h-align="left" border="1"><?php echo $item['Attr']?></xls></td>
+			<!-- Đơn vị tính --><td class="left" width="100px"><xls row="<?php echo $row?>" column="<?php echo $excel_col[5]?>" width="10" wrap-text="1"  v-align="center" h-align="left" border="1"><?php echo $item['Uom']?></xls></td>
+			<!-- Số lượng --><td class="right" width="80px"><xls row="<?php echo $row?>" column="<?php echo $excel_col[6]?>" width="10"  wrap-text="1"  v-align="center" h-align="right" border="1"><?php echo $item['Qty']?></xls></td>
+			</tr>
+			<?php $no++;?>
+			<?php $row++?>
+			<?php endforeach; // In danh sach  phu tung?>
+			<?php endif; // Neu co phu tung */?>
+		</table>
+	</div>
+
+    <br/>
+
+    <table cellpadding="0" cellspacing="0" border="0">
+
+        <tr>
+            <td style="width:33%;" class="center bold"></td>
+            <td style="width:33%;" class="center bold"></td>
+            <td style="width:33%;" class="center bold">Hòa Bình, ngày.....tháng.....năm..... </td>
+        </tr>
+
+        <tr>
+            <td style="width:33%;" class="center bold">ĐỘI BẢO TRÌ VÀ SỬA CHỮA</td>
+            <td style="width:33%;" class="center bold">BAN KỸ THUẬT</td>
+            <td style="width:33%;" class="center bold">BAN LÃNH ĐẠO</td>
+        </tr>
+    </table>
+
+    <!--
+    <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td style="width:33%;" class="center bold">ĐẠI DIỆN  </td>
+            <td style="width:33%;" class="center bold">ĐẠI DIỆN </td>
+            <td style="width:33%;" class="center bold">ĐẠI DIỆN </td>
+        </tr>
+
+        <tr>
+            <td style="width:33%;" class="center bold">BAN CHỨC NĂNG </td>
+            <td style="width:33%;" class="center bold">ĐƠN VỊ SẢN XUẤT</td>
+            <td style="width:33%;" class="center bold">ĐỘI BTSC&XD</td>
+        </tr>
+    </table>
+    -->
+
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+</div>

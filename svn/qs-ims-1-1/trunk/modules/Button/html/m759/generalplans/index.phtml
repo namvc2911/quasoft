@@ -1,0 +1,46 @@
+<script src="/js/common.js"></script>
+<script src="/js/extra/static/m729.js"></script>
+<?php
+    $width = array(1, 5, 5, 2, 2, 2, 5, 5, 5);
+    $width = Qss_Lib_Report::changeWidthToFitScreen3($width);
+?>
+
+<style>
+    .datepicker
+    {
+        width: 80px;
+    }
+</style>
+
+<script>
+    $(document).ready(function(){
+        $('.datepicker').each(function(){
+            $(this).datepicker({ dateFormat: "dd-mm-yy" });
+        });
+    });
+</script>
+
+<form id="M729_General_Plan_Form">
+    <div class="popup_wrap">
+        <div class="popup_header">
+            <table class="popup_detail">
+                <tr>
+                    <th style="width: 20%">
+                        Kế hoạch tổng thể:
+                    </th>
+
+                    <td colspan="3">
+                        <?php echo $this->views->Report->SimpleComboBox('general', $this->generals, ' style="width:200px;" onchange="m759_generalplans_button.show();" ');?>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="popup_content">
+
+        </div>
+    </div>
+</form>
+
+
+

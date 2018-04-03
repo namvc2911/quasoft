@@ -1,0 +1,59 @@
+<link rel="stylesheet" href="/css/extra/static/m043.css"/>
+<script src="/js/form-edit.js"></script>
+<script src="/js/extra/static/m043.js"></script>
+
+<div id="view">
+    <div style="height: 100%">
+        <div id="filter_box">
+
+            <div id="m043_menu">
+                <div style="" class="break-word" id="m043_dial_box">
+                    <div class="m043_dial_box_element" onclick="Static_M043.show('DANG_KY_NGHI', this);"
+                         title="<?php echo $this->_translate(1);?>">
+                        <span>
+                            <input type="radio" name="a"/>
+                            <?php echo $this->_translate(1);?>
+                        </span>
+                    </div>
+
+                    <div class="m043_dial_box_element" onclick="Static_M043.show('DANG_KY_LAM_THEM', this);"
+                         title="<?php echo $this->_translate(2);?>">
+                        <span>
+                            <input type="radio" name="a"/>
+                            <?php echo $this->_translate(2);?>
+                        </span>
+                    </div>
+
+                    <div class="m043_dial_box_element" onclick="Static_M043.show('MY_TIME_CARD', this);"
+                         title="<?php echo $this->_translate(3);?>">
+                        <span>
+                            <input type="radio" name="a"/>
+                            <?php echo $this->_translate(3);?>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hiển thị form đăng ký -->
+            <div id="m043_register_form">
+                &nbsp;
+            </div>
+
+            <div class="clear"></div>
+            <br/>
+        </div>
+
+        <div class="clear"></div>
+
+        <!-- Hiển thị bảng dữ liệu chi tiết -->
+        <div id="m052_data_wrap">
+            <div id="data_table">
+
+            </div>
+            <!-- end #show_box -->
+        </div>
+    </div>
+</div>
+
+
+

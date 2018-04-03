@@ -1,0 +1,60 @@
+<script>    
+    function printPreview(){
+		var url  = sz_BaseUrl + '/static/m845/show';
+		var data = $('#report').serialize();
+
+		qssAjax.getHtml(url, data, function(jreturn) {
+				$('#print-area').html(jreturn);
+				removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+		});
+    }
+
+    function excelRender()
+    {
+		$('#report').submit();
+    }
+
+    function removePrintToolbarDisabled()
+    {
+        $('.pt-button').each(function(){
+            $(this).prop('disabled',false);
+        });
+    }
+</script>
+
+<div class="clear"></div>
+<div id="view">
+	<div class="line-hr">
+		<span> <?php echo Qss_Lib_System::getReportTitle('M845');?> </span>
+	</div>
+
+	<form id="report" method="get" action="/static/m845/excel">
+        <input type="hidden" name="popup" value="1" />
+		<table class="detail">
+			<!-- Khu vực -->
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(11);?>
+				</th>
+				<td><?php
+					$id = 'partner';
+					$getFields = array('num' => 3,
+						'objects' => array('ODoiTac' => array(
+							'id' => 'IOID'
+						, 'display1' => 'MaDoiTac'
+						, 'display2' => 'TenDoiTac'
+						, 'order' => 'MaDoiTac'
+						, 'where' => ' AND IFNULL(NhaCungCapDichVu, 0) = 1')));
+					?> <?php echo $this->views->Report->ComboBox($id, $getFields); ?>
+
+			</tr>
+		</table>
+	</form>
+
+	<hr>
+
+	<?php echo $this->views->Report->PrintToolbar();?>
+
+	<div id="print-content">
+		<div id="print-area"></div>
+	</div>
+</div>

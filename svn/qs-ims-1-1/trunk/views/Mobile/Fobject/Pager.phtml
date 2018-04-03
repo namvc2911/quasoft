@@ -1,0 +1,54 @@
+<div class="mobile-box-data-line bglightblue">
+	<form id="form_<?php echo $this->form->FormCode?>_extra" style="display: inline;">
+		<input type="hidden" id="qss_form_groupby" value="">
+		<input type="hidden" id="qss_form_uid" value="">
+			<?php 
+				$classname = 'Qss_View_Extra_Search_'.$this->form->FormCode;
+				if(class_exists($classname))
+				{
+					echo $this->views->Extra->Search->{$this->form->FormCode}($this->form);
+					echo '<br>';
+				}
+			?>
+			<?php if($this->form->i_Type == Qss_Lib_Const::FORM_TYPE_MODULE):?>
+				<select id="qss_form_status"
+					<?php if(count($this->status)):?>class="bglightgreen"<?php endif;?>
+					onchange="rowSearch('<?php echo $this->form->FormCode;?>');">
+					<option value="">
+						---
+						<?php echo $this->_translate(10)?>
+						---
+					</option>
+					<?php foreach($this->steps as $item):?>
+					<option class="<?php echo $item->Color?>"
+						value="<?php echo $item->StepNo?>">
+						<?php echo $item->{'Name'.((Qss_Register::get('userinfo')->user_lang != 'vn')?('_'.Qss_Register::get('userinfo')->user_lang):'')}?>
+						<?php if(in_array($item->StepNo,$this->status)):?>*<?php endif;?>
+					</option>
+					<?php endforeach;?>
+				</select>
+			<br>
+			<?php endif;?>
+	</form>
+		
+		<?php echo $this->_translate(30,'Trang')?>:
+			<a title="Trang trước" class="bold" href="#" onclick="$('#qss_form_pageno').val('<?php echo ($this->currentpage - 1)?($this->currentpage - 1):1;?>');rowSearch('<?php echo $this->form->FormCode;?>');"><<</a> 
+			<input id="qss_form_pageno" onchange="rowSearch('<?php echo $this->form->FormCode;?>');"
+			style="width: 20px !important; text-align: center;" value="<?php echo $this->currentpage;?>">/<?php echo $this->pagecount?> 
+			<a title="Trang sau" class="bold" href="#" onclick="$('#qss_form_pageno').val('<?php echo ($this->currentpage < $this->pagecount)?($this->currentpage + 1):$this->pagecount;?>');rowSearch('<?php echo $this->form->FormCode;?>');">>></a>
+			<?php echo $this->_translate(28,'Hiển thị')?>: <select id="qss_form_perpage"
+			style="width: 100;"
+			onchange="rowSearch('<?php echo $this->form->FormCode;?>');">
+			<?php
+			$arr = array(10, 20, 50, 100);
+			foreach ($arr as $val):?>
+			<option
+			<?php
+			if ( $val == $this->limit )
+			echo 'selected';
+			?>><?php
+			echo $val;
+			?></option>
+			<?php endforeach;?>
+		</select>
+</div>

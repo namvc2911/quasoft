@@ -1,0 +1,353 @@
+<?php
+$map = $this->section;
+$count = count((array) $map);
+$msg = $this->msg;
+$protocol = stripos($_SERVER['SERVER_PROTOCOL'],'https') === true ? 'https://' : 'http://';
+$base       = $protocol . $_SERVER['HTTP_HOST'] . '/data_songma/documents/';
+$root       =  QSS_ROOT_DIR . '/data_songma/documents/';
+?>
+
+
+<script>
+        clearMarkers(mapWorkstationMarkers);
+        clearMarkers(mapSectionMarkers);
+        clearMarkers(mapXoiLoBoiTuMarkers);
+        clearMarkers(mapHoKhoanMarkers);
+        clearMarkers(mapHoChuaMarkers);
+        var iconBase = '<?php echo $base?>';
+        
+        markers = [
+<?php foreach ($this->workstation as $tram): ?>
+        <?php if ($tram->KinhDo && $tram->ViDo): ?>
+                                ['<?php echo $tram->TenTram; ?>', <?php echo $tram->KinhDo; ?>, <?php echo $tram->ViDo; ?>, <?php echo $tram->IOID; ?>
+                                        ,  '<?php echo ($tram->Icon && file_exists($root."{$tram->Icon}"))?$tram->Icon:'';?>'
+                                        , '<?php echo pathinfo($tram->Icon, PATHINFO_EXTENSION);?>'],
+        <?php endif; ?>
+<?php endforeach; ?>
+        ];
+
+        var infowindow = new google.maps.InfoWindow();
+        var marker, i;
+        //var bounds = new google.maps.LatLngBounds();
+
+        if (markers.length > 0)
+        {
+                for (i = 0; i < markers.length; i++) {
+                        var pos = new google.maps.LatLng(markers[i][2], markers[i][1]);
+
+                        marker = new google.maps.Marker({
+                                position: pos,
+                                map: map
+                        });
+                        
+                        if(markers[i][4])
+                        {
+                        marker.setIcon( iconBase 
+                            + markers[i][4] );
+                        }
+                        
+                        
+                        
+                        
+                        mapWorkstationMarkers[i] = marker;
+                        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                                return function() {
+                                        //infowindow.setContent(markers[i][0]);
+                                        //infowindow.open(map, marker);
+                                        showWorkstationDetail(markers[i][3]);
+                                        return;
+                                }
+                        })(marker, i));
+                        //bounds.extend(pos);
+                }
+
+                //map.fitBounds(bounds);
+        }
+        
+        
+        // HO KHOAN
+        HoKhoanMarkers = [
+<?php foreach ($this->HoKhoan as $tram): ?>
+        <?php if ($tram->OX && $tram->OY): ?>
+                                ['<?php echo $tram->HoKhoan; ?>', <?php echo $tram->OY; ?>, <?php echo $tram->OX; ?>, <?php echo $tram->IOID; ?>
+                                        , '<?php echo ($tram->Icon && file_exists($root."{$tram->Icon}"))?$tram->Icon:'';?>'
+                                        , '<?php echo pathinfo($tram->Icon, PATHINFO_EXTENSION);?>'],
+        <?php endif; ?>
+<?php endforeach; ?>
+        ];
+
+        var infowindow = new google.maps.InfoWindow();
+        var HoKhoanMarker, i;
+        //var bounds = new google.maps.LatLngBounds();
+
+        if (HoKhoanMarkers.length > 0)
+        {
+                for (i = 0; i < HoKhoanMarkers.length; i++) {
+                        var pos = new google.maps.LatLng(HoKhoanMarkers[i][1], HoKhoanMarkers[i][2]);
+
+                        HoKhoanMarker = new google.maps.Marker({
+                                position: pos,
+                                map: map
+                        });
+                        
+                        if(HoKhoanMarkers[i][4])
+                        {
+                        HoKhoanMarker.setIcon( iconBase 
+                            + HoKhoanMarkers[i][4] );
+                        }
+                        mapHoKhoanMarkers[i] = HoKhoanMarker;
+                        google.maps.event.addListener(HoKhoanMarker, 'click', (function(HoKhoanMarker, i) {
+                                return function() {
+                                        //infowindow.setContent(markers[i][0]);
+                                        //infowindow.open(map, marker);
+                                        showHoKhoanDetail(HoKhoanMarkers[i][3]);
+                                        return;
+                                }
+                        })(HoKhoanMarker, i));
+                        //bounds.extend(pos);
+                }
+
+                //map.fitBounds(bounds);
+        }
+        
+        
+        
+        // HO CHUA
+        HoChuaMarkers = [
+<?php foreach ($this->HoChua as $tram): ?>
+        <?php if ($tram->OX && $tram->OY): ?>
+                                ['<?php echo $tram->Ma; ?>', <?php echo $tram->OY; ?>, <?php echo $tram->OX; ?>, <?php echo $tram->IOID; ?>
+                                        , '<?php echo ($tram->Icon && file_exists($root."{$tram->Icon}"))?$tram->Icon:'';?>'
+                                        , '<?php echo pathinfo($tram->Icon, PATHINFO_EXTENSION);?>'],
+        <?php endif; ?>
+<?php endforeach; ?>
+        ];
+
+        var infowindow = new google.maps.InfoWindow();
+        var HoChuaMarker, i;
+        //var bounds = new google.maps.LatLngBounds();
+
+        if (HoChuaMarkers.length > 0)
+        {
+                for (i = 0; i < HoChuaMarkers.length; i++) {
+                        var pos = new google.maps.LatLng(HoChuaMarkers[i][2], HoChuaMarkers[i][1]);
+
+                        HoChuaMarker = new google.maps.Marker({
+                                position: pos,
+                                map: map
+                        });
+                        
+                        
+                        if(HoChuaMarkers[i][4])
+                        {
+                        HoChuaMarker.setIcon( iconBase 
+                            + HoChuaMarkers[i][4] );
+                        }
+                        mapHoChuaMarkers[i] = HoChuaMarker;
+                        google.maps.event.addListener(HoChuaMarker, 'click', (function(HoChuaMarker, i) {
+                                return function() {
+                                        //infowindow.setContent(markers[i][0]);
+                                        //infowindow.open(map, marker);
+                                        showHoChuaDetail(HoChuaMarkers[i][3]);
+                                        return;
+                                }
+                        })(HoChuaMarker, i));
+                        //bounds.extend(pos);
+                }
+
+                //map.fitBounds(bounds);
+        }
+        
+        
+        // XOI LO BOI TU
+        XoiLoBoiTuMarkers = [
+<?php foreach ($this->XoiLoBoiTu as $tram): ?>
+        <?php if ($tram->OY && $tram->OX): ?>
+                                ['<?php echo $tram->Ma; ?>', <?php echo $tram->OY; ?>, <?php echo $tram->OX; ?>, <?php echo $tram->IOID; ?>
+                                        , '<?php echo ($tram->Icon && file_exists($root."{$tram->Icon}"))?$tram->Icon:'';?>'
+                                        , '<?php echo pathinfo($tram->Icon, PATHINFO_EXTENSION);?>'],
+        <?php endif; ?>
+<?php endforeach; ?>
+        ];
+
+        var infowindow = new google.maps.InfoWindow();
+        var XoiLoBoiTuMarker, i;
+        //var bounds = new google.maps.LatLngBounds();
+
+        if (XoiLoBoiTuMarkers.length > 0)
+        {
+                for (i = 0; i < XoiLoBoiTuMarkers.length; i++) {
+                        var pos = new google.maps.LatLng(XoiLoBoiTuMarkers[i][2], XoiLoBoiTuMarkers[i][1]);
+
+                        XoiLoBoiTuMarker = new google.maps.Marker({
+                                position: pos,
+                                map: map
+                        });
+                        
+                        if(XoiLoBoiTuMarkers[i][4])
+                        {
+                        XoiLoBoiTuMarker.setIcon( iconBase 
+                            + XoiLoBoiTuMarkers[i][4] );
+                        }
+                        
+                        mapXoiLoBoiTuMarkers[i] = XoiLoBoiTuMarker;
+                        google.maps.event.addListener(XoiLoBoiTuMarker, 'click', (function(XoiLoBoiTuMarker, i) {
+                                return function() {
+                                        //infowindow.setContent(markers[i][0]);
+                                        //infowindow.open(map, marker);
+                                        showXoiLoBoiTuDetail(XoiLoBoiTuMarkers[i][3]);
+                                        return;
+                                }
+                        })(XoiLoBoiTuMarker, i));
+                        //bounds.extend(pos);
+                }
+
+                //map.fitBounds(bounds);
+        }
+</script>
+<script>
+        markers2 = [
+<?php foreach ($this->section as $tram): ?>
+        <?php if ($tram->XDau && $tram->YDau && $tram->XCuoi && $tram->YCuoi): ?>
+                                [<?php echo $tram->IOID; ?>, <?php echo $tram->XDau; ?>, <?php echo $tram->YDau; ?>, <?php echo $tram->XCuoi; ?>, <?php echo $tram->YCuoi; ?>, '<?php echo $tram->Ma; ?>',  '<?php echo str_replace(array('<br/>', '<br>'), '', Qss_Lib_Util::textToHtml($tram->Style)); ?>' ],
+        <?php endif; ?>
+<?php endforeach; ?>
+        ];
+
+        var infowindow = new google.maps.InfoWindow();
+        var marker2, i;
+        //var bounds = new google.maps.LatLngBounds();
+
+        
+        if (markers2.length > 0)
+        {
+                for (i = 0; i < markers2.length; i++) {
+                        var match_color, match_opacity, match_weight, match_dash
+                                ,  regex_color = /<color>(.*?)<\/color>/ig, regex_weight = /<weight>(.*?)<\/weight>/ig
+                                , regex_opacity = /<opacity>(.*?)<\/opacity>/ig 
+                                , regex_dash = /<dash>(.*?)<\/dash>/ig ;
+                                
+                        var lineSymbol = {
+                                path: 'M 0,-1 0,1',
+                                strokeOpacity: 1,
+                                scale: 2
+                              };
+        
+                        var pos = new google.maps.LatLng(markers2[i][1], markers2[i][2]);
+                        var polyOption = {};
+                        polyOption ={path: [
+                                        new google.maps.LatLng(markers2[i][1], markers2[i][2]),
+                                        new google.maps.LatLng(markers2[i][3], markers2[i][4])],
+                                        map: map}
+
+                        if(markers2[i][6])
+                        {
+                                match_dash = regex_dash.exec(markers2[i][6]);
+                                match_color = regex_color.exec(markers2[i][6]);
+                                match_opacity = regex_opacity.exec(markers2[i][6]);
+                                match_weight = regex_weight.exec(markers2[i][6]);
+                        }
+//                                if(match_dash && match_dash[1] == 1)
+//                                {
+//                                        polyOption.icons = {};
+//                                        polyOption.icons.icon = {};
+//                                        polyOption.icons.icon.path = 'M 0,-1 0,1';
+//                                        polyOption.icons.icon.strokeOpacity = (match_opacity)?match_opacity[1]:1;
+//                                        polyOption.icons.icon.scale = (match_weight)?match_weight[1]:1;
+//                                        polyOption.icons.offset = '0';
+//                                        polyOption.icons.repeat = '50px';
+//                                        polyOption.stokeOpacity = 0;
+//                                }
+//                                else
+//                                {
+//                                }
+                        polyOption.stokeOpacity = (match_opacity)?match_opacity[1]:1;
+                        polyOption.strokeWeight = (match_weight)?match_weight[1]:2;
+                        polyOption.strokeColor = (match_color)?match_color[1]:'#fff';
+                                
+//                        console.log(polyOption);
+
+                        var marker2= new google.maps.Polyline(polyOption);
+                        
+
+                        
+                        mapSectionMarkers[i] = marker2;
+                        google.maps.event.addListener(marker2, 'click', (function(marker2, i) {
+                                return function() {
+                                        // infowindow.setContent(markers[i][0]);
+                                        // infowindow.open(map, marker);
+                                        showSectionDetail(markers2[i][0], markers2[i][5]);
+                                        return;
+                                }
+
+
+                        })(marker2, i));
+                        //map.addOverlay(marker);
+                        //bounds.extend(pos);
+                }
+
+                //map.fitBounds(bounds);
+        }
+</script>
+
+
+
+<script type="text/javascript">
+        //map.setMap(null);
+        
+        var styles = [
+  {
+    stylers: [
+      { hue: "#00ffe6" },
+      { saturation: -20 }
+    ]
+  },{
+    featureType: "road",
+    elementType: "geometry",
+    stylers: [
+      { lightness: 100 },
+      { visibility: "simplified" }
+    ]
+  },{
+    featureType: "road",
+    elementType: "labels",
+    stylers: [
+      { visibility: "off" }
+    ]
+  }
+];
+
+
+        var sz_BaseUrl = 'http://' + location.host;
+        var arrtemp = new Array();
+<?php foreach ($this->basemap as $v)://ban do nen ?>
+        <?php $file = $v->Icon ? $v->Icon : 0; ?>
+        <?php if ($file): ?>
+                        if (newRoad[<?php echo $v->IOID ?>] === undefined)
+                        {
+                                console.log(sz_BaseUrl + '/data_songma/documents/<?php echo $file ?>?dummy=' + (new Date()).getTime());
+                                var road_<?php echo $v->IOID; ?> = new google.maps.KmlLayer(
+                                    sz_BaseUrl + '/data_songma/documents/<?php echo $file ?>?dummy=' + (new Date()).getTime(),
+                                    {preserveViewport: true}
+                                );
+                                newRoad[<?php echo $v->IOID; ?>] = road_<?php echo $v->IOID; ?>;
+                                road_<?php echo $v->IOID; ?>.setMap(map);
+                                map.setOptions({styles: styles});
+                                google.maps.event.addListener(road_<?php echo $v->IOID; ?>, 'click', function(event) {
+                                        //showDetail();
+                                        return;
+                                });
+                        }
+                        arrtemp[<?php echo $v->IOID; ?>] = '1';
+        <?php endif; ?>
+<?php endforeach; ?>
+</script>
+<script>
+        for (var idx in newRoad)
+        {
+                if (arrtemp[idx] == undefined) {
+                        newRoad[idx].setMap(null);
+                        delete newRoad[idx];
+                }
+        }
+</script>

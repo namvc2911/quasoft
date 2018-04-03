@@ -1,0 +1,245 @@
+<?php
+/**
+ * @author Thinh Tuan <thinh.tuan@quasoft.vn>
+ * @module In bien ban kiem ke kho
+ * @path /extra/print/warehouse/control
+ * @create 14/10/2014
+ * @description Hien thi bien ban kiem ke kho
+ */
+
+$excel_col   = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg          = "#EEEEEE";
+$row         = 9;
+$totalColumn = 7;
+$title       = $this->_translate(1);
+?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="portrait">
+	<excel orientation="portrait" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+
+	<div id="head_print">
+	<?php echo $this->views->Common->Portrait() ?>
+
+		<center>
+			<h2>
+				<xls row="<?php echo $row?>" column="A"
+					column-merge="<?php echo $excel_col[$totalColumn]?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> BIÊN BẢN KIỂM KÊ
+				KHO </xls>
+			</h2>
+
+			<div>
+				<xls row="<?php echo $row?>" column="A"
+					column-merge="<?php echo $excel_col[$totalColumn]?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center">
+				Tháng...........Năm........... </xls>
+			</div>
+			<?php $row++ ?>
+		</center>
+		<?php $row++ ?>
+
+
+
+		<div style="padding-left: 260px;">
+			<xls row="<?php echo $row?>" column="A"
+				column-merge="<?php echo $excel_col[$totalColumn]?>" font-size="12"
+				wrap-text="1" h-align="center" v-align="center"> Thơi gian kiểm kê:
+			................................................................ </xls>
+		</div>
+		<?php $row++ ?>
+
+		<div style="padding-left: 260px;">
+			<xls row="<?php echo $row?>" column="A"
+				column-merge="<?php echo $excel_col[$totalColumn]?>" font-size="12"
+				wrap-text="1" h-align="center" v-align="center">- Thành phần tham
+			gia kiểm kê: </xls>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		</div>
+		<?php $row++ ?>
+
+		<div style="padding-left: 260px;">
+			<xls row="<?php echo $row?>" column="A"
+				column-merge="<?php echo $excel_col[$totalColumn]?>" font-size="12"
+				wrap-text="1" h-align="center" v-align="center">+ Thủ
+			kho::.............................................................................
+			</xls>
+		</div>
+		<?php $row++ ?>
+
+		<div style="padding-left: 260px;">
+			<xls row="<?php echo $row?>" column="A"
+				column-merge="<?php echo $excel_col[$totalColumn]?>" font-size="12"
+				wrap-text="1" h-align="center" v-align="center">+ Người kiểm kê
+			kho:............................................................. </xls>
+		</div>
+		<?php $row++ ?>
+
+		<div style="padding-left: 260px;">
+			<xls row="<?php echo $row?>" column="A"
+				column-merge="<?php echo $excel_col[$totalColumn]?>" font-size="12"
+				wrap-text="1" h-align="center" v-align="center">- Kết quả kiểm
+			kê:...................................................................
+			</xls>
+		</div>
+		<?php $row++ ?>
+
+		<div style="padding-left: 260px;">
+			<xls row="<?php echo $row?>" column="A"
+				column-merge="<?php echo $excel_col[$totalColumn]?>" font-size="12"
+				wrap-text="1" h-align="center" v-align="center">-
+			............................................................................................
+			</xls>
+		</div>
+		<?php $row++ ?>
+
+	</div>
+	<br />
+	<?php $row++ ?>
+
+
+
+
+	<div id="container" style="width: 100%">
+		<table cellspacing="0" cellpadding="0" border="1" id="" class="border"
+			style="width: 100%">
+
+			<?php $begin = 0; ?>
+			<tr class="bggrey">
+				<th style="width: 10%">
+					<!-- STT --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1">STT</xls>
+				</th>
+
+				<th style="width: 25%">
+					<!-- Ten--> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1">Tên</xls>
+				</th>
+
+				<th style="width: 10%">
+					<!-- ĐVT--> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1">ĐVT</xls>
+				</th>
+
+				<th style="width: 10%">
+					<!-- Ton so sach --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1">Tồn sổ sách</xls>
+				</th>
+
+				<th style="width: 10%">
+					<!-- Ton thuc te --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1">Tồn thực tế</xls>
+				</th>
+
+				<th style="width: 10%">
+					<!-- Chenh lech --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1">Chênh lệch</xls>
+				</th>
+
+				<th style="width: 25%">
+					<!-- Ghi chu --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1">Ghi chú</xls>
+				</th>
+			</tr>
+			<?php $row++?>
+
+
+			<?php $stt = 0;?>
+			<?php foreach ($this->print as $item): // in report?>
+
+			<?php $begin = 0; ?>
+			<tr>
+				<td class="center <?php echo 'col'.$begin;?>">
+					<!-- STT --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo ++$stt;?></xls>
+				</td>
+
+
+				<td class="left <?php echo 'col'.$begin;?>">
+					<!-- Ma MH --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $item->MaSanPham?></xls>
+				</td>
+
+				<td class="left <?php echo 'col'.$begin;?>">
+					<!-- DVT --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $item->DonViTinh;?></xls>
+				</td>
+
+				<td class="left <?php echo 'col'.$begin;?>">
+					<!-- ton so sach --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo @(double)$item->SoLuong;?></xls>
+				</td>
+
+
+				<td class="right <?php echo 'col'.$begin;?>">
+					<!-- Ton thu te --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo @(double)$item->SoLuongTT;?></xls>
+				</td>
+
+
+				<td class="right <?php echo 'col'.$begin;?>">
+					<!-- c lech --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo @(double)($item->SoLuongTT - $item->SoLuong);?></xls>
+				</td>
+
+				<td class="right <?php echo 'col'.$begin;?>">
+					<!-- Ghi chu --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"></xls> &nbsp;</td>
+			</tr>
+			<?php $row++ ?>
+			<?php endforeach;// in report?>
+
+		</table>
+
+	</div>
+
+	<br />
+	<?php $row++ ?>
+	<div style="">
+	<?php $half = ceil($totalColumn/2);?>
+	<?php $second = $half + 1;?>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<b> <xls row="<?php echo $row?>" column="A"
+				column-merge="<?php echo $excel_col[ceil($half)]?>" font-size="12"
+				wrap-text="1" h-align="left" bold="1" v-align="center">Xác nhận của
+			thủ kho</xls> </b>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<b> <xls row="<?php echo $row?>"
+				column="<?php echo $excel_col[$second]?>"
+				column-merge="<?php echo $excel_col[$totalColumn]?>" font-size="12"
+				wrap-text="1" h-align="left" bold="1" v-align="center">Xác nhận của
+			người kiểm kê </xls> </b>
+	</div>
+	<?php $row++ ?>
+</div>

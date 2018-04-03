@@ -1,0 +1,124 @@
+<div class="clear"></div>
+
+<div class="">
+    <div class="fl" style="line-height: 22px;">
+         <span class="red bold"> >> </span> <?php echo $this->_translate(1)?> <a href="#1" onclick="openModule('<?php echo @$this->form->FormCode;?>')">"<?php echo @$this->form->sz_Name;?>"</a>
+    </div>
+
+    <div class="fr">
+        <?php echo $this->_translate(8)?>
+        <a id="m174-approval-back-page" class="bold" onclick="$('#m174-approval-page').val('<?php echo $this->prev;?>'); Static_M174.show('APPROVER', '<?php echo $this->SAID;?>');" href="#" title="<?php echo $this->_translate(5)?>"> << </a>
+        <input id="m174-approval-page" value="<?php echo $this->page;?>" style="width: 20px !important; text-align: center;" onchange="Static_M174.show('APPROVER', '<?php echo $this->SAID;?>')" name="einfo_history_page">
+        /
+        <span id="m174-approval-total-page"><?php echo $this->total;?></span>
+        <a id="m174-approval-next-page" class="bold" onclick="$('#m174-approval-page').val('<?php echo $this->next;?>'); Static_M174.show('APPROVER', '<?php echo $this->SAID;?>');" href="#" title="<?php echo $this->_translate(7)?>"> >> </a>
+        <?php echo $this->_translate(9)?>
+        <select id="m174-approval-display" onchange="Static_M174.show('APPROVER', '<?php echo $this->SAID;?>');" style="width: 100;" name="einfo_history_display">
+            <option value="10">10</option>
+            <option value="20" selected="">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+    </div>
+</div>
+
+
+<div class="clear"></div>
+
+<?php
+// echo '<pre>'; print_r($this->fields ); die;
+$html   = '';
+$width  = 1200;
+$start  = $this->end;
+$widths = array(80);
+
+foreach ($this->fields as $field)
+{
+    if($field->bGrid&2 && $field->intFieldType != 17)
+    {
+        $widths[] = $field->intFieldWidth;
+    }
+}
+
+$widths[] = 150;
+$widths[] = 100;
+$widths[] = 300;
+
+$widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+$begin  = 0;
+?>
+
+<div>
+    <table id="grid" cellspacing="0" cellpadding="0" border="0" class="grid" >
+        <thead>
+            <tr>
+                <th style="width:<?php echo $widths[$begin++];?>%"><?php echo $this->_translate(3)?></th>
+
+                <?php foreach ($this->fields as $field):?>
+                    <?php if($field->bGrid&2 && $field->intFieldType != 17):?>
+                        <th style="width:<?php echo $widths[$begin++];?>%"><?php echo $field->szFieldName;?></th>
+                    <?php endif;?>
+                <?php endforeach;?>
+
+                <th style="width:<?php echo $widths[$begin++];?>%"><?php echo $this->_translate(2)?></th>
+                <th style="width:<?php echo $widths[$begin++];?>%"><?php echo $this->_translate(4)?></th>
+                <th style="width:<?php echo $widths[$begin++];?>%">&nbsp;</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <?php $ci = 0;?>
+            <?php foreach($this->list as $item):?>
+                <tr <?php echo ++$ci%2==0?'bgcolor="#f7f9f9"':'';?>>
+                    <td class="center"><?php echo ++$start;?></th>
+
+                    <?php foreach ($this->fields as $field):?>
+                        <?php if($field->bGrid&2 && $field->intFieldType != 17):?>
+                            <?php $field->setValue($item->{$field->FieldCode});?>
+
+
+                            <td class="<?php echo Qss_Lib_Const::$FIELD_ALIGN[$field->intFieldType];?>">
+
+                                <?php if($field->intInputType != 5): ?>
+                                    <?php echo $field->getValue();?>
+                                <?php else: ?>
+                                    <?php echo $field->sz_fGetDisplay();?>
+                                <?php endif;?>
+                            </td>
+                        <?php endif;?>
+                    <?php endforeach;?>
+
+                    <td class="center <?php echo $item->Color;?>"><?php echo $item->StepName;?></td>
+                    <td class="center"> <a href="#1" onclick="popupFormDetail('<?php echo $item->IFID;?>', '<?php echo $this->deptid;?>')"><?php echo $this->_translate(4)?></a> </td>
+                    <td class="center" style="padding: 5px;">
+
+                        <?php if($item->NeedApprove):?>
+                            <?php if($item->ADate == '' || $item->RDate != ''): // chua duyet?>
+                                <?php if($item->ChuaDuyetDuyetTruoc == 0): ?>
+                                    <button type="button" class="btn" style="color:green;"
+                                            onclick="Static_M174.approve('<?php echo $item->SAID;?>', '<?php echo $item->IFID;?>', '<?php echo $this->deptid;?>');">
+                                        <?php echo $item->ApproveName;?>
+                                    </button>
+                                <?php endif;?>
+                            <?php elseif($item->ADate != ''): // Da duyet?>
+                                <button type="button"
+                                        class="btn red" style="color:red;"
+                                        onclick="Static_M174.reject('<?php echo $item->SAID;?>', '<?php echo $item->IFID;?>', '<?php echo $this->deptid;?>');">
+                                    <?php echo $this->_translate(6)?> "<?php echo $item->ApproveName;?>"
+                                </button>
+                            <?php endif;?>
+                        <?php endif;?>
+                    </td>
+                </tr>
+            <?php endforeach;?>
+        </tbody>
+
+    </table>
+</div>
+
+<script>
+    $(document).ready(function() {
+        var height = $(window).height() - 180 - $('#grid thead').height();//-8
+        $('#grid').tableScroll({height:height,width:'100%'});
+    });
+</script>

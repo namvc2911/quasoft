@@ -1,0 +1,267 @@
+<?php
+/**
+ * @author Thinh Tuan <thinh.tuan@quasoft.vn>
+ * @module Tong hop chi phi theo doi tuong
+ * @path /report/maintenance/cost/object
+ * @create 07/10/2014 - 8:00AM
+ * @description Hien thi chi phi theo tung khu vuc sau do hien thi chi phi
+ * theo tung thiet bi cu the.
+ */
+
+$excel_col   = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$row         = 2;
+$totalColumn   = 7;
+$colWidths   = array(1,2,3,1,1,2,2,2,2,2);
+$excelWidths = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($colWidths, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+$fitWidths   = Qss_Lib_Report::changeWidthToFitScreen($colWidths, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+$stt = 0;
+$title       = $this->_translate(1);
+?>
+<style>
+    .landscape {width:1200px;}
+</style>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="landscape">
+    <excel orientation="landscape" font-name="Arial" font-size="9"
+           margin-left="0.5" margin-right="0.5" margin-top="0.75"
+           margin-bottom="0.75" />
+
+    <div id="head_print">
+        <?php echo $this->views->Common->Landscape() ?>
+        <center>
+            <h2>
+                <xls row="<?php echo $row?>" column="A"
+                     column-merge="<?php echo $excel_col[$totalColumn]?>" font-size="12"
+                     wrap-text="1" h-align="center" v-align="center"> <?php echo $title?>
+                </xls>
+            </h2>
+            <h2>
+                <xls row="<?php echo $row ?>" column="A"
+                     column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+                     wrap-text="1" h-align="center" v-align="center">  <?php echo $this->start .' - '. $this->end;?>
+                </xls>
+            </h2>
+        </center>
+    </div>
+    <!-- end #head_print -->
+    <?php $row++ ?>
+	<div id="container" style="width: 100%">
+		<table cellspacing="0" cellpadding="0" border="1" id="" class="border"
+			style="width: 100%">
+            <?php $col = 0; ?>
+            <tr class="bggrey">
+                <th
+                    id="<?php echo 'col'.$col;?>"
+                    markerid="<?php echo 'col'.$col;?>"
+                    class="report_title_marker"
+                    style="width:<?php echo $fitWidths[$col]; ?>px"
+                    col="<?php echo $col;?>"
+                    ><xls row="<?php echo $row ?>"
+                          width="<?php echo $excelWidths[$col]; ?>"
+                          column="<?php echo $excel_col[++$col]; ?>" wrap-text="1"
+                          h-align="center" v-align="center" border="1"> <?php echo $this->_translate(2) ?>
+                    </xls>
+                </th>
+
+                <th
+                    id="<?php echo 'col'.$col;?>"
+                    markerid="<?php echo 'col'.$col;?>"
+                    class="report_title_marker"
+                    style="width:<?php echo $fitWidths[$col]; ?>px"
+                    col="<?php echo $col;?>"
+                    ><xls row="<?php echo $row ?>"
+                          width="<?php echo $excelWidths[$col]; ?>"
+                          column="<?php echo $excel_col[++$col]; ?>" wrap-text="1"
+                          h-align="center" v-align="center" border="1"> <?php echo $this->_translate(7) ?>
+                    </xls>
+                </th>
+                <th
+                    id="<?php echo 'col'.$col;?>"
+                    markerid="<?php echo 'col'.$col;?>"
+                    class="report_title_marker"
+                    style="width:<?php echo $fitWidths[$col]; ?>px"
+                    col="<?php echo $col;?>"
+                    ><xls row="<?php echo $row ?>"
+                          width="<?php echo $excelWidths[$col]; ?>"
+                          column="<?php echo $excel_col[++$col]; ?>" wrap-text="1"
+                          h-align="center" v-align="center" border="1"> <?php echo $this->_translate(8) ?>
+                    </xls>
+                </th>
+
+                <th
+                    id="<?php echo 'col'.$col;?>"
+                    markerid="<?php echo 'col'.$col;?>"
+                    class="report_title_marker"
+                    style="width:<?php echo $fitWidths[$col]; ?>px"
+                    col="<?php echo $col;?>"
+                    ><xls row="<?php echo $row ?>"
+                          width="<?php echo $excelWidths[$col]; ?>"
+                          column="<?php echo $excel_col[++$col]; ?>" wrap-text="1"
+                          h-align="center" v-align="center" border="1"> <?php echo $this->_translate(11) ?>
+                    </xls>
+                </th>
+                <th
+                    id="<?php echo 'col'.$col;?>"
+                    markerid="<?php echo 'col'.$col;?>"
+                    class="report_title_marker"
+                    style="width:<?php echo $fitWidths[$col]; ?>px"
+                    col="<?php echo $col;?>"
+                    ><xls row="<?php echo $row ?>"
+                          width="<?php echo $excelWidths[$col]; ?>"
+                          column="<?php echo $excel_col[++$col]; ?>" wrap-text="1"
+                          h-align="center" v-align="center" border="1"> <?php echo $this->_translate(12) ?>
+                    </xls>
+                </th>
+                <th
+                    id="<?php echo 'col'.$col;?>"
+                    markerid="<?php echo 'col'.$col;?>"
+                    class="report_title_marker"
+                    style="width:<?php echo $fitWidths[$col]; ?>px"
+                    col="<?php echo $col;?>"
+                    ><xls row="<?php echo $row ?>"
+                          width="<?php echo $excelWidths[$col]; ?>"
+                          column="<?php echo $excel_col[++$col]; ?>" wrap-text="1"
+                          h-align="center" v-align="center" border="1"> <?php echo $this->_translate(13) ?>
+                    </xls>
+                </th>
+                <th
+                    id="<?php echo 'col'.$col;?>"
+                    markerid="<?php echo 'col'.$col;?>"
+                    class="report_title_marker"
+                    style="width:<?php echo $fitWidths[$col]; ?>px"
+                    col="<?php echo $col;?>"
+                    ><xls row="<?php echo $row ?>"
+                          width="<?php echo $excelWidths[$col]; ?>"
+                          column="<?php echo $excel_col[++$col]; ?>" wrap-text="1"
+                          h-align="center" v-align="center" border="1"> <?php echo $this->_translate(14);?>
+                    </xls>
+                </th>
+			</tr>
+            <?php $row++ ?>
+
+            <!-- CONTENT -->
+            <?php $makhuvuc = '';?>
+            <?php $tongphu = 0?>
+            <?php $tongso = 0?>
+			<?php if($this->report):?>
+            <?php foreach($this->report as $item):?>
+
+            <?php if($makhuvuc != $item->MaNhom && $makhuvuc != ''):?>
+                <tr>
+                    <!-- Khu vực -->
+                    <td class="bold right" colspan="6">
+                        <xls row="<?php echo $row?>"
+                             column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+                             h-align="center" v-align="center" border="1"> <?php echo $this->_translate(100);?>
+                        </xls>
+                    </td>
+                    <td class="bold right">
+                        <xls row="<?php echo $row?>"
+                             column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+                             h-align="center" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($tongphu);?>
+                        </xls>
+                    </td>
+                </tr>
+                <?php $tongphu =0;?>
+            <?php endif;?>
+
+            <?php if($makhuvuc != $item->MaNhom):?>
+                <tr>
+                    <!-- Khu vực -->
+                    <td class="bold" colspan="7">
+                        <xls row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+                            h-align="center" v-align="center" border="1"> <?php echo $item->MaNhom;?>
+                        </xls>
+                    </td>
+                </tr>
+            <?php endif;?>
+            <?php $col = 0;?>
+
+			<tr>
+                <td class="center" col="<?php echo $col;?>">
+                    <xls row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+                        h-align="center" v-align="center" border="1"> <?php echo ++$stt;?>
+                    </xls>
+                </td>
+                <td class="left" col="<?php echo $col;?>">
+                    <xls row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+                        h-align="left" v-align="center" border="1"> <?php echo $item->MaSP;?>
+                    </xls>
+                </td>
+                <td class="left" col="<?php echo $col;?>">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+                         h-align="left" v-align="center" border="1"> <?php echo $item->TenSP;?>
+                    </xls>
+                </td>
+                <td class="left" col="<?php echo $col;?>">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+                         h-align="left" v-align="center" border="1"> <?php echo $item->SoLuongVatTu;?>
+                    </xls>
+                </td>
+                <td class="left" col="<?php echo $col;?>">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+                         h-align="left" v-align="center" border="1"> <?php echo $item->DonViTinh;?>
+                    </xls>
+                </td>
+                <td class="left" col="<?php echo $col;?>">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+                         h-align="left" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($item->DonGia);?>
+                    </xls>
+                </td>
+                <td class="right" col="<?php echo $col;?>">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+                         h-align="left" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($item->ThanhTien);?>
+                    </xls>
+                </td>
+            </tr>
+            <?php $tongphu += $item->ThanhTien?>
+            <?php $tongso += $item->ThanhTien?>
+                <?php $row++ ?>
+                <?php $makhuvuc = $item->MaNhom;?>
+            <?php endforeach;?>
+
+            <?php if($makhuvuc != ''):?>
+                <tr>
+                    <!-- Khu vực -->
+                    <td class="bold right" colspan="6">
+                        <xls row="<?php echo $row?>"
+                             column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+                             h-align="center" v-align="center" border="1"> <?php echo $this->_translate(100);?>
+                        </xls>
+                    </td>
+                    <td class="bold right">
+                        <xls row="<?php echo $row?>"
+                             column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+                             h-align="center" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($tongphu);?>
+                        </xls>
+                    </td>
+                </tr>
+                <?php $tongphu = 0;?>
+            <?php endif;?>
+                <tr>
+                    <th class="right" colspan="6">
+                        <xls row="<?php echo $row ?>"
+                           column="<?php echo $excel_col[$totalColumn] ?>" wrap-text="1"
+                           v-align="top" h-align="right" border="1" bold="1"><?php echo $this->_translate(6);?></xls>
+                    </th>
+                    <th class="right">
+                        <xls row="<?php echo $row ?>"
+                             column="<?php echo $excel_col[$totalColumn] ?>" wrap-text="1"
+                             v-align="top" h-align="right" border="1" bold="1"><?php echo Qss_Lib_Util::formatMoney($tongso);?></xls>
+                    </th>
+                </tr>
+			<?php endif;?>
+        </table>
+	</div>
+</div>

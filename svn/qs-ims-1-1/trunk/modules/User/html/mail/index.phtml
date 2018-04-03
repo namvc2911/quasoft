@@ -1,0 +1,409 @@
+<script>
+$(function () {
+	var url = sz_BaseUrl + '/user/field/tag/mail';
+    $('#to').tagSuggest({
+        url: url,
+        delay: 200,
+        separator : '*',
+        tagContainer: 'div',
+        callback: selecting
+    });
+    $('#cc').tagSuggest({
+        url: url,
+        delay: 200,
+        separator : '*',
+        tagContainer: 'div',
+        callback: selecting1
+    });
+    $('#bcc').tagSuggest({
+        url: url,
+        delay: 200,
+        separator : '*',
+        tagContainer: 'div',
+        callback: selecting2
+    });
+});
+function selecting(workingTags,id)
+{
+	var ctrl = $('<div>').addClass('tag-select')
+	 	.html(workingTags.join('*') + '<input type="hidden" name="tos[]" value="'+id+'"><a href="#!" onclick="closeThis(this)" class="tag-close">');
+	$('#to').before(ctrl);
+	$('#to').val('');
+	$('#to').blur().focus();
+}
+function addlist(id,el)
+{
+	var url = sz_BaseUrl + '/user/mail/list/load';
+	var data = {id:id,type:el};
+	if(id){
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#'+el).before(jreturn);
+			$('#'+el).val('');
+			$('#'+el).blur().focus();
+		});
+	}
+}
+function selecting1(workingTags,id)
+{
+	var ctrl = $('<div>').addClass('tag-select')
+	 	.html(workingTags.join('*') + '<input type="hidden" name="ccs[]" value="'+id+'"><a href="#!" onclick="closeThis(this)" class="tag-close">');
+	$('#cc').before(ctrl);
+	$('#cc').val('');
+	$('#cc').blur().focus();
+}
+function selecting2(workingTags,id)
+{
+	var ctrl = $('<div>').addClass('tag-select')
+	 	.html(workingTags.join('*') + '<input type="hidden" name="bccs[]" value="'+id+'"><a href="#!" onclick="closeThis(this)" class="tag-close">');
+	$('#bcc').before(ctrl);
+	$('#bcc').val('');
+	$('#bcc').blur().focus();
+}
+function attachDocument(id,name)
+{
+	if(!$('#attach').find('input[value="'+id+'"]').length){
+		var ctrl = $('<div>').addClass('tag-select')
+		 	.html(name + '<input type="hidden" name="docs[]" value="'+id+'"><a href="#!" onclick="closeThis(this)" class="tag-close">');
+		$('#attach').append(ctrl);
+	}
+}
+function clickAttach(ele,id,name)
+{
+	if($(ele).is(':checked')){
+		attachDocument(id,name);
+	}
+	else{
+		$('#attach').find('input[value="'+id+'"]').parent().remove();
+	}
+}
+function closeThis(ele)
+{
+	$(ele).parent().remove();
+}
+function mailSend()
+{
+	var url = sz_BaseUrl + '/user/mail/send';
+	var data = $('#qss_form').serialize();
+	qssAjax.call(url, data, function(jreturn) {
+		//window.location.href = sz_BaseUrl + '/user/event';
+                openModule('', sz_BaseUrl + '/user/event');
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+}
+function loadCMS()
+{
+	var url = sz_BaseUrl + '/user/mail/cms/load';
+	var id = $('#cms').val();
+	var data = {cms_id:id,content_id:$('#fid').val(),record_id:$('#ifid').val(),design_id:$('#design').val()};
+	if(id){
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#subject').val($('#cms option:selected').text());
+			 loadSignature();
+		});
+	}
+}
+function loadSignature()
+{
+	var url = sz_BaseUrl + '/user/mail/signature/load';
+	var id = $('#account').val();
+	var data = {id:id};
+	if(id){
+		qssAjax.getHtml(url, data, function(jreturn) {
+		});
+	}
+}
+function showDocuments() {
+	var url = sz_BaseUrl + '/user/document/attach';
+	var data = {ifid:1223,deptid:1};
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#qss_event').html(jreturn);
+		$('#qss_event').dialog();
+	});
+}
+function memberClick(ele) {
+	$(ele).find('input').focus();
+	}
+</script>
+<style>
+.tag-select {
+	float: left;
+	padding: 2px 15px 2px 5px;
+	border: 1pt solid #fff;
+	position: relative
+}
+
+.tag-select:hover {
+	border: 1pt solid #ccc;
+	background: #f1f1f1
+}
+
+.tag-close {
+	display: none
+}
+
+.tag-select:hover .tag-close {
+	display: block;
+	background: url(/images/event/close.png) no-repeat 50% 50%;
+	width: 10px;
+	height: 10px;
+	cursor: pointer;
+	position: absolute;
+	top: 4px;
+	right: 0px
+}
+
+.members input {
+	border: none;
+	outline: none;
+	background-color: #FFF;
+	float: left
+}
+
+.members select {
+	color: green;
+}
+
+.members .member_outline {
+	border: 1pt solid #ccc;
+	width: 717px
+}
+
+.member_inside {
+	float: left;
+	display: inline;
+	position: relative
+}
+
+.tag-container {
+	position: absolute;
+	left: 0px;
+	top: 100%;
+	background: #fff;
+	border: 1pt solid #ccc;
+	max-height: 180px;
+	width: 300px;
+	z-index: 10000;
+	overflow: auto;
+}
+
+.tag-container li {
+	cursor: pointer;
+	white-space: nowrap;
+	padding: 1px 5px
+}
+
+.tag-container li:hover {
+	background: #ccc
+}
+
+.tag-selected {
+	background: #ccc !important
+}
+
+#addmem {
+	display: inline;
+}
+</style>
+
+<div id="horizontal-toolbar" class="horizontal-toolbar">
+	<div onclick="mailSend()" class="btn_main_top"
+		title="<?php echo $this->_translate(34,'Cập nhật')?>">
+		<a class="icon-32-save" href="#"></a>
+	</div>
+	<div onclick="rowEventBack('<?php echo @$this->event->EventID?>')"
+		class="btn_main_top"
+		title="<?php echo $this->_translate(32,'Trở lại')?>">
+		<a class="icon-32-back" href="#"></a>
+	</div>
+</div>
+<div class="clear"></div>
+<form id="qss_form" method="post">
+	<input type="hidden" id="fid" name="fid"
+		value="<?php echo (int) @$this->fid?>"> <input type="hidden" id="ifid"
+		name="ifid" value="<?php echo (int) @$this->ifid?>"> <input
+		type="hidden" id="ioid" name="ioid"
+		value="<?php echo (int) @$this->ioid?>"> <input type="hidden"
+		name="id" value="<?php echo (int)@$this->event->EventID?>">
+	<div id="view">
+		<div id="item-actions">
+			<ul>
+				<li class="item-action active"><a href="#"><span>Công việc & sự kiện</span>
+				</a></li>
+			</ul>
+		</div>
+		<table class="detail">
+			<tr>
+				<th width="100">Tài khoản</th>
+				<td colspan="2"><select style="width: 300px;" name="account"
+					id="account" onchange="loadSignature()">
+					<?php if(count((array)$this->accounts) > 1 || !count((array)$this->accounts)):?>
+						<option value=""></option>
+						<?php endif;?>
+						<?php foreach ($this->accounts as $item):?>
+						<option value="<?php echo $item->MAID?>">
+						<?php echo $item->Name?>
+							(
+							<?php echo $item->Account?>
+							)
+						</option>
+						<?php endforeach;?>
+				</select>
+				</td>
+			</tr>
+
+			<tr>
+				<th rowspan="2">To</th>
+				<td colspan="2" class="members"><select style="width: 300px;"
+					name="tolist" onchange="addlist(this.value,'to');">
+						<option value="0">Lựa chọn danh sách</option>
+						<?php foreach ($this->lists as $item):?>
+						<option value="<?php echo $item->MLID?>">
+						<?php echo $item->Name?>
+						</option>
+						<?php endforeach;?>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" class="members">
+					<div class="member_outline" onclick="memberClick(this)">
+						<div class="member_inside">
+							<input type="text" size="10" id="to" name="to">
+						</div>
+						<div style="clear: both"></div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th rowspan="2">CC</th>
+				<td colspan="2" class="members"><select style="width: 300px;"
+					name="cclist" onchange="addlist(this.value,'cc');">
+						<option value="0">Lựa chọn danh sách</option>
+						<?php foreach ($this->lists as $item):?>
+						<option value="<?php echo $item->MLID?>">
+						<?php echo $item->Name?>
+						</option>
+						<?php endforeach;?>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" class="members">
+					<div class="member_outline" onclick="memberClick(this)">
+						<div class="member_inside">
+							<input type="text" size="10" id="cc" name="cc">
+						</div>
+						<div style="clear: both"></div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th rowspan="2">BCC</th>
+				<td colspan="2" class="members"><select style="width: 300px;"
+					name="bcclist" onchange="addlist(this.value,'bcc');">
+						<option value="0">Lựa chọn danh sách</option>
+						<?php foreach ($this->lists as $item):?>
+						<option value="<?php echo $item->MLID?>">
+						<?php echo $item->Name?>
+						</option>
+						<?php endforeach;?>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" class="members">
+					<div class="member_outline" onclick="memberClick(this)">
+						<div class="member_inside">
+							<input type="text" size="10" id="bcc" name="bcc">
+						</div>
+						<div style="clear: both"></div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>Tải mẫu</th>
+				<td colspan="2"><select style="width: 300px;" id="cms"
+					onchange="loadCMS()">
+						<option value=""></option>
+						<?php foreach ($this->cms as $item):?>
+						<option value="<?php echo $item->id?>">
+						<?php echo $item->name?>
+						</option>
+						<?php endforeach;?>
+				</select> <?php if(isset($this->designs)):?> Tải thiết kế <select
+					style="width: 300px;" id="design" onchange="loadCMS()">
+						<option value=""></option>
+						<?php foreach ($this->designs as $item):?>
+						<option value="<?php echo $item->ID?>">
+						<?php echo $item->Description?>
+						</option>
+						<?php endforeach;?>
+				</select> <?php endif;?>
+				</td>
+			</tr>
+			<tr>
+				<th>Tiêu đề</th>
+				<td colspan="2"><input style="width: 500px;" type="text"
+					name="subject" id="subject"
+					value="<?php echo @$this->event->Title?>" /> <a
+					onclick="showDocuments()" href="#!">Chọn file đính kèm</a> hay <a
+					id="upload" href="#!">Tải lên</a>
+				</td>
+			</tr>
+			<tr>
+				<th></th>
+				<td colspan="2">
+					<div class="member_outline">
+						<div class="member_inside" id="attach"></div>
+						<div style="clear: both"></div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>Nội dung</th>
+				<td colspan="2"><textarea cols="100" rows="20" name="body" id="body">
+				<?php echo @$this->event->Description?>
+					</textarea>
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>
+<script>
+$(function() {
+	$("#sdate").datepicker();
+	$("#sdate").datepicker('option', {dateFormat: 'dd-mm-yy'});
+	$("#sdate").val('<?php echo date('d-m-Y')?>');
+	$("#edate").datepicker();
+	$("#edate").datepicker('option', {dateFormat: 'dd-mm-yy'});
+	$('#upload').file(function(inp) {
+		inp.id = inp.name = 'myFileInput';
+		
+		/* Upload file by ajax */
+		$('button').attr('disabled', true);
+		$.ajaxFileUpload({
+			url : sz_BaseUrl + '/user/document/upload',
+			secureuri : false,
+			fileElementId : inp,
+			dataType : 'json',
+			success : function(data, status) {
+				/* Upload file successfully */
+				if (data.error) {
+					qssAjax.alert(data.message);
+				} else {
+					attachDocument(data.id,data.name);
+					$('button').attr('disabled', false);
+				}
+			},
+			error : function(data, status, e) {
+				/* If upload error */
+				qssAjax.alert(e);
+			}
+		});
+	});
+	if($('#account').val() != ''){
+		loadSignature();
+	}
+});
+</script>

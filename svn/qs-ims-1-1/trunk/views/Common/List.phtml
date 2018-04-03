@@ -1,0 +1,31 @@
+<table class="grid" cellspacing="0" style="">
+<tr>
+	<th style="border-left: 1px solid rgb(204, 204, 204);border-bottom: 1px solid rgb(204, 204, 204);">ID</th>
+	<?php if(is_array($this->sz_ValName)):?>
+		<?php foreach ($this->sz_ValName as $key=>$val):?>
+		<th class="data" style="border-bottom: 1px solid rgb(204, 204, 204);"><?php echo $key?></th>
+		<?php endforeach;?>
+	<?php else:?>
+		<th><?php echo $this->_translate(44)?></th>
+	<?php endif;?>
+
+</tr>
+
+<?php $ik = 0;?>
+<?php foreach ($this->a_Data as $value):?>
+
+    <?php $ik++;?>
+<tr id="<?php echo $value->{$this->sz_KeyName}?>" class="<?php echo ($ik%2==0)?'bglightblue':'';?>" onclick="rowCLK(this)" rights="63">
+	<td class="nocount"><?php echo $value->{$this->sz_KeyName}?></td>
+	<?php if(is_array($this->sz_ValName)):?>
+		<?php foreach ($this->sz_ValName as $item):?>
+		<td class="data "><?php echo $value->{$item}?></td>
+		<?php endforeach;?>
+	<?php else:?>
+		<td class="data"><?php echo $value->{$this->sz_ValName}?></td>
+	<?php endif;?>
+
+
+</tr>
+<?php endforeach;?>
+</table>

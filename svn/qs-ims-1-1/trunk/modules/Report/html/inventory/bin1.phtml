@@ -1,0 +1,163 @@
+<?php
+$excel_col   = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg          = "#EEEEEE";
+$row         = 2;
+$totalColumn = 6;
+?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="portrait">
+	<excel orientation="portrait" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+
+	<div id="head_print">
+	<?php echo $this->views->Common->Portrait() ?>
+
+		<center>
+			<h2>
+				<xls row="<?php echo $row?>" column="A"
+					column-merge="<?php echo $excel_col[$totalColumn]?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(1)?>
+				</xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++ ?>
+
+
+	<div id="container">
+		<table cellspacing="0" cellpadding="0" border="1" id="" class="border">
+
+		<?php $begin = 0; ?>
+			<tr class="bggrey">
+				<th style="width: 20%">
+					<!-- Kho --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1"> <?php echo $this->_translate(2);?></xls>
+				</th>
+
+				<th style="width: 20%">
+					<!-- Bin --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1"> <?php echo $this->_translate(3);?></xls>
+				</th>
+
+				<th style="width: 20%">
+					<!-- Ma MH --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1"> <?php echo $this->_translate(4);?></xls>
+				</th>
+
+				<th style="width: 20%">
+					<!-- Ten MH --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1"> <?php echo $this->_translate(5);?></xls>
+				</th>
+
+				<th style="width: 10%">
+					<!-- DVT --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1"> <?php echo $this->_translate(6);?></xls>
+				</th>
+
+				<th style="width: 10%">
+					<!-- SoLuong --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1"> <?php echo $this->_translate(7);?></xls>
+				</th>
+			</tr>
+			<?php $row++?>
+
+
+			<?php foreach ($this->report as $val): // in report?>
+
+			<tr>
+				<td colspan="<?php echo $totalColumn;?>">
+					<!-- Group Kho --> <b> <xls row="<?php echo $row?>" column="A"
+							column-merge="<?php echo $excel_col[$totalColumn]?>"
+							wrap-text="1" h-align="center" v-align="center" bold="1"
+							repeat="1"> <?php echo $val['Code']?> - <?php echo $val['Name'];?>
+						</xls> </b></td>
+			</tr>
+			<?php $row++?>
+
+			<?php $countBin = count($val['Bin']);?>
+			<?php foreach($val['Bin'] as $binIOID=>$bin):?>
+			<?php if($binIOID != 0):?>
+			<tr>
+				<td colspan="<?php echo $totalColumn;?>" style="padding-left: 10px;">
+					<!-- Group Bin --> <b> <xls row="<?php echo $row?>" column="A"
+							column-merge="<?php echo $excel_col[$totalColumn]?>"
+							wrap-text="1" h-align="left" v-align="center" bold="1" repeat="1">
+							<?php echo $bin['Code']?> - <?php echo $bin['Name']?> </xls> </b>
+				</td>
+			</tr>
+			<?php $row++?>
+			<?php elseif ($binIOID == 0 && $countBin > 1):?>
+			<tr>
+				<td colspan="<?php echo $totalColumn;?>" style="padding-left: 15px;">
+					<!-- Group Bin --> <b> <xls row="<?php echo $row?>" column="A"
+							column-merge="<?php echo $excel_col[$totalColumn]?>"
+							wrap-text="1" h-align="left" v-align="center" bold="1" repeat="1">
+							<?php echo $this->_translate(8);?> </xls> </b>
+				</td>
+			</tr>
+			<?php $row++?>
+			<?php endif; ?>
+
+			<?php foreach($bin['Data'] as $dat):?>
+			<?php $begin = 0; ?>
+			<tr>
+				<td class="left" style="padding-left: 15px;">
+					<!-- Kho --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $dat->WCode?></xls>
+				</td>
+
+				<td class="left">
+					<!-- Bin --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $dat->BName?></xls>
+				</td>
+
+				<td class="left">
+					<!-- Ma MH --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $dat->ICode?></xls>
+				</td>
+
+				<td class="left">
+					<!-- Ten MH --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $dat->IName?></xls>
+				</td>
+
+				<td class="left">
+					<!-- DVT --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $dat->UOM?></xls>
+				</td>
+
+				<td class="right">
+					<!-- So Luong --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo $dat->Qty?></xls>
+				</td>
+			</tr>
+			<?php $row++ ?>
+			<?php endforeach; // in dong du lieu ?>
+
+			<?php endforeach;// in bin ?>
+
+			<?php endforeach;// in report?>
+		</table>
+	</div>
+</div>

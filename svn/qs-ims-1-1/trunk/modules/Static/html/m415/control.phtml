@@ -1,0 +1,186 @@
+<div class="fr">
+
+    <?php
+    // Hien thi nut step 1: Tiep tuc
+    ?>
+
+    <!--
+
+     Thứ tự nút:
+
+
+     Các nút cuối: Quay lại + Tiếp tục + Làm lại + Thoát ra
+     -->
+
+    <!-- Bước nhập yêu cầu: Nut Tiep tuc + Thoat ra-->
+    <?php if($this->stepto == 1):?>
+        <?php if($this->step == 1):?>
+
+        <?php else: ?>
+
+        <?php endif;?>
+    <?php endif;?>
+
+    <!-- Bước kiểm tra hợp đồng nguyên tắc: Nút Đặt hàng + Tiếp tục  -->
+    <?php if($this->stepto == 2):?>
+        <?php if($this->step == 2):?>
+            <button type="button" class="btn btn-custom btn-disabled" disabled onclick="M415.next();" id="step2-order-btn"> Đặt hàng </button>
+            <button type="button" class="btn btn-custom" onclick="M415.updateStep(3);"> Tiếp tục </button>
+        <?php else: ?>
+            <button type="button" class="btn btn-disabled" disabled> Đặt hàng </button>
+            <button type="button" class="btn btn-disabled" disabled> Tiếp tục </button>
+        <?php endif;?>
+    <?php endif;?>
+
+    <!-- Bước kiểm ta đơn hàng: Nút Đặt hàng + Tiếp tục  -->
+    <?php if($this->stepto == 3):?>
+
+        <button type="button" class="btn btn-custom" onclick="M415.excelBaoCaoDeXuat()">
+            In mẫu báo cáo đề xuất
+        </button>
+
+        <?php if($this->step == 3):?>
+            <button type="button" class="btn btn-custom btn-disabled" disabled onclick="M415.next();" id="step3-order-btn"> Đặt hàng </button>
+            <button type="button" class="btn btn-custom" onclick="M415.updateStep(4);"> Tiếp tục </button>
+        <?php else: ?>
+            <button type="button" class="btn btn-disabled" disabled> Đặt hàng </button>
+            <button type="button" class="btn btn-disabled" disabled> Tiếp tục </button>
+        <?php endif;?>
+    <?php endif;?>
+
+
+
+
+    <!-- Bước lập kế hoạch:  -->
+    <?php if($this->stepto == 4):?>
+        <?php if($this->step == 4):?>
+
+            <button type="button" class="btn btn-custom" onclick="M415.step4.savePlan()">
+                Lưu kế hoạch
+            </button>
+
+            <?php if(!$this->info || $this->info->Status == 1):?>
+
+
+                <button type="button" class="btn btn-custom <?php echo ($this->info)?'':'btn-disabled';?>" onclick="M415.step4.approvePlan()" <?php echo ($this->info)?'':'disabled';?>>
+                    Duyệt kế hoạch
+                </button>
+
+
+                <button type="button" class="btn btn-custom <?php echo ($this->info)?'':'btn-disabled';?>" onclick="M415.step4.deletePlan()" <?php echo ($this->info)?'':'disabled';?>>
+                    Xóa kế hoạch
+                </button>
+            <?php else:?>
+
+
+                <button type="button" class="btn btn-custom btn-disabled" disabled>
+                    Duyệt kế hoạch
+                </button>
+
+                <button type="button" class="btn btn-custom btn-disabled" disabled>
+                    Xóa kế hoạch
+                </button>
+            <?php endif;?>
+        <?php else: ?>
+            <button type="button" class="btn btn-custom btn-disabled" disabled>
+                Duyệt kế hoạch
+            </button>
+
+            <button type="button" class="btn btn-custom btn-disabled" disabled>
+                Xóa kế hoạch
+            </button>
+        <?php endif;?>
+
+        <button type="button" class="btn btn-custom <?php echo ($this->info)?'':'btn-disabled';?>" onclick="M415.excelDanhMucMuaHang()" <?php echo ($this->info)?'':'disabled';?>>
+            In phụ lục
+        </button>
+
+        <button type="button" class="btn btn-custom <?php echo ($this->info)?'':'btn-disabled';?>" onclick="M415.excelKeHoachMuaSam()" <?php echo ($this->info)?'':'disabled';?>>
+            In kế hoạch mua sắm
+        </button>
+    <?php endif;?>
+
+    <!-- Bước nhập báo giá: Nút Lưu báo giá + Thêm báo giá -->
+    <?php if($this->stepto == 6):?>
+        <?php if($this->step == 6):?>
+            <button type="button" class="btn btn-custom" onclick="M415.step6.save();"> Lưu báo giá  </button>
+            <?php /*<button type="button" class="btn btn-custom" onclick="popupWindowFormInsert('M406', <?php echo $this->deptid;?>//, {OBaoGiaMuaHang_SoKeHoach:'<?php echo $this->info?$this->info->SoPhieu:'';?>//'}, function(){ M415.step6.show(); });"> Thêm báo giá </button>*/?>
+        <?php else: ?>
+            <button type="button" class="btn btn-disabled" disabled> Lưu báo giá </button>
+<!--            <button type="button" class="btn btn-disabled" disabled> Thêm báo giá </button>-->
+        <?php endif;?>
+    <?php endif;?>
+
+
+    <!-- Bước so sánh báo giá: Nút lưu dữ liệu + In đánh giá nhà thầu  -->
+    <?php if($this->stepto == 7):?>
+        <?php if($this->step == 7):?>
+            <button type="button" class="btn btn-custom" onclick="M415.step7.saveCompare()" > Lưu dữ liệu </button>
+        <?php else: ?>
+            <button type="button" class="btn btn-disabled" disabled>  Lưu dữ liệu </button>
+        <?php endif;?>
+
+        <button type="button" class="btn btn-custom" onclick="M415.excelDanhGiaNCC()"> In đánh giá nhà thầu</button>
+    <?php endif;?>
+
+    <?php if($this->stepto == 7):?>
+        <?php if($this->step == 7):?>
+            <button type="button" class="btn btn-custom" onclick="M415.next();"> Đặt hàng </button>
+
+        <?php else: ?>
+            <button type="button" class="btn btn-disabled" disabled> Đặt hàng </button>
+
+        <?php endif;?>
+    <?php endif;?>
+
+    <!-- Bước đơn hàng:  -->
+    <?php if($this->stepto == 8):?>
+        <button type="button" class="btn btn-custom" onclick="M415.excelThongBaoXuLy()">In thông báo xử lý</button>
+    <?php endif;?>
+
+
+    <?php if($this->stepto !=  2 && $this->stepto != 3 && $this->stepto != 7  && $this->stepto != 8):?>
+        <?php if($this->step == $this->stepto):?>
+            <button type="button" class="btn btn-custom" onclick="M415.next();"> Tiếp tục </button>
+        <?php else:?>
+            <button type="button" class="btn btn-disabled" disabled> Tiếp tục </button>
+        <?php endif;?>
+    <?php endif;?>
+
+    <?php if( $this->stepto == 8):?>
+        <?php if($this->nextToPlan && $this->step == 8 ):?>
+            <button type="button" class="btn btn-custom" onclick="M415.next();"> Tiếp tục </button>
+        <?php else:?>
+            <button type="button" class="btn btn-disabled" disabled> Tiếp tục </button>
+        <?php endif;?>
+    <?php endif;?>
+
+
+
+
+
+    <?php if($this->stepto != 1 && $this->stepto !=  2 && $this->stepto !=  8):?>
+        <?php if($this->step == $this->stepto):?>
+            <button type="button" class="btn btn-custom" onclick="M415.back();"> Quay lại </button>
+        <?php else:?>
+            <button type="button" class="btn btn-disabled" disabled> Quay lại </button>
+        <?php endif;?>
+    <?php endif;?>
+
+
+
+
+    <!-- Nút làm lại xuất hiện từ bước 2 -->
+    <?php if($this->step >= 2):?>
+        <button type="button" class="btn btn-custom" onclick="M415.reset();"> Làm lại </button>
+    <?php else:?>
+        <button type="button" class="btn btn-disabled" disabled> Làm lại </button>
+    <?php endif;?>
+
+    <!-- Nút thoát ra -->
+    <button type="button" class="btn btn-custom" onclick="M415.showSessions();"> Thoát ra </button>
+
+
+
+</div>
+

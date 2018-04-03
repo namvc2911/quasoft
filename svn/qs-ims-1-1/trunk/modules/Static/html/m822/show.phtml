@@ -1,0 +1,459 @@
+<?php
+$excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$row       = 2;
+$totalCol  = 6;
+$max = $this->maxDevice ;
+$stt = 1;
+$widthPx = array(1,3,3,3,2,2,2,2,2,2,2,2,2,2,3,3);
+$widthEx   = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($widthPx);
+$widthPx   = Qss_Lib_Report::changeWidthToFitScreen($widthPx);
+$subTitle       = array();
+$subTitleStr    = '';
+?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="landscape">
+	<excel orientation="landscape" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+
+	<div id="head_print">
+	<?php echo $this->views->Common->Landscape() ?>
+	<!-- Nếu năm đầu nhập vào khác năm cuối nhập vào thì in tiêu đề Theo dõi kiểm định từ năm đầu đến năm cuối -->
+	<?php if($this->yearStart != $this->yearEnd):?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(22).$this->yearEnd.$this->_translate(23).$this->yearStart.$this->_translate(5).$this->yearEnd.' )'?></xls>
+			</h2>
+		</center>
+	<!-- Nếu năm đầu nhập vào  = năm cuối nhập vào thì in tiêu đề là Theo dõi kiểm định năm  (năm cuối) -->
+	<?php else:?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(22).($this->yearEnd)?></xls>
+			</h2>
+		</center>
+	<?php endif;?>
+	<?php $row++ ?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $subTitleStr ?></xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++ ?>
+
+	<div id="container">
+		<table width="" cellpadding="0" cellspacing="0" class="border" border="1">
+			<tr class="bggrey center">
+			<?php $begin = 0; ?>
+				<!-- STT --> 
+				<th rowspan="2" width="<?php echo $widthPx[$begin];?>px">
+					<xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(2) ?></xls>
+				</th>
+				<!-- Tên  đầu máy-->
+				<th rowspan="2" width="<?php echo $widthPx[$begin];?>px"> 
+					<xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(3) ?></xls>
+				</th>	
+				<!-- Biển số đăng kí --> 
+				<th rowspan="2">		
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(6)?></xls>
+				</th>
+				<!-- Loại phương tiện --> 
+				<th rowspan="2"> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(7) ?></xls>
+				</th>	
+				<!-- Đơn vị kiểm định chính  --> 
+				<th colspan="3">
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(8) ?></xls>
+				</th>		
+				<?php for( $i = 1 ; $i <= $max; $i++ ):?>
+				<!-- Thùng gió --> 
+				<th colspan="6">
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(10).$i ?></xls>
+				</th>
+				<?php endfor;?>
+			</tr>
+			
+			<tr>
+				<th>
+					<!-- Đơn vị Kiểm Định chính --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(15) ?></xls>
+				</th>
+				<th>
+					<!-- Ngày Kiểm Định của đơn vị kiểm định chính--> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(16) ?></xls>
+				</th>		
+				<th>
+					<!-- Hạn kiểm định của đơn vị kiểm định chính--> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(17) ?></xls>
+				</th>	
+				<?php for( $i = 1; $i <= $this->maxDevice; $i++ ):?>
+				<th>
+					<!-- Loại Thùng gió --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(18) ?></xls>
+				</th>	
+				<th>
+					<!-- Số sản xuất của thùng gió --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(19) ?></xls>
+				</th>
+				<th>
+					<!-- Năm sản xuât của thùng gió --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(20) ?></xls>
+				</th>
+				<th>
+					<!-- Hạn kiểm định của thùng gió --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(21) ?></xls>
+				</th>
+				<!-- Đơn Vị Kiểm định thùng gió --> 
+				<th>
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(13) ?></xls>
+				</th>
+				<!-- Ghi chú--> 
+				<th>
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(14) ?></xls>
+				</th>
+				<?php endfor;?>
+				<?php $row++ ?>
+				<?php $begin=0;?>
+			</tr>
+			<?php foreach ($this->data as $item):?>
+				<!-- Th1: chưa tồn tại $TenThietBi thì khởi tạo và in dữ liệu của thiết bị + thùng gió -->
+				<?php if(!isset($TenThietBi)):?>
+					<?php $TenThietBi = $item->TenThietBi;?>
+					<?php $count = 1;// biến đếm số thùng gió trong 1 thiết bị?>
+					<tr>
+						<!-- STT -->
+						<td>
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="left" v-align="center" border="1"><?php echo $stt;?></xls>
+						</td>		
+						<?php $stt++;?>
+						<!-- tên thiết bị -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $TenThietBi;?></xls>
+						</td>
+						<!-- biển số đăng kí -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"></xls>
+						</td>
+						<!-- Loại phương tiện -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->LoaiThietBi;?></xls>
+						</td>	
+						<!-- Đơn vị kiểm định của đơn vị đăng kiểm chính -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->DonVi?></xls>
+						</td>
+						<!-- Ngày kiểm định của đơn vị kiểm định chính -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo Qss_Lib_Date::mysqltodisplay($item->Ngay)?></xls>
+						</td>	
+						<!-- Hạn kiểm định của đơn vị kiểm định chính -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo Qss_Lib_Date::mysqltodisplay($item->NgayKiemDinhTiepTheo);?></xls>
+						</td>
+						<!-- Loại thùng gió -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->Kieu;?></xls>
+						</td>
+						<!-- Số SX của Thùng gió -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->Model;?></xls>
+						</td>
+						<!--năm SX của thùng gió-->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->NamSanXuat?></xls>
+						</td>
+						<!-- Hạn kiểm định của thùng gió -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->HanKiemDinh?></xls>
+						</td>
+						<!-- Đơn vị kiểm định của thùng gió -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->BoPhan?></xls>
+						</td>
+						<!-- Ghi Chú -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->GhiChu;?></xls>
+						</td>
+				<!-- Th2: nếu là thiết bị khác thì gán $TenThietBi với thiết bị mới rồi in dữ liệu của các thùng gió trong Thiết bị đó -->
+				<?php elseif($item->TenThietBi != $TenThietBi):?>
+					<?php $TenThietBi =  $item->TenThietBi;?>
+					<?php $empty = $max- $count;//tính số thùng gió trống. nếu $max=3 mà thiết bị có 2 thùng gió =>Thùng gió trồng =1?>
+					<!-- in thùng gió trống -->
+					<?php for($member = 1; $member <= $empty; $member++):?>
+						<!-- Loại thùng gió -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"></xls>
+						</td>
+						<!-- Số SX của Thùng gió -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"></xls>
+						</td>
+						<!--năm SX của thùng gió-->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"></xls>
+						</td>
+						<!-- Hạn kiểm định của thùng gió -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"></xls>
+						</td>
+						<!-- Đơn vị kiểm định của thùng gió -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"></xls>
+						</td>
+						<!-- Ghi Chú -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"></xls>
+						</td>
+					<?php endfor;?>
+					</tr>
+					<?php $row++;?>
+					<?php $begin=0;?>
+					<?php $count = 1;// khởi tạo cho thiết bị mới?>
+					<tr>
+						<!-- STT -->
+						<td>
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="left" v-align="center" border="1"><?php echo $stt;?></xls>
+						</td>		
+						<?php $stt++;?>
+						<!-- tên thiết bị -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $TenThietBi;?></xls>
+						</td>
+						<!-- biển số đăng kí -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"></xls>
+						</td>
+						<!-- Loại phương tiện -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->LoaiThietBi;?></xls>
+						</td>	
+						<!-- Đơn vị kiểm định của đơn vị đăng kiểm chính -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->DonVi?></xls>
+						</td>
+						<!-- Ngày kiểm định của đơn vị kiểm định chính -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo Qss_Lib_Date::mysqltodisplay($item->Ngay)?></xls>
+						</td>	
+						<!-- Hạn kiểm định của đơn vị kiểm định chính -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo Qss_Lib_Date::mysqltodisplay($item->NgayKiemDinhTiepTheo);?></xls>
+						</td>
+						<!-- Loại thùng gió -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->Kieu;?></xls>
+						</td>
+						<!-- Số SX của Thùng gió -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->Model;?></xls>
+						</td>
+						<!--năm SX của thùng gió-->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->NamSanXuat?></xls>
+						</td>
+						<!-- Hạn kiểm định của thùng gió -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->HanKiemDinh?></xls>
+						</td>
+						<!-- Đơn vị kiểm định của thùng gió -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->BoPhan?></xls>
+						</td>
+						<!-- Ghi Chú -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->GhiChu;?></xls>
+						</td>
+				<!-- Th3: Nếu $item->TenThietBi van la thiết bị đó thì in thông tin vào thùng gió tiếp theo -->
+				<?php elseif($item->TenThietBi == $TenThietBi):?>
+				<!-- Loại thùng gió -->
+						<?php $count++;?>
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->Kieu;?></xls>
+						</td>
+						<!-- Số SX của Thùng gió -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->Serial;?></xls>
+						</td>
+						<!--năm SX của thùng gió-->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->NamSanXuat?></xls>
+						</td>
+						<!-- Hạn kiểm định của thùng gió -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->HanKiemDinh?></xls>
+						</td>
+						<!-- Đơn vị kiểm định của thùng gió -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->BoPhan?></xls>
+						</td>
+						<!-- Ghi Chú -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"><?php echo $item->GhiChu;?></xls>
+						</td>
+				<?php endif;?>	
+			<?php endforeach;?>
+			<!-- In ra số thùng gió trống của Thiết bị cuối -->
+			<?php $empty = $max- $count;//tính số thùng gió trống. nếu $max=3 mà thiết bị có 2 thùng gió =>Thùng gió trồng =1?>
+					<!-- in thùng gió trống -->
+					<?php for($member = 1; $member <= $empty; $member++):?>
+						<!-- Loại thùng gió -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"></xls>
+						</td>
+						<!-- Số SX của Thùng gió -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"></xls>
+						</td>
+						<!--năm SX của thùng gió-->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"></xls>
+						</td>
+						<!-- Hạn kiểm định của thùng gió -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"></xls>
+						</td>
+						<!-- Đơn vị kiểm định của thùng gió -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"></xls>
+						</td>
+						<!-- Ghi Chú -->
+						<td>
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1"></xls>
+						</td>
+					<?php endfor;?>
+				</tr>
+		</table>
+	</div>
+	</div>
+</div>
+	

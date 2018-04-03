@@ -1,0 +1,415 @@
+<style>
+#print-content th, #print-content td, #print-html th, #print-html td, .default_size {
+    font-size: 13px;
+}
+</style>
+
+<?php
+$excel_col      = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg             = "#EEEEEE";
+$row            = 2;
+$totalColumn    = 15;
+$colWidths      = array(47, 82, 82, 74, 59, 69, 98, 82, 134, 42, 51, 114, 48, 55, 193);
+$excelColWidths = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($colWidths);
+$autoFit        = Qss_Lib_Report::changeWidthToFitScreen($colWidths);
+
+// General Fit
+$totalGenCol    = 4;
+$genColWidths   = array(30, 20, 20, 20);
+$genAutoFit     = Qss_Lib_Report::changeWidthToFitScreen($genColWidths);
+
+// Param Fit
+$paramNo        = 0;
+$totalParamCol  = 5;
+$paramColWidths = array(47, 366, 98, 216, 503);
+$paramAutoFit   = Qss_Lib_Report::changeWidthToFitScreen($paramColWidths);
+
+// Sparepart & Document
+$SDNo        = 0;
+$totalSDCol  = 6;
+$SDColWidths = array(47, 366, 98, 82, 176, 461);
+$SDAutoFit   = Qss_Lib_Report::changeWidthToFitScreen($SDColWidths);
+
+// Work order history
+$woHistoryNo        = 0;
+$breakdownNo        = 0;
+$totalWoHistoryCol  = 8;
+$woHistoryColWidths = array(47,198, 366, 98, 82, 98, 290);
+$woHistoryAutoFit   = Qss_Lib_Report::changeWidthToFitScreen($woHistoryColWidths);
+
+$status = '';
+
+switch(@(int)$this->eq->TrangThai)
+{
+    case 0: $status = $this->_translate(71); break; // Hoạt động
+    case 1: $status = $this->_translate(72); break; // Thanh lý
+    case 2: $status = $this->_translate(73); break; // Mất
+    case 3: $status = $this->_translate(74); break; // Hỏng
+}
+
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+    <input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="landscape">
+    <excel 
+        orientation="landscape" 
+        font-name="Arial" 
+        font-size="9" 
+        margin-left="0.5" 
+        margin-right="0.5" 
+        margin-top="0.75" 
+        margin-bottom="0.75"/>
+    
+    <!-- REPORT TITLE -->
+	<div id="head_print">
+		<?php echo $this->views->Common->Landscape() ?>
+        <?php //echo $this->views->Common->Legal() ?>
+		<center>
+		    <h2>
+			<xls
+			    row="<?php echo $row ?>"
+			    column="A"
+			    column-merge="<?php echo $excel_col[$totalColumn] ?>"
+			    font-size="12"
+			    wrap-text="1"
+                bold="1"
+			    h-align="center"
+			    v-align="center" ><?php echo $this->_translate(1);?>  </xls>
+		    </h2>
+		</center>
+	</div><!-- end div#head_print -->
+	<?php $row++ ?>
+    <?php $row++;?>
+    <br/>
+
+    <!-- REPORT DATA -->
+    <div id="container">
+        
+        <!-- General -->
+        <table cellpadding="0" cellspacing="0" border="0" class="" style="">
+            <?php $begin = 0;?>
+            <?php $genBegin = 0;?>
+            <tr>
+                <!-- Ten thiet bi -->
+                <td class="left" 
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" 
+                    valign="top">
+                    <xls 
+                        row="<?php echo $row?>" 
+                        column="<?php echo $excel_col[++$begin] ?>" 
+                        column-merge="<?php echo $excel_col[($begin + 3)] ?>" 
+                        wrap-text="1"  
+                        v-align="top" 
+                        h-align="left" 
+                        border="0" ><?php echo $this->_translate(39);?>: <?php echo $this->eq->TenThietBi;?></xls>
+                </td>      
+                <?php $begin += 3;?>
+                
+                <!-- Ma so -->
+                <td class="left" 
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    <xls 
+                        row="<?php echo $row?>" 
+                        column="<?php echo $excel_col[++$begin] ?>" 
+                        column-merge="<?php echo $excel_col[($begin + 3)] ?>" 
+                        wrap-text="1"  
+                        v-align="top" 
+                        h-align="left" 
+                        border="0" ><?php echo $this->_translate(2);?>: <?php echo $this->eq->MaThietBi;?></xls>
+                </td>   
+                <?php $begin += 3;?>
+                
+                <!-- Serial -->
+                <td class="left" 
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" 
+                    valign="top">
+                    <xls 
+                        row="<?php echo $row?>" 
+                        column="<?php echo $excel_col[++$begin] ?>" 
+                        column-merge="<?php echo $excel_col[($begin + 3)] ?>" 
+                        wrap-text="1"  
+                        v-align="top" 
+                        h-align="left" 
+                        border="0" ><?php echo $this->_translate(40);?>: <?php echo $this->eq->Serial;?></xls>
+                </td>   
+                <?php $begin += 3;?>
+                
+                <!-- Model -->
+                <td class="left" 
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" 
+                    valign="top">
+                    <xls 
+                        row="<?php echo $row?>" 
+                        column="<?php echo $excel_col[++$begin] ?>" 
+                        column-merge="<?php echo $excel_col[($begin + 2)] ?>" 
+                        wrap-text="1"  
+                        v-align="top" 
+                        h-align="left" 
+                        border="0" ><?php echo $this->_translate(5);?>: <?php echo $this->eq->Model;?></xls>
+                </td>    
+                <?php $begin += 2;?>
+            </tr>
+            <?php $row++;?>
+            
+            <?php $begin = 0;?>
+            <?php $genBegin = 0;?>
+            <tr>
+                <!-- Nhà sản xuất -->
+                <td class="left" 
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    <xls 
+                        row="<?php echo $row?>" 
+                        column="<?php echo $excel_col[++$begin] ?>" 
+                        column-merge="<?php echo $excel_col[($begin + 3)] ?>" 
+                        wrap-text="1"  
+                        v-align="top" 
+                        h-align="left" 
+                        border="0" ><?php echo $this->_translate(6);?>: <?php echo $this->eq->XuatXu;?></xls>
+                </td>    
+                <?php $begin += 3;?>
+                
+                <!-- Nam san xuat -->
+                <td class="left" 
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    <xls 
+                        row="<?php echo $row?>" 
+                        column="<?php echo $excel_col[++$begin] ?>" 
+                        column-merge="<?php echo $excel_col[($begin + 3)] ?>" 
+                        wrap-text="1"  
+                        v-align="top" 
+                        h-align="left" 
+                        border="0" ><?php echo $this->_translate(7);?>: <?php echo $this->eq->NamSanXuat;?></xls>
+                </td>   
+                <?php $begin += 3;?>
+                
+                <!-- Ngày đưa vào sử dụng -->
+                <td class="left" 
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    <xls 
+                        row="<?php echo $row?>" 
+                        column="<?php echo $excel_col[++$begin] ?>" 
+                        column-merge="<?php echo $excel_col[($begin + 3)] ?>" 
+                        wrap-text="1"  
+                        v-align="top" 
+                        h-align="left" 
+                        border="0" ><?php echo $this->_translate(8);?>: <?php echo Qss_Lib_Date::mysqltodisplay($this->eq->NgayDuaVaoSuDung);?></xls>
+                </td> 
+                <?php $begin += 3;?>
+                
+                <!-- Đơn vị quản lý -->
+                <?php
+                    $workcenters = array();
+                    foreach($this->workcenter as $wc)
+                    {
+                        if($wc->IOID &&  !in_array($wc->Ten, $workcenters))
+                        $workcenters[] = $wc->Ten;
+                    }
+                ?>
+                <td class="left" 
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    <xls 
+                        row="<?php echo $row?>" 
+                        column="<?php echo $excel_col[++$begin] ?>" 
+                        column-merge="<?php echo $excel_col[($begin + 2)] ?>"  
+                        wrap-text="1"  
+                        v-align="top" 
+                        h-align="left" 
+                        border="0" ><?php echo $this->_translate(17);?>: <?php echo implode(' , ', $workcenters);?></xls>
+                </td>    
+                <?php $begin += 2;?>
+            </tr>
+            <?php $row++;?>
+
+            <?php $begin = 0;?>
+            <?php $genBegin = 0;?>
+            <tr>
+                <!-- Trang thai -->
+                <td class="left"
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        column-merge="<?php echo $excel_col[($begin + 3)] ?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="left"
+                        border="0" ><?php echo $this->_translate(70);?>: <?php echo $status;?></xls>
+                </td>
+                <?php $begin += 3;?>
+
+                <td class="left"
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    &nbsp;
+                </td>
+
+                <td class="left"
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    &nbsp;
+                </td>
+
+                <td class="left"
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    &nbsp;
+                </td>
+
+            </tr>
+            <?php $row++;?>
+        </table><!-- end table.border -->
+        <?php $row++;?> 
+        <?php $startdate = date_create($this->start)?>
+        <?php $enddate = date_create($this->end)?>
+        <?php foreach ($this->plan as $item):?>
+        <br>
+        <span class="bold"><?php echo $item->BoPhan?> <?php echo $item->LoaiBaoTri?> (<?php echo $item->ChuKy?>)</span>
+        <?php $laplai = $item->LapLai?$item->LapLai:1?>
+        <?php switch ($item->MaKy):
+        	case 'D':?>
+        		<?php $begin = date_create($item->NgayBatDau);?>
+        		<?php $start = $startdate?>
+        		<?php $end = $enddate?>
+        		<table class="border">
+        		<tr>
+        		<th class="left">Thời gian</th>
+        		<th class="left">Ngày bảo trì</th>
+        		<th class="left">Tình trạng</th>
+        		</tr>
+        		<?php while($start <= $end):?>
+        			<?php $workOrder = @$this->data[$item->Ref_LoaiBaoTri][$item->ChuKyIOID][$i]?>
+        			<?php 
+        				$text = 'OK';
+        				$class = 'bggreen white';
+        				if(!$workOrder)
+        				{
+        					$class = 'bgred white';
+        					$text = 'Không thực hiện';
+        				}
+        			?>
+        			<tr>
+        			<td><?php echo $start->format('d-m-Y');?>
+        			<?php if($laplai > 1):?>
+        				- <?php echo Qss_Lib_Date::add_date($start, $laplai)->format('d-m-Y');?>
+        			<?php endif;?>
+        			</td>
+        			<td><?php echo $workOrder?Qss_Lib_Date::mysqltodisplay($workOrder->NgayBatDau):''?></td>
+        			<td class="<?php echo $class?>"><?php echo $text?></td>
+        			</tr>
+        			<?php $start = Qss_Lib_Date::add_date($start, $laplai);?>
+        			<?php $i++?>
+        		<?php endwhile;?>
+        		</table>
+        		<?php break;?>
+        	<?php case 'W':?>
+        		<?php $start = $startdate?>
+        		<?php $end = $enddate?>
+        		<table class="border">
+        		<tr>
+        		<th class="left">Thời gian</th>
+        		<th class="left">Ngày bảo trì</th>
+        		<th class="left">Tình trạng</th>
+        		</tr>
+        		<?php $i = 0?>
+        		<?php while($start <= $end):?>
+        			<?php $workOrder = @$this->data[$item->Ref_LoaiBaoTri][$item->ChuKyIOID][$i]?>
+        			<?php 
+        				$text = 'OK';
+        				$class = 'bggreen white';
+        				if(!$workOrder)
+        				{
+        					$class = 'bgred white';
+        					$text = 'Không thực hiện';
+        				}
+        			?>
+        			<tr>
+        			<td><?php echo $start->format('W');?>/<?php echo $start->format('Y');?>
+        			<?php if($laplai > 1):?>
+        				- <?php echo Qss_Lib_Date::add_date($start, $laplai,'week')->format('W');?>/<?php echo Qss_Lib_Date::add_date($start, $laplai,'week')->format('Y');?>
+        			<?php endif;?>
+        			</td>
+        			<td><?php echo $workOrder?Qss_Lib_Date::mysqltodisplay($workOrder->NgayBatDau):''?></td>
+        			<td class="<?php echo $class?>"><?php echo $text?></td>
+        			</tr>
+        			<?php $start = Qss_Lib_Date::add_date($start, $laplai,'week	');?>
+        			<?php $i++?>
+        		<?php endwhile;?>
+        		</table>
+        		<?php break;?>
+        	<?php case 'M':?>
+        		<?php $start = $startdate?>
+        		<?php $end = $enddate?>
+        		<table class="border">
+        		<tr>
+        		<th class="left">Thời gian</th>
+        		<th class="left">Ngày bảo trì</th>
+        		<th class="left">Tình trạng</th>
+        		</tr>
+        		<?php $i = 1?>
+        		<?php while($start <= $end):?>
+        			<?php $workOrder = @$this->data[$item->Ref_LoaiBaoTri][$item->ChuKyIOID][$i]?>
+        			<?php 
+        				$text = 'OK';
+        				$class = 'bggreen white';
+        				if(!$workOrder)
+        				{
+        					$class = 'bgred white';
+        					$text = 'Không thực hiện';
+        				}
+        			?>
+        			<tr>
+        			<td><?php echo $start->format('m');?>/<?php echo $start->format('Y');?>
+        			<?php if($laplai > 1):?>
+        				- <?php echo Qss_Lib_Date::add_date($start, $laplai,'month')->format('m');?>/<?php echo Qss_Lib_Date::add_date($start, $laplai,'month')->format('Y');?>
+        			<?php endif;?>
+        			</td>
+        			<td><?php echo $workOrder?Qss_Lib_Date::mysqltodisplay($workOrder->NgayBatDau):''?></td>
+        			<td class="<?php echo $class?>"><?php echo $text?></td>
+        			</tr>
+        			<?php $start = Qss_Lib_Date::add_date($start, $laplai,'month');?>
+        			<?php $i++?>
+        		<?php endwhile;?>
+        		</table>
+        		<?php break;?>
+        	<?php case 'Y':?>
+        		<?php $start = $startdate?>
+        		<?php $end = $enddate?>
+        		<table class="border">
+        		<tr>
+        		<th class="left">Thời gian</th>
+        		<th class="left">Ngày bảo trì</th>
+        		<th class="left">Tình trạng</th>
+        		</tr>
+        		<?php $i = 1;?>
+        		<?php while($start <= $end):?>
+        			<?php $workOrder = @$this->data[$item->Ref_LoaiBaoTri][$item->ChuKyIOID][$i]?>
+        			<?php 
+        				$text = 'OK';
+        				$class = 'bggreen white';
+        				if(!$workOrder)
+        				{
+        					$class = 'bgred white';
+        					$text = 'Không thực hiện';
+        				}
+        			?>
+        			<tr>
+        			<td><?php echo $start->format('Y');?>
+        			<?php if($laplai > 1):?>
+        				- <?php echo Qss_Lib_Date::add_date($start, $laplai,'year')->format('Y');?>
+        			<?php endif;?>
+        			</td>
+        			<td><?php echo $workOrder?Qss_Lib_Date::mysqltodisplay($workOrder->NgayBatDau):''?></td>
+        			<td class="<?php echo $class?>"><?php echo $text?></td>
+        			</tr>
+        			<?php $start = Qss_Lib_Date::add_date($start, $laplai,'year');?>
+        			<?php $i++;?>
+        		<?php endwhile;?>
+        		</table>
+        		<?php break;?>
+        <?php endswitch;?>
+        <br>
+        <?php endforeach;?>
+    </div><!-- end div#container -->
+</div><!-- END REPORT -->
+
+

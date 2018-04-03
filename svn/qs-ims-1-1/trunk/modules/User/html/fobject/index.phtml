@@ -1,0 +1,128 @@
+<div id="horizontal-sub-toolbar" class="horizontal-sub-toolbar horizontal-toolbar clearfix">
+	<button id="btnFObjectINSERT" type="button" class="btn btn_main_top" <?php if(!($this->form->i_fGetRights($this->user->user_group_list) & 1)):?>disabled<?php endif;?>
+		onclick="rowFObjectInsert('<?php echo $this->form->FormCode?>',<?php echo $this->form->i_DepartmentID?>
+		,{<?php foreach($this->refFields as $code):?><?php echo $this->object->ObjectCode?>_<?php echo $code?>:'<?php echo $this->refForm->data->{$this->object->getFieldByCode($code)->RefFieldCode}?>'<?php endforeach;?>},'<?php echo $this->refForm->ifid?>');">
+		<?php echo $this->_translate(12)?>
+	</button>
+	<button id="btnFObjectEDIT" type="button" class="btn btn_main_top" disabled
+		onclick="rowFObjectEdit('<?php echo $this->form->FormCode?>',0);">
+		<?php echo $this->_translate(13)?>
+	</button>
+	<button id="btnFObjectDETAIL" type="button" class="btn btn_main_top" disabled
+		onclick="rowFObjectTrace();">
+		<?php echo $this->_translate(17)?>
+	</button>
+	<button id="btnFObjectDELETE" type="button" class="btn btn_main_top" disabled
+		onclick="rowFObjectDelete('<?php echo $this->form->FormCode?>','<?php echo $this->refForm->ifid?>');">
+		<?php echo $this->_translate(14)?>
+	</button>
+	
+	<?php if ($this->object->bTrack):?>
+	<button id="btnFObjectEIMPORT" type="button" class="btn btn_main_top"
+		onclick="exportFObjectExcel('<?php
+					echo $this->form->FormCode?>','<?php
+					echo $this->form->i_DepartmentID?>','<?php
+					echo $this->object->ObjectCode?>');">
+		<?php echo $this->_translate(10)?>
+	</button>
+	<?php endif;?>
+	
+	<?php if($this->form->hasPrint()):?>
+	<button id="btnFObjectPRINT" type="button" class="btn btn_main_top" disabled
+		onclick="rowFObjectPrint();">
+		<?php echo $this->_translate(15)?>
+	</button>
+	<?php endif;?>
+	<?php if ( $this->form->i_Type == Qss_Lib_Const::FORM_TYPE_MODULE ):?>
+	<div class="dropdown" style="float:left;">
+	<button id="btnFObjectWORKFLOW" type="button" class="btn btn_main_top" disabled
+		onclick="rowFObjectWorkflow(this,'<?php echo $this->refForm->ifid?>');">
+		<?php echo $this->_translate(8)?>
+		<span style="display: block;" class="downarrowclass">&nbsp;</span>
+	</button>
+		<ul class="dropdown-content">
+
+	  	</ul>
+	</div> 
+	<?php endif;?>
+	<div class="icon-32_separator"></div>
+	<!--	
+<?php if($this->form->hasDesign()):?>
+<div class="btn_main_top btn_disabled" onclick="rowFObjectEmail()"
+	title="<?php echo $this->_translate(6)?>" id="btnFObjectEMAIL"><a href="#1" class="icon-32-email"></a></div>
+<?php endif;?>	
+<div class="btn_main_top" onclick="rowFObjectExcel('<?php echo $this->form->FormCode?>')"
+	title="Excel" id="btnFObjectEXCEL"><a href="#1" class="icon-32-eimport"></a></div>-->
+	<button id="btnFObjectREFRESH" type="button" class="btn btn_main_top"
+		onclick="rowFObjectSearch('<?php echo $this->form->FormCode;?>',0,'<?php echo $this->refForm->ifid?>');">
+		<?php echo $this->_translate(23)?>
+	</button>
+	<?php if ( $this->form->i_Type == Qss_Lib_Const::FORM_TYPE_PROCESS):?>
+	<div class="icon-32_separator"></div>
+	<button id="btnFObjectPROCESS" type="button" class="btn btn_main_top" disabled
+		onclick="rowFObjectProcess()">
+		<?php echo $this->_translate(7)?>
+	</button>
+	<?php endif;?>
+	<?php if($this->form->o_fGetMainObject()->b_Tree):?>
+	<div class="icon-32_separator"></div>
+	<button id="btnFObjectUP" type="button" class="btn btn_main_top icon-32-up" disabled
+		onclick="rowFObjectUpDown('<?php echo $this->form->FormCode?>',1);"
+		title="<?php echo $this->_translate(35)?>">
+		&nbsp;
+	</button>
+	<button id="btnFObjectDOWN" type="button" class="btn btn_main_top icon-32-down" disabled
+		onclick="rowFObjectUpDown('<?php echo $this->form->FormCode?>',0);"
+		title="<?php echo $this->_translate(36)?>">
+		&nbsp;
+	</button>
+	<?php endif;?>
+	<?php if(count((array)$this->bashes)):?>
+	<div class="icon-32_separator"></div>
+	<?php foreach($this->bashes as $item):?>
+	<?php if(!$item->Record):?>
+	<?php switch($item->Type):
+case 2:?>
+<?php case 3:?>
+	<button type="button" class="btn extra-button" steps="<?php echo $item->Step?>"
+		onclick="formbashFORun(<?php echo $item->BID?>,'<?php echo $item->BashName?>',this,0)">
+		<?php echo $item->BashName?>
+	</button>
+	<?php break;?>
+	<?php case 4:?>
+	<button type="button" class="btn extra-button" steps="<?php echo $item->Step?>"
+		onclick="formpopupFOOther('<?php echo $item->FormCode?>','<?php echo $item->Class?>',this)">
+		<?php echo $item->BashName?>
+	</button>
+	<?php break;?>
+	<?php case 5:?>
+	<button type="button" class="btn extra-button" steps="<?php echo $item->Step?>"
+		onclick="formopenFOOther('<?php echo $item->FormCode?>','<?php echo $item->Class?>',this)">
+		<?php echo $item->BashName?>
+	</button>
+	<?php break;?>
+	<?php endswitch;?>
+	<?php endif;?>
+	<?php endforeach;?>
+	<?php endif;?>
+	<div style="float: right;">
+	<button id="btnFObjectSEARCH" type="button" class="btn btn_main_top"
+		onclick="showFObjectSearch();">
+		<?php echo $this->_translate(24)?>
+	</button>
+	</div>
+</div>
+<div class="clear"></div>
+
+<div id="div-fobject-search" class="clearfix" style="display: none;">
+<?php echo $this->searchform;?>
+	<div>
+		<div class="btn-custom center" style="width:70px" onclick="rowFObjectSearch('<?php echo $this->form->FormCode;?>',0,'<?php echo $this->refForm->ifid?>');"><?php echo $this->_translate(81)?></div>
+		<div class="btn-custom center" style="width:70px" onclick="rowCleanSearch('<?php echo $this->form->FormCode;?>','<?php echo $this->refForm->ifid?>');"><?php echo $this->_translate(82)?></div>
+		<div class="btn-custom center" style="width:70px" onclick="showFObjectSearch();"><?php echo $this->_translate(83)?></div>
+	</div>
+</div>	
+<div id="qss_fobject">
+	<?php echo $this->pager;?>
+	<?php echo $this->listview;?>
+</div>

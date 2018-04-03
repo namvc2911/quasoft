@@ -1,0 +1,539 @@
+<?php $row = 1;?>
+<?php
+
+$model              = new Qss_Model_Extra_Maintenance();
+$equipModel         = new Qss_Model_Maintenance_Equipment();
+$common             = new Qss_Model_Extra_Extra();
+$oldCostCenter      = '';
+$IOIDarray          = array();
+$eqArray            = array();
+$sortby             = '';
+$sortCodeCol        = '';
+$sortNameCol        = '';
+$widthArr           = array(1,4, 2, 2, 2, 2, 1, 2, 4);//, 2, 3, 2, 2,2, 2, 2
+$totalCol           = count($widthArr);
+$excelWidth         = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($widthArr, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+$widthArr           = Qss_Lib_Report::changeWidthToFitScreen($widthArr, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+$status             = Qss_Lib_System::getFieldRegx('ODanhSachThietBi', 'TrangThai');
+
+switch ($this->sort)
+{
+	case 1: // nhom theo loai thiet bi
+		$sortby = 'HPRefEqType';
+		$sortNameCol = 'HPEqType';
+	break;
+	case 2: // nhom theo nhom thiet bi
+		$sortby = 'HPRefEqGroup';
+		$sortNameCol = 'HPEqGroup';
+	break;
+	case 3: // nhom theo trung tam chi phi
+		$sortby = 'Ref_TrungTamChiPhi';
+		$sortCodeCol = 'TrungTamChiPhi';
+		$sortNameCol = 'TrungTamChiPhi';
+	break;
+	case 4: // nhom theo khu vuc
+		$sortby = 'HPRefLoc';
+		$sortCodeCol = 'HPLocCode';
+		$sortNameCol = 'HPLocName';
+		break;
+	default:
+		$sortby = 'HPRefEqType';
+		$sortNameCol = 'HPEqType';
+
+	break;
+}
+
+$oldEqID = '';
+foreach ($this->eqs as $eq)
+{
+	$ref_CostCenter    = Qss_Lib_Extra::returnNumber($eq->$sortby);
+	if($oldCostCenter !== $ref_CostCenter)
+	{
+		$eqArray[$ref_CostCenter]        = array();
+		$eqArray[$ref_CostCenter]['Ma']  = $sortCodeCol?$eq->$sortCodeCol:'';
+		$eqArray[$ref_CostCenter]['Ten'] = $sortNameCol?$eq->$sortNameCol:'';
+		$eqArray[$ref_CostCenter]['Level'] = 1;
+		$i                               = 0;
+	}
+
+	if($eq->HPEQIOID)
+	{
+		if($oldEqID != $eq->HPEQIOID && $eq->HPEQIOID != $eq->CEQIOID)
+		{
+			$eqArray[$ref_CostCenter]['ThietBi'][$i]['MaThietBi']       = $eq->HPEquipCode;
+			$eqArray[$ref_CostCenter]['ThietBi'][$i]['LoaiThietBi']     = $eq->HPEqType;
+			$eqArray[$ref_CostCenter]['ThietBi'][$i]['TenThietBi']      = @$eq->HPEquipName;
+			$eqArray[$ref_CostCenter]['ThietBi'][$i]['TBIOID']          = $eq->HPEQIOID;
+			$eqArray[$ref_CostCenter]['ThietBi'][$i]['LichLamViec']     = $eq->HPCal;
+			$eqArray[$ref_CostCenter]['ThietBi'][$i]['Model']           = $eq->HPModel;
+			$eqArray[$ref_CostCenter]['ThietBi'][$i]['NhomThietBi']     = $eq->HPEqGroup;
+			$eqArray[$ref_CostCenter]['ThietBi'][$i]['HanBaoHanh']      = Qss_Lib_Date::mysqltodisplay($eq->HPWarranty);
+			$eqArray[$ref_CostCenter]['ThietBi'][$i]['HangBaoHanh']     = $eq->HPPartner;
+			$eqArray[$ref_CostCenter]['ThietBi'][$i]['NgayDuaVaoSuDung']= Qss_Lib_Date::mysqltodisplay($eq->HPBeginDate);
+			$eqArray[$ref_CostCenter]['ThietBi'][$i]['NgayMua']         = Qss_Lib_Date::mysqltodisplay($eq->HPWhen);
+			$eqArray[$ref_CostCenter]['ThietBi'][$i]['XuatXu']          = $eq->HPWhere;
+			$eqArray[$ref_CostCenter]['ThietBi'][$i]['NamSanXuat']      = $eq->HPProductYear;
+			$eqArray[$ref_CostCenter]['ThietBi'][$i]['TBIOID']          = $eq->HPEQIOID;
+			$eqArray[$ref_CostCenter]['ThietBi'][$i]['DacTinhKyThuat']  = $eq->HPTechNote;
+			$eqArray[$ref_CostCenter]['ThietBi'][$i]['Level']           = $eq->HPLevel;
+			$eqArray[$ref_CostCenter]['ThietBi'][$i]['TrangThai']       = @$status[$eq->HPStatus];
+
+
+			if($eq->CEQIOID)
+			{
+				$i++;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['MaThietBi']       = $eq->CEquipCode;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['LoaiThietBi']     = $eq->CEqType;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['TenThietBi']      = @$eq->CEquipName;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['TBIOID']          = $eq->CEQIOID;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['LichLamViec']     = $eq->CCal;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['Model']           = $eq->CModel;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['NhomThietBi']     = $eq->CEqGroup;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['HanBaoHanh']      = Qss_Lib_Date::mysqltodisplay($eq->CWarranty);
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['HangBaoHanh']     = $eq->CPartner;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['NgayDuaVaoSuDung']= Qss_Lib_Date::mysqltodisplay($eq->CBeginDate);
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['NgayMua']         = Qss_Lib_Date::mysqltodisplay($eq->CWhen);
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['XuatXu']          = $eq->CWhere;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['NamSanXuat']      = $eq->CProductYear;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['TBIOID']          = $eq->CEQIOID;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['DacTinhKyThuat']  = $eq->CTechNote;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['Level']           = $eq->CLevel;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['TrangThai']       = @$status[$eq->CStatus];
+
+
+			}
+		}
+		else
+		{
+			if($eq->CEQIOID)
+			{
+				$i++;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['MaThietBi']       = $eq->CEquipCode;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['LoaiThietBi']     = $eq->CEqType;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['TenThietBi']      = @$eq->CEquipName;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['TBIOID']          = $eq->CEQIOID;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['LichLamViec']     = $eq->CCal;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['Model']           = $eq->CModel;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['NhomThietBi']     = $eq->CEqGroup;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['HanBaoHanh']      = Qss_Lib_Date::mysqltodisplay($eq->CWarranty);
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['HangBaoHanh']     = $eq->CPartner;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['NgayDuaVaoSuDung']= Qss_Lib_Date::mysqltodisplay($eq->CBeginDate);
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['NgayMua']         = Qss_Lib_Date::mysqltodisplay($eq->CWhen);
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['XuatXu']          = $eq->CWhere;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['NamSanXuat']      = $eq->CProductYear;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['TBIOID']          = $eq->CEQIOID;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['DacTinhKyThuat']  = $eq->CTechNote;
+				$eqArray[$ref_CostCenter]['ThietBi'][$i]['Level']           = $eq->CLevel;
+                $eqArray[$ref_CostCenter]['ThietBi'][$i]['TrangThai']       = @$status[$eq->CStatus];
+			}
+		}
+
+		$IOIDarray[]   = $eq->HPEQIOID;
+		$oldEqID       = $eq->HPEQIOID;
+		$oldCostCenter = $ref_CostCenter;
+		$i++;
+	}
+
+}
+
+// Xap xep lai doi voi khu vuc
+if($this->sort == 4)
+{
+	$khuVuc = $common->getNestedSetTable('OKhuVuc');
+	$eqArrayTmp = $eqArray;
+	$eqArray    = array();
+
+	foreach ($khuVuc as $kv)
+	{
+		if(isset($eqArrayTmp[$kv->IOID]))
+		{
+			$eqArray[$kv->IOID] = $eqArrayTmp[$kv->IOID];
+			$eqArray[$kv->IOID]['Level'] = $kv->LEVEL;
+
+//			foreach($khuVuc as $item2)
+//			{
+//				if($item2->lft < $kv->lft && $item2->rgt > $kv->rgt )
+//				{
+//					$eqArray[$kv->IOID]['Ma']   = $kv->MaKhuVuc;
+//					$eqArray[$kv->IOID]['Ten']  = $kv->Ten;
+//					$eqArray[$kv->IOID]['Level'] = $kv->LEVEL;
+//				}
+//			}
+		}
+	}
+}
+
+if($this->sort == 1)
+{
+	$eqType = $common->getNestedSetTable('OLoaiThietBi');
+	$eqArrayTmp = $eqArray;
+	$eqArray    = array();
+
+
+	foreach ($eqType as $kv)
+	{
+		if(isset($eqArrayTmp[$kv->IOID]))
+		{
+			$eqArray[$kv->IOID] = $eqArrayTmp[$kv->IOID];
+			$eqArray[$kv->IOID]['Level'] = $kv->LEVEL;
+
+//			foreach($eqType as $item2)
+//			{
+//				if($item2->lft < $kv->lft && $item2->rgt > $kv->rgt )
+//				{
+//					$eqArray[$item2->IOID]['Ma']    = '';
+//					$eqArray[$item2->IOID]['Ten']   = $kv->TenLoai;
+//					$eqArray[$item2->IOID]['Level'] = $kv->LEVEL;
+//				}
+//			}
+		}
+	}
+}
+
+
+
+$addCol          = 1;
+$colAdd          = 8;
+
+
+
+
+$subTitle       = array();
+$subTitleStr    = '';
+
+if($this->locationIOID)
+{
+	$subTitle[] = ' '.$this->_translate(120).':  ' .$this->location;
+}
+
+if($this->eqGroupIOID )
+{
+	$subTitle[] = ' '.$this->_translate(121).': ' .$this->eqGroup ;
+}
+
+if($this->eqTypeIOID  )
+{
+	$subTitle[] = ' '.$this->_translate(122).': ' .$this->eqType;
+}
+
+if($this->eqIOID     )
+{
+	$subTitle[] = ' '.$this->_translate(123).':  ' .$this->eq;
+}
+
+if($this->costcenterIOID     )
+{
+	$subTitle[] = ' '.$this->_translate(124).':  ' .$this->costcenter;
+}
+
+$subTitleStr         .= implode(' - ', $subTitle);
+
+
+?>
+<?php // echo '<pre>'; print_r($eqArray); die;?>
+
+<?php $excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);?>
+<?php ?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+	<input type="hidden" name="name" value="Danh sách thiết bị<?php if($this->location):?> <?php echo $this->location?><?php endif;?>">
+</form>
+<div class="landscape">
+    <excel orientation="landscape" font-name="Times New Roman" font-size="11"
+           margin-left="0.5" margin-right="0.5" margin-top="0.75"
+           margin-bottom="0.75" />
+	<div id="head_print">
+
+        <div>
+            <div class="overflow" style=" overflow: hidden; width: 100%">
+                <div class="fl center" style="width: 40%">
+                    <xls row="<?php echo $row?>" column="A" column-merge="C" font-size="11" h-align="center" v-align="center" >ĐỘI BẢO TRÌ SỮA CHỮA & XÂY DỰNG</xls>
+                    <br/>
+                    <xls row="<?php echo ($row + 1)?>" column="A" column-merge="C" font-size="11" h-align="center" v-align="center">BM01.QT01.BTSC </xls>
+                    <br/>
+                </div>
+
+                <div class="fr center" style="width: 40%">
+                    <p style="font-size: 16px; line-height: 18px;">
+                        <b>
+                            <xls row="<?php echo $row?>" column="F" column-merge="I" font-size="16" h-align="center" v-align="center" bold="1">CÔNG TY CỔ PHẦN ĐẦU TƯ NƯỚC SẠCH SÔNG ĐÀ</xls>
+                        </b>
+                    </p>
+                    <xls row="<?php echo ($row + 1)?>" column="F" column-merge="I" font-size="11" h-align="center" v-align="center"  >Xóm Vật Lại, xã Phú Minh, huyện Kỳ Sơn, tỉnh Hòa Bình; </xls>
+                    <br/>
+                    <xls row="<?php echo ($row + 2)?>" column="F" column-merge="I" font-size="11" h-align="center" v-align="center"  >Điện thoại: 0218.3.840.152-0218.3.840.148; Fax 0218.3.840.148; </xls>
+                    <br/>
+                </div>
+
+                <?php $row = $row + 2;?>
+            </div>
+        </div>
+        <?php $row++;?>
+        <?php $row++;?>
+        <br/>
+
+
+
+		<center>
+			<h2>
+				<xls row="<?php echo $row?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol]?>" font-size="14"
+					 h-align="center" v-align="center"> <?php echo $this->_translate(1)?></xls>
+			</h2>
+		</center>
+		<?php $row++?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol]?>" font-size="14"
+					 h-align="center" v-align="center"> <?php echo $subTitleStr;?></xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++?>
+
+	<div id="container">
+		<table width="" cellpadding="0" cellspacing="0" class="border"
+			border="0">
+			<tr class="bggrey">
+			<?php $begin = 0;?>
+				<th width="<?php echo $widthArr[$begin];?>px"
+					class="report_title_marker" id="col<?php echo $begin; ?>"
+					col="<?php echo $begin; ?>"><xls row="<?php echo $row?>"
+						width="<?php echo $excelWidth[$begin];?>"
+						column="<?php echo $excel_col[++$begin]?>" font-size="11"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1"> <?php echo $this->_translate(5)?></xls>
+				</th>
+				<th width="<?php echo $widthArr[$begin];?>px"
+					class="report_title_marker" id="col<?php echo $begin; ?>"
+					col="<?php echo $begin; ?>"><xls row="<?php echo $row?>"
+						width="<?php echo $excelWidth[$begin];?>"
+						column="<?php echo $excel_col[++$begin]?>" font-size="11"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1"> <?php echo $this->_translate(3)?></xls>
+				</th>
+
+				<th width="<?php echo $widthArr[$begin];?>px"
+					class="report_title_marker" id="col<?php echo $begin; ?>"
+					col="<?php echo $begin; ?>"><xls row="<?php echo $row?>"
+						width="<?php echo $excelWidth[$begin];?>"
+						column="<?php echo $excel_col[++$begin]?>" font-size="11"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1"> <?php echo $this->_translate(2)?></xls>
+				</th>
+
+
+				<th width="<?php echo $widthArr[$begin];?>px"
+					class="report_title_marker" id="col<?php echo $begin; ?>"
+					col="<?php echo $begin; ?>"><xls row="<?php echo $row?>"
+													 width="<?php echo $excelWidth[$begin];?>"
+													 column="<?php echo $excel_col[++$begin]?>" font-size="11"
+													 wrap-text="1" h-align="center" v-align="center" border="1"
+													 bold="1"> <?php echo $this->_translate(126)?></xls>
+				</th>
+
+				<th width="<?php echo $widthArr[$begin];?>px"
+					class="report_title_marker" id="col<?php echo $begin; ?>"
+					col="<?php echo $begin; ?>"><xls row="<?php echo $row?>"
+						width="<?php echo $excelWidth[$begin];?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(19)?></xls>
+				</th>
+
+				<th width="<?php echo $widthArr[$begin];?>px"
+					class="report_title_marker" id="col<?php echo $begin; ?>"
+					col="<?php echo $begin; ?>"><xls row="<?php echo $row?>"
+													 width="<?php echo $excelWidth[$begin];?>"
+													 column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+													 h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(20)?></xls>
+				</th>
+
+				<th width="<?php echo $widthArr[$begin];?>px"
+					class="report_title_marker" id="col<?php echo $begin; ?>"
+					col="<?php echo $begin; ?>"><xls row="<?php echo $row?>"
+						width="<?php echo $excelWidth[$begin];?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(18)?></xls>
+				</th>
+
+				<th width="<?php echo $widthArr[$begin];?>px"
+					class="report_title_marker" id="col<?php echo $begin; ?>"
+					col="<?php echo $begin; ?>"><xls row="<?php echo $row?>"
+						width="<?php echo $excelWidth[$begin];?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(24)?></xls>
+				</th>
+
+
+				<th width="<?php echo $widthArr[$begin];?>px"
+					class="report_title_marker" id="col<?php echo $begin; ?>"
+					col="<?php echo $begin; ?>"><xls row="<?php echo $row?>"
+						width="<?php echo $excelWidth[$begin];?>"
+						column="<?php echo $excel_col[++$begin]?>" font-size="11"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1"> <?php echo $this->_translate(4)?></xls>
+				</th>
+
+				<!--
+				<th  width="<?php echo $widthArr[$begin];?>px" class="report_title_marker remove_col" 
+						 id="col<?php echo $begin; ?>" 
+						 col="<?php echo $begin; ?>">
+					<xls row="<?php echo $row?>" row-merge="1" width="<?php echo $excelWidth[$begin];?>" column="<?php echo $excel_col[++$begin]?>" font-size="11" wrap-text="1" h-align="center" v-align="center" border="1"><?php echo $this->_translate(125)?></xls>
+				</th>	
+							
+				<th   width="<?php echo $widthArr[$begin];?>px" class="report_title_marker remove_col" 
+						 id="col<?php echo $begin; ?>" 
+						 col="<?php echo $begin; ?>">
+                                    <xls row="<?php echo $row?>"   width="<?php echo $excelWidth[$begin];?>" column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="center" v-align="center" border="1" bold="1"><?php echo $this->_translate(16)?></xls>
+                                </th>
+				<th   width="<?php echo $widthArr[$begin];?>px" class="report_title_marker remove_col" 
+						 id="col<?php echo $begin; ?>" 
+						 col="<?php echo $begin; ?>">
+					<xls row="<?php echo $row?>"   width="<?php echo $excelWidth[$begin];?>" column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="center" v-align="center" border="1" bold="1"><?php echo $this->_translate(17)?></xls>
+				</th>
+
+
+			  	<th   width="<?php echo $widthArr[$begin];?>px" class="report_title_marker remove_col" 
+						 id="col<?php echo $begin; ?>" 
+						 col="<?php echo $begin; ?>">
+					<xls row="<?php echo $row?>"   width="<?php echo $excelWidth[$begin];?>" column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="center" v-align="center" border="1" bold="1"><?php echo $this->_translate(20)?></xls>
+				</th>
+				<th   width="<?php echo $widthArr[$begin];?>px" class="report_title_marker remove_col" 
+						 id="col<?php echo $begin; ?>" 
+						 col="<?php echo $begin; ?>">
+					<xls row="<?php echo $row?>"   width="<?php echo $excelWidth[$begin];?>" column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="center" v-align="center" border="1" bold="1"><?php echo $this->_translate(21)?></xls>
+				</th>
+				<th   width="<?php echo $widthArr[$begin];?>px" class="report_title_marker remove_col" 
+						 id="col<?php echo $begin; ?>" 
+						 col="<?php echo $begin; ?>">
+					<xls row="<?php echo $row?>"   width="<?php echo $excelWidth[$begin];?>" column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="center" v-align="center" border="1" bold="1"><?php echo $this->_translate(22)?></xls>
+				</th>
+				<th   width="<?php echo $widthArr[$begin];?>px" class="report_title_marker remove_col" 
+						 id="col<?php echo $begin; ?>" 
+						 col="<?php echo $begin; ?>">
+					<xls row="<?php echo $row?>"   width="<?php echo $excelWidth[$begin];?>" column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="center" v-align="center" border="1" bold="1"><?php echo $this->_translate(23)?></xls>
+				</th>
+				-->
+			</tr>
+			<?php $row++;?>
+
+
+			<?php foreach ($eqArray as $costcenter):?>
+
+			<?php
+			$groupTitle =  '';
+			$groupTitle .= $costcenter['Ten'];
+			$groupTitle .= ($costcenter['Ten'] && $costcenter['Ma'])?" - {$costcenter['Ma']}":$costcenter['Ma'];
+			$groupTitle = $groupTitle?$groupTitle:$this->_translate(26);
+			?>
+
+			<tr>
+				<td colspan="<?php echo $totalCol;?>"
+					class="tree_level_<?php echo $costcenter['Level'];?> 
+                                    <?php if($this->sort == 4 ) echo 'tree_open'; //  khu vuc?> bold report_title_marker_all">
+
+					<xls row="<?php echo $row?>" column="<?php echo $excel_col[1]?>"
+						column-merge="<?php echo $excel_col[$totalCol]?>" font-size="11"
+						wrap-text="1" h-align="left" v-align="center" border="1" bold="1">
+						<?php echo $groupTitle;?> </xls>
+				</td>
+			</tr>
+			<?php $row++;?>
+			<?php $i = 0;?>
+
+
+			<?php foreach (@(array)$costcenter['ThietBi'] as $eq):?>
+			<?php if($eq['Level'] == 1) $i++;?>
+			<tr>
+			<?php $begin = 0;?>
+				<td class="center" col="<?php echo $begin; ?>"><xls
+						row="<?php echo $row?>" 
+						column="<?php echo $excel_col[++$begin]?>" font-size="11"
+						wrap-text="1" h-align="center" v-align="center" border="1"><?php if($eq['Level'] == 1):?> <?php echo $i;?><?php endif;?>
+					</xls></td>
+
+				<td class="left <?php if($eq['Level'] > 1):?>tree_level_<?php echo $eq['Level'];?><?php endif;?>" col="<?php echo $begin; ?>"><xls
+						row="<?php echo $row?>" 
+						column="<?php echo $excel_col[++$begin]?>" font-size="11"
+						wrap-text="1" h-align="left" v-align="center" border="1"> <?php echo $eq['TenThietBi'];?></xls>
+				</td>
+
+				<td class="" col="<?php echo $begin; ?>"><xls
+						row="<?php echo $row?>" 
+						column="<?php echo $excel_col[++$begin]?>" font-size="11"
+						wrap-text="1" h-align="center" v-align="center" border="1"> <?php echo $eq['MaThietBi'];?></xls>
+				</td>
+
+				<td class="" col="<?php echo $begin; ?>"><xls
+						row="<?php echo $row?>" 
+						column="<?php echo $excel_col[++$begin]?>" font-size="11"
+						wrap-text="1" h-align="center" v-align="center" border="1"> <?php echo $eq['TrangThai'];?></xls>
+				</td>
+
+				<td class="left" col="<?php echo $begin; ?>"><xls
+						row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>"
+						wrap-text="1" h-align="left" v-align="center" border="1"> <?php echo $eq['Model'];?></xls>
+				</td>
+
+
+				<td class="left" col="<?php echo $begin; ?>"><xls
+						row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>"
+						wrap-text="1" h-align="left" v-align="center" border="1"> <?php echo $eq['XuatXu'];?></xls>
+				</td>
+
+				<td class="center" col="<?php echo $begin; ?>"><xls
+						row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>"
+						wrap-text="1" h-align="center" v-align="center" border="1"> <?php echo $eq['NamSanXuat'];?></xls>
+				</td>
+
+				<td class="center" col="<?php echo $begin; ?>"><xls
+						row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>"
+						wrap-text="1" h-align="center" v-align="center" border="1"> <?php echo $eq['NgayDuaVaoSuDung'];?></xls>
+				</td>
+
+
+				<td class="left" col="<?php echo $begin; ?>"><xls
+						row="<?php echo $row?>" width="50"
+						column="<?php echo $excel_col[++$begin]?>" font-size="11"
+						wrap-text="1" h-align="left" v-align="center" border="1"> <?php echo $eq['DacTinhKyThuat'];?>
+				
+				</td>
+				<!--  
+<td class="left" col="<?php echo $begin; ?>"><div style="width:140px;"> <xls row="<?php echo $row?>"  width="10" column="<?php echo $excel_col[++$begin]?>" font-size="11" wrap-text="1" h-align="center" v-align="center" border="1"><?php echo $eq['LoaiThietBi'];?></xls> </div></td>				
+				
+				<td class="left" col="<?php echo $begin; ?>">
+					<xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>"   wrap-text="1" h-align="left" v-align="center" border="1"><?php echo $eq['LichLamViec'];?></xls>
+				</td>
+				<td class="left" col="<?php echo $begin; ?>">
+					<xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>"   wrap-text="1" h-align="left" v-align="center" border="1"><?php echo $eq['NhomThietBi'];?></xls>
+				</td>
+
+
+				<td class="left" col="<?php echo $begin; ?>">
+					<xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>"   wrap-text="1" h-align="left" v-align="center" border="1"><?php echo $eq['XuatXu'];?></xls>
+				</td>
+				<td class="center" col="<?php echo $begin; ?>">
+					<xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>"   wrap-text="1" h-align="center" v-align="center" border="1"><?php echo $eq['NgayMua'];?></xls>
+				</td>
+				<td class="left" col="<?php echo $begin; ?>">
+					<xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>"   wrap-text="1" h-align="left" v-align="center" border="1"><?php echo $eq['HangBaoHanh'];?></xls>
+				</td>
+				<td class="center" col="<?php echo $begin; ?>">
+					<xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>"   wrap-text="1" h-align="center" v-align="center" border="1"><?php echo $eq['HanBaoHanh'];?></xls>
+				</td>
+
+				-->
+
+			</tr>
+			<?php $row++;?>
+
+			<?php endforeach;?>
+			<?php endforeach;?>
+
+
+
+
+		</table>
+	</div>
+</div>

@@ -1,0 +1,88 @@
+<?php
+$projectID      = 'project';
+$projectDisplay = array('num'=>3,'objects'=>array('ODuAn'=>array('id'=>'IOID','display1'=>'MaDuAn','display2'=>'TenDuAn', 'order'=>'MaDuAn') ));
+?>
+
+<script>
+    function printPreview()
+    {
+        var start   = $('#sdate').val();
+        var end     = $('#edate').val();
+        var project = $('#project').val();
+        var msg   = '';
+
+        msg += common_checkEmpty(project, '<?php echo $this->_translate(2)?>');
+        if(start && end)
+        {
+            msg += common_compareStartAndEnd(start, end, '<?php echo $this->_translate(3)?>', '<?php echo $this->_translate(4)?>');
+        }
+
+        if(msg != '')
+        {
+            qssAjax.alert(msg);
+            return;
+        }
+        else
+        {
+            var url = sz_BaseUrl + '/static/m810/show';
+            var data = $('#report').serialize();
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#print-area').html(jreturn);
+                removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+            });
+        }
+    }
+
+</script>
+
+
+<div class="clear"></div>
+<div id="view">
+    <div class="line-hr">
+        <span> <?php echo Qss_Lib_System::getReportTitle('M810');?> </span>
+    </div>
+    <form id="report" method="post" action="/static/m810/show">
+        <table class="detail">
+            <!-- Dự án -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                    <?php echo $this->_translate(2)?>
+                    <span class="red bold">(*)</span>
+                </th>
+                <td>
+                    <?php echo $this->views->Report->ComboBox($projectID,$projectDisplay);?>
+                </td>
+            </tr>
+
+
+            <!-- Ngày bắt đầu -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                   <?php echo $this->_translate(3)?>
+                </th>
+                <td>
+                    <?php echo $this->views->Report->Datepicker('sdate', date('d-m-Y'));?>
+                </td>
+            </tr>
+
+            <!-- Ngày kết thúc -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                     <?php echo $this->_translate(4)?>
+                </th>
+                <td>
+                    <?php echo $this->views->Report->Datepicker('edate', date('t-m-Y',strtotime('today')));?>
+                </td>
+            </tr>
+
+        </table>
+    </form>
+    <p>
+
+
+    <hr>
+    <?php echo $this->views->Report->PrintToolbar();?>
+    <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>

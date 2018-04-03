@@ -1,0 +1,127 @@
+<form action="" id="form_verify" method="post">
+	<input type="hidden" name="stepno" id="stepno"
+		value="<?php echo $this->stepno?>"> <input type="hidden"
+		name="user_id" id="user_id" value="<?php echo $this->user_id?>">
+	<table class="detail">
+		<tr>
+			<td><?php switch($this->type):
+case 0:?> <?php echo $this->_translate(73)?> <?php break;?> <?php case 1:?>
+				<span class="green"><?php echo $this->trace->fromname?>
+			</span> <?php echo $this->_translate(74)?> <?php echo $this->trace->tostatus?>
+			<?php break;?> <?php case 2:?> <?php echo $this->_translate(75)?> <?php echo $this->trace->tostatus?>
+			<?php echo $this->_translate(76)?> <span class="green"><?php echo $this->trace->fromname?>
+			</span> <?php break;?> <?php case 3:?> <?php echo $this->_translate(77)?>
+			<?php echo $this->trace->tostatus?> <?php echo $this->_translate(78)?>
+				<span class="green"><?php echo $this->trace->fromname?>
+			</span> <?php break;?> <?php case 4:?> <span class="green"><?php echo $this->trace->fromname?>
+			</span> <?php echo $this->_translate(79)?> <?php echo $this->trace->tostatus?>
+			<?php break;?> <?php case 5:?> <?php echo $this->_translate(80)?> <span
+				class="green"><?php echo $this->trace->toname?>
+			</span> <?php echo $this->_translate(81)?> <?php echo $this->trace->tostatus?>
+			<?php break;?> <?php endswitch;?></td>
+			<td><?php switch($this->type):
+case 1:?>
+				<button type="button"
+					onclick="formVerify(<?php echo $this->form->FormCode?>,
+							<?php echo $this->form->i_IFID?>,
+							<?php echo $this->form->i_DepartmentID?>,
+							<?php echo $this->traceid?>,
+							1)"
+					class="btn-custom">
+					<?php echo $this->_translate(82)?>
+				</button>
+				<button type="button"
+					onclick="formVerify(<?php echo $this->form->FormCode?>,
+							<?php echo $this->form->i_IFID?>,
+							<?php echo $this->form->i_DepartmentID?>,
+							<?php echo $this->traceid?>,
+							2)"
+					class="btn-custom">
+					<?php echo $this->_translate(83)?>
+				</button> <?php break;?> <?php case 3:?>
+				<button type="button"
+					onclick="formVerify(<?php echo $this->form->FormCode?>,
+							<?php echo $this->form->i_IFID?>,
+							<?php echo $this->form->i_DepartmentID?>,
+							<?php echo $this->traceid?>,
+							1)"
+					class="btn-custom">
+					<?php echo $this->_translate(84)?>
+				</button> <?php break;?> <?php case 5:?>
+				<button type="button"
+					onclick="stopRequest(<?php echo $this->form->FormCode?>,
+							<?php echo $this->form->i_IFID?>,
+							<?php echo $this->form->i_DepartmentID?>,
+							<?php echo $this->traceid?>)"
+					class="btn-custom">
+					<?php echo $this->_translate(85)?>
+					"
+					<?php echo $this->trace->tostatus?>
+					"
+				</button> <?php break;?> <?php case 2:?> <?php if($this->back):?>
+				<button type="button"
+					onclick="sendRequest(<?php echo $this->form->FormCode?>,<?php echo $this->form->i_IFID?>,<?php echo $this->form->i_DepartmentID?>)"
+					class="btn-custom">
+					<?php echo $this->_translate(86)?>
+				</button> <?php else:?>
+				<button type="button"
+					onclick="sendRequest(<?php echo $this->form->FormCode?>,<?php echo $this->form->i_IFID?>,<?php echo $this->form->i_DepartmentID?>)"
+					class="btn-custom">
+					<?php echo $this->_translate(87)?>
+				</button> FormCode <?php endif;?> <?php break;?> <?php default:?>
+				&nbsp; <?php break;?> <?php endswitch;?></td>
+		</tr>
+		<tr>
+			<td><textarea name="comment" cols="75" rows="7" id="comment"></textarea>
+			</td>
+			<td>
+				<button type="button" onclick="$('#qss_trace').dialog('close');"
+					class="btn-custom">
+					<?php echo $this->_translate(72)?>
+				</button></td>
+		</tr>
+	</table>
+</form>
+
+					<?php foreach ($this->traces as $item):?>
+					<?php if($this->cuser->user_id = $item->UID && $this->form->i_Status == $item->ToStatus):?>
+<tr>
+	<td width="5%"><input canselect="0"
+	<?php if($this->form->lockid) echo 'disabled'?> type="radio"
+		id="step_<?php echo $step->StepNo?>" name="stepno"
+		value="<?php echo $step->StepNo?>"
+		onchange="reloadUserStep(<?php echo $this->form->i_IFID?>,<?php echo $this->form->i_DepartmentID?>,this.value,'user_id',this)">
+	</td>
+	<td width="40%"><label for="step_<?php echo $step->StepNo?>"> <?php if(!$step->StepType):?>
+	<?php echo $this->_translate(88)?> <?php elseif($step->StepType == 1):?>
+	<?php echo $this->_translate(89)?> <?php elseif($step->StepType == 2):?>
+	<?php echo $this->_translate(90)?> <?php endif;?> "<?php echo $step->Name?>"
+	<?php echo $this->_translate(91)?> </label></td>
+	<?php if($i == 0):?>
+	<td width="40%"><select disabled id="user_id" name="user_id" size="1"
+		style="width: 200px;">
+			<option value="" selected="">
+				---
+				<?php echo $this->_translate(92)?>
+				---
+			</option>
+	</select>
+	</td>
+	<td><button class="btn-custom"
+			onclick="sendRequest(<?php echo $this->form->FormCode?>,<?php echo $this->form->i_IFID?>,<?php echo $this->form->i_DepartmentID?>)">
+			<?php echo $this->_translate(93)?>
+		</button></td>
+		<?php elseif($i == 1):?>
+	<td rowspan="1" width="40%"><textarea disabled id="comment" cols=50
+			rows=4></textarea></td>
+	<td><button type="button" onclick="$('#qss_trace').dialog('close');"
+			class="btn-custom">
+			<?php echo $this->_translate(72)?>
+		</button></td>
+		<?php else:?>
+	<td>&nbsp;</td>
+	<?php endif;?>
+</tr>
+<?php break;?>
+<?php endif;?>
+<?php endforeach;?>

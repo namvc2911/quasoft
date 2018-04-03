@@ -1,0 +1,86 @@
+<script type="text/javascript">
+    function printPreview() {
+        var url = sz_BaseUrl + '/static/m865/show';
+        var data = $('#report').serialize();
+
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#print-area').html(jreturn);
+            removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+        });
+    }
+</script>
+
+<div class="clear">&nbsp;</div>
+<div id="view">
+    <div class="line-hr">
+        <span><?php echo Qss_Lib_System::getReportTitle('M865');?> </span>
+    </div>
+
+    <form id="report" method="get" action="/static/m865/show">
+        <table class="detail">
+
+            <tr>
+                <th width="20%" class="report-param-label"><?php echo $this->_translate(1) ?>
+                </th>
+                <td>
+                    <?php
+                    $id = 'workcenter';
+                    $getDataObject = array('ODonViSanXuat' => array('Ma', 'Ten'));
+                    $getFields = array('num' => 2,
+                        'objects' => array('ODonViSanXuat' => array(
+                            'id' => 'IOID'
+                        , 'display1' => 'Ten'
+                        , 'display1' => 'Ma')));
+                    $getLookupFilter = array();
+                    ?> <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields, $getLookupFilter); ?>
+                </td>
+            </tr>
+
+            <tr>
+                <th width="20%" class="report-param-label"><?php echo $this->_translate(2) ?>
+                </th>
+                <td>
+                    <?php
+                    $id = 'employee';
+                    $getDataObject = array('ODanhSachNhanVien' => array('MaNhanVien', 'TenNhanVien'));
+                    $getFields = array('num' => 2,
+                        'objects' => array('ODanhSachNhanVien' => array(
+                            'id' => 'IOID'
+                            , 'display1' => 'TenNhanVien'
+                            , 'display2' => 'MaNhanVien')));
+                    $getLookupFilter = array();
+                    ?> <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields, $getLookupFilter); ?>
+                </td>
+            </tr>
+
+            <tr>
+                <th width="20%" class="report-param-label"><?php echo $this->_translate(3) ?>
+                </th>
+                <td>
+                    <?php echo $this->views->Report->Datepicker('start');?>
+                </td>
+            </tr>
+
+            <tr>
+                <th width="20%" class="report-param-label"><?php echo $this->_translate(4) ?>
+                </th>
+                <td>
+                    <?php echo $this->views->Report->Datepicker('end');?>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <hr />
+
+    <?php
+    $hidden['pdfdoc']   = true;
+    $hidden['exceldoc'] = true;
+    $hidden['pdf']      = true;
+    $hidden['html']     = true;
+    $hidden['excel']    = true;
+    ?>
+    <?php echo $this->views->Report->PrintToolbar($hidden);?>
+    <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>

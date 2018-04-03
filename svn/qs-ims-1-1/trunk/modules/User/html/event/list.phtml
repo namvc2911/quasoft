@@ -1,0 +1,303 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	rowCLK($('tr [elid="'+$.cookie('event_selected')+'"]')[0]);
+});
+</script>
+<?php
+$arrCount = array(1=>'meeting',2=>'call',3=>'email',4=>'task',5=>'event',6=>'other');
+$arrStatus = array(0=>'chưa bắt đầu',1=>'đang làm',2=>'hoàn thành',3=>'hủy');
+?>
+<style>
+.note a,.start a,.finish a,.cancel a,.delete a {
+	background: url("/images/event/bg_action.png") no-repeat;
+	display: block;
+	width: 16px;
+	height: 16px;
+	text-indent: 5000em;
+	margin: 0 auto;
+	white-space: nowrap;
+}
+
+.note a {
+	background-position: -23px 1px
+}
+
+.start a {
+	background-position: -48px 0px
+}
+
+.finish a {
+	background-position: 0px 0px
+}
+
+.cancel a {
+	background-position: -73px 0px
+}
+
+.delete a {
+	background-position: -100px 0px
+}
+
+.note a.disabled {
+	background-position: -23px -23px
+}
+
+.start a.disabled {
+	background-position: -48px -24px
+}
+
+.finish a.disabled {
+	background-position: 0px -24px
+}
+
+.cancel a.disabled {
+	background-position: -73px -24px
+}
+
+.delete a.disabled {
+	background-position: -100px -23px
+}
+
+.note:hover,.start:hover,.finish:hover,.cancel:hover {
+	
+}
+</style>
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+	<div id="btnINSERT" onClick="rowEventInsert()"
+		title="<?php echo $this->_translate(12,'Tạo mới')?>"
+		class="btn_main_top">
+		<a class="icon-32-new" href="#!"></a>
+	</div>
+	<div id="btnEDIT" title="<?php echo $this->_translate(13,'Sửa đổi')?>"
+		onClick="rowEventEdit()" class="btn_main_top btn_disabled">
+		<a class="icon-32-edit" href="#!"></a>
+	</div>
+	<div id="btnDELETE" title="<?php echo $this->_translate(14,'Xóa')?>"
+		onClick="rowEventDelete()" class="btn_main_top btn_disabled">
+		<a class="icon-32-delete" href="#!"></a>
+	</div>
+	<div class="icon-32_separator"></div>
+	<div class="btn_main_top btn_disabled" onclick="rowResendEmail();"
+		title="Gửi lại E-Mail" id="btnREEMAIL">
+		<a href="#!" class="icon-32-email"></a>
+	</div>
+	<div class="btn_main_top" onclick="rowEmail();" title="Gửi E-Mail mới"
+		id="btnEMAIL">
+		<a href="#!" class="icon-32-email"></a>
+	</div>
+	<div class="btn_main_top" onclick="rowSearch();"
+		title="<?php echo $this->_translate(23,'Làm mới dữ liệu')?>"
+		id="btnREFRESH">
+		<a href="#!" class="icon-32-refresh"></a>
+	</div>
+	<div class="btn_main_top" onclick="showSearch();"
+		title="<?php echo $this->_translate(24,'Tìm kiếm')?>" id="btnSEARCH">
+		<a href="#!" class="icon-32-search"></a>
+	</div>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div style="display: none" class="clearfix" id="div-search">
+		<form onsubmit="rowSearch(); return false;" method="post"
+			name="filter_form" id="form_event_filter">
+			<div class="clearfix">
+				<div class="label">
+					<span>Loại</span> <span>Tiêu đề</span> <span>Ngày</span> <span>Người
+						tạo</span> <span>Người thực hiện</span> <span>Tình trạng</span>
+				</div>
+				<div class="element">
+					<span> <select style="width: 150px;" name="filter_1">
+							<option value=""></option>
+							<?php foreach ($this->types as $item):?>
+							<option
+							<?php if(@$this->filters[1] == $item->TypeID) echo 'selected'?>
+								value="<?php echo $item->TypeID?>">
+								<?php echo $item->TypeName?>
+							</option>
+							<?php endforeach;?>
+					</select> </span> <span><input type="text"
+						value="<?php echo @$this->filters[2]?>" name="filter_2" /> </span>
+					<span><input type="text" value="" name="filter_3" id="filter_3" />
+					</span> <span> <select style="width: 150px;" name="filter_4">
+							<option value=""></option>
+							<?php foreach ($this->users as $item):?>
+							<option
+							<?php if(@$this->filters[4] == $item->UID) echo 'selected'?>
+								value="<?php echo $item->UID?>">
+								<?php echo $item->UserName?>
+							</option>
+							<?php endforeach;?>
+					</select> </span> <span> <select style="width: 150px;"
+						name="filter_5">
+							<option value=""></option>
+							<?php foreach ($this->users as $item):?>
+							<option
+							<?php if(@$this->filters[5] == $item->UID) echo 'selected'?>
+								value="<?php echo $item->UID?>">
+								<?php echo $item->UserName?>
+							</option>
+							<?php endforeach;?>
+					</select> </span> <span> <select style="width: 150px;"
+						name="filter_6">
+							<option value=""></option>
+							<option <?php if(@$this->filters[6] == '0') echo 'selected'?>
+								value="0">
+								<?php echo $arrStatus[0]?>
+							</option>
+							<option <?php if(@$this->filters[6] == 1) echo 'selected'?>
+								value="1">
+								<?php echo $arrStatus[1]?>
+							</option>
+							<option <?php if(@$this->filters[6] == 2) echo 'selected'?>
+								value="2">
+								<?php echo $arrStatus[2]?>
+							</option>
+							<option <?php if(@$this->filters[6] == 3) echo 'selected'?>
+								value="3">
+								<?php echo $arrStatus[3]?>
+							</option>
+					</select> </span>
+				</div>
+			</div>
+		</form>
+		<div class="fl">
+			<div onclick="rowSearch(50);" class="btn-custom">Tìm kiếm</div>
+			<div onclick="eventCleanSearch();" class="btn-custom">Xóa điều kiện</div>
+		</div>
+	</div>
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#1"><span>Công việc & sự kiện</span>
+			</a></li>
+		</ul>
+	</div>
+	<div id="qss_form">
+		<table class="grid_navigator">
+			<tr>
+				<td align="center" style="border-right: 0pt none; width: 100px;"></td>
+				<td align="right">Nhóm theo: <select onchange="rowSearch();"
+					id="qss_form_groupby">
+						<option value="0" />
+						<option <?php if($this->groupby == 1) echo 'selected'?> value="1">Loại</option>
+						<option <?php if($this->groupby == 3) echo 'selected'?> value="3">Ngày</option>
+						<option <?php if($this->groupby == 4) echo 'selected'?> value="4">Người
+							tạo</option>
+						<option <?php if($this->groupby == 5) echo 'selected'?> value="5">Người
+							thực hiện</option>
+						<option <?php if($this->groupby == 6) echo 'selected'?> value="6">Tình
+							trạng</option>
+				</select> Trang: <select style="" onchange="rowSearch();"
+					id="qss_form_pageno">
+					<?php for($i = 1;$i <= ceil($this->recordcount/$this->limit);$i++):?>
+						<option <?php if($i == $this->pageno) echo 'selected';?>>
+						<?php echo $i?>
+						</option>
+						<?php endfor;?>
+				</select> / 1 Hiển thị: <select onchange="rowSearch();" style=""
+					id="qss_form_perpage">
+						<option <?php if($this->limit == 10) echo 'selected'?>>10</option>
+						<option <?php if($this->limit == 20) echo 'selected'?>>20</option>
+						<option <?php if($this->limit == 50) echo 'selected'?>>50</option>
+						<option <?php if($this->limit == 100) echo 'selected'?>>100</option>
+				</select></td>
+			</tr>
+		</table>
+		<table class="grid">
+			<tr>
+				<th class="nocount"><a href="#!" onclick="rowSort(1)">Loại <?php if($this->orderid == 1):?>
+						<img border="0"
+						src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" />
+						<?php endif;?> </a></th>
+				<th width="250"><a href="#!" onclick="rowSort(2)">Tiêu đề <?php if($this->orderid == 2):?>
+						<img border="0"
+						src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" />
+						<?php endif;?> </a></th>
+				<th width="80"><a href="#!" onclick="rowSort(3)">Ngày <?php if($this->orderid == 3):?>
+						<img border="0"
+						src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" />
+						<?php endif;?> </a></th>
+				<th width="100">Thời gian</th>
+				<th width="120"><a href="#!" onclick="rowSort(5)">Người tạo <?php if($this->orderid == 4):?>
+						<img border="0"
+						src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" />
+						<?php endif;?> </a></th>
+				<th width="120"><a href="#!" onclick="rowSort(4)">Người thực hiện <?php if($this->orderid == 5):?>
+						<img border="0"
+						src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" />
+						<?php endif;?> </a></th>
+				<!--        <th width="40">Nhắc</th>-->
+				<th width="80"><a href="#!" onclick="rowSort(6)">Tình trạng <?php if($this->orderid == 6):?>
+						<img border="0"
+						src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" />
+						<?php endif;?> </a></th>
+				<th width="60" colspan="5">Hành động</th>
+			</tr>
+			<?php $group = null?>
+			<?php foreach ($this->events as $event):?>
+			<?php if(isset(Qss_Model_Event::$arrField[$this->groupby])):?>
+			<?php if($group != $event->{Qss_Model_Event::$arrField[$this->groupby]}):?>
+			<tr>
+				<td class="groupby" colspan="11"><?php if($this->groupby == 3) echo Qss_Lib_Date::mysqltodisplay($event->{Qss_Model_Event::$arrGroup[$this->groupby]}); elseif($this->groupby == 6)echo $arrStatus[$event->{Qss_Model_Event::$arrGroup[$this->groupby]}]; else echo $event->{Qss_Model_Event::$arrGroup[$this->groupby]};?>
+				</td>
+			</tr>
+			<?php endif;?>
+			<?php $group = $event->{Qss_Model_Event::$arrField[$this->groupby]}?>
+			<?php endif;?>
+			<tr rights="63" type="<?php echo $event->EventType?>"
+				id="<?php echo $event->EventID;?>" elid="<?php echo $event->ELID;?>"
+				onclick="rowCLK(this);">
+				<td class="nocount <?php echo $arrCount[$event->EventType];?>"></td>
+				<td><?php echo $event->Title;?></td>
+				<td class="center"><?php echo Qss_Model_Event::getDateDisplay($event->Date)?>
+				</td>
+				<td class="center"><?php echo substr($event->STime, 0,5)?> - <?php echo substr($event->ETime, 0,5)?>
+				</td>
+				<td><?php echo $event->CreatedName?></td>
+				<td><?php echo $event->UserName?></td>
+				<!--        <td class="<?php echo $event->Alarm?'bell':'no-bell';?>"></td>-->
+				<td
+					class="center <?php if ($event->Status==2) echo 'done'; elseif ($event->Status == 1 && $event->TimeDone > time()) echo 'doing'; elseif($event->Time <= time() && $event->Status != null) echo 'error'?>"><?php echo $arrStatus[(int)$event->Status]?>
+				</td>
+				<td><div class="note">
+						<a
+							class="<?php if ($event->Status == null || $event->Rights != 1) echo 'disabled'; ?>"
+							onclick="eventNote(this,<?php echo @$event->ELID?>)"
+							title="<?php echo $event->Note?$event->Note:'Ghi chú'?>"
+							href="#!">Ghi chú</a>
+					</div></td>
+				<td><div class="start">
+						<a
+							class="<?php if ($event->Status == null || $event->Status == 1 || $event->Rights != 1) echo 'disabled'; ?>"
+							title="Bắt đầu" href="#!"
+							onclick="eventAction(this,<?php echo @$event->ELID?>,1)">Bắt đầu</a>
+					</div></td>
+				<td><div class="finish">
+						<a
+							class="<?php if ($event->Status == null || $event->Status == 2 || $event->Rights != 1) echo 'disabled'; ?>"
+							title="Kết thúc" href="#!"
+							onclick="eventAction(this,<?php echo @$event->ELID?>,2)">Kết thúc</a>
+					</div></td>
+				<td><div class="cancel">
+						<a
+							class="<?php if ($event->Status == null || $event->Status == 3 || $event->Rights != 1) echo 'disabled'; ?>"
+							title="Hủy" href="#!"
+							onclick="eventAction(this,<?php echo @$event->ELID?>,3)">Hủy</a>
+					</div></td>
+				<td><div class="delete">
+						<a
+							class="<?php if ($event->Status == null || $event->Rights != 1) echo 'disabled'; ?>"
+							title="Xóa" href="#!"
+							onclick="eventLogDelete(this,<?php echo @$event->ELID?>)">Xóa</a>
+					</div></td>
+			</tr>
+			<?php endforeach;?>
+		</table>
+	</div>
+</div>
+<script>
+$(function() {
+	$("#filter_3").datepicker();
+	$("#filter_3").datepicker('option', {dateFormat: 'dd-mm-yy'});
+	$("#filter_3").val('<?php echo @$this->filters[3]?>');
+});
+</script>

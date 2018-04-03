@@ -1,0 +1,182 @@
+<script src="/js/common.js"></script>
+<script>
+    var m838 = {
+    		plan : function(ifid, ioid, start, end, all)
+            {
+                var url  = sz_BaseUrl + '/static/m838/detail/plan';
+                var data = {ifid:ifid, ioid:ioid, start: start, end: end, all: all};
+
+                qssAjax.getHtml(url, data, function(jreturn) {
+                    $('#qss_trace').dialog('close');
+                    $('#qss_trace').html('');
+                    $('#qss_trace').html(jreturn);
+                    $('#qss_trace').dialog({width: 900, height: 400});
+                });
+            },
+            createDetailFromPlan : function(ifid)
+            {
+                var url  = sz_BaseUrl + '/static/m838/detail/createfromplan';
+                var data = $('#m838_plans').serialize();
+
+                qssAjax.call(url, data, function(jreturn) {
+                    if(jreturn.message != '')
+                    {
+                        qssAjax.alert(jreturn.message);
+                    }
+                    $('#qss_trace').dialog('close');
+                    if($('#ifid').val() === undefined){
+                    	m838.listDetail(ifid)
+                    }
+                    else{
+                    	rowFormSearch('M837',ifid);
+                    }
+                }, function(jreturn) {
+                    qssAjax.alert(jreturn.message);
+                });
+            }
+    };
+</script>
+
+<script src="/js/jquery.tablescroll.js"></script>
+
+<?php
+$width  = '800';
+$widths = array(1,3, 3,5,5,5, 5);
+$fit    = Qss_Lib_Report::changeWidthToFitScreen2($widths, $width);
+$begin  = 0;
+?>
+<form id="m838_plans">
+    <input type="hidden" name="GeneralPlanIOID" value="<?php echo $this->ioid;?>" />
+
+    <div class="popup_wrap">
+        <div class="popup_header">
+            <table class="popup_detail">
+                <tr>
+                    <th style="width: 20%">
+                        Ngày bắt đầu:
+                    </th>
+
+                    <td >
+                        <?php echo $this->views->Report->Datepicker('start', $this->start);?>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th style="width: 20%">
+                        Ngày kết thúc:
+                    </th>
+
+                    <td >
+                        <?php echo $this->views->Report->Datepicker('end', $this->end);?>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th style="width: 20%" colspan="2">
+                        <input type="checkbox" name="all" value="1" id="m838_all_checkbox" <?php if($this->all) echo 'checked';?>
+                               onclick="if($(this).is(':checked')) { $('#checkbox_all').val(1); } else { $('#checkbox_all').val(0);}"/>
+                        <label for="m838_all_checkbox">Bao gồm cả kế hoạch đã tạo phiếu</label>
+                        <input type="hidden" id="checkbox_all" value="<?php echo ($this->all)?1:0;?>" />
+                    </th>
+                </tr>
+
+                <tr>
+                    <td style="width: 20%" colspan="2">
+                        <button class="btn" type="button" onclick="m838.plan('<?php echo $this->ifid;?>', '<?php echo $this->ioid;?>', $('#start').val(), $('#end').val(), $('#checkbox_all').val());"> Xem kế hoạch </button>
+                        <div class="fr">
+                            <button type="button" class="btn btn-custom" onclick="m838.createDetailFromPlan(<?php echo $this->ifid;?>)"> Tạo phiếu </button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="popup_content">
+
+        </div>
+    </div>
+
+
+    <table class="grid" id="grid" cellspacing="0" cellpadding="0" border="0" style="width:100%">
+        <thead>
+            <tr>
+                <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                    <input type="checkbox" onclick="common_check_all_table_line(this, '.m838_select_plan', '.m838_select_plan_val')"/>
+                </th>
+
+                <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                    Ngày
+                </th>
+
+                <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                    Mã khu vực
+                </th>
+
+                <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                    Mã Thiết bị
+                </th>
+
+                <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                    Tên thiết bị
+                </th>
+
+                <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                    Bộ phận
+                </th>
+
+                <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                    Tên công việc
+                </th>
+            </tr>
+        </thead>
+
+
+        <tbody>
+            <?php foreach($this->plans as $item):?>
+                <tr>
+                    <td class="center">
+                        <input type="hidden" name="refPlan[]" value="<?php echo (int)$item->IFID_M724;?>" class="table_line_disabled" disabled />
+                        <input type="hidden" name="date[]" value="<?php echo $item->NgayKeHoach;?>" class="table_line_disabled" disabled />
+                        <input type="hidden" name="period[]" value="<?php echo $item->ChuKyIOID;?>" class="table_line_disabled" disabled />
+                        <input type="checkbox" class="m838_select_plan " onclick="common_check_table_line(this, '.m838_select_plan_val')"/>
+                        <input type="hidden" class="table_line_disabled m838_select_plan_val" name="CheckBox[]"  value="0" disabled/>
+                    </td>
+
+                    <td class="center">
+                        <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayKeHoach);?>
+                    </td>
+
+                    <td class="left">
+                        <?php echo $item->MaKhuVuc;?>
+                    </td>
+
+                    <td class="left">
+                        <?php echo $item->MaThietBi;?>
+                    </td>
+
+                    <td class="left">
+                        <?php echo $item->TenThietBi;?>
+                    </td>
+
+                    <td class="left">
+                        <?php echo $item->BoPhan;?>
+                    </td>
+
+                    <td class="left">
+                        <?php echo $item->MoTa;?>
+                    </td>
+                </tr>
+            <?php endforeach;?>
+        </tbody>
+
+    </table>
+
+    <br/>
+</form>
+
+<script>
+    /*$(document).ready(function() {
+        var height = $(window).height() - 500 - $('#grid thead').height();//-8
+        $('#grid').tableScroll({height:height,width:'900'});
+    });*/
+</script>

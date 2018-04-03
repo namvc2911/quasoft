@@ -1,0 +1,963 @@
+<?php
+$excel_col      = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg             = Qss_Lib_Extra_Const::REPORT_EXCEL_THEAD_COLOR;
+$row            = 2;
+$totalColumn    = 15;
+$colWidths      = array(1,10,5,5,5,5,5,5,5,5,5,5,5,5,5);
+$excelColWidths = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($colWidths, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+$autoFit        = Qss_Lib_Report::changeWidthToFitScreen($colWidths, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+?>
+
+<?php
+$month         = @(int)$this->month;
+$year          = @(int)$this->year;
+$prevYear      = @(int)$this->year - 1;
+$stt           = 0;
+$total         = array();
+
+foreach($colWidths as $key=>$item)
+{
+    $total[$key] = 0;
+}
+?>
+
+<div class="landscape">
+<excel
+    orientation="<?php echo Qss_Lib_Extra_Const::REPORT_ORIENTATION_LANDSCAPE;?>"
+    font-name="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_NAME;?>"
+    font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_SIZE;?>"
+    margin-left="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_LEFT;?>"
+    margin-right="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_RIGHT;?>"
+    margin-top="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_TOP;?>"
+    margin-bottom="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_BOTTOM;?>"  />
+
+<!-- REPORT TITLE -->
+<div id="head_print">
+    <?php  echo $this->views->Common->Landscape(); ?>
+    <h2 class="center">
+        <xls
+            row="<?php echo $row ?>"
+            column="A"
+            column-merge="<?php echo $excel_col[$totalColumn] ?>"
+            font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_TITLE_FONT_SIZE;?>"
+            wrap-text="1"
+            bold="1"
+            h-align="center"
+            v-align="center" > Biểu So Sánh Điện Năng Tháng <?php echo $month;?> Năm <?php echo $year;?>  </xls>
+    </h2>
+</div><!-- end div#head_print -->
+<?php $row++ ?>
+
+<div id="container">
+<table class="border"  border="1" cellspacing="0" cellpadding="0" style="width: 100%; table-layout:inherit !important;" >
+<?php $begin = 0;?>
+<tr class="bggrey">
+    <!-- STT -->
+    <th rowspan="2">
+        <xls
+            row="<?php echo $row;?>"
+            row-merge="1"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="center"
+            h-align="center"
+            border="1"
+            repeat="1"
+            bgcolor="<?php echo $bg;?>"
+            bold="1" > STT </xls>
+    </th>
+
+    <!-- Tên đơn vị -->
+    <th rowspan="2">
+        <xls
+            row="<?php echo $row;?>"
+            row-merge="1"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="center"
+            h-align="center"
+            border="1"
+            repeat="1"
+            bgcolor="<?php echo $bg;?>"
+            bold="1" > Tên đơn vị </xls>
+    </th>
+
+    <!-- Kế hoạch giao năm 2016 -->
+    <th colspan="3">
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            column-merge="<?php echo $excel_col[$begin+2]?>"
+            wrap-text="1"
+            v-align="center"
+            h-align="center"
+            border="1"
+            repeat="1"
+            bgcolor="<?php echo $bg;?>"
+            bold="1"> Kế hoạch giao năm <?php echo $year;?> </xls>
+    </th>
+    <?php $begin = $begin + 2;?>
+
+    <!-- Thực hiện tháng 9 năm 2016 -->
+    <th colspan="3">
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            column-merge="<?php echo $excel_col[$begin+2]?>"
+            wrap-text="1"
+            v-align="center"
+            h-align="center"
+            border="1"
+            repeat="1"
+            bgcolor="<?php echo $bg;?>"
+            bold="1"> Thực hiện tháng <?php echo $month;?> năm <?php echo $year;?> </xls>
+    </th>
+    <?php $begin = $begin + 2;?>
+
+    <!-- Thực hiện tháng 9 năm 2015 -->
+    <th colspan="3">
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            column-merge="<?php echo $excel_col[$begin+2]?>"
+            wrap-text="1"
+            v-align="center"
+            h-align="center"
+            border="1"
+            repeat="1"
+            bgcolor="<?php echo $bg;?>"
+            bold="1"> Thực hiện tháng <?php echo $month;?> năm <?php echo $prevYear;?> </xls>
+    </th>
+    <?php $begin = $begin + 2;?>
+
+    <!-- So sánh cùng kỳ năm trước -->
+    <th colspan="2">
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            column-merge="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="center"
+            h-align="center"
+            border="1"
+            repeat="1"
+            bgcolor="<?php echo $bg;?>"
+            bold="1"> So sánh cùng kỳ năm trước </xls>
+    </th>
+
+    <!-- So sánh theo 100% KH 2016 -->
+    <th colspan="2">
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            column-merge="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="center"
+            h-align="center"
+            border="1"
+            repeat="1"
+            bgcolor="<?php echo $bg;?>"
+            bold="1"> So sánh theo 100% KH <?php echo $year;?> </xls>
+    </th>
+</tr>
+<?php $row++;?>
+
+<?php $begin = 2;?>
+<tr class="bggrey">
+    <!-- Kế hoạch giao năm 2016: Điện năng (KWH)-->
+    <th>
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="center"
+            h-align="center"
+            border="1"
+            repeat="1"
+            bgcolor="<?php echo $bg;?>"
+            bold="1">Điện năng (KWH) </xls>
+    </th>
+
+    <!-- Kế hoạch giao năm 2016: Sản lượng (Than sạch)-->
+    <th>
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="center"
+            h-align="center"
+            border="1"
+            repeat="1"
+            bgcolor="<?php echo $bg;?>"
+            bold="1">Sản lượng (Than sạch) </xls>
+    </th>
+
+    <!-- Kế hoạch giao năm 2016: STH-->
+    <th>
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="center"
+            h-align="center"
+            border="1"
+            repeat="1"
+            bgcolor="<?php echo $bg;?>"
+            bold="1">STH </xls>
+    </th>
+
+    <!-- Thực hiện tháng 9 năm 2016: Điện năng (KWH)-->
+    <th>
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="center"
+            h-align="center"
+            border="1"
+            repeat="1"
+            bgcolor="<?php echo $bg;?>"
+            bold="1">Điện năng (KWH) </xls>
+    </th>
+
+    <!-- Thực hiện tháng 9 năm 2016: Sản lượng (Than sạch)-->
+    <th>
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="center"
+            h-align="center"
+            border="1"
+            repeat="1"
+            bgcolor="<?php echo $bg;?>"
+            bold="1">Sản lượng (Than sạch) </xls>
+    </th>
+
+    <!-- Thực hiện tháng 9 năm 2016: STH-->
+    <th>
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="center"
+            h-align="center"
+            border="1"
+            repeat="1"
+            bgcolor="<?php echo $bg;?>"
+            bold="1">STH </xls>
+    </th>
+
+    <!-- Thực hiện tháng 9 năm 2015: Điện năng (KWH)-->
+    <th>
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="center"
+            h-align="center"
+            border="1"
+            repeat="1"
+            bgcolor="<?php echo $bg;?>"
+            bold="1">Điện năng (KWH) </xls>
+    </th>
+
+    <!-- Thực hiện tháng 9 năm 2015: Sản lượng (Than sạch)-->
+    <th>
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="center"
+            h-align="center"
+            border="1"
+            repeat="1"
+            bgcolor="<?php echo $bg;?>"
+            bold="1">Sản lượng (Than sạch) </xls>
+    </th>
+
+    <!-- Thực hiện tháng 9 năm 2015: STH-->
+    <th>
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="center"
+            h-align="center"
+            border="1"
+            repeat="1"
+            bgcolor="<?php echo $bg;?>"
+            bold="1">STH </xls>
+    </th>
+
+    <!-- So sánh cùng kỳ năm trước: Điện năng -->
+    <th>
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="center"
+            h-align="center"
+            border="1"
+            repeat="1"
+            bgcolor="<?php echo $bg;?>"
+            bold="1">Điện năng </xls>
+    </th>
+
+    <!-- So sánh cùng kỳ năm trước: STH -->
+    <th>
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="center"
+            h-align="center"
+            border="1"
+            repeat="1"
+            bgcolor="<?php echo $bg;?>"
+            bold="1">STH </xls>
+    </th>
+
+    <!-- So sánh theo 100% KH 2016: Điện năng -->
+    <th>
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="center"
+            h-align="center"
+            border="1"
+            repeat="1"
+            bgcolor="<?php echo $bg;?>"
+            bold="1">Điện năng </xls>
+    </th>
+
+    <!-- So sánh theo 100% KH 2016: STH -->
+    <th>
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="center"
+            h-align="center"
+            border="1"
+            repeat="1"
+            bgcolor="<?php echo $bg;?>"
+            bold="1">STH </xls>
+    </th>
+</tr>
+<?php $row++;?>
+
+<?php $begin = 0;?>
+<tr class="bggrey">
+<!-- STT -->
+<th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+    <xls
+        row="<?php echo $row;?>"
+        width="<?php echo $excelColWidths[$begin];?>"
+        column="<?php echo $excel_col[++$begin]?>"
+        wrap-text="1"
+        v-align="center"
+        h-align="center"
+        border="1"
+        repeat="1"
+        bgcolor="<?php echo $bg;?>"
+        bold="1">1 </xls>
+</th>
+
+<!-- Tên đơn vị -->
+<th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+    <xls
+        row="<?php echo $row;?>"
+        width="<?php echo $excelColWidths[$begin];?>"
+        column="<?php echo $excel_col[++$begin]?>"
+        wrap-text="1"
+        v-align="center"
+        h-align="center"
+        border="1"
+        repeat="1"
+        bgcolor="<?php echo $bg;?>"
+        bold="1">2 </xls>
+</th>
+
+<!-- Kế hoạch giao năm 2016: Điện năng (KWH)-->
+<th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+    <xls
+        row="<?php echo $row;?>"
+        width="<?php echo $excelColWidths[$begin];?>"
+        column="<?php echo $excel_col[++$begin]?>"
+        wrap-text="1"
+        v-align="center"
+        h-align="center"
+        border="1"
+        repeat="1"
+        bgcolor="<?php echo $bg;?>"
+        bold="1">3 </xls>
+</th>
+
+<!-- Kế hoạch giao năm 2016: Sản lượng (Than sạch)-->
+<th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+    <xls
+        row="<?php echo $row;?>"
+        width="<?php echo $excelColWidths[$begin];?>"
+        column="<?php echo $excel_col[++$begin]?>"
+        wrap-text="1"
+        v-align="center"
+        h-align="center"
+        border="1"
+        repeat="1"
+        bgcolor="<?php echo $bg;?>"
+        bold="1">4 </xls>
+</th>
+
+<!-- Kế hoạch giao năm 2016: STH-->
+<th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+    <xls
+        row="<?php echo $row;?>"
+        width="<?php echo $excelColWidths[$begin];?>"
+        column="<?php echo $excel_col[++$begin]?>"
+        wrap-text="1"
+        v-align="center"
+        h-align="center"
+        border="1"
+        repeat="1"
+        bgcolor="<?php echo $bg;?>"
+        bold="1">5 </xls>
+</th>
+
+<!-- Thực hiện tháng 9 năm 2016: Điện năng (KWH)-->
+<th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+    <xls
+        row="<?php echo $row;?>"
+        width="<?php echo $excelColWidths[$begin];?>"
+        column="<?php echo $excel_col[++$begin]?>"
+        wrap-text="1"
+        v-align="center"
+        h-align="center"
+        border="1"
+        repeat="1"
+        bgcolor="<?php echo $bg;?>"
+        bold="1">6 </xls>
+</th>
+
+<!-- Thực hiện tháng 9 năm 2016: Sản lượng (Than sạch)-->
+<th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+    <xls
+        row="<?php echo $row;?>"
+        width="<?php echo $excelColWidths[$begin];?>"
+        column="<?php echo $excel_col[++$begin]?>"
+        wrap-text="1"
+        v-align="center"
+        h-align="center"
+        border="1"
+        repeat="1"
+        bgcolor="<?php echo $bg;?>"
+        bold="1">7 </xls>
+</th>
+
+<!-- Thực hiện tháng 9 năm 2016: STH-->
+<th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+    <xls
+        row="<?php echo $row;?>"
+        width="<?php echo $excelColWidths[$begin];?>"
+        column="<?php echo $excel_col[++$begin]?>"
+        wrap-text="1"
+        v-align="center"
+        h-align="center"
+        border="1"
+        repeat="1"
+        bgcolor="<?php echo $bg;?>"
+        bold="1">8 </xls>
+</th>
+
+<!-- Thực hiện tháng 9 năm 2015: Điện năng (KWH)-->
+<th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+    <xls
+        row="<?php echo $row;?>"
+        width="<?php echo $excelColWidths[$begin];?>"
+        column="<?php echo $excel_col[++$begin]?>"
+        wrap-text="1"
+        v-align="center"
+        h-align="center"
+        border="1"
+        repeat="1"
+        bgcolor="<?php echo $bg;?>"
+        bold="1">9 </xls>
+</th>
+
+<!-- Thực hiện tháng 9 năm 2015: Sản lượng (Than sạch)-->
+<th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+    <xls
+        row="<?php echo $row;?>"
+        width="<?php echo $excelColWidths[$begin];?>"
+        column="<?php echo $excel_col[++$begin]?>"
+        wrap-text="1"
+        v-align="center"
+        h-align="center"
+        border="1"
+        repeat="1"
+        bgcolor="<?php echo $bg;?>"
+        bold="1">10 </xls>
+</th>
+
+<!-- Thực hiện tháng 9 năm 2015: STH-->
+<th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+    <xls
+        row="<?php echo $row;?>"
+        width="<?php echo $excelColWidths[$begin];?>"
+        column="<?php echo $excel_col[++$begin]?>"
+        wrap-text="1"
+        v-align="center"
+        h-align="center"
+        border="1"
+        repeat="1"
+        bgcolor="<?php echo $bg;?>"
+        bold="1">11 </xls>
+</th>
+
+<!-- So sánh cùng kỳ năm trước: Điện năng -->
+<th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+    <xls
+        row="<?php echo $row;?>"
+        width="<?php echo $excelColWidths[$begin];?>"
+        column="<?php echo $excel_col[++$begin]?>"
+        wrap-text="1"
+        v-align="center"
+        h-align="center"
+        border="1"
+        repeat="1"
+        bgcolor="<?php echo $bg;?>"
+        bold="1">12=6/9 </xls>
+</th>
+
+<!-- So sánh cùng kỳ năm trước: STH -->
+<th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+    <xls
+        row="<?php echo $row;?>"
+        width="<?php echo $excelColWidths[$begin];?>"
+        column="<?php echo $excel_col[++$begin]?>"
+        wrap-text="1"
+        v-align="center"
+        h-align="center"
+        border="1"
+        repeat="1"
+        bgcolor="<?php echo $bg;?>"
+        bold="1">13=8/11 </xls>
+</th>
+
+<!-- So sánh theo 100% KH 2016: Điện năng -->
+<th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+    <xls
+        row="<?php echo $row;?>"
+        width="<?php echo $excelColWidths[$begin];?>"
+        column="<?php echo $excel_col[++$begin]?>"
+        wrap-text="1"
+        v-align="center"
+        h-align="center"
+        border="1"
+        repeat="1"
+        bgcolor="<?php echo $bg;?>"
+        bold="1">14=6(3/12) </xls>
+</th>
+
+<!-- So sánh theo 100% KH 2016: STH -->
+<th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+    <xls
+        row="<?php echo $row;?>"
+        width="<?php echo $excelColWidths[$begin];?>"
+        column="<?php echo $excel_col[++$begin]?>"
+        wrap-text="1"
+        v-align="center"
+        h-align="center"
+        border="1"
+        repeat="1"
+        bgcolor="<?php echo $bg;?>"
+        bold="1">15=8/5 </xls>
+</th>
+</tr>
+<?php $row++;?>
+
+<?php foreach($this->report as $item):?>
+    <?php $begin = 0;?>
+    <tr>
+        <!-- STT -->
+        <td class="center">
+            <xls
+                row="<?php echo $row;?>"
+                column="<?php echo $excel_col[++$begin]?>"
+                wrap-text="1"
+                v-align="top"
+                h-align="center"
+                border="1"><?php echo ++$stt;?></xls>
+        </td>
+
+        <!-- Tên đơn vị -->
+        <td class="left">
+            <xls
+                row="<?php echo $row;?>"
+                column="<?php echo $excel_col[++$begin]?>"
+                wrap-text="1"
+                v-align="top"
+                h-align="left"
+                border="1"><?php echo $item->DeptName;?></xls>
+        </td>
+
+        <?php $total[$begin] += $item->DienNangKeHoach;?>
+        <!-- Kế hoạch giao năm 2016: Điện năng (KWH)-->
+        <td class="right">
+            <xls
+                row="<?php echo $row;?>"
+                column="<?php echo $excel_col[++$begin]?>"
+                wrap-text="1"
+                v-align="top"
+                h-align="right"
+                border="1"><?php echo Qss_Lib_Util::formatNumber($item->DienNangKeHoach);?></xls>
+        </td>
+
+        <?php $total[$begin] += $item->SanLuongKeHoach;?>
+        <!-- Kế hoạch giao năm 2016: Sản lượng (Than sạch)-->
+        <td class="right">
+            <xls
+                row="<?php echo $row;?>"
+                column="<?php echo $excel_col[++$begin]?>"
+                wrap-text="1"
+                v-align="top"
+                h-align="right"
+                border="1"><?php echo Qss_Lib_Util::formatNumber($item->SanLuongKeHoach);?></xls>
+        </td>
+
+        <?php $total[$begin] += $item->SuatTieuHaoKeHoach;?>
+        <!-- Kế hoạch giao năm 2016: STH-->
+        <td class="right">
+            <xls
+                row="<?php echo $row;?>"
+                column="<?php echo $excel_col[++$begin]?>"
+                wrap-text="1"
+                v-align="top"
+                h-align="right"
+                border="1"><?php echo Qss_Lib_Util::formatNumber($item->SuatTieuHaoKeHoach);?></xls>
+        </td>
+
+        <?php $total[$begin] += $item->TongThanSach;?>
+        <!-- Thực hiện tháng 9 năm 2016: Điện năng (KWH)-->
+        <td class="right">
+            <xls
+                row="<?php echo $row;?>"
+                column="<?php echo $excel_col[++$begin]?>"
+                wrap-text="1"
+                v-align="top"
+                h-align="right"
+                border="1"><?php echo Qss_Lib_Util::formatNumber($item->TongThanSach);?></xls>
+        </td>
+
+        <?php $total[$begin] += $item->TongDienNang;?>
+        <!-- Thực hiện tháng 9 năm 2016: Sản lượng (Than sạch)-->
+        <td class="right">
+            <xls
+                row="<?php echo $row;?>"
+                column="<?php echo $excel_col[++$begin]?>"
+                wrap-text="1"
+                v-align="top"
+                h-align="right"
+                border="1"><?php echo Qss_Lib_Util::formatNumber($item->TongDienNang);?></xls>
+        </td>
+
+        <?php $total[$begin] += $item->SuatTieuHao;?>
+        <!-- Thực hiện tháng 9 năm 2016: STH-->
+        <td class="right">
+            <xls
+                row="<?php echo $row;?>"
+                column="<?php echo $excel_col[++$begin]?>"
+                wrap-text="1"
+                v-align="top"
+                h-align="right"
+                border="1"><?php echo Qss_Lib_Util::formatNumber($item->SuatTieuHao);?></xls>
+        </td>
+
+        <?php $total[$begin] += $item->TongDienNangCungKyNamTruoc;?>
+        <!-- Thực hiện tháng 9 năm 2015: Điện năng (KWH)-->
+        <td class="right">
+            <xls
+                row="<?php echo $row;?>"
+                column="<?php echo $excel_col[++$begin]?>"
+                wrap-text="1"
+                v-align="top"
+                h-align="right"
+                border="1"><?php echo Qss_Lib_Util::formatNumber($item->TongDienNangCungKyNamTruoc);?></xls>
+        </td>
+
+        <?php $total[$begin] += $item->TongThanSachCungKyNamTruoc;?>
+        <!-- Thực hiện tháng 9 năm 2015: Sản lượng (Than sạch)-->
+        <td class="right">
+            <xls
+                row="<?php echo $row;?>"
+                column="<?php echo $excel_col[++$begin]?>"
+                wrap-text="1"
+                v-align="top"
+                h-align="right"
+                border="1"><?php echo Qss_Lib_Util::formatNumber($item->TongThanSachCungKyNamTruoc);?></xls>
+        </td>
+
+        <?php $total[$begin] += $item->SuatTieuHaoCungKyNamTruoc;?>
+        <!-- Thực hiện tháng 9 năm 2015: STH-->
+        <td class="right">
+            <xls
+                row="<?php echo $row;?>"
+                column="<?php echo $excel_col[++$begin]?>"
+                wrap-text="1"
+                v-align="top"
+                h-align="right"
+                border="1"><?php echo Qss_Lib_Util::formatNumber($item->SuatTieuHaoCungKyNamTruoc);?></xls>
+        </td>
+
+        <?php $total[$begin] += $item->SoSanhDienNang;?>
+        <!-- So sánh cùng kỳ năm trước: Điện năng -->
+        <td class="right">
+            <xls
+                row="<?php echo $row;?>"
+                column="<?php echo $excel_col[++$begin]?>"
+                wrap-text="1"
+                v-align="top"
+                h-align="right"
+                border="1"><?php echo Qss_Lib_Util::formatNumber($item->SoSanhDienNang);?></xls>
+        </td>
+
+
+        <?php
+        $suatTieuHao = '';
+        $suatTieuHao = ($item->SuatTieuHaoCungKyNamTruoc != 0)?$item->SuatTieuHao/$item->SuatTieuHaoCungKyNamTruoc:0;
+        ?>
+        <?php $total[$begin] += $suatTieuHao;?>
+        <!-- So sánh cùng kỳ năm trước: STH -->
+        <td class="right">
+            <xls
+                row="<?php echo $row;?>"
+                column="<?php echo $excel_col[++$begin]?>"
+                wrap-text="1"
+                v-align="top"
+                h-align="right"
+                border="1"><?php echo Qss_Lib_Util::formatNumber($suatTieuHao);?></xls>
+        </td>
+
+        <?php
+        $dienNang = '';
+        $dienNang = ($item->SoSanhDienNang != 0)?$item->DienNangKeHoach/$item->SoSanhDienNang:0;
+        $dienNang = ($dienNang != 0)?$item->TongDienNang/$dienNang:0;
+        ?>
+        <?php $total[$begin] += $dienNang;?>
+        <!-- So sánh theo 100% KH 2016: Điện năng -->
+        <td class="right">
+            <xls
+                row="<?php echo $row;?>"
+                column="<?php echo $excel_col[++$begin]?>"
+                wrap-text="1"
+                v-align="top"
+                h-align="right"
+                border="1"><?php echo Qss_Lib_Util::formatNumber($dienNang);?></xls>
+        </td>
+
+        <?php
+        $suatTieuHaoSoSanhKH = '';
+        $suatTieuHaoSoSanhKH = ($item->SuatTieuHaoKeHoach != 0)?$item->SuatTieuHao/$item->SuatTieuHaoKeHoach:0;
+        ?>
+        <?php $total[$begin] += $suatTieuHaoSoSanhKH;?>
+        <!-- So sánh theo 100% KH 2016: STH -->
+        <td class="right">
+            <xls
+                row="<?php echo $row;?>"
+                column="<?php echo $excel_col[++$begin]?>"
+                wrap-text="1"
+                v-align="top"
+                h-align="right"
+                border="1"><?php echo Qss_Lib_Util::formatNumber($suatTieuHaoSoSanhKH);?></xls>
+        </td>
+    </tr>
+    <?php $row++;?>
+<?php endforeach;?>
+
+<?php $begin = 0;?>
+<tr>
+    <!-- STT -->
+    <th class="center">
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="top"
+            h-align="center"
+            bold="1"
+            border="1"></xls>
+    </th>
+
+    <!-- Tên đơn vị -->
+    <th class="left">
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="top"
+            h-align="left"
+            bold="1"
+            border="1">Tổng cộng</xls>
+    </th>
+
+    <!-- Kế hoạch giao năm 2016: Điện năng (KWH)-->
+    <th class="right">
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="top"
+            h-align="right"
+            bold="1"
+            border="1"><?php echo Qss_Lib_Util::formatNumber($total[$begin-1]);?></xls>
+    </th>
+
+    <!-- Kế hoạch giao năm 2016: Sản lượng (Than sạch)-->
+    <th class="right">
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="top"
+            h-align="right"
+            bold="1"
+            border="1"><?php echo Qss_Lib_Util::formatNumber($total[$begin-1]);?></xls>
+    </th>
+
+    <!-- Kế hoạch giao năm 2016: STH-->
+    <th class="right">
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="top"
+            h-align="right"
+            bold="1"
+            border="1"><?php echo Qss_Lib_Util::formatNumber($total[$begin-1]);?></xls>
+    </th>
+
+    <!-- Thực hiện tháng 9 năm 2016: Điện năng (KWH)-->
+    <th class="right">
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="top"
+            h-align="right"
+            bold="1"
+            border="1"><?php echo Qss_Lib_Util::formatNumber($total[$begin-1]);?></xls>
+    </th>
+
+    <!-- Thực hiện tháng 9 năm 2016: Sản lượng (Than sạch)-->
+    <th class="right">
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="top"
+            h-align="right"
+            bold="1"
+            border="1"><?php echo Qss_Lib_Util::formatNumber($total[$begin-1]);?></xls>
+    </th>
+
+    <!-- Thực hiện tháng 9 năm 2016: STH-->
+    <th class="right">
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="top"
+            h-align="right"
+            bold="1"
+            border="1"><?php echo Qss_Lib_Util::formatNumber($total[$begin-1]);?></xls>
+    </th>
+
+    <!-- Thực hiện tháng 9 năm 2015: Điện năng (KWH)-->
+    <th class="right">
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="top"
+            h-align="right"
+            bold="1"
+            border="1"><?php echo Qss_Lib_Util::formatNumber($total[$begin-1]);?></xls>
+    </th>
+
+    <!-- Thực hiện tháng 9 năm 2015: Sản lượng (Than sạch)-->
+    <th class="right">
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="top"
+            h-align="right"
+            bold="1"
+            border="1"><?php echo Qss_Lib_Util::formatNumber($total[$begin-1]);?></xls>
+    </th>
+
+    <!-- Thực hiện tháng 9 năm 2015: STH-->
+    <th class="right">
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="top"
+            h-align="right"
+            bold="1"
+            border="1"><?php echo Qss_Lib_Util::formatNumber($total[$begin-1]);?></xls>
+    </th>
+
+    <!-- So sánh cùng kỳ năm trước: Điện năng -->
+    <th class="right">
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="top"
+            h-align="right"
+            bold="1"
+            border="1"><?php echo Qss_Lib_Util::formatNumber($total[$begin-1]);?></xls>
+    </th>
+
+    <!-- So sánh cùng kỳ năm trước: STH -->
+    <th class="right">
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="top"
+            h-align="right"
+            bold="1"
+            border="1"><?php echo Qss_Lib_Util::formatNumber($total[$begin-1]);?></xls>
+    </th>
+
+    <!-- So sánh theo 100% KH 2016: Điện năng -->
+    <th class="right">
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="top"
+            h-align="right"
+            bold="1"
+            border="1"><?php echo Qss_Lib_Util::formatNumber($total[$begin-1]);?></xls>
+    </th>
+
+    <!-- So sánh theo 100% KH 2016: STH -->
+    <th class="right">
+        <xls
+            row="<?php echo $row;?>"
+            column="<?php echo $excel_col[++$begin]?>"
+            wrap-text="1"
+            v-align="top"
+            h-align="right"
+            bold="1"
+            border="1"><?php echo Qss_Lib_Util::formatNumber($total[$begin-1]);?></xls>
+    </th>
+</tr>
+<?php $row++;?>
+</table>
+</div><!-- End #container -->
+</div><!-- End report -->

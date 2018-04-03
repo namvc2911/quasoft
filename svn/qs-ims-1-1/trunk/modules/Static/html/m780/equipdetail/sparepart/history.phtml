@@ -1,0 +1,39 @@
+<div id="einfo-equip-sparepart-history">
+    <div class="filter">
+        <input type="radio" name="filter" value="1" <?php echo ($this->filter == 1)?'checked':'';?> onclick="einfo_showSparepartHistory(<?php echo $this->RefThietBi;?>, <?php echo $this->RefBoPhan;?>, <?php echo $this->RefVatTu;?>, 1)"> Thiết bị bộ phận hiện tại
+        <input type="radio" name="filter" value="2" <?php echo ($this->filter == 2)?'checked':'';?> onclick="einfo_showSparepartHistory(<?php echo $this->RefThietBi;?>, <?php echo $this->RefBoPhan;?>, <?php echo $this->RefVatTu;?>, 2)"> Thiết bị hiện tại
+        <input type="radio" name="filter" value="3" <?php echo ($this->filter == 3)?'checked':'';?> onclick="einfo_showSparepartHistory(<?php echo $this->RefThietBi;?>, <?php echo $this->RefBoPhan;?>, <?php echo $this->RefVatTu;?>, 3)"> Toàn bộ thiết bị
+    </div>
+    <br/>
+
+    <div class="show">
+        <?php $stt = 0; ?>
+        <table cellpadding="0" cellspacing="0" border="0" class="border_table">
+            <tr>
+                <th style="width: 5%;"> STT </th>
+                <th style="width: 10%;"> Mã thiết bị </th>
+                <th style="width: 15%;"> Tên thiết bị </th>
+                <th style="width: 10%;"> Vị trí </th>
+                <th style="width: 15%;"> Bộ phận </th>
+                <th style="width: 10%;"> Ngày thay thế </th>
+                <th style="width: 10%;"> Mã vật tư </th>
+                <th style="width: 15%;"> Tên vật tư </th>
+                <th style="width: 10%;"> Số lượng </th>
+            </tr>
+
+            <?php foreach($this->data as $item):?>
+                <tr>
+                    <td class="center"> <?php echo ++$stt; ?> </td>
+                    <td class="left"> <?php echo $item->MaThietBi;?></td>
+                    <td class="left"> <?php echo $item->TenThietBi;?></td>
+                    <td class="left"> <?php echo $item->ViTri;?></td>
+                    <td class="left"> <?php echo $item->BoPhan;?></td>
+                    <td class="center"> <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayThayThe);?></td>
+                    <td class="left"> <?php echo $item->MaVatTu;?></td>
+                    <td class="left"> <?php echo $item->TenVatTu;?></td>
+                    <td class="right"> <?php echo $item->SoLuong;?></td>
+                </tr>
+            <?php endforeach;?>
+        </table>
+    </div>
+</div>

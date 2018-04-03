@@ -1,0 +1,413 @@
+<?php
+$parent   = $this->parent;
+$children = $this->children;
+$inTheEnd = $this->inTheEnd[$parent['markerGroupID']];
+?>
+
+<tr class="line-<?php echo $parent['markerGroupID']?> "
+	style="display: none;">
+	<td colspan="13"><input type="hidden" name="currentLevel"
+		class="<?php echo $parent['markerClass']?>" id="current_level"
+		value="<?php echo $this->level?>" /> <input type="hidden"
+		name="endValidation"
+		class="<?php echo $parent['markerClass']?> end_validation"
+		id="<?php echo "end-validation-{$parent['markerGroupID']}"?>"
+		value="<?php echo $inTheEnd;?>" />
+	</td>
+</tr>
+
+
+<?php $i = 0;// phần tử thứ i của parent?>
+<?php foreach ($parent['level'] as $level):?>
+<?php
+$code        = $parent['refItem'][$i].'_'.$parent['refBom'][$i].'_'.$parent['refAttributes'][$i]; // Mã phần tử của các thành phần con
+$readonly    = '';
+$class       = '';
+if($parent['hasChildren'][$i] || $level < $this->level)
+{
+	$readonly = "readonly='readonly'";
+	$class    = "bggrey2";
+}
+
+
+?>
+<?php
+
+// Chọn ưu tiên mua hay sản xuất
+$purchaseAvailable      = 0;
+$manufacturingAvailable = 0;
+if($parent['purchase'][$i] == 1 && $parent['manufacturing'][$i] == 1)
+{
+	$purchaseAvailable      = 1;
+	$manufacturingAvailable = 1;
+}
+else if($parent['purchase'][$i] == 1)
+{
+	$purchaseAvailable      = 1;
+}
+else if($parent['manufacturing'][$i] == 1)
+{
+	$manufacturingAvailable = 1;
+}
+	
+// Cảnh báo BOM không có thành phần
+$warningTitle  = '';
+$warningClass  = '';
+$warningMarker = '';
+if( ($parent['hasBOM'][$i] && $parent['Assembly'][$i] && !$parent['hasChildren'][$i]))
+{
+	$inTheEnd      = 0;
+	$warningTitle  = 'BOM không chứa thành phần sản phẩm';
+	$warningClass  = 'bgorange bold';
+	$class         = '';
+	$warningMarker = '<input type="hidden" name="hasBOMButNoChildren" id="has_bom_but_no_children" lineNo="'.$parent['lineNo'][$i].'" class="bom-no-children-'.$parent['markerGroupID'].' '.$parent['markerClass'].'" value="1" />';
+}
+?>
+<tr
+	class="<?php echo $class?> line-<?php echo $parent['markerGroupID']?> <?php echo $warningClass?>"
+	title="<?php echo $warningTitle?>">
+	<td><div class="tree_level_<?php echo $level?>">
+	<?php echo $parent['lineNo'][$i]?>
+		</div></td>
+	<td class="center"><?php echo $parent['issueDate'][$i]?Qss_Lib_Date::mysqltodisplay($parent['issueDate'][$i]):'-';?>
+	</td>
+	<td class="center"><?php echo $parent['deliveryDate'][$i]?Qss_Lib_Date::mysqltodisplay($parent['deliveryDate'][$i]):'-';?>
+	</td>
+	<td class="left"><?php echo $parent['itemCode'][$i]?> <?php echo $warningMarker;?>
+	<?php $codeDongSanPham = $parent['refItem'][$i].'_'.$parent['refAttributesReal'][$i];?>
+		<input type="hidden" name="lineNo[]"
+		value="<?php echo $parent['lineNo'][$i]?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="no[]" value="<?php echo $parent['no'][$i]?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="refItem[]" value="<?php echo $parent['refItem'][$i]?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="itemCode[]" value="<?php echo $parent['itemCode'][$i]?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="itemName[]" value="<?php echo $parent['itemName'][$i]?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="attributes[]" value="<?php echo $parent['attributes'][$i]?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="refAttributes[]"
+		value="<?php echo $parent['refAttributes'][$i]?>"
+		class="ref_attributes <?php echo $parent['markerClass']?>" /> <input
+		type="hidden" name="refAttributesReal[]"
+		value="<?php echo $parent['refAttributesReal'][$i]?>"
+		class="real_ref_attributes <?php echo $parent['markerClass']?>" /> <input
+		type="hidden" name="uom[]" value="<?php echo $parent['uom'][$i]?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="bom[]" value="<?php echo $parent['bom'][$i]?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="refBom[]" value="<?php echo $parent['refBom'][$i]?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="level[]" value="<?php echo $level?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="hasBOM[]" value="<?php echo $parent['hasBOM'][$i]?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="hasChildren[]" value="<?php echo $parent['hasChildren'][$i]?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="purchase[]" value="<?php echo $parent['purchase'][$i]?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="manufacturing[]"
+		value="<?php echo $parent['manufacturing'][$i]?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="directlyUnder[]"
+		value="<?php echo $parent['directlyUnder'][$i]?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="parentManuQty[]"
+		value="<?php echo $parent['parentManuQty'][$i]?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="issueDate[]" id="" class="<?php echo $parent['markerClass']?>"
+		value="<?php echo $parent['issueDate'][$i];?>" /> <input type="hidden"
+		name="deliveryDate[]" id=""
+		class="<?php echo $parent['markerClass']?>"
+		value="<?php echo $parent['deliveryDate'][$i];?>" /> <input
+		type="hidden" name="eDate[]" id=""
+		class="<?php echo $parent['markerClass']?>"
+		value="<?php echo $parent['eDate'][$i];?>" /> <input type="hidden"
+		name="sDate[]" id="" class="<?php echo $parent['markerClass']?>"
+		value="<?php echo $parent['sDate'][$i];?>" /> <input type="hidden"
+		name="warehouse[]" id=""
+		value="<?php echo $parent['warehouse'][$i];?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="assembly[]" id="" value="<?php echo $parent['assembly'][$i];?>"
+		class="<?php echo $parent['markerClass']?>" /> <!--  IOID ke hoach giao hang -->
+		<input type="hidden" name="khioid[]"
+		value="<?php echo $parent['khioid'][$i];?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="stockUsedQty[]" id=""
+		class="<?php echo "{$parent['markerClass']} SUQ_{$codeDongSanPham}";?>"
+		marker="SUQ_<?php echo $codeDongSanPham?>"
+		defaultQty="<?php echo $parent['stockUsedQty'][$i];?>"
+		warehouseQty="<?php echo $parent['warehouse'][$i];?>"
+		value="<?php echo $parent['stockUsedQty'][$i];?>" />
+	</td>
+	<td class="left"><?php echo $parent['itemName'][$i]?></td>
+	<?php if($parent['attributes'][$i]):?>
+	<td class="left"><?php echo $parent['attributes'][$i]?></td>
+	<?php else:?>
+	<td class="center">-</td>
+	<?php endif;?>
+
+	<?php if($parent['bom'][$i]):?>
+	<td class="left"><?php if(isset($parent['refBomArray'][$parent['lineNo'][$i]])):?>
+	<?php $showBomIndex = 0;?> <select class="readonly width_100" readonly
+		onfocus="this.defaultIndex=this.selectedIndex;"
+		onchange="this.selectedIndex=this.defaultIndex;">
+			<option value="" names="" all="0">Chọn</option>
+			<?php foreach ($parent['refBomArray'][$parent['lineNo'][$i]]['Id'] as $key):?>
+			<option value="<?php echo $key?>"
+			<?php if($key == $parent['refBom'][$i]) echo 'selected';?>>
+				<?php echo $parent['refBomArray'][$parent['lineNo'][$i]]['Name'][$showBomIndex]?>
+			</option>
+			<?php $showBomIndex++;?>
+			<?php endforeach;?>
+	</select> <?php else:?> <?php echo $parent['bom'][$i]?> <?php endif;?>
+	</td>
+	<?php else:?>
+	<td class="center">-</td>
+	<?php endif;?>
+
+	<td class="left"><?php echo $parent['uom'][$i]?></td>
+	<td class="right"><?php echo $parent['parentManuQty'][$i]?></td>
+	<td class="center"><?php if($manufacturingAvailable):?><input
+		type="text" value="<?php echo $parent['productionQty'][$i]?>"
+		name="productionQty[]" size="4" <?php echo $readonly?>
+		class="production_qty_box <?php echo $class?> <?php echo $parent['markerClass']?>" />
+		<?php else:?>-<input type="hidden"
+		value="<?php echo $parent['productionQty'][$i]?>"
+		name="productionQty[]" class="<?php echo $parent['markerClass']?>"
+		size="4" /> <?php endif;?></td>
+	<td class="center"><?php if($purchaseAvailable):?><input type="text"
+		value="<?php echo $parent['purchaseQty'][$i]?>" name="purchaseQty[]"
+		size="4" <?php echo $readonly?>
+		class="purchase_qty_box <?php echo $class?> <?php echo $parent['markerClass']?>" />
+		<?php else:?>-<input type="hidden"
+		value="<?php echo $parent['purchaseQty'][$i]?>" name="purchaseQty[]"
+		class="<?php echo $parent['markerClass']?>" size="4" /> <?php endif;?>
+	</td>
+	<td class="right"><?php echo $parent['stockUsedQty'][$i];?>
+	</td>
+	<td class="right warehouse_marker SUQ_<?php echo $codeDongSanPham?>"><?php echo $parent['warehouse'][$i];?>
+		<!-- 
+		<span class="khau_tru_kho_<?php echo $i;?>"></span><?php echo $parent['warehouse'][$i];?> 
+		<script type="text/javascript">
+			var total = 0;
+			var val = 0;
+			$('.SUQ_<?php echo $codeDongSanPham?>').each(function(){
+				val = (isNaN(parseFloat($(this).val())))?0:parseFloat($(this).val());
+				$(this).val(val);
+				total += val; 
+			});
+			$('.khau_tru_kho_<?php echo $i;?>').val(total);
+		</script>	
+		 -->
+	</td>
+
+
+</tr>
+
+		<?php $childIndex = 1;?>
+		<?php $childVitrualIndex = 1;?>
+		<?php if(isset($children[$code]) && ($level == ($this->level -1)) ):?>
+		<?php foreach ($children[$code] as $key=>$child):?>
+		<?php if($child['manufacturing']): // Neu co sx?>
+		<?php
+
+		// Chọn ưu tiên mua hay sản xuất
+		$purchase               = 0;
+		$purchaseAvailable      = 0;
+		$manufacturing          = 0;
+		$manufacturingAvailable = 0;
+		$childQty = 0;
+		$requiredQty            = $parent['productionQty'][$i];
+		$soLanXuatHien = $child['count']/$child['countBom'];
+		$readonly = '';
+
+
+		if($child['assembly'])
+		{
+
+		}
+		// @todo: Can tinh so luong cho truong hop bom thao ro
+		// Truong hop so luong voi bom lap dat
+		$formulaForCalQty = ceil(($requiredQty * $child['qty']) / $child['parentQty']) * $soLanXuatHien;
+
+		if($child['purchase'] == 1 && $child['manufacturing'] == 1)
+		{
+			$manufacturing          = $formulaForCalQty;
+			$purchaseAvailable      = 1;
+			$manufacturingAvailable = 1;
+			$childQty = $manufacturing;
+		}
+		else if($child['purchase'] == 1)
+		{
+			$purchase               = $formulaForCalQty;
+			$purchaseAvailable      = 1;
+			$childQty = $purchase;
+			$readonly = '';//'readonly';
+		}
+		else if($child['manufacturing'] == 1)
+		{
+			$manufacturing          = $formulaForCalQty;
+			$manufacturingAvailable = 1;
+			$childQty = $manufacturing;
+			$readonly = '';//'readonly';
+		}
+
+		$childWarehouse = @$this->inventory[$child['refItem']][$child['refAttributesReal']]?$this->inventory[$child['refItem']][$child['refAttributesReal']]:0;
+
+		/*
+		 if($codeDongSanPham == $codeDongSanPhamCon)
+		 {
+		 $childWarehouse -=
+		 }
+		 */
+
+		$codeDongSanPhamCon = $child['refItem'].'_'.$child['refAttributesReal'];
+		$tempWarehouse = isset($khauTruKho[$codeDongSanPhamCon])?$khauTruKho[$codeDongSanPhamCon]:$childWarehouse;
+		$absKhauTru = abs($tempWarehouse - $item->SoLuong);
+		$defaultKhauTru = ($absKhauTru == $item->SoLuong)?0:$absKhauTru;
+		$khauTruKho[$codeDongSanPhamCon] = $tempWarehouse - $defaultKhauTru;
+		?>
+<tr class="line-<?php echo $parent['markerGroupID']?>">
+	<td>
+		<div class="tree_level_<?php echo $child['level']?>">
+		<?php echo "{$parent['lineNo'][$i]}.{$childVitrualIndex}"?>
+		</div>
+	</td>
+	<td class="center">-</td>
+	<td class="center">-</td>
+	<td class="left"><?php echo $child['itemCode']?> <input type="hidden"
+		name="lineNo[]"
+		value="<?php echo "{$parent['lineNo'][$i]}.{$childIndex}"?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="no[]" value="<?php echo $parent['no'][$i];?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="refItem[]" value="<?php echo $child['refItem']?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="itemCode[]" value="<?php echo $child['itemCode']?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="itemName[]" value="<?php echo $child['itemName']?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="attributes[]" value="<?php echo $child['attributes']?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="refAttributes[]" value="<?php echo $child['refAttributes']?>"
+		class="ref_attributes <?php echo $parent['markerClass']?>" /> <input
+		type="hidden" name="refAttributesReal[]"
+		value="<?php echo $child['refAttributesReal']?>"
+		class="real_ref_attributes <?php echo $parent['markerClass']?>" /> <input
+		type="hidden" name="uom[]" value="<?php echo $child['uom']?>"
+		class="<?php echo $parent['markerClass']?>" /> <input id=""
+		class="<?php echo $parent['markerClass']?> bom_name" type="hidden"
+		value="" name="bom[]"> <input type="hidden" name="level[]"
+		value="<?php echo $child['level']?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="hasBOM[]" value="<?php echo $child['hasBOM']?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="hasChildren[]" value="<?php echo $child['hasChildren']?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="purchase[]" value="<?php echo $child['purchase']?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="manufacturing[]" value="<?php echo $child['manufacturing']?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="directlyUnder[]" value="<?php echo $child['directlyUnder']?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="parentManuQty[]" value="<?php echo $child['parentManuQty']?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="issueDate[]" id="" class="<?php echo $parent['markerClass']?>"
+		value="<?php echo $child['issueDate']?$child['issueDate']:$parent['issueDate'][$i];?>" />
+		<input type="hidden" name="deliveryDate[]" id=""
+		class="<?php echo $parent['markerClass']?>"
+		value="<?php echo $child['deliveryDate'];?>" /> <input type="hidden"
+		name="eDate[]" id="" class="<?php echo $parent['markerClass']?>"
+		value="<?php echo $child['eDate'];?>" /> <input type="hidden"
+		name="sDate[]" id="" class="<?php echo $parent['markerClass']?>"
+		value="<?php echo $child['sDate'];?>" /> <input type="hidden"
+		name="warehouse[]" id="" value="<?php echo $childWarehouse?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="khioid[]" id="" value="<?php echo $parent['khioid'][$i];?>"
+		class="<?php echo $parent['markerClass']?>" /> <input type="hidden"
+		name="assembly[]" id="" value="<?php echo $child['assembly'];?>"
+		class="<?php echo $parent['markerClass']?>" />
+	</td>
+	<td class="left"><?php echo $child['itemName']?></td>
+
+	<?php if($child['attributes']):?>
+	<td class="left"><?php echo $child['attributes']?></td>
+	<?php else:?>
+	<td class="center">-</td>
+	<?php endif;?>
+
+
+	<?php if($child['manufacturing']==1):?>
+	<td class="left"><select name="refBom[]" id=""
+		class="<?php echo $parent['markerClass']?> width_100 bom-<?php echo $parent['markerGroupID']?>"
+		lineno="<?php echo "{$parent['lineNo'][$i]}.{$childIndex}"?>"
+		onchange="fillBomName(this)">
+			<option value="" names="" all="0">
+				Chọn
+				<?php //echo $this->_translate(100)?>
+			</option>
+			<?php $bomIndex = 0;?>
+			<?php $bomArray = '';?>
+			<?php foreach ($child['bom'] as $item):?>
+			<option value="<?php echo $child['refBom'][$bomIndex]?>"
+				names="<?php echo $item?>" all="0">
+				<?php echo $item?>
+			</option>
+
+			<?php
+			// Luu mang bom cha de hien thi trong con
+			$bomArray .= '<input type="hidden" name="refBomArray['.$parent['lineNo'][$i].'.'.$childIndex.'][Id][]" class="'.$parent['markerClass'].'" value="'.$child['refBom'][$bomIndex].'"/>';
+			$bomArray .= '<input type="hidden" name="refBomArray['.$parent['lineNo'][$i].'.'.$childIndex.'][Name][]" class="'.$parent['markerClass'].'" value="'.$item.'"/>';
+			?>
+
+			<?php $bomIndex++;?>
+			<?php endforeach;?>
+			<?php echo $bomArray?>
+	</select>
+	</td>
+
+	<?php else:?>
+	<td class="center">- <input class="<?php echo $parent['markerClass']?>"
+		type="hidden" value="0" name="refBom[]">
+	</td>
+	<?php endif;?>
+
+	<td class="left"><?php echo $child['uom']?></td>
+	<td class="right"><?php echo $childQty;?></td>
+	<td class="center"><?php if($manufacturingAvailable):?><input
+		type="text" value="<?php echo $manufacturing?>" name="productionQty[]"
+		class="production_qty_box <?php echo $parent['markerClass']?> <?php echo $readonly?>"
+		onchange="changeQtyOfGeneralLine(this,<?php echo $childQty?>, 1)"
+		size="4" <?php echo $readonly?> /> <?php else:?>-<input type="hidden"
+		value="<?php echo $manufacturing?>" name="productionQty[]" size="4"
+		class="<?php echo $parent['markerClass']?>"
+		class="<?php echo $readonly?>" <?php echo $readonly?> /> <?php endif;?>
+	</td>
+	<td class="center"><?php if($purchaseAvailable):?><input type="text"
+		value="<?php echo $purchase?>" name="purchaseQty[]"
+		onchange="changeQtyOfGeneralLine(this,<?php echo $childQty?>, 2)"
+		size="4"
+		class="purchase_qty_box <?php echo $parent['markerClass']?> <?php echo $readonly?>"
+		<?php echo $readonly?> /> <?php else:?>-<input type="hidden"
+		value="<?php echo $purchase?>" name="purchaseQty[]" size="4"
+		class="<?php echo $parent['markerClass']?> <?php echo $readonly?>"
+		<?php echo $readonly?> /> <?php endif;?></td>
+	<td class="right"><input type="text" name="stockUsedQty[]"
+		value="<?php //echo $defaultKhauTru?>"
+		class="width_50 <?php echo $parent['markerClass']?>" /></td>
+	<td class="right"><?php echo $childWarehouse;?>
+	</td>
+</tr>
+		<?php $childVitrualIndex++?>
+		<?php endif;// Chi hien thi san xuat?>
+<?php $childIndex++;?>
+<?php endforeach; // Lặp children?>
+<?php endif; // Có children?>
+
+<?php $i++;?>
+<?php endforeach;?>
+
+

@@ -1,0 +1,222 @@
+<script>
+    function excelRender() {
+        $('#report').submit();
+    }
+</script>
+
+<form id="report" method="post" action="/print/m759/viwasupco/acceptanceexcel">
+    <input type="hidden" name="popup" value="1" />
+    <input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" />
+
+    <div class="portrait">
+        <excel
+                orientation="portrait"
+                font-name="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_NAME; ?>"
+                font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_SIZE; ?>"
+                margin-left="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_LEFT; ?>"
+                margin-right="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_RIGHT; ?>"
+                margin-top="1.5"
+                margin-bottom="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_BOTTOM; ?>" />
+
+        <!-- REPORT TITLE -->
+        <div id="head_print">
+            <div>
+                <!-- Số biểu mẫu -->
+                <div id="portrait-company-header">
+                    <div style="width:100%">
+                        <p class="right">
+                            BM01.QT03.BTSC
+                        </p>
+                    </div>
+                    <br/>
+                </div>
+                <div class="clear">&nbsp;</div>
+
+                <div class="overflow" style="font-size: 16px; line-height: 28px; overflow: hidden; width: 100%">
+                    <div class="fl center" style="width: 50%">
+                        <b>
+                            CÔNG TY CỔ PHẦN ĐẦU TƯ NƯỚC SẠCH SÔNG ĐÀ
+                        </b>
+                        <br/>
+
+                        <b>
+                            <u>
+
+                                BỘ PHẬN:………………………..
+                            </u>
+                        </b>
+                        <br/>
+
+                        <b>
+                            <u>
+                                Số:……./……./20…../PKT
+                            </u>
+                        </b>
+                        <br/>
+
+
+                    </div>
+
+                    <div class="fr center" style="width: 40%">
+                        <b>
+                            CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
+                        </b>
+                        <br/>
+
+                        <b>
+                            <u>
+                                Độc Lập – Tự Do – Hạnh Phúc
+                            </u>
+                        </b>
+                        <br/>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div id="container">
+            <div>
+
+                <br/>
+
+                <h2 class="bold center">
+                    PHIẾU ĐỀ NGHỊ KIỂM TRA
+                </h2>
+
+                <p class="bold center">
+                    Số phiếu : <?php echo @$this->OPhieuBaoTri->SoPhieu;?>
+                </p>
+                <br/>
+
+                <div class="overflow">
+                    <span style="float: left; width: 10%;">Nơi nhận:</span>
+                    <span style="float: left; width: 90%; border-bottom: 1px dashed #000;">&nbsp;<?php echo @$this->OYeuCauBaoTri->NoiNhan;?> </span>
+                </div>
+                <br/>
+
+                <div class="">
+                    Nội dung
+                </div>
+
+                <br/>
+
+                <div class="">
+                    <table cellpadding="0" cellspacing="0" class="border" border="0">
+                        <tr>
+                            <th style="width: 10%;">STT</th>
+                            <th style="width: 40%;">Tên thiết bị</th>
+                            <th style="width: 10%;">Vị trí</th>
+                            <th style="width: 40%;">Nội dung</th>
+                        </tr>
+
+                        <tr>
+                            <td class="center"> 1 </td>
+                            <td>&nbsp;<?php echo @$this->OYeuCauBaoTri->TenThietBi;?></td>
+                            <td>&nbsp;<?php echo @$this->OKhuVuc->Ten;?></td>
+                            <td>&nbsp;<?php echo @$this->OYeuCauBaoTri->MoTa;?></td>
+                        </tr>
+
+                        <?php for($i = 1; $i <= 8; $i++):?>
+                            <tr>
+                                <td class="center"></td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        <?php endfor;?>
+                    </table>
+                </div>
+                <br/>
+
+
+                <div style="text-align: right">
+                    <span style="display: inline-block; width: 220px; text-align: center">Hòa Bình, ngày…../……./…….</span>
+
+                </div>
+
+                <div style="text-align: right" class="bold">
+                    <span style="display: inline-block; width: 200px; text-align: center">Người lập</span>
+                </div>
+
+                <br/>
+                <b/>
+                <br/>
+
+
+                <div>
+                    <table cellpadding="0" cellspacing="0" border="0" style="border: 2px dashed #000;">
+                        <tr>
+                            <td style="width: 50%; border-right: 2px dashed #000; border-bottom: 2px dashed #000;">
+                                <br/>
+                                <div class="bold center" style="width: 100%">
+                                    Ý KIẾN CỦA BỘ PHẬN SẢN XUẤT
+                                </div>
+
+                                <div class="line" style="width: 95% !important; margin: auto">&nbsp;</div>
+                                <div class="line" style="width: 95% !important; margin: auto">&nbsp;</div>
+                                <div class="line" style="width: 95% !important; margin: auto">&nbsp;</div>
+                                <div class="line" style="width: 95% !important; margin: auto">&nbsp;</div>
+                                <div class="line" style="width: 95% !important; margin: auto">&nbsp;</div>
+                                <div class="line" style="width: 95% !important; margin: auto">&nbsp;</div>
+                                <br/>
+
+                                <div style="width: 95% !important; margin: auto">Vào….giờ…Ngày …/…/……</div>
+                                <div style="width: 95% !important; margin: auto">Chữ ký:</div>
+                                <br/>
+                                <br/>
+
+                            </td>
+                            <td style="width: 50%; border-bottom: 2px dashed #000;">
+                                <br/>
+                                <div class="bold center" style="width: 100%">
+                                    Ý KIẾN CỦA ĐỘI BTSC&XD
+                                </div>
+
+                                <div class="line" style="width: 95% !important; margin: auto">&nbsp;</div>
+                                <div class="line" style="width: 95% !important; margin: auto">&nbsp;</div>
+                                <div class="line" style="width: 95% !important; margin: auto">&nbsp;</div>
+                                <div class="line" style="width: 95% !important; margin: auto">&nbsp;</div>
+                                <div class="line" style="width: 95% !important; margin: auto">&nbsp;</div>
+                                <div class="line" style="width: 95% !important; margin: auto">&nbsp;</div>
+                                <br/>
+
+                                <div style="width: 95% !important; margin: auto">Vào….giờ…Ngày …/…/……</div>
+                                <div style="width: 95% !important; margin: auto">Chữ ký:</div>
+                                <br/>
+                                <br/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="2" style="">
+                                <br/>
+                                <div class="bold center" style="width: 100%">
+                                    Ý KIẾN CỦA BAN KỸ THUẬT
+                                </div>
+
+                                <div class="line" style="width: 95% !important; margin: auto">&nbsp;</div>
+                                <div class="line" style="width: 95% !important; margin: auto">&nbsp;</div>
+                                <div class="line" style="width: 95% !important; margin: auto">&nbsp;</div>
+                                <div class="line" style="width: 95% !important; margin: auto">&nbsp;</div>
+                                <div class="line" style="width: 95% !important; margin: auto">&nbsp;</div>
+                                <div class="line" style="width: 95% !important; margin: auto">&nbsp;</div>
+                                <br/>
+
+                                <div style="width: 95% !important; margin: auto">Vào….giờ…Ngày …/…/……</div>
+                                <div style="width: 95% !important; margin: auto">Chữ ký:</div>
+                                <br/>
+                                <br/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+
+

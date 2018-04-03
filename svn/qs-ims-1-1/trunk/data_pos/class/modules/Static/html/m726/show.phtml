@@ -1,0 +1,321 @@
+<style>
+    <!--
+    h2
+    {
+        color:#3366FF;
+        font-size:16px;
+        line-height:32px;
+    }
+    -->
+</style>
+
+<?php
+$row                = 9;
+$model              = new Qss_Model_Extra_Maintenance();
+$equipModel         = new Qss_Model_Maintenance_Equipment();
+$common             = new Qss_Model_Extra_Extra();
+$oldCostCenter      = '';
+$IOIDarray          = array();
+$eqArray            = array();
+$parameterArray     = array();
+$sortby             = '';
+$sortCodeCol        = '';
+$sortNameCol        = '';
+$colAdd             = 11; // so cot
+$widthArr           = array(39,	177, 193,74,	70, 100,	71,	71,	98,	88,	84,	140);
+$totalCols          = count($widthArr);
+$excelWidth         = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($widthArr, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+$widthArr           = Qss_Lib_Report::changeWidthToFitScreen($widthArr, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+$status             = Qss_Lib_System::getFieldRegx('ODanhSachThietBi', 'TrangThai');
+?>
+
+<?php $excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);?>
+<?php ?>
+
+<div class="landscape">
+    <div id="head_print">
+        <?php echo $this->views->Common->Landscape()?>
+
+        <h2 class="center"><?php echo $this->_translate(1)?> </h2>
+
+        <?php if($this->locationIOID):?>
+            <h2 class="center"> BỘ PHẬN QUẢN LÝ: <?php echo $this->location;?> </h2>
+        <?php endif;?>
+
+        <h2 class="center">Năm: <?php echo date('Y');?> </h2>
+    </div>
+
+
+    <div id="container">
+        <table width="" cellpadding="0" cellspacing="0" class="border" border="0">
+            <tr class="bggrey">
+                <?php $begin = 0;?>
+                <!-- STT -->
+                <th
+                    width="<?php echo $widthArr[$begin];?>px"
+                    class="report_title_marker"
+                    id="col<?php echo $begin; ?>"
+                    col="<?php echo $begin++; ?>">
+                    <?php echo $this->_translate(5)?>
+                </th>
+
+                <!-- Ten thiet bi -->
+                <th  width="<?php echo $widthArr[$begin];?>px" class="report_title_marker"
+                     id="col<?php echo $begin; ?>"
+                     col="<?php echo $begin++; ?>">
+                    <?php echo $this->_translate(3)?>
+                </th>
+
+
+
+                <!-- Đặc trưng kỹ thuật thiết bị-->
+                <th  width="<?php echo $widthArr[$begin];?>px" class="report_title_marker"
+                     id="col<?php echo $begin; ?>"
+                     col="<?php echo $begin++; ?>">
+                    <?php echo $this->_translate(4)?>
+                </th>
+
+                <!-- Mã số -->
+                <th  width="<?php echo $widthArr[$begin];?>px" class="report_title_marker"
+                     id="col<?php echo $begin; ?>"
+                     col="<?php echo $begin++; ?>">
+                    <?php echo $this->_translate(2)?>
+                </th>
+
+                <!-- "Số xêri (serial No)"-->
+                <th   width="<?php echo $widthArr[$begin];?>px" class="report_title_marker"
+                      id="col<?php echo $begin; ?>"
+                      col="<?php echo $begin++; ?>">
+                    <?php echo $this->_translate(100)?>
+                </th>
+
+                <!-- Ma tai san -->
+                <th  width="<?php echo $widthArr[$begin];?>px" class="report_title_marker"
+                     id="col<?php echo $begin; ?>"
+                     col="<?php echo $begin++; ?>">
+                    <?php echo $this->_translate(129)?>
+                </th>
+
+
+                <!-- "Nhà SX"-->
+                <th   width="<?php echo $widthArr[$begin];?>px" class="report_title_marker"
+                      id="col<?php echo $begin; ?>"
+                      col="<?php echo $begin++; ?>">
+                    <?php echo $this->_translate(20)?>
+                </th>
+
+                <!-- Năm SX -->
+                <th   width="<?php echo $widthArr[$begin];?>px" class="report_title_marker"
+                      id="col<?php echo $begin; ?>"
+                      col="<?php echo $begin++; ?>">
+                    <?php echo $this->_translate(18)?>
+                </th>
+
+                <!-- Ngày đưa vào sd -->
+                <th   width="<?php echo $widthArr[$begin];?>px" class="report_title_marker"
+                      id="col<?php echo $begin; ?>"
+                      col="<?php echo $begin++; ?>">
+                    <?php echo $this->_translate(24)?>
+                </th>
+
+                <!-- Nơi sử dụng -->
+                <th   width="<?php echo $widthArr[$begin];?>px" class="report_title_marker"
+                      id="col<?php echo $begin; ?>"
+                      col="<?php echo $begin++; ?>">
+                    <?php echo $this->_translate(27)?>
+                </th>
+
+
+                <!-- Tình trạng kỹ thuật-->
+                <th   width="<?php echo $widthArr[$begin];?>px" class="report_title_marker"
+                      id="col<?php echo $begin; ?>"
+                      col="<?php echo $begin++; ?>">
+                    <?php echo $this->_translate(126)?>
+                </th>
+
+                <!-- Ghi chú-->
+                <th   width="<?php echo $widthArr[$begin];?>px" class="report_title_marker"
+                      id="col<?php echo $begin; ?>"
+                      col="<?php echo $begin++; ?>">
+                    <?php echo $this->_translate(127)?>
+                </th>
+            </tr>
+            <?php $row++;?>
+
+            <?php $stt = 0;?>
+            <?php $oldEqGroup= '';?>
+            <?php $oldEqType= '';?>
+            <?php $oldEqTypeLevel= '';?>
+            <?php $eqTypeNo = 0;?>
+            <?php $eqGroupNo= 0;?>
+            <?php $eqTypeNoMemory = array();?>
+            <?php $oldHPEqIOID = '';?>
+            <?php $oldLftLoaiTB = '';?>
+            <?php $oldRgtLoaiTB = '';?>
+            <?php $level = 1;?>
+
+
+            <?php foreach ($this->eqs as $eq):?>
+                <?php //$duAn = isset($this->lichdieudong[$eq->HPEQIOID]['Project'])?" ( {$this->lichdieudong[$eq->HPEQIOID]['Project']})":'';?>
+
+                <!-- IN NHOM THIET BI -->
+                <?php if($oldEqGroup != $eq->RefNhomTB):?>
+                    <tr>
+                        <td colspan="<?php echo $totalCols;?>" class="bgyellow bold">
+                            <?php echo ++$eqGroupNo;?>. <?php echo $eq->NhomThietBiChinh;?>
+                        </td>
+                    </tr>
+
+                    <?php
+                    $oldEqType                  = '';
+                    $eqTypeNo                   = 0;// reset;
+                    $eqTypeNoMemory[$eqGroupNo] = array();
+                    ?>
+                <?php endif;?>
+                <?php $oldEqGroup = $eq->RefNhomTB;?>
+
+                <!-- IN LOAI THIET BI -->
+                <?php if($oldEqType != $eq->RefLoaiTBJoin):?>
+                    <?php
+                    $displayEqType = $eqGroupNo;
+
+                    // neu chua ton tai bien nho so thu tu cua level hien tai thi khoi tao
+                    if(!isset($eqTypeNoMemory[$eqGroupNo][$eq->LevelLoaiTBJoin]))
+                    {
+                        $eqTypeNoMemory[$eqGroupNo][$eq->LevelLoaiTBJoin] = 0;
+                    }
+
+                    $eqTypeNoMemory[$eqGroupNo][$eq->LevelLoaiTBJoin]++;
+
+                    if($oldEqTypeLevel != '' && $eq->LevelLoaiTBJoin < $oldEqTypeLevel)
+                    {
+                        foreach($eqTypeNoMemory[$eqGroupNo] as $etlv=>$etnm)
+                        {
+                            if($etlv > $eq->LevelLoaiTBJoin)
+                            {
+                                $eqTypeNoMemory[$eqGroupNo][$etlv] = 0;
+                            }
+                        }
+                    }
+
+
+                    $i = 0;
+                    while($i != $eq->LevelLoaiTBJoin)
+                    {
+                        $j = $i + 1;
+                        $displayEqType .= '.'.$eqTypeNoMemory[$eqGroupNo][$j];
+                        $i++;
+                    }
+
+                    $displayEqType .= ' '.$eq->LoaiThietBiJoin;
+
+                    $oldEqTypeLevel = $eq->LevelLoaiTBJoin;
+                    ?>
+                    <tr>
+                        <td colspan="<?php echo $totalCols;?>" class="bgorange bold">
+                            <?php echo $displayEqType;?>
+                        </td>
+                    </tr>
+                <?php endif;?>
+                <?php $oldEqType = $eq->RefLoaiTBJoin;?>
+
+
+                <?php $duAn = $eq->DuAn?" ({$eq->DuAn})":'';?>
+                <!-- IN DANH SACH THIET BI -->
+                <?php if($eq->RefLoaiTBJoin == $eq->RefLoaiTB):?>
+                    <tr>
+                        <!-- STT -->
+                        <td class="center">
+                            <?php echo ++$stt;//!$eq->Ref_TrucThuoc?(++$stt):'';?>
+                        </td>
+
+                        <!-- Ten thiet bi -->
+                        <td class="left">
+                            <?php echo $eq->TenThietBi;?>
+                        </td>
+
+                        <!-- Đặc trưng kỹ thuật thiết bị -->
+                        <td class="left">
+                            <?php echo $eq->DacTinhKT;?>
+                        </td>
+
+                        <!-- Mã số  -->
+                        <td class="left">
+                            <?php echo $eq->MaThietBi;?>
+                        </td>
+
+                        <!-- Serial -->
+                        <td class="left">
+                            <?php echo $eq->Serial;?>
+                        </td>
+
+                        <!-- Ten thiet bi -->
+                        <td class="left">
+                            <?php echo $eq->MaTaiSan;?>
+                        </td>
+
+                        <!-- Nhà SX -->
+                        <td class="left">
+                            <?php echo $eq->XuatXu;?>
+                        </td>
+
+                        <!-- Năm SX -->
+                        <td class="right">
+                            <?php echo $eq->NamSanXuat;?>
+                        </td>
+
+                        <!-- Ngày đưa vào sd -->
+                        <td class="center">
+                            <?php echo Qss_Lib_Date::mysqltodisplay($eq->NgayDuaVaoSuDung);?>
+                        </td>
+
+                        <!-- Nơi sử dụng -->
+                        <td class="left">
+                            &nbsp;<?php echo $eq->MaKhuVuc.$duAn;?>
+                        </td>
+
+                        <!-- Tình trạng kỹ thuật -->
+                        <td class="left">
+                            &nbsp;
+                        </td>
+
+                        <!-- Ghi chú -->
+                        <td class="left">
+                            <?php echo $eq->GhiChu;?>
+                        </td>
+                    </tr>
+                <?php endif;?>
+            <?php endforeach;?>
+        </table>
+        <br/>
+
+        <table border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td class="right bold">
+                    Ngày…....tháng…....năm………..
+                </td>
+            </tr>
+        </table>
+        <br/>
+
+        <table border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td class="center bold" style="width:25%;">
+                    Người lập
+                </td>
+
+                <td class="center bold" style="width:25%;">
+                    Đơn vị quản lý
+                </td>
+
+                <td class="center bold" style="width:25%;">
+                    Phòng Kỹ thuật
+                </td>
+
+                <td class="center bold" style="width:25%;">
+                    Ban Giám Đốc
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

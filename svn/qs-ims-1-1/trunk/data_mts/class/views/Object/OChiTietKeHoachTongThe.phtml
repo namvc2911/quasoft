@@ -1,0 +1,495 @@
+<?php
+$width  = '1200';
+$widths = array(1, 2,2.5, 2.5, 3, 3, 5, 3, 3, 3, 5, 3, 2.5);
+$fit    = Qss_Lib_Report::changeWidthToFitScreen2($widths, $width);
+$totalCols = count($widths);
+$month  = '';
+$i      = 0;
+$begin  = 0;
+?>
+
+<script src="/js/common.js"></script>
+
+<script>
+    var m838 = {
+        changeGeneralStatus : function(ifid, deptid, stepno, userid, comment)
+        {
+            if(stepno == '')
+            {
+                qssAjax.alert(Language.translate('SELECT_ACTION'));
+                return;
+            }
+
+            var url  = sz_BaseUrl + '/user/form/request';
+            var data = {ifids:ifid,deptids:deptid,stepno:stepno,userid:userid,comment:comment};
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != ''){
+                    qssAjax.n(jreturn.message,function(){
+                        m838.edit(ifid);
+                    });
+                }
+                else{
+                    m838.edit(ifid);
+                }
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+            $('.dropdown-content').hide();
+        },
+
+        changeDetailStatus : function(generalIFID, stepno, userid)
+        {
+            var ifid   = '';
+            var deptid = '';
+
+
+            $('.OKeHoachChiTiet_IFID').not(':disabled').each(function(){
+                ifid += (ifid != '')?',':'';
+                ifid += $(this).val();
+            });
+
+            $('.OKeHoachChiTiet_DeptID').not(':disabled').each(function(){
+                deptid += (deptid != '')?',':'';
+                deptid += $(this).val();
+            });
+
+
+            if(stepno == '')
+            {
+                qssAjax.alert(Language.translate('SELECT_ACTION'));
+                return;
+            }
+
+            var url  = sz_BaseUrl + '/user/form/request';
+            var data = {ifids:ifid,deptids:deptid,stepno:stepno,userid:userid,comment:''};
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != ''){
+                    qssAjax.n(jreturn.message,function(){
+                        m838.edit(generalIFID);
+                    });
+                }
+                else{
+                    m838.edit(generalIFID);
+                }
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+            $('.dropdown-content').hide();
+        },
+
+        deleteDetail : function(generalIFID)
+        {
+            qssAjax.confirm(Language.translate('CONFIRM_DELETE'),function(){
+                var ifid   = [];
+                var deptid = [];
+                var i= 0;
+
+                $('.OKeHoachChiTiet_IFID').not(':disabled').each(function(){
+                    ifid[i] = $(this).val();
+                    i++;
+                });
+
+                i= 0;
+                $('.OKeHoachChiTiet_DeptID').not(':disabled').each(function(){
+                    deptid[i] = $(this).val();
+                    i++;
+                });
+
+
+                var url = sz_BaseUrl + '/user/form/delete';
+                var data = {
+                    ifid : ifid,
+                    deptid : deptid
+                };
+                qssAjax.call(url, data, function(jreturn) {
+                    m838.edit(generalIFID);
+                }, function(jreturn) {
+                    qssAjax.alert(jreturn.message);
+                });
+            });
+        },
+
+        filter : function(year)
+        {
+            var data = {year:year};
+            var url  = sz_BaseUrl + '/static/m838/general/index';
+
+            $.cookie('m838_year', year, {path:'/'});
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#m838_wrap').html(jreturn);
+                m838.resetViewHeight();
+            });
+        },
+
+        edit : function(ifid)
+        {
+            var data = {ifid:ifid};
+            var url  = sz_BaseUrl + '/static/m838/detail/index';
+
+            // Set lai nam theo nam dang loc, va do cao cua view truoc do
+            // De sau nay back lai con lay lai nam va do cao nay de xu ly
+            m838_year = parseInt($('#year').val());
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#m838_wrap').html(jreturn);
+
+//                m838.showGeneral(ifid);
+//                m838.listDetail(ifid);
+                m838.resetViewHeight();
+                rowObject('OChiTietKeHoachTongThe');
+            });
+        },
+
+        delete : function(ifid)
+        {
+            var data = {ifid:ifid};
+            var url  = sz_BaseUrl + '/static/m838/general/delete';
+
+            qssAjax.confirm('Bạn có muốn xóa bản ghi này không?', function () {
+                qssAjax.call(url, data, function(jreturn) {
+                    if(jreturn.message != '')
+                    {
+                        qssAjax.alert(jreturn.message);
+                    }
+
+                    m838.filter();
+                }, function(jreturn) {
+                    qssAjax.alert(jreturn.message);
+                });
+            });
+        },
+
+        listDetail : function(ifid)
+        {
+            location.reload();
+        },
+
+        showGeneral : function(ifid)
+        {
+            var data = {ifid:ifid};
+            var url  = sz_BaseUrl + '/static/m838/detail/general';
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#m838_general_edit').html(jreturn);
+            });
+        },
+
+        saveGeneral : function()
+        {
+            var url  = sz_BaseUrl + '/static/m838/general/save';
+            var data = $('#m838_general_form').serialize();
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != '')
+                {
+                    qssAjax.alert(jreturn.message);
+                }
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+
+        },
+
+        back : function()
+        {
+            var data = {year: $.cookie('m838_year')};
+            var url  = sz_BaseUrl + '/static/m838/general/index';
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#m838_wrap').html(jreturn);
+                m838.resetViewHeight();
+            });
+        },
+
+        resetViewHeight : function()
+        {
+            var header_menu   = $('#header-menu').height();
+            var nav_menu      = $('.navmenutab').height();
+            var toolbar       = $('#horizontal-toolbar').height();
+            var view          = $('#view').height();
+            var window_height = $(window).height();
+            var other_padding = 30;
+            var rest          = window_height - header_menu - nav_menu - toolbar - other_padding;
+
+            $('#view').css({'height': rest + 'px'});
+        },
+
+        plan : function(ifid, ioid, start, end, all)
+        {
+            var url  = sz_BaseUrl + '/static/m838/detail/plan';
+            var data = {ifid:ifid, ioid:ioid, start: start, end: end, all: all};
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#qss_trace').dialog('close');
+                $('#qss_trace').html('');
+                $('#qss_trace').html(jreturn);
+                $('#qss_trace').dialog({width: 900, height: 400});
+            });
+        },
+
+        failure : function(ifid, ioid, start, end)
+        {
+            var url  = sz_BaseUrl + '/static/m838/detail/failure';
+            var data = {ifid:ifid, ioid: ioid, start: start, end: end};
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#qss_trace').dialog('close');
+                $('#qss_trace').html('');
+                $('#qss_trace').html(jreturn);
+                $('#qss_trace').dialog({width: 900, height: 400});
+            });
+        },
+
+        createDetailFromFailure : function(ifid)
+        {
+            var url  = sz_BaseUrl + '/static/m838/detail/createfromfailure';
+            var data = $('#m838_failure_param').serialize();
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != '')
+                {
+                    qssAjax.alert(jreturn.message);
+                }
+
+                $('#qss_trace').dialog('close');
+                m838.listDetail(ifid)
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+        },
+
+        createDetailFromPlan : function(ifid)
+        {
+            var url  = sz_BaseUrl + '/static/m838/detail/createfromplan';
+            var data = $('#m838_plans').serialize();
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != '')
+                {
+                    qssAjax.alert(jreturn.message);
+                }
+
+                $('#qss_trace').dialog('close');
+                m838.listDetail(ifid)
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+        },
+
+        createOrder : function(ifid)
+        {
+            var url  = sz_BaseUrl + '/static/m838/detail/workorder';
+            var data = {ifid:ifid};
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != '')
+                {
+                    qssAjax.alert(jreturn.message);
+                }
+
+                location.reload();
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+        }
+
+
+    };
+
+
+</script>
+
+<br/>
+<div class="clear"></div>
+
+<div class="clearfix">
+	<button class="btn btn-custom <?php echo ($this->generalPlan->StepNo != 1)?'btn-disabled':'';?>"
+        <?php echo ($this->generalPlan->StepNo != 1)?'disabled':'';?>
+            type="button"
+            onclick="popupWindowFormInsert('M837', <?php echo $this->deptid;?>, {OKeHoachBaoTri_KeHoachTongThe:<?php echo $this->generalPlan->IOID;?>}, function(){ m838.listDetail(<?php echo $this->ifid;?>) })">
+        <?php echo $this->_translate(4)?>
+    </button>
+    
+    <button type="button"
+            onclick="m838.changeDetailStatus(<?php echo $this->ifid;?>, 2, '<?php echo $this->userid;?>')"
+            class="btn btn-custom <?php echo ($this->generalPlan->StepNo != 1)?'btn-disabled':'';?>"
+        <?php echo ($this->generalPlan->StepNo != 1)?'disabled':'';?> >
+        <?php echo $this->_translate(1)?>
+    </button>
+
+    <button type="button"
+            onclick="m838.changeDetailStatus(<?php echo $this->ifid;?>, 1, '<?php echo $this->userid;?>')"
+            class="btn btn-custom <?php echo ($this->generalPlan->StepNo != 1)?'btn-disabled':'';?>"
+        <?php echo ($this->generalPlan->StepNo != 1)?'disabled':'';?> >
+        <?php echo $this->_translate(2)?>
+    </button>
+
+    <button type="button"
+            class="btn btn-custom <?php echo ($this->generalPlan->StepNo != 1)?'btn-disabled':'';?>"
+        <?php echo ($this->generalPlan->StepNo != 1)?'disabled':'';?>
+            onclick="m838.deleteDetail(<?php echo $this->ifid;?>);">
+        <?php echo $this->_translate(3)?>
+    </button>
+
+    <button class="btn btn-custom <?php echo ($this->generalPlan->StepNo != 1)?'btn-disabled':'';?>"
+            type="button"
+            onclick="m838.plan(<?php echo $this->ifid;?>, <?php echo $this->generalPlan->IOID;?>)"
+        <?php echo ($this->generalPlan->StepNo != 1)?'disabled':'';?>>
+        <?php echo $this->_translate(5)?>
+    </button>
+</div>
+
+<div class="clear"></div>
+
+<br/>
+
+<form class="m838_detail_form">
+    <div id="m838_detail_list">
+        <table class="border_table" cellspacing="0" cellpadding="0" border="0" style="width:<?php echo $width;?>px">
+            <tr>
+                <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                    <input type="checkbox" onclick="common_check_all_table_line(this, '.cwpo_line_checkbok', '.cwpo_line_checkbok_val')"/>
+                </th>
+
+				<th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                    <?php echo $this->fields->getFieldByCode('LoaiKeHoach')->szFieldName;?>
+                </th>
+				
+                <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                    <?php echo $this->fields->getFieldByCode('NgayBatDau')->szFieldName;?>
+                </th>
+
+                <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                    <?php echo $this->fields->getFieldByCode('NgayKetThuc')->szFieldName;?>
+                </th>
+
+                <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                    <?php echo $this->fields->getFieldByCode('MaKhuVuc')->szFieldName;?>
+                </th>
+
+                <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                    <?php echo $this->fields->getFieldByCode('MaThietBi')->szFieldName;?>
+                </th>
+
+                <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                    <?php echo $this->fields->getFieldByCode('TenThietBi')->szFieldName;?>
+                </th>
+
+                <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                    <?php echo $this->fields->getFieldByCode('BoPhan')->szFieldName;?>
+                </th>
+
+                <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                    <?php echo $this->fields->getFieldByCode('LoaiBaoTri')->szFieldName;?>
+                </th>
+
+                <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                    <?php echo $this->fields->getFieldByCode('ChuKy')->szFieldName;?>
+                </th>
+
+                <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                    <?php echo $this->fields->getFieldByCode('MoTa')->szFieldName;?>
+                </th>
+
+                <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                    <?php echo $this->_translate(7);?>
+                </th>
+
+                <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                    <?php echo $this->_translate(6);?>
+                </th>
+            </tr>
+
+
+            <?php foreach($this->detailPlans as $item):?>
+
+                <?php if($month != $item->LoaiKeHoach):?>
+                    <?php $i = 0; // reset;?>
+                    <tr>
+                        <th colspan="<?php echo $totalCols;?>" class="left" style="padding-left: 2px;">
+                            <?php echo $item->Ref_LoaiKeHoach;?>
+                        </th>
+                    </tr>
+                <?php endif;?>
+                <?php $month = $item->LoaiKeHoach;?>
+
+                <tr class="<?php if($i%2==0):?>bgwhite<?php else:?>bglightblue<?php endif;?>">
+                    <td class="center">
+                        <input class="table_line_disabled OKeHoachChiTiet_IOID" type="hidden" value="<?php echo $item->IOID;?>" name="OKeHoachChiTiet_IOID[]" disabled>
+                        <input class="table_line_disabled OKeHoachChiTiet_IFID" type="hidden" value="<?php echo $item->IFID_M837;?>" name="OKeHoachChiTiet_IFID[]" disabled>
+                        <input class="table_line_disabled OKeHoachChiTiet_DeptID" type="hidden" value="<?php echo $this->deptid;?>" name="OKeHoachChiTiet_DeptID[]" disabled>
+
+
+                        <input type="checkbox" class="cwpo_line_checkbok " onclick="common_check_table_line(this, '.cwpo_line_checkbok_val')"
+
+                        >
+                        <input type="hidden" class="table_line_disabled cwpo_line_checkbok_val" name="CheckBox[]"  value="0" disabled>
+                    </td>
+
+					 <td class="center">
+                        <?php echo $item->Ref_LoaiKeHoach;?>
+                    </td>
+                    
+                    <td class="center">
+                        <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayBatDau);?>
+                    </td>
+
+                    <td class="center">
+                        <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayKetThuc);?>
+                    </td>
+
+                    <td class="left break">
+                        <?php echo $item->MaKhuVuc;?>
+                    </td>
+
+                    <td class="left break">
+                        <a href="#1" title="Click để sửa!" onclick="popupWindowFormEdit(<?php echo $item->IFID_M837;?>, <?php echo $this->deptid;?>, {}, function(){ m838.listDetail('<?php echo $this->ifid;?>'); })">
+                            <?php echo $item->MaThietBi;?>
+                        </a>
+                    </td>
+
+                    <td class="left">
+                        <?php echo $item->TenThietBi;?>
+                    </td>
+
+                    <td class="<?php if($item->Ref_ViTri):?>left<?php else:?>center<?php endif;?>">
+                        <?php echo $item->ViTri;?> - <?php echo $item->BoPhan;?>
+                    </td>
+
+                    <td class="left">
+                        <?php echo $item->LoaiBaoTri;?>
+                    </td>
+
+                    <td class="left">
+                        <?php echo $item->ChuKy;?>
+                    </td>
+
+                    <td class="left">
+                        <?php echo $item->MoTa;?>
+                    </td>
+
+                    <td class="center break">
+                        <?php if($item->SoPhieuBaoTri):?>
+                            <a href="#1" onclick="popupWindowFormEdit(<?php echo $item->IFID_M759;?>, <?php echo $this->deptid;?>, {})"> <?php echo $item->SoPhieuBaoTri;?> </a>
+                        <?php else:?>
+                            <?php if($this->generalPlan->StepNo == 3
+                                && $item->StepNo == 2):// Chi tao khi ke hoach tong the da duyet va chua co pbt ?>
+                                <a href="#1" onclick="m838.createOrder(<?php echo $item->IFID_M837;?>);"> Tạo phiếu sửa chữa </a>
+                            <?php endif;?>
+                        <?php endif;?>
+                    </td>
+
+                    <td class="center <?php echo $item->Color;?>">
+                        <?php echo $item->StepName;?>
+                    </td>
+                </tr>
+            <?php endforeach;?>
+        </table>
+    </div>
+</form>
+
+
+

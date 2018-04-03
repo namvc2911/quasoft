@@ -1,0 +1,166 @@
+<?php
+$excel_col        = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg               = Qss_Lib_Extra_Const::REPORT_EXCEL_THEAD_COLOR;
+$row              = 2;
+$colWidths        = array(3, 5, 1, 1, 1, 3);
+$totalColumn      = count($colWidths);
+$excelColWidths   = $colWidths;
+$tableWidth       = 1800;
+$htmlColWidths    = Qss_Lib_Report::changeWidthToFitScreen($colWidths);
+$begin            = 0;
+$oldEmp           = '';
+$oldFactory       = '';
+$oldDept          = '';
+$level            = 0;
+
+$levelNhaMay      = 0;
+$levelBoPhan      = (trim($this->factory) == '')?1:0;
+$levelNhanVien    = $levelBoPhan + 1;
+?>
+
+
+<div class="portrait">
+
+
+<!-- REPORT TITLE -->
+<div id="head_print">
+    <?php  echo $this->views->Common->Portrait(); ?>
+
+    <h2 class="center">
+         Báo Cáo Kiểm Kê TSCN 
+    </h2>
+
+    <div class="center">
+         Ngày <?php echo $this->date;?> 
+    </div>
+
+    <?php
+        $titleBoPhan  = 'BP: ';
+        $titleBoPhan .= $this->department;
+        $titleBoPhan .= $this->department && $this->factory?' - ':'';
+        $titleBoPhan .= $this->factory;
+    ?>
+    <div class="left">
+         <?php echo $titleBoPhan;?>
+    </div>
+</div>
+<!-- end #head_print -->
+
+<div id="container">
+<table class="border"  border="1" cellspacing="0" cellpadding="0" >
+<!-- Begin Title Row -->
+<tr class="bggrey">
+    <?php $begin = 0;?>
+    <!-- Mã thiết bị -->
+    <th class="center" style="width: <?php echo $htmlColWidths[$begin++];?>px" >
+             Mã vật tư
+    </th>
+
+    <!-- Tên thiết bị -->
+    <th class="center" style="width: <?php echo $htmlColWidths[$begin++];?>px" >
+             Tên vật tư
+    </th>
+
+    <!-- Vị trí -->
+    <th class="center" style="width: <?php echo $htmlColWidths[$begin++];?>px" >
+             Tồn cuối
+    </th>
+
+    <!-- Bộ phận -->
+    <th class="center" style="width: <?php echo $htmlColWidths[$begin++];?>px" >
+             Thực tế
+    </th>
+
+    <!-- Ngày thay vào -->
+    <th class="center" style="width: <?php echo $htmlColWidths[$begin++];?>px" >
+             Chênh lệch
+    </th>
+
+    <!-- Ngày thay vào -->
+    <th class="center" style="width: <?php echo $htmlColWidths[$begin++];?>px" >
+             Ghi chú
+    </th>
+</tr>
+
+<!-- End Title Row -->
+
+
+
+<?php foreach($this->tools as $item):?>
+        <?php if($oldFactory != $item->NhaMay && (trim($this->factory) == '')):?>
+            <tr>
+                <!-- Nhà máy -->
+                <td class="left bold italic tree_level_<?php echo $levelNhaMay;?>" colspan="<?php echo $totalColumn;?>">
+                    Nhà máy: <?php echo $item->NhaMay;?>
+                </td>
+            </tr>
+        <?php endif;?>
+
+
+        <?php if( ($oldFactory != $item->NhaMay || $oldDept != $item->BoPhan) && (trim($this->department) == '')):?>
+            <tr>
+                <!-- Nhà máy -->
+                <td class="left bold italic tree_level_<?php echo $levelBoPhan;?>" colspan="<?php echo $totalColumn;?>">
+                    Bộ phận: <?php echo $item->BoPhan;?>
+                </td>
+            </tr>
+        <?php endif;?>
+
+        <?php if($item->Ref_MaNhanVien != $oldEmp
+            || $item->BoPhan !== $oldDept
+            || $item->NhaMay !== $oldFactory):?>
+            <tr>
+                <!-- Mã thiết bị -->
+                <td class="left bold  tree_level_<?php echo $levelNhanVien;?>" colspan="<?php echo $totalColumn;?>">
+                    <?php echo "{$item->MaNhanVien} - {$item->TenNhanVien} - CMT: {$item->SoCMND}";?>
+                </td>
+            </tr>
+        <?php endif;?>
+
+
+        <?php $oldFactory = $item->NhaMay;?>
+        <?php $oldDept = $item->BoPhan;?>
+        <?php $oldEmp = $item->Ref_MaNhanVien;?>
+
+        <?php $begin = 0;?>
+        <tr>
+            <!-- Mã thiết bị -->
+            <td class="left  tree_level_<?php echo $levelNhanVien;?>">
+                <?php echo $item->MaTaiSan;?>
+            </td>
+
+            <!-- Tên thiết bị -->
+            <td class="left">
+                <?php echo $item->TenTaiSan;?>
+            </td>
+
+            <!-- Vị trí -->
+            <td class="right">
+                <?php echo Qss_Lib_Util::formatNumber($item->SoLuongConLaiCuoi);?>
+            </td>
+
+            <!-- Bộ phận -->
+            <td class="left">
+                <?php ?>
+            </td>
+
+            <!-- Ngày thay vào -->
+            <td class="center">
+                <?php ?>
+            </td>
+
+            <!-- Ngày thay ra -->
+            <td class="center">
+                <?php ?>
+            </td>
+
+        </tr>
+        <?php $row++;?>
+<?php endforeach;?>
+</table>
+<!-- end report table -->
+</div>
+<!-- end #container -->
+</div>
+<!-- end .landscape -->
+

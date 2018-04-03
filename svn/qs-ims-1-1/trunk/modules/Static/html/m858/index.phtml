@@ -1,0 +1,206 @@
+<script>
+    function printPreview(){
+        common_selectDialBox('orders');
+        var url  = sz_BaseUrl + '/static/m858/show';
+        var data = $('#report').serialize();
+
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#print-area').html(jreturn);
+            removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+        });
+    }
+
+    function excelRender()
+    {
+        common_selectDialBox('orders');
+        $('#report').submit();
+    }
+
+    function removePrintToolbarDisabled()
+    {
+        $('.pt-button').each(function(){
+            $(this).prop('disabled',false);
+        });
+    }
+    
+    function showWorkorder() {
+        var url  = sz_BaseUrl + '/static/m858/orders';
+        var data = $('#report').serialize();
+
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#select_orders_box select').html(jreturn);
+        });
+    }
+
+    function saveXLS()
+    {
+        var url  = sz_BaseUrl + '/static/m858/saveexcel';
+        var data = $("#report").serialize();
+        qssAjax.call(url, data, function(jreturn) {
+            qssAjax.alert(Language.translate('DOCUMENT_SAVE'));
+        }, function(jreturn) {
+            qssAjax.alert(jreturn.message);
+        });
+    }
+
+    $(document).ready(function () {
+        showWorkorder();
+
+        $('#start').change(function () {
+           showWorkorder();
+        });
+
+        $('#end').change(function () {
+            showWorkorder();
+        });
+
+        $('#pass').click(function () {
+            showWorkorder();
+        });
+
+        $('#notpass').click(function () {
+            showWorkorder();
+        });
+
+    });
+</script>
+
+<div class="clear"></div>
+<div id="view">
+    <div class="line-hr">
+        <span> <?php echo Qss_Lib_System::getReportTitle('M858');?> </span>
+    </div>
+
+    <form id="report" method="get" action="/static/m858/excel?popup=1">
+        <input type="hidden" name="popup" value="1" />
+        <table class="detail">
+            <!-- Thời gian -->
+            <tr>
+
+                <th width="20%" class="report-param-label">
+                    Ngày bắt đầu <span class="bold red">(*)</span>
+                </th>
+
+                <td>
+                    <?php echo $this->views->Report->Datepicker('start', date('d-m-Y', strtotime("-7 days")));?>
+                </td>
+            </tr>
+
+            <!-- Thời gian -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Ngày kết thúc <span class="bold red">(*)</span>
+                </th>
+
+                <td>
+                    <?php echo $this->views->Report->Datepicker('end', date('d-m-Y'));?>
+                </td>
+            </tr>
+
+            <?php if(Qss_Lib_System::fieldActive('OPhieuBaoTri', 'BenKhachHang')):?>
+            <!-- Chủ đầu tư -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Chủ đầu tư <span class="bold red">(*)</span>
+                </th>
+
+                <td>
+                    <?php
+                    echo $this->views->Report->ListBox(
+                        'investor'
+                        , array('ODoiTac'=>array('MaDoiTac', 'TenDoiTac'))
+                        , array('num'=>2, 'objects'=>array('ODoiTac'=>array('id'=>'IOID','display1'=>'MaDoiTac','display2'=>'TenDoiTac'))));
+                    ?>
+                </td>
+            </tr>
+            <?php endif;?>
+
+            <!-- Đạt -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Đạt
+                </th>
+
+                <td>
+                    <input type="checkbox" id="pass" name="pass" value="1" /> Đạt
+                    <input type="checkbox" id="notpass" name="notpass" value="1" /> Không đạt
+                </td>
+            </tr>
+
+            <!-- Button xem phieu -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                </th>
+
+                <td>
+                    <button type="button" class="btn btn-custom" onclick="showWorkorder()">Xem phiếu</button>
+                </td>
+            </tr>
+
+            <!-- Khu vực -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Chọn phiếu <span class="bold red">(*)</span>
+                </th>
+                <td>
+                    <?php echo $this->views->Report->DialBox('orders', array());?>
+                </td>
+
+            </tr>
+
+            <!-- Khu vực -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Đơn vị liên quan
+                </th>
+                <td>
+                    <div class="fl">
+                        <?php
+                        echo $this->views->Report->ListBox(
+                            'other'
+                            , array('ODoiTac'=>array('MaDoiTac', 'TenDoiTac'))
+                            , array('num'=>2, 'objects'=>array('ODoiTac'=>array('id'=>'IFID_M118','display1'=>'MaDoiTac','display2'=>'TenDoiTac')))
+                        );
+                        ?>
+                    </div>
+
+
+                    <div class="fl">
+                        &nbsp;&nbsp;
+                        <b>Đại diện 1 </b>
+                        &nbsp;&nbsp;
+                    <?php
+                    echo $this->views->Report->ComboBox(
+                        'repOther1'
+                        , array('num'=>2, 'objects'=>array('OLienHeCaNhan'=>array('id'=>'IOID','display1'=>'HoTen')) )
+                        , array(array('id'=>'other', 'refField'=>array('OLienHeCaNhan'=>'IFID_M118'), 'required'=>1))
+                         );
+                    ?>
+                    </div>
+
+                    <div class="fl">
+                        &nbsp;&nbsp;
+                        <b>Đại diện 2 </b>
+                        &nbsp;&nbsp;
+                    <?php
+                    echo $this->views->Report->ComboBox(
+                        'repOther2'
+                        , array('num'=>2, 'objects'=>array('OLienHeCaNhan'=>array('id'=>'IOID','display1'=>'HoTen')) )
+                        , array(array('id'=>'other', 'refField'=>array('OLienHeCaNhan'=>'IFID_M118'), 'required'=>1))
+                        );
+                    ?>
+                    </div>
+                </td>
+
+            </tr>
+        </table>
+    </form>
+
+    <hr>
+
+    <?php echo $this->views->Report->PrintToolbar();?>
+
+    <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>

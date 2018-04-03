@@ -1,0 +1,481 @@
+<?php $common = new Qss_Model_Extra_Extra();?>
+<?php $fields = $common->getFieldsByObject('OPhieuGiaoViec');?>
+
+<div>
+	<div class="overflow">
+	<?php //if(@(int)$this->wo->IFID_M712):?>
+		<div id="_05092014_wip_steps" class="arrow_step ">
+		<?php foreach ($this->steps as $s):?>
+		<?php
+		// cac step duoi va tren step hien tai +2 bi disable
+		$disable = false;
+		$stepClass = '';
+		$stepJump = $s->StepNo - ($this->step + 2);
+
+		if( ($s->StepNo <= $this->step) || ($stepJump == 0))
+		{
+			$disable = true;
+		}
+
+		switch ($s->StepNo)
+		{
+			case 1:
+				$stepClass = 'first_step first_left text_step_style';
+				$left      = 'style="left:0px;"';
+
+				if($s->StepNo == $this->step) $stepClass .= ' first_step_selected';
+				break;
+			case 2:
+				$stepClass = 'middle_step  text_step_style';
+				$left      = 'style="left:105px;"';
+
+				if($s->StepNo == $this->step) $stepClass .= ' middle_step_selected';
+				break;
+			case 3:
+				$stepClass = 'last_step  last_right  text_step_style';
+				$left      = 'style="left:210px;"';
+
+				if($s->StepNo == $this->step) $stepClass .= ' last_step_selected';
+				break;
+		}
+		?>
+			<div <?php if(@(int)$this->wo->IFID_M712):?>
+				onclick="_05092014_wip_send_request(<?php echo @(int)$this->deptid?>
+					, <?php echo @(int)$this->uid?>
+					, <?php echo @(int)$this->fid?>
+					, <?php echo @(int)$this->wo->IFID_M712?>
+					, <?php echo @(int)$s->StepNo?>)"
+					<?php endif;?> class="_05092014_wip_step <?php echo $stepClass?>"
+					<?php echo $left;?>>
+				<span><?php echo $s->Name;?> </span>
+			</div>
+			<?php endforeach;?>
+
+			<div style="position: absolute; left: 350px;">
+				<label>Số lượng thực hiện: </label>
+				<?php if(@(int)$this->wo->IFID_M712 && $this->step == 2):?>
+				<input type="text" value="<?php echo @(int)$this->wo->SoLuong?>"
+					style="width: 100px;" name="_05092014_wip_qty"
+					id="_05092014_wip_qty">
+					<?php else:?>
+				<input type="text" value="<?php echo @(int)$this->wo->SoLuong?>"
+					style="width: 100px;" name="_05092014_wip_qty"
+					id="_05092014_wip_qty" class="readonly" readonly="">
+					<?php endif;?>
+
+
+					<?php if($this->step == 2 && @(int)$this->wo->IFID_M712):?>
+				<button class="btn-custom" type="button"
+					onclick="_05092014_wip_save_order(<?php echo @(int)$this->wo->IFID_M712?>)">
+					Cập nhật</button>
+					<?php else:?>
+				<button class="btn-custom" type="button"
+					disabled="disabled" onclick="">Cập nhật</button>
+					<?php endif;?>
+			</div>
+		</div>
+		<?php //endif;?>
+	</div>
+	<br />
+
+
+	<div id="_05092014_wip_line">
+		<div class="ui_box">
+			<div class="ui_box_s50_left">
+				<fieldset>
+					<legend>Phiếu giao việc</legend>
+					<div class="ui_box_line fr">
+					<?php if(@(int)$this->wo->IFID_M712):?>
+						<button class="btn-custom" type="button"
+							onclick="_05092014_wip_detail(<?php echo @(int)$this->wo->IFID_M712?>, <?php echo @(int)$this->deptid?>)">
+							Chi tiết</button>
+							<?php endif;?>
+
+							<?php if(@(int)$this->wo->IFID_M712):?>
+						<button class="btn-custom" type="button"
+							onclick="_05092014_wip_comment(<?php echo @(int)$this->wo->IFID_M712?>
+								, <?php echo @(int)$this->deptid?>
+								, <?php echo @(int)$this->uid?>)">Comment</button>
+								<?php endif;?>
+					</div>
+
+					<div class="ui_box_line">
+						<div class="label">
+							<label>Mã lệnh sx</label>
+						</div>
+						<div class="element">
+							<input type="text" style="width: 100px;" readonly=""
+								class="readonly" id="MaLenhSX_1103_textbox"
+								name="MaLenhSX_1103_textbox"
+								value="<?php echo @$this->wo->MaLenhSX;?>">
+						</div>
+					</div>
+					<div class="ui_box_line">
+						<div class="label">
+							<label>Barcode</label>
+						</div>
+						<div class="element">
+							<input type="text" readonly=""
+								value="<?php echo @$this->wo->Barcode;?>" class="readonly"
+								style="width: 100px;" name="Barcode_1736" id="Barcode_1736">
+						</div>
+					</div>
+					<div class="ui_box_line">
+						<div class="label">
+							<label>Loại sản xuất</label>
+						</div>
+						<div class="element">
+							<input type="text" readonly=""
+								value="<?php echo @$this->wo->LoaiSanXuat;?>" class="readonly"
+								style="width: 100px;" name="LoaiSanXuat_1104_display"
+								id="LoaiSanXuat_1104_display">
+						</div>
+					</div>
+					<div class="ui_box_line">
+						<div class="label">
+							<label>Dây chuyền</label>
+						</div>
+						<div class="element">
+							<input type="text" readonly=""
+								value="<?php echo @$this->wo->DayChuyen;?>" class="readonly"
+								style="width: 100px;" name="DayChuyen_1181_display"
+								id="DayChuyen_1181_display"><input type="hidden"
+								value="9360,12412" name="DayChuyen_1181" id="DayChuyen_1181">
+						</div>
+					</div>
+					<div class="ui_box_line">
+						<div class="label">
+							<label>Ngày</label>
+						</div>
+						<div class="element">
+							<input type="text" readonly="" class="readonly"
+								value="<?php echo Qss_Lib_Date::mysqltodisplay(@$this->wo->Ngay);?>"
+								name="Ngay_1174" id="Ngay_1174" size="15"><img title="" alt=""
+								src="/images/calendar.png" class="ui-datepicker-trigger">
+						</div>
+					</div>
+					<div class="ui_box_line">
+						<div class="label">
+							<label>Ca</label>
+						</div>
+						<div class="element">
+							<input type="text" readonly=""
+								value="<?php echo @$this->wo->Ca?>" class="readonly"
+								style="width: 100px;" name="Ca_1723_display"
+								id="Ca_1723_display">
+						</div>
+					</div>
+					<div class="ui_box_line">
+						<div class="label">
+							<label>Giờ BĐ</label>
+						</div>
+						<div class="element">
+							<input type="text" readonly=""
+								value="<?php echo @$this->wo->GioBD?>" class="readonly"
+								style="width: 100px;" name="GioBD_1680" id="GioBD_1680">
+						</div>
+					</div>
+					<div class="ui_box_line">
+						<div class="label">
+							<label>Giờ KT</label>
+						</div>
+						<div class="element">
+							<input type="text" readonly=""
+								value="<?php echo @$this->wo->GioKT?>" class="readonly"
+								style="width: 100px;" name="GioKT_1681" id="GioKT_1681">
+						</div>
+					</div>
+					<div class="ui_box_line">
+						<div class="label">
+							<label>Công đoạn</label>
+						</div>
+						<div class="element">
+							<input type="text" readonly=""
+								value="<?php echo @$this->wo->CongDoan?>" class="readonly"
+								style="width: 200px;" name="CongDoan_1117_display"
+								id="CongDoan_1117_display">
+						</div>
+					</div>
+					<div class="ui_box_line">
+						<div class="label">
+							<label>Tháo dỡ</label>
+						</div>
+						<div class="element">
+							<input type="text" readonly=""
+								value="<?php echo @$this->wo->ThaoDo?>" class="readonly"
+								style="width: 100px;" name="ThaoDo_1626_display"
+								id="ThaoDo_1626_display">
+						</div>
+					</div>
+					<div class="ui_box_line">
+						<div class="label">
+							<label>Đơn vị TH</label>
+						</div>
+						<div class="element">
+							<input type="text" readonly=""
+								value="<?php echo @$this->wo->DonViThucHien?>" class="readonly"
+								style="width: 100px;" name="DonViThucHien_1120_display"
+								id="DonViThucHien_1120_display">
+						</div>
+					</div>
+					<div class="ui_box_line">
+						<div class="label">
+							<label>Mã MH</label>
+						</div>
+						<div class="element">
+							<input type="text" readonly=""
+								value="<?php echo @$this->wo->MaSP?>" class="readonly"
+								style="width: 100px;" name="MaSP_1178_display"
+								id="MaSP_1178_display">
+						</div>
+					</div>
+					<div class="ui_box_line">
+						<div class="label">
+							<label>Tên MH</label>
+						</div>
+						<div class="element">
+							<input type="text" readonly=""
+								value="<?php echo @$this->wo->TenSP?>" class="readonly"
+								style="width: 200px;" name="TenSP_1118_display"
+								id="TenSP_1118_display">
+						</div>
+					</div>
+					<div class="ui_box_line">
+						<div class="label">
+							<label>Đơn vị tính</label>
+						</div>
+						<div class="element">
+							<input type="text" readonly=""
+								value="<?php echo @$this->wo->DonViTinh?>" class="readonly"
+								style="width: 100px;" name="DonViTinh_1119_display"
+								id="DonViTinh_1119_display">
+						</div>
+					</div>
+					<div class="ui_box_line">
+						<div class="label">
+							<label>Thuộc tính</label>
+						</div>
+						<div class="element">
+							<input type="text" readonly=""
+								value="<?php echo @$this->wo->ThuocTinh?>" class="readonly"
+								style="width: 100px;" name="ThuocTinh_1179_display"
+								id="ThuocTinh_1179_display">
+						</div>
+					</div>
+					<div class="ui_box_line">
+						<div class="label">
+							<label>SL yêu cầu</label>
+						</div>
+						<div class="element">
+							<input type="text" readonly=""
+								value="<?php echo @$this->wo->SoLuongThucHien?>"
+								class="readonly" style="width: 100px;" name="" id="">
+						</div>
+					</div>
+					<div class="ui_box_line">
+						<div class="label">
+							<label>SL thực hiện</label>
+						</div>
+						<div class="element">
+							<div class="required">
+								<input type="text" value="<?php echo @(int)$this->wo->SoLuong?>"
+									style="width: 100px;" name="" id="" class="readonly"
+									readonly="">
+									<?php /*?>
+									<?php if(@(int)$this->wo->IFID_M712 && $this->step == 2):?>
+									<input type="text" value="<?php echo @(int)$this->wo->SoLuong?>" style="width: 100px;"
+									name="_05092014_wip_qty" id="_05092014_wip_qty">
+									<?php else:?>
+									<input type="text" value="<?php echo @(int)$this->wo->SoLuong?>" style="width: 100px;"
+									name="_05092014_wip_qty" id="_05092014_wip_qty" class="readonly" readonly="" >
+									<?php endif;?>
+									<?php */?>
+							</div>
+						</div>
+					</div>
+					<div class="ui_box_line">
+						<div class="label">
+							<label>Ghi chú</label>
+						</div>
+						<div class="element">
+							<textarea name="" id="" readonly="" class="readonly">
+							<?php echo Qss_Lib_Util::htmlToText(@$this->wo->GhiChu);?>
+							</textarea>
+							<?php /*?>
+							<?php if(@(int)$this->wo->IFID_M712 && $this->step == 2):?>
+							<textarea name="_05092014_wip_des" id="_05092014_wip_des"><?php echo @$this->wo->GhiChu?></textarea>
+							<?php else:?>
+							<textarea name="_05092014_wip_des" id="_05092014_wip_des" readonly="" class="readonly" ><?php echo Qss_Lib_Util::htmlToText(@$this->wo->GhiChu);?></textarea>
+							<?php endif;?>
+							<?php */?>
+
+						</div>
+					</div>
+				</fieldset>
+			</div>
+
+			<div class="ui_box_s50_right">
+				<fieldset>
+					<legend>Thống kê</legend>
+					<?php if(@(int)$this->statistics->IFID_M717):?>
+					<div class="ui_box_line fr">
+						<button class="btn-custom" type="button"
+							onclick="_05092014_wip_detail(<?php echo @(int)$this->statistics->IFID_M717?>, <?php echo @(int)$this->deptid?>)">
+							Chi tiết</button>
+						<button class="btn-custom" type="button"
+							onclick="_05092014_wip_comment(<?php echo @(int)$this->statistics->IFID_M717?>, <?php echo @(int)$this->deptid?>, <?php echo @(int)$this->uid?>)">
+							Comment</button>
+					</div>
+					<?php endif;?>
+					<div class="ui_box_line">
+						<div class="label">
+							<label>Đơn vị tính</label>
+						</div>
+						<div class="element">
+							<input type="text" readonly=""
+								value="<?php echo @$this->statistics->DonViTinh?>"
+								class="readonly" style="width: 100px;">
+						</div>
+					</div>
+					<div class="ui_box_line">
+						<div class="label">
+							<label>Số lượng hoàn thành</label>
+						</div>
+						<div class="element">
+							<input type="text" readonly=""
+								value="<?php echo @(int)$this->statistics->SoLuong?>"
+								class="readonly" style="width: 100px;">
+						</div>
+					</div>
+					<div class="ui_box_line">
+						<div class="label">
+							<label> Số lượng lỗi</label>
+						</div>
+						<div class="element">
+							<input type="text" readonly=""
+								value="<?php echo @(int)$this->statistics->SoLuongLoi?>"
+								class="readonly" style="width: 100px;">
+						</div>
+					</div>
+
+				</fieldset>
+			</div>
+
+			<div class="ui_box_s50_right">
+				<fieldset>
+					<legend>Phụ phẩm</legend>
+					<div class="ui_box_line">
+						<table cellpadding="0" cellspacing="0" border="1"
+							class="border_table">
+							<tr class="center bggrey">
+								<th>STT</th>
+								<th>Mã MH</th>
+								<th>Tên MH</th>
+								<th>ĐVT</th>
+								<th>Thuộc tính</th>
+								<th>Số lượng</th>
+							</tr>
+
+
+							<?php if(count((array)$this->phupham)):?>
+							<?php $iPhuPham = 0;?>
+							<?php foreach($this->phupham as $p):?>
+							<?php $iPhuPham++;?>
+							<tr>
+								<td class="center"><?php echo $iPhuPham;?></td>
+								<td><?php echo $p->MaSP;?>
+								</td>
+								<td><?php echo $p->TenSP;?>
+								</td>
+								<td><?php echo $p->DonViTinh;?>
+								</td>
+								<td><?php echo $p->ThuocTinh;?>
+								</td>
+								<td class="right"><?php echo $p->SoLuong;?>
+								</td>
+							</tr>
+							<?php endforeach;?>
+							<?php else:?>
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<?php endif;?>
+						</table>
+					</div>
+				</fieldset>
+			</div>
+
+
+			<div class="ui_box_s50_right">
+				<fieldset>
+					<legend>Sản phẩm lỗi</legend>
+					<div class="ui_box_line">
+						<table cellpadding="0" cellspacing="0" border="1"
+							class="border_table">
+							<tr class="center bggrey">
+								<th class="center">STT</th>
+								<th>Mã MH</th>
+								<th>Tên MH</th>
+								<th>ĐVT</th>
+								<th>Thuộc tính</th>
+								<th>SL</th>
+								<th>Mã lỗi</th>
+								<th>Nguyên nhân</th>
+							</tr>
+
+							<?php if(count((array)$this->sanphamloi)):?>
+							<?php $iSanPhamLoi = 0;?>
+							<?php foreach($this->sanphamloi as $p):?>
+							<?php $iSanPhamLoi++;?>
+							<tr>
+								<td class="center"><?php echo $iSanPhamLoi;?></td>
+								<td><?php echo $p->MaSP;?>
+								</td>
+								<td><?php echo $p->TenSP;?>
+								</td>
+								<td><?php echo $p->DonViTinh;?>
+								</td>
+								<td><?php echo $p->ThuocTinh;?>
+								</td>
+								<td class="right"><?php echo $p->SoLuong;?>
+								</td>
+								<td><?php echo $p->MaLoi;?>
+								</td>
+								<td><?php echo $p->NguyenNhan;?>
+								</td>
+							</tr>
+							<?php endforeach;?>
+							<?php else:?>
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<?php endif;?>
+
+						</table>
+					</div>
+				</fieldset>
+			</div>
+		</div>
+	</div>
+</div>
+
+							<?php if(!$this->wo):?>
+<script>
+if(_05092014_wip_old_barcode)
+{
+	$('#_05092014_wip_warning').text('(*) Không tồn tại phiếu giao việc với barcode này!');
+}
+</script>
+							<?php endif;?>

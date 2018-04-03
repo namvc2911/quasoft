@@ -1,0 +1,91 @@
+<script>
+function rowWorkflow(ifid, deptid) {
+	var url = sz_BaseUrl + '/user/form/workflow';
+	var ifids = [];
+	var deptids = [];
+	ifids[0] = ifid;
+	deptids[0] = deptid;
+	var data = {
+		ifid : ifids,
+		deptid : deptids
+	};
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#qss_trace').html(jreturn);
+		$('#qss_trace').dialog({ width: 600,height:400 });
+	});
+}	
+
+function sendRequest(fid,ifid, deptid) {
+	$('button').attr('disabled','true');
+	var stepno = $('input[name="stepno"]:checked').val();
+	if(stepno === undefined){
+		stepno = $('#stepno').val();
+	}	
+	var userid = $('#user_id').val();
+	var comment = $('#comment').val();
+	if(stepno == ''){
+		qssAjax.alert(Language.translate('SELECT_ACTION'));
+		return;
+	}	
+	var url = sz_BaseUrl + '/user/form/request';
+	var data ={ifids:ifid,deptids:deptid,stepno:stepno,userid:userid,comment:comment};
+	qssAjax.call(url, data, function(jreturn) {
+		$('#qss_trace').dialog('close');
+		$('button').removeAttr('disabled');
+		loadbyid('report_'+<?php echo $this->quickReportID;?>,'/extra/dashboard/maintenance/done');
+		//rowEditRefresh();
+		//rowSearch(ifid,deptid,0);
+		
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+		$('button').removeAttr('disabled');
+	});
+}
+
+$(document).ready(function() {
+	$('#grid_<?php echo $this->quickReportID?>').tableScroll({height:260,width:"100%"});
+});
+</script>
+
+<div class="box_das2">
+	<div class="inside_das2" id="">
+		<div class="bold" style="border-bottom: 1pt solid #ccc;">
+		<?php echo $this->_translate(2);?>
+			(
+			<?php echo $this->countWoInDone;?>
+			)
+		</div>
+
+		<table border="0" cellspacing="0" cellpadding="0"
+			id="grid_<?php echo $this->quickReportID?>">
+			<?php foreach ($this->woInDoneStatus as $dat):?>
+			<tr>
+				<td><a href="#"
+					onclick="popupFormDetail(<?php echo $dat->IFID_M759;?>,<?php echo $this->depid;?>)">
+					<?php echo $dat->SoPhieu;?> </a>
+				</td>
+
+				<td><?php echo Qss_Lib_Date::mysqltodisplay($dat->NgayBatDau);?>
+				</td>
+
+				<td><?php echo Qss_Lib_Date::mysqltodisplay($dat->Ngay);?>
+				</td>
+
+				<td><?php echo $dat->MaThietBi;?>
+				</td>
+
+				<td><?php echo $dat->LoaiBaoTri;?>
+				</td>
+
+				<td>
+					<button class="btn-custom" type="button"
+						onclick="rowWorkflow(<?php echo $dat->IFID_M759;?>, <?php echo $this->depid;?>);">
+						<?php echo $this->_translate(1);?>
+						<!-- Quy Trình -->
+					</button>
+				</td>
+			</tr>
+			<?php endforeach; ?>
+		</table>
+	</div>
+</div>

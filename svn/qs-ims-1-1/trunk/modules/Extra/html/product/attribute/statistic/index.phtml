@@ -1,0 +1,86 @@
+<link rel="stylesheet" href="/css/button.css" type="text/css" />
+<style>
+/* custom css */
+#add-form {
+	position: relative;
+}
+
+.box {
+	margin-top: 20px;
+}
+
+/* fly div */
+.poFlyDiv {
+	background: none repeat scroll 0 0 #EEEEEE;
+	border: 1px outset #ccc;
+	line-height: 20px;
+	position: absolute;
+	top: 30px;
+	padding: 0px 2px 0px 2px;
+}
+
+.poFlyDiv a {
+	padding: 2px;
+	margin-left: 1px;
+	font-weight: bold;
+	color: #4C4C4C;
+}
+
+.poFlyDiv a:hover {
+	color: #111;
+}
+</style>
+
+<script type="text/javascript">
+
+function loadAddForm()
+{
+    var data = {
+                ifid:'<?php echo $this->ifid;?>'
+                ,ioid:'<?php echo $this->ioid;?>'
+               }; 
+    var url = sz_BaseUrl + '/extra/product/attribute/statistic/add'; 
+    qssAjax.getHtml(url, data, function(jreturn) {
+            $('#add-form').html(jreturn); 
+    });
+}
+
+function loadGetForm()
+{
+    var data = {
+                ifid:'<?php echo $this->ifid;?>'
+                ,ioid:'<?php echo $this->ioid;?>'
+               }; 
+    var url = sz_BaseUrl + '/extra/product/attribute/statistic/get'; 
+    qssAjax.getHtml(url, data, function(jreturn) {
+            $('#get-form').html(jreturn); 
+    });  
+}
+</script>
+
+<div id="wrap">
+
+	<h1>Trạng thái lưu trữ</h1>
+	<b> <i> Sản phẩm "<?php echo $this->serialLot->itemName;?>" với mã "<?php echo $this->serialLot->itemCode;?>"
+	<?php if(isset($this->attributes)):?>có mã thuộc tính là: <?php echo $this->attributes;?>
+	<?php endif;?> ! </i> </b>
+	<?php if($this->info['FromBin']):?>
+	<div id="get-form" class="box">
+		<script>loadGetForm();</script>
+	</div>
+	<!-- end #get-form -->
+	<?php endif; ?>
+
+	<?php if( $this->info['ToBin'] ): ?>
+	<div id="add-form" class="box">
+		<script>loadAddForm();</script>
+	</div>
+	<!-- end #add-form -->
+	<?php endif;  ?>
+
+	<?php if( !$this->info['ToBin'] && !$this->info['FromBin'] ): ?>
+	Sản phẩm không được đánh serial, lot hay nhập xuất vào kho ở công đoạn
+	với đơn vị này!
+	<?php endif; ?>
+</div>
+<!-- end #wrap -->

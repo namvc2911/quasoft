@@ -1,0 +1,39 @@
+<div id="cal_month" class="cal_select_month">
+	<div class="info">
+    	<ul class="clearfix">
+            <li class="arow_top"><a href="#"
+                onclick="showMonth('<?php echo $this->m?>','<?php echo $this->y-1?>');"><img src="/images/calendar/left_arrow_16.png" /></a></li>
+            <li class="info_top">Tháng <?php echo $this->m?> năm <?php echo $this->y?></span>
+            <li class="arow_top"><a href="#"
+                onclick="showMonth('<?php echo $this->m?>','<?php echo $this->y + 1?>');"><img src="/images/calendar/right_arrow_16.png" /></a></li>
+		</ul>
+    </div>
+	<div class="month clearfix">
+    	<ul>
+		<li <?php if(date('Y')==$this->y):?><?php if($this->m==1):?>class="selected"<?php elseif(date('m')==1):?>class="current"<?php endif;?><?php endif;?>><a href="#1" onclick="showMonth(1,'<?php echo $this->y?>');">Tháng 1</a></li>
+		<li <?php if(date('Y')==$this->y):?><?php if($this->m==2):?>class="selected"<?php elseif(date('m')==2):?>class="current"<?php endif;?><?php endif;?>><a href="#1" onclick="showMonth(2,'<?php echo $this->y?>');">Tháng 2</a></li>
+		<li <?php if(date('Y')==$this->y):?><?php if($this->m==3):?>class="selected"<?php elseif(date('m')==3):?>class="current"<?php endif;?><?php endif;?>><a href="#1" onclick="showMonth(3,'<?php echo $this->y?>');">Tháng 3</a></li>
+        </ul>
+	</div>
+	<div class="month clearfix">
+    	<ul>
+		<li <?php if(date('Y')==$this->y):?><?php if($this->m==4):?>class="selected"<?php elseif(date('m')==4):?>class="current"<?php endif;?><?php endif;?>><a href="#1" onclick="showMonth(4,'<?php echo $this->y?>');">Tháng 4</a></li>
+		<li <?php if(date('Y')==$this->y):?><?php if($this->m==5):?>class="selected"<?php elseif(date('m')==5):?>class="current"<?php endif;?><?php endif;?>><a href="#1" onclick="showMonth(5,'<?php echo $this->y?>');">Tháng 5</a></li>
+		<li <?php if(date('Y')==$this->y):?><?php if($this->m==6):?>class="selected"<?php elseif(date('m')==6):?>class="current"<?php endif;?><?php endif;?>><a href="#1" onclick="showMonth(6,'<?php echo $this->y?>');">Tháng 6</a></li>
+        </ul>
+	</div>
+	<div class="month clearfix">
+    	<ul>
+		<li <?php if(date('Y')==$this->y):?><?php if($this->m==7):?>class="selected"<?php elseif(date('m')==7):?>class="current"<?php endif;?><?php endif;?>><a href="#1" onclick="showMonth(7,'<?php echo $this->y?>');">Tháng 7</a></li>
+		<li <?php if(date('Y')==$this->y):?><?php if($this->m==8):?>class="selected"<?php elseif(date('m')==8):?>class="current"<?php endif;?><?php endif;?>><a href="#1" onclick="showMonth(8,'<?php echo $this->y?>');">Tháng 8</a></li>
+		<li <?php if(date('Y')==$this->y):?><?php if($this->m==9):?>class="selected"<?php elseif(date('m')==9):?>class="current"<?php endif;?><?php endif;?>><a href="#1" onclick="showMonth(9,'<?php echo $this->y?>');">Tháng 9</a></li>
+        </ul>
+	</div>
+	<div class="month clearfix">
+    	<ul>
+		<li <?php if(date('Y')==$this->y):?><?php if($this->m==10):?>class="selected"<?php elseif(date('m')==10):?>class="current"<?php endif;?><?php endif;?>><a href="#1" onclick="showMonth(10,'<?php echo $this->y?>');">Tháng 10</a></li>
+		<li <?php if(date('Y')==$this->y):?><?php if($this->m==11):?>class="selected"<?php elseif(date('m')==11):?>class="current"<?php endif;?><?php endif;?>><a href="#1" onclick="showMonth(11,'<?php echo $this->y?>');">Tháng 11</a></li>
+		<li <?php if(date('Y')==$this->y):?><?php if($this->m==12):?>class="selected"<?php elseif(date('m')==12):?>class="current"<?php endif;?><?php endif;?>><a href="#1" onclick="showMonth(12,'<?php echo $this->y?>');">Tháng 12</a></li>
+        </ul>
+	</div>
+</div>

@@ -1,0 +1,247 @@
+<?php
+/**
+ * *****************************************************************************
+ * Hien Thi Ke Hoach Bao Tri
+ * *****************************************************************************
+ */
+?>
+
+
+<!-- HIEN THI OBJECT CHINH  -->
+<div id="einfo-select-maintaint-plan" class="ui_box_s100">
+	<button class="btn-custom" type="button"
+		onclick="var data = {};data.MaThietBi_931 = eq_ioid_global;popupFormInsert('M724', data,function(){ einfo_load_tab_for_equip(tab_global);});">
+		<?php echo $this->_translate(22);?>
+		<!-- Thêm kế hoạch -->
+	</button>
+
+	<fieldset>
+		<legend>
+		<?php echo $this->_translate(23);?>
+			<!-- Kế hoạch bảo trì -->
+		</legend>
+		<table cellpadding="0" cellspacing="0" class="border_table" border="1"
+			style="width: 100%;">
+			<tr class="bggrey center">
+				<th style="width: 3%;"><?php echo $this->_translate(1);?> <!-- STT -->
+				</th>
+				<th style="width: 11.5%;"><?php echo $this->_translate(2);?> <!-- Loại bảo trì    -->
+				</th>
+
+				<th style="width: 11%;">Bộ phận <!-- Bộ phận  -->
+				</th>
+
+				<th style="width: 11%;"><?php echo $this->_translate(3);?> <!-- ĐVBT   -->
+				</th>
+				<th style="width: 5%;"><?php echo $this->_translate(4);?> <!-- Thuê ngoài   -->
+				</th>
+				<th style="width: 8.25%;"><?php echo $this->_translate(5);?> <!-- Kỳ bảo trì    -->
+				</th>
+				<th style="width: 8.25%;"><?php echo $this->_translate(6);?> <!-- Thứ -->
+				</th>
+				<th style="width: 6%;"><?php echo $this->_translate(7);?> <!-- Ngày  -->
+				</th>
+				<th style="width: 6%;"><?php echo $this->_translate(8);?> <!-- Tháng   -->
+				</th>
+				<th style="width: 6%;"><?php echo $this->_translate(9);?> <!-- Lặp lại sau -->
+				</th>
+				<th style="width: 6.25%;"><?php echo $this->_translate(10);?> <!-- Giá trị -->
+				</th>
+				<th style="width: 8.25%;"><?php echo $this->_translate(11);?> <!-- Mức độ ưu tiên -->
+				</th>
+				<th style="width: 6%;"><?php echo $this->_translate(12);?> <!-- Ca -->
+				</th>
+				<th style="width: 7.25%;"><?php echo $this->_translate(13);?> <!-- Thời gian (min)  -->
+				</th>
+				<th style="width: 7.25%;"><?php echo $this->_translate(14);?> <!-- Dừng máy (Phút) -->
+				</th>
+			</tr>
+
+			<?php $i = 0; ?>
+			<?php foreach ($this->period as $p): ?>
+			<tr onclick="einfo_select_maintaint_plan(this)"
+				class="einfo-select-maintaint-plan pointer"
+				ifid="<?php echo $p->IFID_M724; ?>"
+				eq="<?php echo $p->Ref_MaThietBi; ?>">
+
+				<td class="center"><?php echo ++$i; ?>
+				</td>
+
+				<td class="left"><?php echo $p->LoaiBaoTri; ?>
+				</td>
+
+				<td class="left"><?php echo $p->BoPhan; ?>
+				</td>
+
+				<td class="left"><?php echo $p->DVBT; ?>
+				</td>
+
+				<td
+					class="left>     
+					<?php echo $p->BenNgoai ? 'col-checked' : 'col-unchecked' ?>"></td>
+
+				<td class="left"><?php echo $p->KyBaoDuong; ?>
+				</td>
+
+				<td class="left"><?php echo $p->Thu; ?>
+				</td>
+
+				<td class="right"><?php echo $p->Ngay; ?>
+				</td>
+
+				<td class="right"><?php echo $p->Thang; ?>
+				</td>
+
+				<td class="right"><?php echo $p->LapLai; ?>
+				</td>
+
+				<td class="right"><?php echo $p->GiaTri; ?>
+				</td>
+
+				<td class="left"><?php echo $p->MucDoUuTien; ?>
+				</td>
+
+				<td class="left"><?php echo $p->Ca; ?>
+				</td>
+
+				<td class="right"><?php echo $p->SoPhut; ?>
+				</td>
+
+				<td class="right" style="position: relative;"><?php echo $p->DungMay; ?>
+					<div class="einfo_plan_edit_control" style="display: none;">
+						<div class="einfo_delete_eq"
+							onclick="einfo_delete_plan(<?php echo $p->IFID_M724; ?>);"></div>
+
+						<div class="einfo_edit_eq"
+							onclick="popupFormEdit('M724',<?php echo $p->IFID_M724; ?>, deptid, {},function(){ einfo_load_tab_for_equip(tab_global);});">
+						</div>
+					</div>
+				</td>
+			</tr>
+			<?php endforeach; ?>
+
+			<?php if ($i < 10): ?>
+			<?php for ($j = $i; $j < 10; $j++):?>
+			<tr onclick="einfo_select_maintaint_plan(this)"
+				class="einfo-select-maintaint-plan pointer" ifid="0" eq="0">
+				<td class="center">&nbsp;</td>
+				<td class="left">&nbsp;</td>
+				<td class="left">&nbsp;</td>
+				<td class="left">&nbsp;</td>
+				<td class="left ">&nbsp;</td>
+				<td class="left">&nbsp;</td>
+				<td class="left">&nbsp;</td>
+				<td class="right">&nbsp;</td>
+				<td class="right">&nbsp;</td>
+				<td class="right">&nbsp;</td>
+				<td class="right">&nbsp;</td>
+				<td class="left">&nbsp;</td>
+				<td class="left">&nbsp;</td>
+				<td class="right">&nbsp;</td>
+				<td class="right">&nbsp;</td>
+			</tr>
+			<?php endfor; ?>
+			<?php endif; ?>
+		</table>
+	</fieldset>
+
+	<button class="btn-custom" type="button"
+		onclick="einfo_insert_new_maintplan_subtab()">
+		<?php echo $this->_translate(22);?>
+		<!-- Thêm dòng phụ  -->
+	</button>
+</div>
+
+<!-- HIEN THI CAC OBJECT PHU -->
+<div id="" class="ui_box_s100">
+	<div class="navmenutab" id="einfo_maintain_plan_tab">
+		<ul>
+			<li class=""><a href="#" onclick="einfo_show_maintain_plan_tab(1)"
+				id="einfo_maintain_plan_tab_1" class="einfo_maintain_plan_tab"
+				tab="1" objid="210"> <span> <?php echo $this->_translate(15);?> <!-- Công việc bảo trì -->
+				</span> </a>
+			</li>
+
+			<?php /*if (Qss_Lib_System::objectInForm('M724','OKeHoachDungDC')):?>
+			<li class="">
+			<a href="#"
+			onclick="einfo_show_maintain_plan_tab(2)"
+			id="einfo_maintain_plan_tab_2"
+			class="einfo_maintain_plan_tab"
+			tab="2"
+			objid="269">
+			<span><?php echo $this->_translate(16);?><!-- Dừng dây chuyền --></span>
+			</a>
+			</li>
+			<?php endif; */?>
+
+			<li class=""><a href="#" onclick="einfo_show_maintain_plan_tab(3)"
+				id="einfo_maintain_plan_tab_3" class="einfo_maintain_plan_tab"
+				tab="3" objid="163"> <span><?php echo $this->_translate(17);?> <!-- Vật tư -->
+				</span> </a>
+			</li>
+
+			<?php /*
+			<li class="">
+			<a href="#"
+			onclick="einfo_show_maintain_plan_tab(4)"
+			id="einfo_maintain_plan_tab_4"
+			class="einfo_maintain_plan_tab"
+			tab="4"
+			objid="252">
+			<span><?php echo $this->_translate(18);?><!-- Bảo trì theo ngày --></span>
+			</a>
+			</li>
+			*/ ?>
+
+			<li class=""><a href="#" onclick="einfo_show_maintain_plan_tab(5)"
+				id="einfo_maintain_plan_tab_5" class="einfo_maintain_plan_tab"
+				tab="5" objid="244"> <span><?php echo $this->_translate(19);?> <!-- Kiểm tra thông số thiết bị -->
+				</span> </a>
+			</li>
+
+			<?php /*
+			<li class="">
+			<a href="#"
+			onclick="einfo_show_maintain_plan_tab(6)"
+			id="einfo_maintain_plan_tab_6"
+			class="einfo_maintain_plan_tab"
+			tab="6"
+			objid="266">
+			<span> <?php echo $this->_translate(20);?><!-- Cài đặt --></span>
+			</a>
+			</li>
+			*
+			*/?>
+		</ul>
+	</div>
+</div>
+
+<div id="einfo-maintain-plan-child-info" class="ui_box_s100"></div>
+
+<script>
+$('.einfo_plan_edit_control').each(function() {
+	$(this).hide();
+});
+
+$('#einfo-select-maintaint-plan table tr').hover(function() {
+	$(this).addClass('marker');
+	$(this).find('.einfo_plan_edit_control').show();
+}
+, function() {
+	if (!$(this).hasClass('einfo-active-maintaint-plan')) {
+		$(this).removeClass('marker');
+	}
+	$(this).find('.einfo_plan_edit_control').hide();
+});
+
+if (active_maintplan_global 
+		&& $('.einfo-select-maintaint-plan[ifid="' + active_maintplan_global + '"]').length)
+{
+	$('.einfo-select-maintaint-plan[ifid="' + active_maintplan_global + '"]').click();
+}
+else
+{
+	$('.einfo-select-maintaint-plan').eq(0).click();
+}
+</script>

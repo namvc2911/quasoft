@@ -1,0 +1,11 @@
+<?php foreach ($this->tolist as $item):?>
+<?php if($item->Data && Qss_Validation::isEmail($item->Data)):?>
+<div class="tag-select">
+<?php echo $item->Data?>
+	<input type="hidden"
+		value="<?php echo $item->IFID?>,<?php echo $item->IOID?>,<?php echo $item->Data?>"
+		name="<?php echo $this->type?>s[]"> <a class="tag-close"
+		onclick="closeThis(this)" href="#!"></a>
+</div>
+<?php endif;?>
+<?php endforeach;?>

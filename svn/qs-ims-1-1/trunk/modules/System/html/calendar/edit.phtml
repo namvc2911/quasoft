@@ -1,0 +1,207 @@
+<form method="post" id="qss_form">
+	<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+		<button id="btnSAVE" type="button" class="btn btn_main_top" onclick="calendarSave()">
+			<?php echo $this->_translate(34)?> 
+		</button>
+		<button type="button" class="btn btn_main_top" onclick="calendarBack()">
+			<?php echo $this->_translate(32)?>
+		</button>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<div id="item-actions">
+			<ul>
+				<li class="item-action active"><a href="#1"><span>Cấu hình lịch</span>
+				</a>
+				</li>
+			</ul>
+		</div>
+		<table border="0" width="450" cellspacing="0" cellpadding="0" border="0" class="border_table">
+			<tr>
+				<td width="110">Mô đun</td>
+				<td width="338"><select style="width: 300px" name="fid"
+					onchange="submit();">
+						<option value=""></option>
+						<?php foreach($this->forms as $item):?>
+						<option value="<?php echo $item->FormCode?>"
+						<?php if($item->FormCode === $this->fid || $item->FormCode== @$this->data->FormCode) echo 'selected';?>>
+							<?php echo $item->Name?>
+						</option>
+						<?php endforeach;?>
+				</select></td>
+			</tr>
+			<tr>
+				<td width="110">Tiêu đề 1</td>
+				<td width="338"><select style="width: 200px" name="displayfield1">
+						<option value=""></option>
+						<?php foreach($this->fields as $item):?>
+						<?php $code = $item->ObjectCode.'.'.$item->FieldCode?>
+						<?php $name = $item->FieldName.' ('.$item->ObjectCode.')'?>
+						
+						<option value="<?php echo $code?>"
+						<?php if($code == @$this->data->DisplayFieldCode1) echo 'selected';?>>
+							<?php echo $name?>
+						</option>
+						<?php endforeach;?>
+				</select></td>
+			</tr>
+			<tr>
+				<td width="110">Tiêu đề 2</td>
+				<td width="338"><select style="width: 200px" name="displayfield2">
+						<option value=""></option>
+						<?php foreach($this->fields as $item):?>
+						<?php $code = $item->ObjectCode.'.'.$item->FieldCode?>
+						<?php $name = $item->FieldName.' ('.$item->ObjectCode.')'?>
+						
+						<option value="<?php echo $code?>"
+						<?php if($code == @$this->data->DisplayFieldCode2) echo 'selected';?>>
+							<?php echo $name?>
+						</option>
+						<?php endforeach;?>
+				</select></td>
+			</tr>
+			<tr>
+				<td width="110">Tiêu đề 3</td>
+				<td width="338"><select style="width: 200px" name="displayfield3">
+						<option value=""></option>
+						<?php foreach($this->fields as $item):?>
+						<?php $code = $item->ObjectCode.'.'.$item->FieldCode?>
+						<?php $name = $item->FieldName.' ('.$item->ObjectCode.')'?>
+						<option value="<?php echo $code?>"
+						<?php if($code == @$this->data->DisplayFieldCode3) echo 'selected';?>>
+							<?php echo $name?>
+						</option>
+						<?php endforeach;?>
+				</select></td>
+			</tr>
+			<tr>
+				<td width="110">Ngày bắt đầu</td>
+				<td width="338"><select style="width: 200px" name="sdate">
+						<option value=""></option>
+						<?php foreach($this->fields as $item):?>
+						<?php $code = $item->ObjectCode.'.'.$item->FieldCode?>
+						<?php $name = $item->FieldName.' ('.$item->ObjectCode.')'?>
+						<?php if($item->FieldType == 10):?>
+						<option value="<?php echo $code?>"
+						<?php if($code == @$this->data->SDate) echo 'selected';?>>
+							<?php echo $name?>
+						</option>
+						<?php endif;?>
+						<?php endforeach;?>
+				</select></td>
+			</tr>
+			<tr>
+				<td width="110">Ngày kết thúc</td>
+				<td width="338"><select style="width: 200px" name="edate">
+						<option value=""></option>
+						<?php foreach($this->fields as $item):?>
+						<?php $code = $item->ObjectCode.'.'.$item->FieldCode?>
+						<?php $name = $item->FieldName.' ('.$item->ObjectCode.')'?>
+						<?php if($item->FieldType == 10):?>
+						<option value="<?php echo $code?>"
+						<?php if($code == @$this->data->EDate) echo 'selected';?>>
+							<?php echo $name?>
+						</option>
+						<?php endif;?>
+						<?php endforeach;?>
+				</select></td>
+			</tr>
+			<tr>
+				<td width="110">giờ bắt đầu</td>
+				<td width="338"><select style="width: 200px" name="stime">
+						<option value=""></option>
+						<?php foreach($this->fields as $item):?>
+						<?php $code = $item->ObjectCode.'.'.$item->FieldCode?>
+						<?php $name = $item->FieldName.' ('.$item->ObjectCode.')'?>
+						<?php if($item->FieldType == 4):?>
+						<option value="<?php echo $code?>"
+						<?php if($code == @$this->data->STime) echo 'selected';?>>
+							<?php echo $name?>
+						</option>
+						<?php endif;?>
+						<?php endforeach;?>
+				</select></td>
+			</tr>
+			<tr>
+				<td width="110">giờ kết thúc</td>
+				<td width="338"><select style="width: 200px" name="etime">
+						<option value=""></option>
+						<?php foreach($this->fields as $item):?>
+						<?php $code = $item->ObjectCode.'.'.$item->FieldCode?>
+						<?php $name = $item->FieldName.' ('.$item->ObjectCode.')'?>
+						<?php if($item->FieldType == 4):?>
+						<option value="<?php echo $code?>"
+						<?php if($code == @$this->data->ETime) echo 'selected';?>>
+							<?php echo $name?>
+						</option>
+						<?php endif;?>
+						<?php endforeach;?>
+				</select></td>
+			</tr>
+			<tr>
+				<td width="110">Ngày kết thúc thực</td>
+				<td width="338"><select style="width: 200px" name="adate">
+						<option value=""></option>
+						<?php foreach($this->fields as $item):?>
+						<?php $code = $item->ObjectCode.'.'.$item->FieldCode?>
+						<?php $name = $item->FieldName.' ('.$item->ObjectCode.')'?>
+						<?php if($item->FieldType == 10):?>
+						<option value="<?php echo $code?>"
+						<?php if($code == @$this->data->ADate) echo 'selected';?>>
+							<?php echo $name?>
+						</option>
+						<?php endif;?>
+						<?php endforeach;?>
+				</select></td>
+			</tr>
+			<tr>
+				<td width="110">Giờ kết thúc thực</td>
+				<td width="338"><select style="width: 200px" name="atime">
+						<option value=""></option>
+						<?php foreach($this->fields as $item):?>
+						<?php $code = $item->ObjectCode.'.'.$item->FieldCode?>
+						<?php $name = $item->FieldName.' ('.$item->ObjectCode.')'?>
+						<?php if($item->FieldType == 4):?>
+						<option value="<?php echo $code?>"
+						<?php if($code == @$this->data->ATime) echo 'selected';?>>
+							<?php echo $name?>
+						</option>
+						<?php endif;?>
+						<?php endforeach;?>
+				</select></td>
+			</tr>
+			<tr>
+				<td width="110">Lọc dữ liệu</td>
+				<td width="338"><select style="width: 200px" name="filterfield">
+						<option value=""></option>
+						<?php foreach($this->fields as $item):?>
+						<?php $code = $item->ObjectCode.'.'.$item->FieldCode?>
+						<?php $name = $item->FieldName.' ('.$item->ObjectCode.')'?>
+						<?php if($item->RefFieldCode):?>
+						<option value="<?php echo $code?>"
+						<?php if($code === @$this->data->FilterFieldCode) echo 'selected';?>>
+							<?php echo $name?>
+						</option>
+						<?php endif;?>
+						<?php endforeach;?>
+				</select></td>
+			</tr>
+			<tr>
+				<td width="110">Nhóm dữ liệu</td>
+				<td width="338"><select style="width: 200px" name="groupfield">
+						<option value=""></option>
+						<?php foreach($this->fields as $item):?>
+						<?php $code = $item->ObjectCode.'.'.$item->FieldCode?>
+						<?php $name = $item->FieldName.' ('.$item->ObjectCode.')'?>
+						<?php if($item->RefFieldCode):?>
+						<option value="<?php echo $code?>"
+						<?php if($code === @$this->data->GroupFieldCode) echo 'selected';?>>
+							<?php echo $name?>
+						</option>
+						<?php endif;?>
+						<?php endforeach;?>
+				</select></td>
+			</tr>
+		</table>
+	</div>
+</form>

@@ -1,0 +1,62 @@
+<table border="0">
+	<tbody>
+		<tr>
+			<td class="title"><?php echo $this->_translate(39,'Import dữ liệu')?>
+			</td>
+			<td align="right">
+				<button onmouseout="this.className='none';"
+					onmouseover="this.className='btnover';"
+					onclick="objectImport(<?php
+				echo $this->form->FormCode;
+				?>,<?php
+					echo $this->form->i_IFID;
+					?>,<?php
+					echo $this->form->i_DepartmentID;
+					?>,'<?php
+					echo $this->object->ObjectCode;
+					?>');"
+					title="<?php echo $this->_translate(34,'Cập nhật')?>" type="button"
+					class="none">
+					<span class="icon-32-apply"></span>
+				</button>
+				<button onmouseout="this.className='none';"
+					onmouseover="this.className='btnover';"
+					<?php if($this->form->i_IFID):?>
+					onclick="objectBack('<?php
+				echo $this->object->i_IFID?>','<?php
+				echo $this->object->intDepartmentID?>','<?php
+				echo $this->object->ObjectCode?>');"
+				<?php else:?>
+					onclick="formBack('<?php
+				echo $this->object->FormCode?>');"
+				<?php endif;?> title="<?php echo $this->_translate(32,'Trở lại')?>"
+					type="button" class="none">
+					<span class="icon-32-back"></span>
+				</button>
+				<button onmouseout="this.className='none';"
+					onmouseover="this.className='btnover';"
+					onclick="importSearch('<?php
+				echo $this->form->FormCode;
+				?>',<?php
+				echo $this->form->i_IFID;
+				?>,<?php
+				echo $this->form->i_DepartmentID;
+				?>,'<?php
+				echo $this->object->ObjectCode;
+				?>');"
+					title="<?php echo $this->_translate(24,'Tìm kiếm')?>"
+					id="btnSEARCH">
+					<span class="icon-32-search"></span>
+				</button></td>
+		</tr>
+	</tbody>
+</table>
+				<?php
+				echo $this->searchform;
+				?>
+<div id="qss_object">
+	<?php
+echo $this->pager;
+echo $this->listview;
+?>
+</div>

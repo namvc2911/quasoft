@@ -1,0 +1,126 @@
+<?php 
+    // $hidden and $disable 
+    // html => t/f ($disable/$hidden)
+    // excel => t/f ($disable/$hidden)
+    // pdf => t/f ($disable/$hidden)
+    // pdfdoc => t/f ($disable/$hidden)
+    // exceldoc => t/f ($disable/$hidden)
+    // close => t/f, alway enable, default hidden false ($hidden)
+    // show => t/f, alway enable, default hidden true ($hidden)
+    // $hidden default: false
+    // $disable default: true (show and close alway enable, not in this array)
+    // $disable all: t/f
+
+    $disabled = $this->disabled;
+    $hidden   = $this->hidden;
+    
+    // An pdf, luu tai lieu
+    $hidden['pdfdoc']   = true;
+    // $hidden['exceldoc'] = true;
+    $hidden['pdf']      = true;
+    
+    if(isset($disabled['all']))
+    {
+        $disabled['html'] = $disabled['all'];
+        $disabled['excel'] = $disabled['all'];
+        $disabled['pdf'] = $disabled['all'];
+        $disabled['pdfdoc'] = $disabled['all'];
+        $disabled['exceldoc'] = $disabled['all'];
+    }
+?>
+
+<div id="print-toolbar">
+    
+        <!-- Show report -->
+        <?php if(!isset($hidden['show']) || $hidden['show'] == false):?>
+        <button type="button" onclick="printPreview()" class="btn-custom" id="pt-showreport"><?php echo $this->_translate(2);?></button>
+        <?php endif;?>
+        <!-- ....................................................................................... -->
+        
+        
+        <!-- Print html -->
+        <?php if(!isset($hidden['html']) || $hidden['html'] == false):?>
+        <?php
+            $disableStatus = (isset($disabled['html']) && $disabled['html'] == false)?'':'disabled';
+        ?>
+        
+        <button type="button" class="btn-custom pt-button" onclick="printPage()" <?php echo $disableStatus;?>><?php echo $this->_translate(3);?></button>
+        <?php endif;?>
+        <!-- ....................................................................................... -->
+        
+        
+        <!-- Print excel -->
+        <?php if(!isset($hidden['excel']) || $hidden['excel'] == false):?>
+        <?php
+            $disableStatus = (isset($disabled['excel']) && $disabled['excel'] == false)?'':'disabled';
+        ?>
+        
+        <button type="button" class="btn-custom pt-button" onclick="excelRender()" <?php echo $disableStatus;?>> <?php echo $this->_translate(4); ?> </button>
+        <?php endif;?>
+        <!-- ....................................................................................... -->
+        
+        
+        
+        <!-- Print pdf -->
+        <?php if(!isset($hidden['pdf']) || $hidden['pdf'] == false):?>
+        <?php
+            $disableStatus = (isset($disabled['pdf']) && $disabled['pdf'] == false)?'':'disabled';
+        ?>
+        
+        <button type="button" class="btn-custom pt-button" onclick="pdfRender()" <?php echo $disableStatus;?>> <?php echo $this->_translate(5); ?></button>
+        <?php endif;?>
+        <!-- ....................................................................................... -->
+        
+        
+        
+        <!-- Excel doc -->
+        <?php if(!isset($hidden['exceldoc']) || $hidden['exceldoc'] == false):?>
+        <?php
+            $disableStatus = (isset($disabled['exceldoc']) && $disabled['exceldoc'] == false)?'':'disabled';
+        ?>
+        <button type="button" class="btn-custom pt-button" onclick="saveXLS()" <?php echo $disableStatus;?>><?php echo $this->_translate(6); ?></button>
+        <?php endif;?>
+        <!-- ....................................................................................... -->
+        
+        
+        
+        
+        <!-- PDF Doc -->
+        <?php if(!isset($hidden['pdfdoc']) || $hidden['pdfdoc'] == false):?>
+        <?php
+            $disableStatus = (isset($disabled['pdfdoc']) && $disabled['pdfdoc'] == false)?'':'disabled';
+        ?>
+        <button type="button" class="btn-custom pt-button" onclick="savePDF()" <?php echo $disableStatus;?>><?php echo $this->_translate(7); ?></button>
+        <?php endif;?>
+        <!-- ....................................................................................... -->
+        
+        <!-- Return dynamic report button -->
+        <?php if(isset($hidden['return']) && $hidden['return'] == false):?>
+        <button type="button" class="btn-custom" onclick="window.location.href = '/report/dynamic/';"><?php echo $this->_translate(9); ?></button>
+        <?php endif;?>
+        <!-- ....................................................................................... -->
+        
+        
+        <!-- Close report -->
+        <?php if(isset($hidden['close']) && $hidden['close'] == false):?>
+        <button type="button" class="btn-custom" onclick="window.close()"><?php echo $this->_translate(8); ?></button>
+        <?php endif;?>
+        <!-- ....................................................................................... -->
+        
+</div>
+
+<script>
+    function removePrintToolbarDisabled()
+    {
+        $('.pt-button').each(function(){
+            $(this).prop('disabled',false);
+        });
+    }
+	
+	function selectDialBox($id)
+	{
+		$('#'+$id+' option').attr('selected','selected');
+	}
+	
+
+</script>

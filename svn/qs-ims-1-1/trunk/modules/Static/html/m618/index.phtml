@@ -1,0 +1,96 @@
+<script>
+    function printPreview()
+    {
+        var err   = '', url, data;
+        var start = $('#start').val();
+        var end   = $('#end').val();
+
+        var item      = $('#item').val();
+        var warehouse = $('#warehouse').val();
+
+        err += common_checkEmpty(start, '<?php echo $this->_translate(8) ?>');
+        err += common_checkEmpty(end, '<?php echo $this->_translate(9) ?>');
+        err += common_compareStartAndEnd(start, end);
+
+        err += common_checkEmpty(item, '<?php echo $this->_translate(10) ?>');
+        //err += common_checkEmpty(warehouse, '<?php echo $this->_translate(11) ?>');
+
+        if(err)
+        {
+            qssAjax.alert(err);
+            return;
+        }
+        else
+        {
+            url  = '/static/m618/show';
+            data = $('#report').serialize();
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#print-area').html(jreturn);
+                // Viet trong $this->views->Report->PrintToolbar()
+                removePrintToolbarDisabled();
+            });
+        }
+    }
+</script>
+
+<div>
+    <div class="clear"></div>
+    <div id="view">
+        <div class="line-hr">
+            <span><?php echo Qss_Lib_System::getReportTitle('M618');?> </span>
+        </div>
+        <form id="report" method="get" action="/static/m618/show">
+            <table class="detail">
+                <tr>
+                    <th width="20%" class="report-param-label"><?php echo $this->_translate(8) ?>
+                    </th>
+                    <td><?php echo $this->views->Report->Datepicker('start', date('d-m-Y')); ?><span
+                            class="bold red">(*)</span></td>
+                </tr>
+                <tr>
+                    <th width="20%" class="report-param-label"><?php echo $this->_translate(9) ?>
+                    </th>
+                    <td><?php echo $this->views->Report->Datepicker('end', date('d-m-Y')); ?><span
+                            class="bold red">(*)</span></td>
+                </tr>
+
+                <tr>
+                    <th width="20%" class="report-param-label"><?php echo $this->_translate(10) ?>:</th>
+                    <td><?php
+                        $id = array('id'=>'item', 'require'=>1);
+                        $getDataObject = array('OSanPham'=>array('MaSanPham', 'TenSanPham'));
+                        $getFields = array('num' => 2,
+                            'objects' => array('OSanPham' => array(
+                                'id' => 'IOID'
+                            , 'order' => 'MaSanPham'
+                            , 'display1' => 'MaSanPham'
+                            , 'display2' => 'TenSanPham')));
+                        ?> <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields); ?>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th width="20%" class="report-param-label">
+                        <!-- Kho --> <?php echo $this->_translate(11)?></th>
+                    <td><?php
+                        $id            = 'warehouse';
+                        $getFields     = array('num'=>2,
+                            'objects'=>array('ODanhSachKho'=>array(
+                                'id'=>'IOID'
+                            ,'display1'=>'MaKho'
+                            ,'display2'=>'TenKho')) );
+                        ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+                        <span class="bold red">(*)</span>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <hr>
+        <?php echo $this->views->Report->PrintToolbar(); ?>
+        <div id="print-content">
+            <div id="print-area"></div>
+        </div>
+    </div>
+</div>
+

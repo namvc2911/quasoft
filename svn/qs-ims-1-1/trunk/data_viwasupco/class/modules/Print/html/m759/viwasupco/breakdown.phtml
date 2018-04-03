@@ -1,0 +1,201 @@
+<script>
+    function excelRender() {
+        $('#report').submit();
+    }
+</script>
+
+<form id="report" method="post" action="/print/m759/viwasupco/breakdownexcel">
+    <input type="hidden" name="popup" value="1" />
+    <input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" />
+
+    <div class="portrait">
+        <excel
+                orientation="<?php echo Qss_Lib_Extra_Const::REPORT_ORIENTATION_PORTRAIT; ?>"
+                font-name="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_NAME; ?>"
+                font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_SIZE; ?>"
+                margin-left="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_LEFT; ?>"
+                margin-right="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_RIGHT; ?>"
+                margin-top="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_TOP; ?>"
+                margin-bottom="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_BOTTOM; ?>" />
+
+        <!-- REPORT TITLE -->
+        <div id="head_print"></div>
+
+        <div id="container">
+            <div>
+                <table cellspacing="0" cellpadding="0" border="1">
+                    <tr>
+                        <th rowspan="2">
+                            TỔNG CÔNG TY CP VINACONEX <br/>
+                            CÔNG TY CỔ PHẦN NƯỚC SẠCH VINACONEX
+                        </th>
+                        <td  class="bold"> Mã số : BM-NSĐ</td>
+                    </tr>
+                    <tr>
+                        <td  class="bold">Ngày ban hành:</td>
+                    </tr>
+                    <tr>
+                        <th rowspan="3" valign="top">Quy trình quản lý máy móc thiết bị</th>
+                        <td class="bold">Lần ban hành :</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Lần sửa đổi :</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Trang :</td>
+                    </tr>
+                </table>
+
+                <br/>
+
+                <h2 class="bold center">
+                    BIÊN BẢN SỰ CỐ THIẾT BỊ
+                </h2>
+
+                <h2 class="bold center">
+                    <?php echo $this->SoPhieu;?>
+                </h2>
+
+                <br/>
+
+                <div class="bold">
+                    I/ Thời gian - địa điểm:
+                </div>
+
+                <div class="">
+                    Vào lúc : ............................ ngày: ........................................
+                </div>
+				<br/>
+                <div style="border-bottom: 1px dashed #000; width:100%;">
+                    Địa điểm :
+                </div>
+
+                <br/>
+
+                <div class="bold">
+                    II/ Thành phần tham dự :
+                </div>
+
+                <div class="bold">
+                    <u>Ban Kỹ Thuật</u>
+                </div>
+
+                <br />
+                <div style="border-bottom: 1px dashed #000; width:100%;">
+                    1/
+                </div>
+		
+				<br />
+                <div style="border-bottom: 1px dashed #000; width:100%;">
+                    2/
+                </div>
+				<div>&nbsp;</div>
+
+                <div class="bold">
+                    <u>Đơn vị sản xuất</u>
+                </div>
+
+                <br />
+                <div style="border-bottom: 1px dashed #000; width:100%;">
+                    1/
+                </div>
+		
+				<br />
+                <div style="border-bottom: 1px dashed #000; width:100%;">
+                    2/
+                </div>
+				<div>&nbsp;</div>
+                
+                <div class="bold">
+                    <u>Đội BTSC&XD</u>
+                </div>
+				<br />
+                <div style="border-bottom: 1px dashed #000; width:100%;">
+                    1/
+                </div>
+		
+				<br />
+                <div style="border-bottom: 1px dashed #000; width:100%;">
+                    2/
+                </div>
+				<div>&nbsp;</div>
+				
+                <div class="bold">
+                    III/ Nội dung :
+                </div>
+				<br/>
+                <div class="bold">
+                    1/ Mô tả sự cố :
+                </div>
+				
+                <div style="border-bottom: 1px dashed #000; width:100%;">
+                    <?php echo $this->MoTa;?>
+                    Khu vực: <?php echo $this->MaKhuVuc;?>
+                    Thiết bị: <?php echo $this->TenThietBi;?> (<?php echo $this->MaThietBi;?>)
+                </div>
+                <br/>
+
+				<div style="border-bottom: 1px dashed #000; width:100%;">&nbsp;&nbsp;</div>
+				<br/>
+
+				<div style="border-bottom: 1px dashed #000; width:100%;">&nbsp;&nbsp;</div>
+                <br/>
+                
+                <div class="bold">
+                    2/ Nguyên nhân :
+                </div>
+
+                <br/>
+				<div style="border-bottom: 1px dashed #000; width:100%;">
+                    <?php echo $this->NguyenNhan;?>
+                </div>
+				<br/>
+				<div style="border-bottom: 1px dashed #000; width:100%;">&nbsp;&nbsp;</div>
+				<br/>
+				<div style="border-bottom: 1px dashed #000; width:100%;">&nbsp;&nbsp;</div>
+				<br/>
+                
+                <div class="bold">
+                    3/ Kết luận - hướng xử lý :
+                </div>
+                <br/>
+				
+                <div style="border-bottom: 1px dashed #000; width:100%;">
+                    <?php echo $this->KetLuan;?>&nbsp;
+                </div>
+				<br/>
+
+				<div style="border-bottom: 1px dashed #000; width:100%; "> &nbsp;&nbsp; </div>
+				<br/>
+
+				<div style="border-bottom: 1px dashed #000; width:100%;">&nbsp;&nbsp;</div>
+				<br/>
+
+                <div class="right">
+                    Hòa Bình, ngày ....tháng.... năm2017....
+                </div>
+
+                <br/>
+
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td style="width:33%;" class="center bold">BAN KỸ THUẬT </td>
+                        <td style="width:33%;" class="center bold">ĐƠN VỊ VẬN HÀNH</td>
+                        <td style="width:33%;" class="center bold">ĐỘI BTSC&XD</td>
+                    </tr>
+                </table>
+
+
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+
+

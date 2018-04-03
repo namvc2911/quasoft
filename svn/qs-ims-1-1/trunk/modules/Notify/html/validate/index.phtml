@@ -1,0 +1,58 @@
+<div class="clear"></div>
+<div id="view">
+	<table class="grid">
+		<!-- title -->
+		<tr>
+			<th width="5%" class="nocount" style="border-bottom: 1px solid #ccc"><?php echo $this->_translate(12); ?>
+			</th>
+			<th width="45%" style="border-bottom: 1px solid #ccc"><?php echo $this->_translate(3); ?>
+			</th>
+			<th width="15%" style="border-bottom: 1px solid #ccc"><?php echo $this->_translate(4); ?>
+			</th>
+			<th width="15%" style="border-bottom: 1px solid #ccc">Class
+			</th>
+			<th width="10%" style="border-bottom: 1px solid #ccc">&nbsp;
+			</th>
+			<th width="10%" style="border-bottom: 1px solid #ccc">&nbsp;</th>
+		</tr>
+		<?php $i=1?>
+		<?php $formcode=''?>
+		<?php foreach ($this->forms as $form):?>
+			<?php if($formcode != $form['Code']):?>
+				<?php $i=1?>
+				<tr>
+					<td colspan="6" class="bold"><?php echo $form['Code']?> - <?php echo $form['Name']?></td>
+				</tr>
+			<?php endif;?>
+			<tr id="<?php //echo $param->PID?>" onclick="">
+				<td class="nocount"><?php echo $i;?></td>
+				<td><?php echo $form['Desc'];?></td>
+				<td>
+					<?php echo $form['Type']; ?> 
+				</td>
+				<td>
+					<?php echo $form['FileName']; ?> 
+				</td>
+				<td class="center">
+					<button type="button" class="btn-custom"
+						onclick="editNotify('<?php echo $form['FID']?>')">
+						<?php echo $this->_translate(8); ?>
+					</button>
+				</td>
+				<td class="center">
+					<?php if($form['Type']!=='TRIGGER'): ?>
+					<button type="button" class="btn-custom"
+						onclick="runNotify('<?php echo $form['FID']?>')">
+						<?php echo $this->_translate(11); ?>
+					</button>
+					<?php endif;?>
+				</td>
+			</tr>
+		<?php $i++?>
+		<?php $formcode=$form['Code']?>
+		<?php endforeach;?>
+	</table>
+</div>
+
+<div id="qss_trace"></div>
+<div id="qss_combo"></div>

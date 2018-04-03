@@ -1,0 +1,17 @@
+<select
+        style="width: 150px;"
+    onchange="rowSearch('<?php echo $this->form->FormCode?>');"
+    <?php if($this->selected):?>class="bglightgreen"<?php endif;?>
+    name="filter_maintaintype"
+    id="filter_maintaintype">
+
+    <option value="0" <?php echo ((int)$this->selected == 0)?'selected':'';?>>--- Chọn loại bảo trì ---</option>
+
+    <?php foreach ($this->htmlData as $item):?>
+        <option
+            <?php echo ((int)$this->selected == (int)$item->IOID)?'selected':'';?>
+            value="<?php echo $item->IOID?>">
+            <?php echo $item->Loai; ?>
+        </option>
+    <?php endforeach;?>
+</select>

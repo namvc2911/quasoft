@@ -1,0 +1,177 @@
+
+
+<?php $excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);?>
+
+<?php
+$groupSplit = '';
+$colWidthPx = array(3, 3);
+foreach ($this->works as $w)
+{
+	$colWidthPx[] = 1;
+}
+$colWidthPx[] = 8;
+$colWidthPx[] = 1;
+$totalCol = count($colWidthPx);
+$colWidthExcel = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($colWidthPx, Qss_Lib_Extra_Const::PRINT_TYPE_PORTRAIT);
+$fitScreen     = Qss_Lib_Report::changeWidthToFitScreen($colWidthPx, Qss_Lib_Extra_Const::PRINT_TYPE_PORTRAIT);
+?>
+<?php ?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="portrait">
+	<excel orientation="portrait" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+	<div id="head_print">
+	<?php echo $this->views->Common->Portrait() ?>
+	<?php $row = 2; ?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(1) ?>
+				(<?php echo $this->_translate(2) ?> <?php echo $this->start; ?> <?php echo $this->_translate(3) ?>
+				<?php echo $this->end; ?> ) </xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++;?>
+
+
+	<div id="container">
+		<table width="" cellpadding="0" cellspacing="0" class="border">
+			<tr class="bggrey">
+			<?php $begin = 0; ?>
+				<th style="width:<?php echo $fitScreen[$begin];?>px;">
+					<!-- Nhan vien --> <xls row="<?php echo $row?>"
+						width="<?php echo $colWidthExcel[$begin]?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $this->_translate(10)?></xls>
+				</th>
+
+				<th style="width:<?php echo $fitScreen[$begin];?>px;">
+					<!-- Nhan vien --> <xls row="<?php echo $row?>"
+						width="<?php echo $colWidthExcel[$begin]?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $this->_translate(11)?></xls>
+				</th>
+
+				<?php foreach ($this->works as $w):?>
+				<th style="width:<?php echo $fitScreen[$begin];?>px;">
+					<!-- Nhan vien --> <xls row="<?php echo $row?>"
+						width="<?php echo $colWidthExcel[$begin]?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $w->Ten;?>
+					(<?php echo $this->_translate(12)?>)</xls>
+				</th>
+				<?php endforeach;?>
+
+                <th style="width:<?php echo $fitScreen[$begin];?>px;">
+                    <!-- Nhan vien --> <xls row="<?php echo $row?>"
+                                            width="<?php echo $colWidthExcel[$begin]?>"
+                                            column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+                                            h-align="center" v-align="center" border="1"> <?php echo $this->_translate(15)?></xls></th>
+
+				<th style="width:<?php echo $fitScreen[$begin];?>px;">
+					<!-- Nhan vien --> <xls row="<?php echo $row?>"
+						width="<?php echo $colWidthExcel[$begin]?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $this->_translate(13)?>
+					(<?php echo $this->_translate(12)?>)</xls></th>
+			</tr>
+			<?php $row++;?>
+
+
+			<!-- ========================================================================================= -->
+			<?php foreach ($this->report as $refEmp=>$r): ?>
+
+
+			<?php if($groupSplit !== $r['Group']['ID']):?>
+			<tr>
+				<td class="left" colspan="<?php echo $totalCol;?>"><xls
+						row="<?php echo $row?>" column="A"
+						column-merge="<?php echo $excel_col[$totalCol]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <b><?php echo $r['Group']['Name']?$r['Group']['Name']:$this->_translate(14);?>
+					</b></xls>
+				</td>
+			</tr>
+			<?php $row++;?>
+			<?php endif;?>
+
+			<?php $groupSplit = $r['Group']['ID']; ?>
+			<?php $congNgang = 0;?>
+			<tr>
+			<?php $begin = 0; ?>
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $r['Emp']['Code'];?></xls>
+				</td>
+
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $r['Emp']['Name'];?></xls>
+				</td>
+
+				<?php foreach ($this->works as $refWork=>$w):?>
+				<?php $time = isset($this->report[$refEmp]['Work'][$refWork] )?$this->report[$refEmp]['Work'][$refWork] :0;?>
+				<?php if(!isset($congDoc[$refWork])) $congDoc[$refWork] = 0;?>
+				<?php $congDoc[$refWork] += $time;?>
+				<?php $congNgang += $time;?>
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatNumber($time/60);?></xls>
+				</td>
+				<?php endforeach;?>
+
+                <!-- Công việc -->
+                <td class="left">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+                         h-align="left" v-align="center" border="1"> <?php echo isset($this->report[$refEmp]['Detail'] )?$this->report[$refEmp]['Detail'] :'';?>
+                        </xls>
+                </td>
+
+                <!-- Tổng cộng -->
+				<td class="right"><?php if(!isset($congDoc[0])) $congDoc[0] = 0;?> <?php $congDoc[0] += $congNgang;?>
+					<xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <b><?php echo Qss_Lib_Util::formatNumber($congNgang/60);?></b></xls>
+				</td>
+			</tr>
+			<?php $row++;?>
+			<?php endforeach;?>
+
+			<tr>
+			<?php $begin = 0; ?>
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <b><?php echo $this->_translate(13)?>
+						(<?php echo $this->_translate(12)?>)</b></xls></td>
+
+				<td class="center">&nbsp; <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1">-</xls>
+				</td>
+
+				<?php foreach ($this->works as $refWork=>$w):?>
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <b><?php echo Qss_Lib_Util::formatNumber(@(double)$congNgang[$refWork]/60);?></b></xls>
+				</td>
+				<?php endforeach;?>
+
+                <td class="center">&nbsp; <xls row="<?php echo $row?>"
+                                               column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+                                               h-align="center" v-align="center" border="1">-</xls>
+                </td>
+
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <b><?php echo Qss_Lib_Util::formatNumber(@(double)$congDoc[0]/60);?></b></xls>
+				</td>
+			</tr>
+			<?php $row++;?>
+		</table>
+	</div>
+</div>

@@ -1,0 +1,149 @@
+<?php $err = 0; ?>
+<?php //echo '<pre>'; print_r($this->availableTime); die;?>
+<div class="overflow margin_top_5">
+	<div id="material" class="fl" style="width: 64%;">
+		<table cellspacing="0" cellpadding="0" border="1" id=""
+			class="borderX">
+			<tr class="bggrey">
+				<th class="" width="10%">
+					<!-- Ma --> <?php  echo $this->_translate(20);?> <!-- Vat tu yeu cau theo bom -->
+				<?php if(isset($this->materialRequire['byBOM'])):?> <?php foreach ($this->materialRequire['byBOM'] as $bomID=>$item): ?>
+				<?php foreach ($item as $key=>$info): ?> <input type="hidden"
+					name="materialCode[<?php echo $bomID?>][]" class="save_condition"
+					value="<?php echo $info['ItemCode'];?>" /> <input type="hidden"
+					name="materialAttribute[<?php echo $bomID?>][]"
+					class="save_condition" value="<?php echo $info['Attribute'];?>" />
+					<input type="hidden" name="materialQty[<?php echo $bomID?>][]"
+					class="save_condition" value="<?php echo $info['ItemQty'];?>" /> <?php endforeach; ?>
+					<?php endforeach;?> <?php endif;?> <!-- Phu pham theo bom --> <?php if(isset($this->output['byBOM'])):?>
+					<?php foreach ($this->output['byBOM'] as $bomID=>$item): ?> <?php foreach ($item as $key=>$info): ?>
+					<input type="hidden" name="outputCode[<?php echo $bomID?>][]"
+					class="save_condition" value="<?php echo $info['ItemCode'];?>" /> <input
+					type="hidden" name="outputAttribute[<?php echo $bomID?>][]"
+					class="save_condition" value="<?php echo $info['Attribute'];?>" />
+					<input type="hidden" name="outputQty[<?php echo $bomID?>][]"
+					class="save_condition" value="<?php echo $info['ItemQty'];?>" /> <?php endforeach; ?>
+					<?php endforeach;?> <?php endif;?> <!-- Cong cu dung cu theo bom -->
+					<?php if(isset($this->sparepart['byBOM'])):?> <?php foreach ($this->sparepart['byBOM'] as $bomID=>$item): ?>
+					<?php foreach ($item as $key=>$info): ?> <input type="hidden"
+					name="sparepartCode[<?php echo $bomID?>][]" class="save_condition"
+					value="<?php echo $info['ItemCode'];?>" /> <input type="hidden"
+					name="sparepartAttribute[<?php echo $bomID?>][]"
+					class="save_condition" value="<?php echo $info['Attribute'];?>" />
+					<input type="hidden" name="sparepartQty[<?php echo $bomID?>][]"
+					class="save_condition" value="<?php echo $info['ItemQty'];?>" /> <?php endforeach; ?>
+					<?php endforeach;?> <?php endif;?> <!-- Thoi gian yeu cau theo bom -->
+					<?php if(isset($this->timeRequire['byBOM'])):?> <?php foreach ($this->timeRequire['byBOM'] as $bomID=>$item): ?>
+					<?php foreach ($item as $operationID=>$info): ?> <input
+					type="hidden" name="operation[<?php echo $bomID?>][]"
+					class="save_condition" value="<?php echo $info['Name'];?>" /> <input
+					type="hidden" name="operationID[<?php echo $bomID?>][]"
+					class="save_condition" value="<?php echo $info['ID'];?>" /> <input
+					type="hidden" name="operationTime[<?php echo $bomID?>][]"
+					class="save_condition" value="<?php echo $info['Time'];?>" /> <input
+					type="hidden" name="outsource[<?php echo $bomID?>][]"
+					class="save_condition" value="<?php echo $info['Outsource'];?>" />
+					<input type="hidden" name="cost[<?php echo $bomID?>][]"
+					class="save_condition"
+					value="<?php echo (isset( $this->getCost['byBOM'][$info['ID']]) &&  $this->getCost['byBOM'][$item['ID']])?$this->getCost['byBOM'][$item['ID']]:0;?>" />
+					<?php endforeach;?> <?php endforeach;?> <?php endif;?>
+				</th>
+				<th class="" width="30%">
+					<!-- Ten --> <?php  echo $this->_translate(21);?></th>
+				<th class="" width="20%">
+					<!-- T.Tinh --> <?php  echo $this->_translate(22);?></th>
+				<th class="" width="10%">
+					<!-- ĐVTinh --> <?php  echo $this->_translate(23);?></th>
+				<th class="" width="10%">
+					<!-- SLuong --> <?php  echo $this->_translate(24);?></th>
+				<th class="" width="10%">
+					<!-- SlTon --> <?php  echo $this->_translate(25);?></th>
+				<th class="" width="10%">
+					<!-- Thừa thiếu --> <?php  echo $this->_translate(26);?></th>
+			</tr>
+
+			<?php if(isset($this->materialRequire['notByBOM'])):?>
+			<?php foreach ($this->materialRequire['notByBOM'] as $item): // In danh sach?>
+			<?php
+			//PHP
+			$inv = (isset($this->materialInventory[$item['Key']]) && $this->materialInventory[$item['Key']])?$this->materialInventory[$item['Key']]:0;
+
+			$slCan = $item['ItemQty'];
+			$thuaThieu = $inv - $slCan;
+			if($thuaThieu < 0)
+			{
+				$classThuaThieu = 'bgred';
+				$err = 1;
+			}
+			else
+			{
+				$classThuaThieu = 'bggreen';
+			}
+			?>
+			<tr class="<?php echo $classThuaThieu;?>">
+				<td class="left"><?php echo $item['ItemCode'];?>
+				</td>
+				<td class="left"><?php echo $item['ItemName'];?></td>
+				<td class="<?php echo $item['Attribute']?'left':'center';?>"><?php echo $item['Attribute']?$item['Attribute']:'-';?>
+				</td>
+				<td class="left"><?php echo $item['ItemUOM'];?></td>
+				<td class="right"><?php echo $item['ItemQty'];?></td>
+				<td class="right"><?php echo $inv;?></td>
+				<td class="right"><?php echo $thuaThieu;?></td>
+			</tr>
+			<?php endforeach; // Ket thuc in danh sach?>
+			<?php endif; // In vat tu ko theo bom?>
+		</table>
+	</div>
+
+	<div id="capacity" class="fr" style="width: 34%;">
+		<table cellspacing="0" cellpadding="0" border="1" id=""
+			class="borderX">
+			<tr class="bggrey">
+				<th class="" width="40%">
+					<!-- C.Đoan --> <?php  echo $this->_translate(27);?></th>
+				<th class="" width="20%">
+					<!-- Y.Cau --> <?php  echo $this->_translate(28);?></th>
+				<th class="" width="20%">
+					<!-- K.Nang --> <?php  echo $this->_translate(29);?></th>
+				<th class="" width="20%">
+					<!-- Da len ke hoach --> <?php  echo $this->_translate(30);?></th>
+			</tr>
+
+			<?php if(isset($this->timeRequire['notByBOM'])):?>
+			<?php foreach ($this->timeRequire['notByBOM'] as $item): // In danh sach?>
+			<?php
+			//PHP
+			// @todo: Chua tinh thoi gian da su dung vao, ca ben tao lenh tu ton kho
+			$wTime = (isset($this->availableTime[$item['ID']]) && $this->availableTime[$item['ID']])?$this->availableTime[$item['ID']]:0;
+			//$planed = (isset($this->planedTime[$item['ID']]) && $this->planedTime[$item['ID']])?$this->planedTime[$item['ID']]:0;
+			$planed = 0;
+
+			if( ($wTime * 10)%10 != 0 )
+			{
+				$wTime = rtrim(rtrim($wTime, '0'),'.');
+			}
+
+			if($item['Time'] <= $wTime)
+			{
+				$class = 'bggreen';
+			}
+			else
+			{
+				$class = 'bgred';
+				$err = 1;
+			}
+			?>
+			<tr class="<?php echo $class;?>">
+				<td class="left"><?php echo $item['Name']?>
+				</td>
+				<td class="right"><?php echo $item['Time']?></td>
+				<td class="right"><?php echo $wTime;?></td>
+				<td class="right"><?php echo $planed;?></td>
+			</tr>
+			<?php endforeach; // Ket thuc in danh sach?>
+			<?php endif;?>
+		</table>
+	</div>
+	<span id="err_save" val="<?php echo $err;?>"></span>
+</div>

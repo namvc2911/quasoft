@@ -1,0 +1,23 @@
+<div id="detail_notify">
+	<div id="content_notify">
+	<?php foreach ($this->forms as $item):?>
+	<span class="notify_time">
+		<?php echo Qss_Lib_Date::mysqltodisplay($item->Date,'d-m-Y')?> <?php echo $this->_translate(2)?>
+		<?php echo Qss_Lib_Date::mysqltodisplay($item->Date,'H:i')?>:
+	</span>
+	<span>
+	<a onclick="openModule('<?php echo $item->FormCode?>','/user/form/edit?ifid=<?php echo $item->IFID?>&deptid=<?php echo $item->DepartmentID?>');"
+			href="#1">
+		<?php echo nl2br($item->Notify)?>
+		
+		</a>
+	</span>
+	<hr>
+	<?php endforeach;?>
+	</div>
+	
+	<?php if(count($this->forms) == 20):?>
+	<span class="center"><a href="#1" onclick="showMoreNotify()"><?php echo $this->_translate(3)?></a></span>
+	<hr>
+	<?php endif;?>
+</div>

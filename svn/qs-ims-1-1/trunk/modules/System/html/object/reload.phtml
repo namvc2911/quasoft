@@ -1,0 +1,33 @@
+<?php
+$tempOrderType['ASC']  = 'Tăng dần';
+$tempOrderType['DESC'] = 'Giảm dần';
+
+$widths = array(0.5, 3, 3, 3, 2, 2);
+$widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+$begin  = 0;
+
+$stt = 0;
+?>
+
+
+<table class="grid" cellspacing="0" style="">
+    <tr>
+        <th style="border-left: 1px solid rgb(204, 204, 204);border-bottom: 1px solid rgb(204, 204, 204); width: <?php echo $widths[$begin++];?>%">STT</th>
+        <th class="data" style="border-bottom: 1px solid rgb(204, 204, 204); width: <?php echo $widths[$begin++];?>%">Mã</th>
+        <th class="data" style="border-bottom: 1px solid rgb(204, 204, 204); width: <?php echo $widths[$begin++];?>%">Tên tiếng Việt</th>
+        <th class="data" style="border-bottom: 1px solid rgb(204, 204, 204); width: <?php echo $widths[$begin++];?>%">Tên tiếng Anh</th>
+        <th class="data" style="border-bottom: 1px solid rgb(204, 204, 204); width: <?php echo $widths[$begin++];?>%">Trường sắp xếp</th>
+        <th class="data" style="border-bottom: 1px solid rgb(204, 204, 204); width: <?php echo $widths[$begin++];?>%">Kiểu sắp xếp</th>
+    </tr>
+
+    <?php foreach ($this->ObjectList as $item):?>
+        <tr id="<?php echo $item->ObjectCode;?>" class="" onclick="rowCLK(this)" rights="63">
+            <td class="nocount "><?php echo ++$stt;?></td>
+            <td class="data "><?php echo $item->ObjectCode;?></td>
+            <td class="data "><?php echo $item->SimpleObjectName;?></td>
+            <td class="data "><?php echo $item->ObjectName_en;?></td>
+            <td class="data "><?php echo $item->OrderField?$item->OrderField:'';?></td>
+            <td class="data "><?php echo $item->OrderType?$tempOrderType[strtoupper(trim($item->OrderType))]:'';?></td>
+        </tr>
+    <?php endforeach;?>
+</table>

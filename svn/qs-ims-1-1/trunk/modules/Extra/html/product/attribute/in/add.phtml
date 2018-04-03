@@ -1,0 +1,271 @@
+<link rel="stylesheet" href="/css/button.css" type="text/css" />
+<?php
+function printItemQty($qty, $uom, $colspan)
+{
+	return "<tr>
+		<td colspan=\"{$colspan}\"> 
+			<b>
+				<i>Số lượng sản phẩm : {$qty} {$uom}</i>
+			</b>
+		</td> 
+	</tr>";
+}
+
+
+$itemConfig = $this->itemConfig;
+$attributes = $this->attributes;
+$oldStockStatus = $this->oldStockStatus;
+$binConfig = $this->binConfig;
+$hasBin = count((array) $binConfig);
+$itemQty = @(double) $itemConfig->itemQty;
+$col = 0;
+//$leftPadding = ($itemConfig->lot)?'left:200px;':'left:255px';
+$i = 0;
+?>
+<?php if ($itemConfig->lot || $itemConfig->serial || $hasBin): ?>
+
+<style>
+<!-- /*	.attribute_table_text
+	{
+		font-size:11px;
+		font-weight:bold;
+		font-style:italic;
+		font-family:Arial;
+	}*/
+/*	.poFlyDiv
+	{
+		background: none repeat scroll 0 0 #EEEEEE;
+		border:1px outset #ccc;
+		line-height: 20px;
+		position: absolute;
+		top: 30px;
+		padding:0px 2px 0px 2px;
+	}
+	input.poInput
+	{
+		border:1px #fcc solid;
+	}
+	.poFlyDiv a
+	{
+		padding:2px;
+		margin-left:1px;
+		font-weight:bold;
+		color: #4C4C4C;
+	}
+	.poFlyDiv a:hover
+	{
+		color: #111;
+	}*/
+-->
+</style>
+
+<script type="text/javascript">
+<!--
+	jQuery(document).ready(function($) {
+		$('.datepicker').each(function() {
+			$(this).datepicker({dateFormat: "dd-mm-yy"});
+		});/* Datepicker*/
+		
+		showStockStatus();
+	});
+//	function showBin(line, ele)
+//	{
+//		var zone = ele.value;
+//		var data = {
+//			//zone:zone,
+//			refWarehouse: '<?php echo $itemConfig->refWarehouse; ?>'
+//			, refItem: '<?php echo $itemConfig->refItem ?>'
+//			, ifid: '<?php echo $this->ifid; ?>'
+//			, ioid: '<?php echo $this->ioid; ?>'
+//			, objid: '<?php echo $this->objid; ?>'
+//		};
+//		var url = sz_BaseUrl + '/extra/product/attribute/in/bin';
+//		qssAjax.getHtml(url, data, function(jreturn) {
+//			$('.bin_' + line).html(jreturn);
+//		});
+//	}
+
+
+	function showStockStatus()
+	{
+		var lotQty = $('#lotQty').val();
+		var url = sz_BaseUrl + '/extra/product/attribute/in/show';
+		var data = {
+			lotQty: lotQty
+			, ifid: '<?php echo $this->ifid; ?>'
+			, ioid: '<?php echo $this->ioid; ?>'
+			, objid: '<?php echo $this->objid; ?>'
+					//,attributes:'<?php //echo $attributes;  ?>'
+					//,itemQty:'<?php //echo $itemQty; ?>'
+		};
+		qssAjax.getHtml(url, data, function(jreturn) {
+			//alert(jreturn)
+			$('#po_attributes_table').html(jreturn);//
+			countTotalQty();
+		});
+	}
+	/**
+	 * poAttributesTableSave()
+	 * Cập nhật dữ liệu từ show.phtml hoặc add.phtml vào csdl
+	 */
+	function poAttributesTableSave()
+	{
+		$('#saveButton').attr('disabled', true);
+		var length = $('input[name="qty[]"]').size();
+		if (length)
+		{
+			var data = $('#po_attributes_form').serialize();
+			var url = sz_BaseUrl + '/extra/product/attribute/in/save';
+			qssAjax.call(url, data, function(jreturn) {
+				if(jreturn.status == 1)
+				{
+					qssAjax.confirm('Số lượng cập nhật chưa đủ bạn có muốn tiếp tục sắp xếp trạng thái lưu trữ không?'
+					, function(){
+						
+					}
+					, function(){
+						$('#qss_combo').dialog('close');
+					});
+				}
+				else
+				{
+					$('#qss_combo').dialog('close');
+				}
+			}, function(jreturn) {
+				qssAjax.alert(jreturn.message);
+				$('#saveButton').removeAttr('disabled');
+			});
+		}
+		else
+		{
+			qssAjax.alert('Bảng trạng thái lưu trữ chưa có giá trị!');
+			$('#saveButton').removeAttr('disabled');
+		}
+	}
+	
+	function countTotalQty()
+	{
+		var total = 0;
+		var itemQty = parseFloat($('#po_attributes_itemQty').val());
+		$('.line_item_qty').each(function(){
+			total += parseFloat($(this).val());
+		});
+		
+		$('#total_qty').text(total+'/'+itemQty);
+		if(total != itemQty)
+		{
+			$('#total_qty').removeClass('bold green');
+			$('#total_qty').addClass('bold red');
+		}
+		else
+		{
+			$('#total_qty').removeClass('bold red');
+			$('#total_qty').addClass('bold green');
+		}
+		
+		
+	}
+	-->
+</script>
+
+<?php /*
+<!-- Control bar -->
+<div class="poFlyDiv" style="<?php echo $leftPadding;?>">
+<?php if ($itemConfig->lot): ?>
+<input type ="text" id ="lotQty" placeholder="Số lượng trên mỗi lô?" class="poInput"/>
+<?php endif; ?>
+<a href="#1" onclick = "showStockStatus()"> Thiết lập lưu trữ </a> |
+<a  href="#1"  onclick = "poAttributesTableSave()" id="saveButton"> Cập nhật </a> |
+<a href="#LB"> Về đầu trang </a> |
+<a href="#LE"> Về cuối trang</a>
+</div>
+<br/>
+*
+*/?>
+
+
+<!-- Tieu de -->
+<div
+	class="attribute_table_text">
+	<a name="LB">&nbsp;</a>
+	<!--  Quay về đầu trang -->
+	<!--<h1> Trạng thái lưu trữ </h1><br/>-->
+	<b> <i> Mặt hàng "<?php echo $itemConfig->itemName; ?>" ( Mã: "<?php echo $itemConfig->itemCode; ?>"
+			- Đơn vị tính: "<?php echo $itemConfig->itemUOM; ?>" <?php echo (isset($attributes) && $attributes)?'- Thuộc tính:'.$attributes:'';?>
+			<?php if($this->form->i_Status != 2):?> - Số lượng: <span
+			id="total_qty">0/<?php echo $itemConfig->itemQty;?> </span> <?php else:?>
+			- Số lượng: <span class="bold green"><?php echo $itemConfig->itemQty;?>/<?php echo $itemConfig->itemQty;?>
+		</span> <?php endif;?>) </i> </b>
+</div>
+
+			<?php if($this->form->i_Status != 2):?>
+<div>
+<?php if ($itemConfig->lot): ?>
+	<input type="text" id="lotQty" placeholder="Số lượng trên mỗi lô?"
+		class="poInput" value="100" />
+		<?php endif; ?>
+	<button type="button" class="btn-custom" onclick="showStockStatus()">
+		Tải lại</button>
+</div>
+		<?php endif;?>
+<br />
+
+
+<div id="po_attributes_div">
+	<form id="po_attributes_form">
+
+		<!-- Hidden Post  -->
+		<!-- Module -->
+		<input type="hidden" id="po_attributes_module" name="module"
+			value="<?php echo $this->module; ?>" />
+
+		<!-- Object -->
+		<input type="hidden" id="po_attributes_obj" name="obj"
+			value="<?php echo $this->obj; ?>" />
+
+		<!-- IOID Dong SP -->
+		<input type="hidden" id="po_attributes_ioid" name="ioid"
+			value="<?php echo $this->ioid; ?>" />
+
+		<!-- IFID Dong SP -->
+		<input type="hidden" id="po_attributes_ifid" name="ifid"
+			value="<?php echo $this->ifid; ?>" />
+
+		<!-- ObjID Dong SP -->
+		<input type="hidden" id="po_attributes_objid" name="objid"
+			value="<?php echo $this->objid; ?>" />
+
+		<!-- Ref Kho  -->
+		<input type="hidden" id="po_attributes_refWarehouse"
+			name="refWarehouse" value="<?php echo $itemConfig->refWarehouse; ?>" />
+
+		<!-- Ref San Pham -->
+		<input type="hidden" id="po_attributes_refItem" name="refItem"
+			value="<?php echo $itemConfig->refItem; ?>" />
+
+		<!-- Don Vi Tinh SP -->
+		<input type="hidden" id="po_attributes_itemUOM" name="itemUOM"
+			value="<?php echo $itemConfig->itemUOM; ?>" />
+
+		<!-- So Luong SP Cap Nhat -->
+		<input type="hidden" id="po_attributes_itemQty" name="itemQty"
+			value="<?php echo $itemConfig->itemQty; ?>" /> <input type="hidden"
+			id="po_attributes_attributes" name="attributes"
+			value="<?php echo $this->attributes; ?>" />
+
+
+
+		<div id="po_attributes_table"></div>
+	</form>
+</div>
+<br />
+
+<div>
+	<a name="LE">&nbsp;</a>
+</div>
+
+		<?php else: ?>
+<b> <i> Sản phẩm "<?php echo $itemConfig->itemName; ?>" với mã "<?php echo $itemConfig->itemCode; ?>"
+		không quản lý theo serial hay lô hoặc kho hiện tại không có bin nào !
+</i> </b>
+		<?php endif; ?>

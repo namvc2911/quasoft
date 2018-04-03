@@ -1,0 +1,50 @@
+<script>
+	function printPreview() {
+		var url = sz_BaseUrl + '/static/m726/show';
+		var data = $('#report').serialize();
+		
+		// LAY GIA TRI DANG CHUOI CUA DIEU KIEN LOC
+		data += "&locationStr="  + encodeURIComponent($('#location option:selected').text());
+		data += "&costcenterStr="+ encodeURIComponent($('#costcenter option:selected').text());
+		data += "&groupStr="     + encodeURIComponent($('#group option:selected'   ).text());
+		data += "&typeStr="      + encodeURIComponent($('#type option:selected'    ).text());
+		data += "&equipmentStr=" + encodeURIComponent($('#equip_tag'           ).val());		
+		
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#print-area').html(jreturn);
+			removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+		});
+	}
+</script>
+
+<div class="clear"></div>
+<div id="view">
+	<div class="line-hr">
+		<span><?php echo $this->_translate(1) ?> </span>
+	</div>
+	<form id="report" method="get"
+		action="/report/maintenance/equipment/costcenter1">
+		<table class="detail">
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(5) ?>
+				</th>
+				<td><?php
+				$id = 'group';
+				$getFields = array('num' => 2,
+						'objects' => array('ONhomThietBi' => array(
+								'id' => 'IOID'
+								, 'display1' => 'LoaiThietBi'
+								)));
+								?> <?php echo $this->views->Report->ComboBox($id, $getFields); ?>
+			</tr>
+		</table>
+	</form>
+	<p>
+	
+	
+	<hr>
+	<?php echo $this->views->Report->PrintToolbar(); ?>
+	<div id="print-content">
+		<div id="print-area"></div>
+	</div>
+</div>

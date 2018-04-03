@@ -1,0 +1,182 @@
+<style>
+	.now_16
+	{
+		background:url("/images/status/warning_16.png");
+		width:16px;
+		height:16px;
+	}
+	.duesoon_16
+	{
+		background:url("/images/status/warning_16.png");
+		width:16px;
+		height:16px;
+	}
+	.normal_16
+	{
+		background:url("/images/status/normal_16.png");
+		width:16px;
+		height:16px;	
+	}
+	.overdue_16
+	{
+		background:url("/images/status/Block_16.png");
+		width:16px;
+		height:16px;	
+	}
+	.question_16
+	{
+		background:url("/images/status/question_16.png");
+		width:16px;
+		height:16px;		
+	}
+	.margin_left_2
+	{
+		margin-left:2px;
+	}
+</style>
+<?php $excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+
+$pxWidthArr    = array(80, 140, 140, 140, 140);
+// px html to excel width
+$excelWidthArr = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($pxWidthArr);
+// auto fit (px html)
+$pxWidthArr    = Qss_Lib_Report::changeWidthToFitScreen($pxWidthArr);
+?>
+<?php ?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="portrait">
+	<excel orientation="portrait" font-name="Arial" font-size="9" margin-left="0.5" margin-right="0.5" margin-top="0.75" margin-bottom="0.75"/>
+	<div id="head_print">
+		<?php echo $this->views->Common->Portrait()?>
+		<?php $row = 9;?>
+		<center>
+			<h2><xls row="<?php echo $row?>" column="A" column-merge="<?php echo $excel_col[5]?>"  font-size="12" wrap-text="1" h-align="center" v-align="center" ><?php echo $this->_translate(1)?> </xls></h2>
+		</center>
+	</div>
+	<?php $row++?>
+	
+	<div id="container">		
+		<table width="100%" cellpadding="0" cellspacing="0" class="border" >
+			<tr class="bggrey"> 
+				<th style="width:<?php echo $pxWidthArr[0];?>px"><xls row="<?php echo $row?>"  width="<?php echo $excelWidthArr[0];?>" column="<?php echo $excel_col[1]?>"   wrap-text="1" h-align="center" v-align="center" border="1">  <?php echo $this->_translate(4)?></xls> </th>
+				<th style="width:<?php echo $pxWidthArr[1];?>px"><xls row="<?php echo $row?>"  width="<?php echo $excelWidthArr[1];?>" column="<?php echo $excel_col[2]?>"  wrap-text="1" h-align="center" v-align="center" border="1">  <?php echo $this->_translate(2)?></xls> </th>
+				<th style="width:<?php echo $pxWidthArr[2];?>px"><xls row="<?php echo $row?>"  width="<?php echo $excelWidthArr[2];?>" column="<?php echo $excel_col[3]?>"  wrap-text="1" h-align="center" v-align="center" border="1">  <?php echo $this->_translate(3)?></xls> </th>
+				<th style="width:<?php echo $pxWidthArr[3];?>px"><xls row="<?php echo $row?>"  width="<?php echo $excelWidthArr[3];?>" column="<?php echo $excel_col[4]?>"  wrap-text="1" h-align="center" v-align="center" border="1">  <?php echo $this->_translate(10)?></xls> </th>
+				<th style="width:<?php echo $pxWidthArr[4];?>px"><xls row="<?php echo $row?>"  width="<?php echo $excelWidthArr[4];?>" column="<?php echo $excel_col[5]?>"  wrap-text="1" h-align="center" v-align="center" border="1">  <?php echo $this->_translate(5)?></xls> </th>
+			</tr>
+			<?php $row++?>
+			
+			<?php $today = date('Y-m-d');?>
+			<?php $nowMicro = Qss_Lib_Date::i_fMysql2Time($today);?>
+			<?php foreach ($this->list as $item):?>
+			<?php
+				$require      = $item->NgayYCBT;
+				$requireMicro = Qss_Lib_Date::i_fMysql2Time($item->NgayYCBT);
+				$next         = '';
+			 	switch ($item->MaKy) {
+					case 'D':
+						$next    = date('Y-m-d', strtotime($today. ' + 1 days'));
+					break;
+					case 'W':
+						$weekArray = array(   7=>'Sunday',
+										      1=>'Monday',
+										      2=>'Tuesday',
+										      3=>'Wednesday',
+										      4=>'Thursday',
+										      5=>'Friday',
+										      6=>'Saturday',);
+						$weekday   = $item->ThuMay;
+						$last      = date('Y-m-d', strtotime($weekArray[$weekday].' this week'));
+						$lastMicro = Qss_Lib_Date::i_fMysql2Time($last);
+						if($lastMicro < $nowMicro)
+						{
+							$next     = date('Y-m-d', strtotime($last. ' + 1 week'));
+						}
+						else 
+						{
+							$next    = $last;
+						}
+					break;
+					case 'M':
+						$item->Ngay = ($item->Ngay<10)?(string)'0'.$item->Ngay:$item->Ngay;
+						$last       = date('Y-m',strtotime($today)).'-'.$item->Ngay;
+						$lastMicro  = Qss_Lib_Date::i_fMysql2Time($last);
+						
+			 			if($lastMicro < $nowMicro)
+						{
+							$next     = date('Y-m-d', strtotime($last. ' + 1 month'));
+						}
+						else 
+						{
+							$next    = $last;
+						}
+						
+					break;
+					case 'Y':
+			 			$item->Ngay  = ($item->Ngay<10)?(string)'0'.$item->Ngay:$item->Ngay;
+			 			$item->Thang = ($item->Thang<10)?(string)'0'.$item->Thang:$item->Thang;
+						$last       = date('Y',strtotime($today)).'-'.$item->Thang.'-'.$item->Ngay;
+						$lastMicro  = Qss_Lib_Date::i_fMysql2Time($last);
+						
+			 			if($lastMicro < $nowMicro)
+						{
+							$next     = date('Y-m-d', strtotime($last. ' + 1 year'));
+						}
+						else 
+						{
+							$next    = $last;
+						}
+					break;										
+				} 
+				if($item->status)
+				{
+					// có phiếu bảo trì
+					/*er*/
+					$cStatus = $this->_translate(8);
+					$class   = 'normal_16';					
+				}
+				else 
+				{
+					// chưa có phiếu bảo trì
+					if($requireMicro > $nowMicro)
+					{
+						$interval = floor(( $requireMicro - $nowMicro)/(60*60*24));
+						if($interval <= 3)
+						{
+							$cStatus = $this->_translate(9);
+							$class   = 'duesoon_16';
+						}
+						else 
+						{
+							$cStatus = $this->_translate(8);
+							$class   = 'normal_16';
+						}	
+					}
+					elseif($requireMicro < $nowMicro)
+					{
+						$cStatus = $this->_translate(7);
+						$class   = 'overdue_16';
+
+					}
+					elseif($requireMicro == $nowMicro)
+					{
+						$cStatus = $this->_translate(6);
+						$class   = 'now_16';
+					}
+				}
+
+			?>
+			<tr>
+				<td> <div class="<?php echo $class;?> fl  margin_left_2">&nbsp;</div> <div class="fl margin_left_2"><xls row="<?php echo $row?>"   column="<?php echo $excel_col[1]?>"  wrap-text="1" h-align="center" v-align="center" border="1"><?php echo $cStatus?></xls></div></td>
+				<td class="left"> <xls row="<?php echo $row?>"   column="<?php echo $excel_col[2]?>"  wrap-text="1" h-align="center" v-align="center" border="1"><?php echo $item->MaThietBi?></xls> </td>
+				<td class="left"> <xls row="<?php echo $row?>"   column="<?php echo $excel_col[3]?>"  wrap-text="1" h-align="center" v-align="center" border="1"><?php echo $item->TenThietBi?></xls> </td>
+				<td class="left"> <xls row="<?php echo $row?>"   column="<?php echo $excel_col[4]?>"  wrap-text="1" h-align="center" v-align="center" border="1"><?php echo $item->LoaiBaoTri?></xls> </td>
+				<td class="center"> <xls row="<?php echo $row?>"   column="<?php echo $excel_col[5]?>"  wrap-text="1" h-align="center" v-align="center" border="1"><?php echo Qss_Lib_Date::mysqltodisplay($next)?></xls> </td>
+			</tr>
+			<?php $row++?>
+			<?php endforeach;?>		
+		</table>
+	</div>
+</div>

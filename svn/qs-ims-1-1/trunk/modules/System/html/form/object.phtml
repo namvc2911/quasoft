@@ -1,0 +1,61 @@
+<?php
+if($this->type == 1)
+$id=116;
+elseif($this->type == 2)
+$id=117;
+elseif($this->type == 3)
+$id=124;
+else
+$id=118;
+?>
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+	<button type="button" class="btn btn_main_top" onclick="rowFormObjectInsert(<?php echo $this->type?>,'<?php echo $this->fid?>')">
+		<?php echo $this->_translate(12)?>
+	</button>
+	<button ID="Update" class="btn btn_main_top"  disabled onClick="rowFormObjectEdit(<?php echo $this->type?>,'<?php echo $this->fid?>')">
+		<?php echo $this->_translate(13)?>
+	</button>
+	<button ID="Delete" type="button" class="btn btn_main_top"  onClick="rowFormObjectDelete('<?php echo $this->fid?>')" disabled>
+		<?php echo $this->_translate(14)?>
+	</button>
+	<button type="button" class="btn btn_main_top" onclick="rowFormObjectBack(<?php echo $this->type?>,'<?php echo $this->fid?>')">
+		<?php echo $this->_translate(32)?>
+	</button>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#1"><span><?php echo $this->_translate($id)?>
+						- <?php echo $this->_translate(102)?> </span> </a></li>
+		</ul>
+	</div>
+	<table class="grid">
+		<tr>
+			<th>Order No.</th>
+			<th><?php echo $this->_translate(102)?></th>
+			<th><?php echo $this->_translate(180)?></th>
+			<th><?php echo $this->_translate(133)?></th>
+			<th><?php echo $this->_translate(134)?></th>
+			<th><?php echo $this->_translate(13)?></th>
+			<th>Được thêm mới</th>
+			<th>Được xóa</th>
+			<th><?php echo $this->_translate(50)?></th>
+			<th><?php echo $this->_translate(135)?></th>
+		</tr>
+		<?php foreach($this->fobjects as $fobject):?>
+		<tr onclick="rowCLK(this)" id="<?php echo $fobject->ObjectCode?>">
+			<td><?php echo $fobject->ObjNo?></td>
+			<td><?php echo $fobject->ObjectName?></td>
+			<td><?php echo $fobject->ObjectCode?></td>
+			<td><?php echo $fobject->Main?></td>
+			<td><?php echo $fobject->Public?></td>
+			<td><?php echo $fobject->Editing?></td>
+			<td><?php echo $fobject->Insert?></td>
+			<td><?php echo $fobject->Deleting?></td>
+			<td><?php echo $fobject->Track?></td>
+			<td><?php echo $fobject->Parent?></td>
+		</tr>
+		<?php endforeach;?>
+	</table>
+</div>

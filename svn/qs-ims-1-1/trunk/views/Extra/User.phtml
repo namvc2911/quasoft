@@ -1,0 +1,43 @@
+<select
+    onchange="rowSearch('<?php echo $this->form->FormCode?>');"
+    name="filter_uid"
+    id="filter_uid">
+    <?php
+    $selected = '';
+
+    if((int)$this->selected == 0)
+    {
+        $selected = 'selected';
+    }
+    ?>
+
+    <option value="0" <?php echo $selected;?>>--- Chọn người tạo ---</option>
+
+    <?php
+    $selected = '';
+
+    if((int)$this->selected == (int)$this->htmlUser->user_id)
+    {
+        $selected = 'selected';
+    }
+    ?>
+
+    <option value="<?php echo $this->htmlUser->user_id;?>" <?php echo $selected;?>> Bản ghi của tôi </option>
+
+    <?php foreach ($this->htmlUsers as $item):?>
+        <?php
+        $selected = '';
+
+        if((int)$this->selected == (int)$item->UID)
+        {
+            $selected = 'selected';
+        }
+        ?>
+
+        <option
+            <?php echo $selected;?>
+            value="<?php echo $item->UID?>">
+            <?php echo $item->UserName; ?>
+        </option>
+    <?php endforeach;?>
+</select>

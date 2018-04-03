@@ -1,0 +1,121 @@
+<script>
+function moreAction(el,worklow){
+		if (isDisabled('btnMORE')) {
+			return;
+		}
+		var ifid = [];
+		var deptid = [];
+		if(row == null){
+			var i = 0;
+			$('.grid_selected').each(function(){
+				ifid[i] = $(this).attr('id');
+				deptid[i] = $(this).attr('deptid');
+				i++;
+			});
+		}
+		else{
+			ifid[0] = row.id;
+			deptid[0] = row.getAttribute('deptid');
+		}
+		if($('.dropdown-action').is(':visible')){
+			$('.dropdown-action').hide();
+		}
+		else if(worklow){
+			var url = sz_BaseUrl + '/user/form/workflow';
+			var data = {
+				ifid : ifid,
+				deptid : deptid
+			};
+			qssAjax.getHtml(url, data, function(jreturn) {
+				//$('#qss_trace').html(jreturn);
+				//$('#qss_trace').dialog({ width: 600,height:400 });
+				$('.dropdown-action').html($('#base_action').html());
+				$('.dropdown-action').append(jreturn);
+				$('.dropdown-action').show();
+			});
+		}
+		else{
+			$('.dropdown-action').html($('#base_action').html());
+			setTimeout(function(){
+				$('.dropdown-action').show();
+			},50);
+		}
+	/*
+	if($('.dropdown-action').is(':visible')){
+		$('.dropdown-action').hide();
+	}
+	else{
+		$('.dropdown-action').show();
+	}*/
+}
+</script>
+<div class="control-box right control-box-wo">
+    <div class="btn-in-control-box">
+        <button id="btnINSERT" type="button" class="btn btn_main_top" <?php if(!($this->form->i_fGetRights($this->user->user_group_list) & 1)):?>disabled<?php endif;?>
+		onclick="rowInsert('<?php echo $this->form->FormCode?>');">
+		<?php echo $this->_translate(12)?>
+		</button>
+		<button id="btnREFRESH" type="button" class="btn btn_main_top"
+		onclick="rowSearch('<?php echo $this->form->FormCode;?>');">
+		<?php echo $this->_translate(23)?>
+		</button>
+		<button id="btnSEARCH" type="button" class="btn btn_main_top"
+		onclick="showSearch();">
+		<?php echo $this->_translate(24)?>
+		</button>
+		<button id="btnMORE" type="button" class="btn btn_main_top" onclick="moreAction(this,<?php echo ($this->form->i_Type == Qss_Lib_Const::FORM_TYPE_MODULE)?'true':'false'?>);" disabled>
+			...
+		</button>
+    </div>
+</div>
+<ul class="dropdown-action" style="display: none;">	
+	
+</ul>
+<ul id="base_action" style="display: none;">
+<li id="btnDELETE" class="normal" onclick="rowDelete('<?php echo $this->form->FormCode?>');">
+		<span><?php echo $this->_translate(14)?></span> 
+	</li>
+	<li class="hr">
+	</li>
+	<!-- Bash -->
+	<?php if(count((array)$this->bashes)):?>
+	<?php foreach($this->bashes as $item):?>
+	<?php if(!$item->Record):?>
+	<?php switch($item->Type):
+case 2:?>
+<?php case 3:?>
+	<li type="button" class="normal" steps="<?php echo $item->Step?>" onclick="formbashRun(<?php echo $item->BID?>,'<?php echo $item->BashName?>',this,0)">
+		<span><?php echo $item->BashName?></span>
+	</li>
+	<?php break;?>
+	<?php case 4:?>
+	<li type="button" class="normal" steps="<?php echo $item->Step?>" onclick="formpopupOther('<?php echo $item->FormCode?>','<?php echo $item->Class?>',this)">
+		<span><?php echo $item->BashName?></span>
+	</li>
+	<?php break;?>
+	<?php case 5:?>
+	<li class="normal" steps="<?php echo $item->Step?>" onclick="formopenOther('<?php echo $item->FormCode?>','<?php echo $item->Class?>',this)">
+		<span><?php echo $item->BashName?></span>
+	</li>
+	<?php break;?>
+	<?php endswitch;?>
+	<?php endif;?>
+	<?php endforeach;?>
+	<?php endif;?>
+</ul>
+
+<div class="clear"></div>
+<div id="div-search" class="clearfix" style="display: none;">
+	<?php echo $this->searchform;?>
+	<div>
+		<div class="btn-custom center" style="width:70px" onclick="rowSearch('<?php echo $this->form->FormCode;?>');"><?php echo $this->_translate(81)?></div>
+		<div class="btn-custom center" style="width:70px" onclick="rowCleanSearch('<?php echo $this->form->FormCode;?>');"><?php echo $this->_translate(82)?></div>
+		<div class="btn-custom center" style="width:70px" onclick="showSearch();"><?php echo $this->_translate(83)?></div>
+	</div>  
+</div>
+<div id="qss_form" class="mobile-box-wrap">
+	<?php echo $this->pager;?>
+	<?php echo $this->listview;?>
+</div>
+<div id="qss_trace" title="<?php echo $this->form->sz_Name?>"></div>
+<div id="qss_combo" title="<?php echo $this->form->sz_Name?>"></div>

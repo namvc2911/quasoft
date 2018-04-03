@@ -1,0 +1,62 @@
+<?php
+$xAxis     = '';
+$seriePlan = '';
+$serieEmp  = '';
+
+foreach($this->date as $d)
+{
+	$xAxis .= $xAxis?", '{$d['Display']}'":"'{$d['Display']}'";
+}
+
+/*foreach($this->plan as $p)
+{
+	$seriePlan .= ($seriePlan != '')?", {$p}":$p;
+}*/
+
+foreach($this->emp as $k=>$e)
+{
+	$serieEmp .= ($serieEmp != '')?", {$e}":$e;
+	$plan = isset($this->plan[$k])?$this->plan[$k]:0;
+	$seriePlan .=  ($seriePlan != '')?", {$plan}":$plan;
+}
+?>
+
+<script>
+$(function () {
+    $('#container').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: '<?php echo $this->_translate(1);?>'
+        },
+        xAxis: {
+            categories: [<?php echo $xAxis;?>]
+        },
+        yAxis: {
+            title: {
+                text: '<?php echo $this->_translate(2);?>'
+            }
+        },
+        plotOptions: {
+            line: {
+                dataLabels: {
+                    enabled: true
+                },
+                enableMouseTracking: false
+            }
+        },
+        series: [{
+            name: 'Yêu cầu',
+            data: [<?php echo $seriePlan;?>]
+        }, {
+            name: 'Khả năng',
+            data: [<?php echo $serieEmp;?>]
+        }]
+    });
+});
+</script>
+
+<div id="container" style="width: 90%; margin: 5px auto;"></div>
+
+

@@ -1,0 +1,345 @@
+<?php $excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);?>
+<?php
+$widthArr = array(1, 6, 1.75, 1.75, 1.75, 1.75);
+$totalCol = count($widthArr);
+$widthArr = Qss_Lib_Report::changeWidthToFitScreen3($widthArr);
+$excelWidth = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($widthArr);
+$row        = 1;
+$bg         = "#EEEEEE"; // Mau nen cua cot tieu de
+$lastCol    = 'F';
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+    <input type="hidden" id="content" name="content" value="">
+</form>
+
+<form id="report">
+    <input type="hidden" name="popup" value="1" />
+    <input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" />
+
+    <div class="portrait">
+        <excel
+            orientation="<?php echo Qss_Lib_Extra_Const::REPORT_ORIENTATION_PORTRAIT; ?>"
+            font-name="Times New Roman"
+            font-size="11"
+            margin-left="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_LEFT; ?>"
+            margin-right="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_RIGHT; ?>"
+            margin-top="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_TOP; ?>"
+            margin-bottom="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_BOTTOM; ?>" />
+
+        <!-- REPORT TITLE -->
+        <div id="head_print"></div>
+
+        <div>
+            <!-- Số biểu mẫu -->
+            <div id="portrait-company-header">
+                <div style="width:100%">
+                    <p class="right">
+                        <xls row="<?php echo $row?>" column="A" column-merge="<?php echo $lastCol;?>" font-size="11" h-align="right" v-align="center">B04.QT03.BTSC</xls>
+                    </p>
+                </div>
+                <br/>
+            </div>
+            <div class="clear">&nbsp;</div>
+            <?php $row++;?>
+
+            <div class="overflow" style="font-size: 16px; line-height: 28px; overflow: hidden; width: 100%">
+                <div class="fl center" style="width: 50%">
+                    <b>
+                        <xls row="<?php echo $row?>" column="A" column-merge="B" font-size="11" h-align="center" v-align="center" bold="1">CÔNG TY CP ĐẦU TƯ NƯỚC SẠCH SÔNG ĐÀ</xls>
+                    </b>
+                    <br/>
+
+                    <b>
+                        <u>
+
+                            <xls row="<?php echo ($row + 1)?>" column="A" column-merge="B" font-size="11" h-align="center" v-align="center" bold="1" underline="1">BỘ PHẬN…………………</xls>
+                        </u>
+                    </b>
+                    <br/>
+
+                    <xls row="<?php echo ($row + 2)?>" column="A" column-merge="B" font-size="11" h-align="center" v-align="center">Số:……./20…/BBNTVTTKLĐ</xls>
+                </div>
+
+                <div class="fr center" style="width: 40%">
+                    <b>
+                        <xls row="<?php echo $row?>" column="C" column-merge="<?php echo $lastCol;?>" font-size="11" h-align="center" v-align="center" bold="1">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</xls>
+                    </b>
+                    <br/>
+
+                    <b>
+                        <u>
+                            <xls row="<?php echo ($row + 1)?>" column="C" column-merge="<?php echo $lastCol;?>" font-size="11" h-align="center" v-align="center" underline="1" >Độc Lập – Tự Do – Hạnh Phúc</xls>
+                        </u>
+                    </b>
+                    <br/>
+                </div>
+
+                <?php $row = $row + 2;?>
+            </div>
+        </div>
+
+        <div id="container">
+            <div>
+                <br/>
+
+                <h2 class="bold center">
+                    <xls row="<?php echo $row?>" column="A" column-merge="<?php echo $lastCol;?>" font-size="16" h-align="center" v-align="center" bold="1">BIÊN BẢN NGHIỆM THU VẬT TƯ TRƯỚC KHI SỬ DỤNG</xls>
+                </h2>
+                <?php $row++;?>
+
+                <p class="bold center">
+                    <xls row="<?php echo $row?>" column="A" column-merge="<?php echo $lastCol;?>" font-size="11" h-align="center" v-align="center" bold="1">Số phiếu : <?php echo @$this->OPhieuBaoTri->SoPhieu;?></xls>
+                </p>
+                <?php $row++;?>
+
+                <p class="bold center">
+                    <xls row="<?php echo $row?>" column="A" column-merge="<?php echo $lastCol;?>" font-size="11" h-align="center" v-align="center" bold="1">Lần nghiệm thu số:…….</xls>
+                </p>
+                <?php $row++;?>
+                <br/>
+
+                <div class="bold">
+                    <xls row="<?php echo $row?>" column="A" font-size="11" h-align="left" v-align="center" bold="1">I. Đối tượng nghiệm thu:</xls>
+                </div>
+                <br/>
+                <?php $row++;?>
+
+                <div class="line">
+                    &nbsp;<xls row="<?php echo $row?>" column="A" font-size="11" h-align="left" v-align="center"> </xls>
+                </div>
+                <br/>
+                <?php $row++;?>
+
+                <div class="bold">
+                    <xls row="<?php echo $row?>" column="A" font-size="11" h-align="left" v-align="center" bold="1">II. Thành phần trực tiếp nghiệm thu:</xls>
+                </div>
+                <br/>
+                <?php $row++;?>
+
+                <div class="bold">
+                    <xls row="<?php echo $row?>" column="A" font-size="11" h-align="left" v-align="center" bold="1">1. Đại diện Ban chức năng:</xls>
+                </div>
+                <br />
+                <?php $row++;?>
+
+                <div class="overflow">
+                    <div class="fl"><xls row="<?php echo $row?>" column="A" column-merge="B" font-size="11" h-align="left" v-align="center">- Ông(bà): .......................................................................</xls> </div>
+                    <div class="fr"><xls row="<?php echo $row?>" column="C" column-merge="<?php echo $lastCol;?>" font-size="11" h-align="left" v-align="center">Chức vụ: .......................................................................</xls></div>
+                </div>
+                <br />
+                <?php $row++;?>
+
+                <div class="bold">
+                    <xls row="<?php echo $row?>" column="A" font-size="11" h-align="left" v-align="center" bold="1">2. Đại diện Đội BT-SC:</xls>
+                </div>
+                <br />
+                <?php $row++;?>
+
+                <div class="overflow">
+                    <div class="fl"><xls row="<?php echo $row?>" column="A" column-merge="B" font-size="11" h-align="left" v-align="center">- Ông(bà): .......................................................................</xls> </div>
+                    <div class="fr"><xls row="<?php echo $row?>" column="C" column-merge="<?php echo $lastCol;?>" font-size="11" h-align="left" v-align="center">Chức vụ: .......................................................................</xls></div>
+                </div>
+                <br />
+                <?php $row++;?>
+
+                <div class="bold">
+                    <xls row="<?php echo $row?>" column="A" font-size="11" h-align="left" v-align="center" bold="1">3. Đại diện Đơn vị sản xuất:</xls>
+                </div>
+                <br />
+                <?php $row++;?>
+
+                <div class="overflow">
+                    <div class="fl"><xls row="<?php echo $row?>" column="A" column-merge="B" font-size="11" h-align="left" v-align="center">- Ông(bà): .......................................................................</xls> </div>
+                    <div class="fr"><xls row="<?php echo $row?>" column="C" column-merge="<?php echo $lastCol;?>" font-size="11" h-align="left" v-align="center">Chức vụ: .......................................................................</xls></div>
+                </div>
+                <br />
+                <?php $row++;?>
+
+                <div class="bold">
+                    <xls row="<?php echo $row?>" column="A" font-size="11" h-align="left" v-align="center" bold="1">III. Thời gian nghiệm thu:</xls>
+                </div>
+                <?php $row++;?>
+
+                <div class="center">
+                    <xls row="<?php echo $row?>" column="A" column-merge="<?php echo $lastCol;?>" font-size="11" h-align="center" v-align="center">Bắt đầu từ: …..giờ ……. ngày ….. tháng ….. năm 20….</xls>
+                </div>
+                <?php $row++;?>
+
+                <div class="center">
+                    <xls row="<?php echo $row?>" column="A" column-merge="<?php echo $lastCol;?>" font-size="11" h-align="center" v-align="center">Kết thúc từ: …..giờ ……. ngày ….. tháng ….. năm 20….</xls>
+                </div>
+                <?php $row++;?>
+
+                <div class="overflow">
+                    <span style="float: left; width: 5%;">Tại:</span>
+                    <span style="float: left; width: 95%; border-bottom: 1px dashed #000;">&nbsp;</span>
+
+                    <div style="display: none">
+                        <xls row="<?php echo $row?>" column="A" font-size="11" h-align="left" v-align="center">Tại: ...............................................................................................................................................................................</xls>
+                    </div>
+                </div>
+                <br />
+                <?php $row++;?>
+
+
+                <div class="bold">
+                    <xls row="<?php echo $row?>" column="A" font-size="11" h-align="left" v-align="center" bold="1">IV. Đánh giá chất lượng vật tư:</xls>
+                </div>
+                <?php $row++;?>
+
+                <div class="bold">
+                    <xls row="<?php echo $row?>" column="A" font-size="11" h-align="left" v-align="center" bold="1">a. Tài liệu làm căn cứ nghiệm thu:</xls>
+                </div>
+                <?php $row++;?>
+
+                <div class="line">
+                    &nbsp;
+                    <div style="display: none">
+                        <xls row="<?php echo $row?>" column="A" font-size="11" h-align="left" v-align="center">......................................................................................................................................................................................</xls>
+                    </div>
+                </div>
+                <br/>
+                <?php $row++;?>
+
+                <div class="bold">
+                    <xls row="<?php echo $row?>" column="A" font-size="11" h-align="left" v-align="center" bold="1">b. Về khối lượng vật tư:</xls>
+                </div>
+                <?php $row++;?>
+
+
+                <div class="bold center">
+                    <xls row="<?php echo $row?>" column="A" column-merge="<?php echo $lastCol;?>" font-size="11" h-align="center" v-align="center" bold="1">BẢNG TỔNG HỢP KHỐI LƯỢNG VẬT TƯ SỬ DỤNG CÔNG TRÌNH</xls>
+
+                </div>
+                <br/>
+                <?php $row++;?>
+
+                <div class="">
+                    <table cellpadding="0" cellspacing="0" class="border" border="0">
+                        <?php $begin = 0; ?>
+                        <tr>
+                            <th style="width: <?php echo $widthArr[$begin];;?>%;">
+                                <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12" column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center" v-align="center" bold="1" border="1" wrap-text="1"> STT </xls>
+                            </th>
+
+                            <th style="width: <?php echo $widthArr[$begin] + $widthArr[$begin+1];;?>%;">
+                                <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin] + $widthArr[$begin+1];?>" font-size="12" column="<?php echo $excel_col[++$begin];?>" column-merge="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center" v-align="center" bold="1" border="1" wrap-text="1"> Tên vật tư </xls>
+                            </th>
+
+                            <th style="width: <?php echo $widthArr[$begin];;?>%;">
+                                <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12" column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center" v-align="center" bold="1" border="1" wrap-text="1"> Đơn vị </xls>
+                            </th>
+
+                            <th style="width: <?php echo $widthArr[$begin];;?>%;">
+                                <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12" column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center" v-align="center" bold="1" border="1" wrap-text="1"> Khối lượng </xls>
+                            </th>
+
+                            <th style="width: <?php echo $widthArr[$begin];;?>%;">
+                                <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12" column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center" v-align="center" bold="1" border="1" wrap-text="1"> Ghi chú </xls>
+                            </th>
+                        </tr>
+                        <?php $row++;?>
+
+                        <?php for($i = 1; $i <= 5; $i++):?>
+                            <?php $begin = 0; ?>
+                            <tr>
+                                <td class="center">
+                                    <xls row="<?php echo $row?>"  font-size="11" column="<?php echo $excel_col[++$begin];?>"  h-align="center" v-align="center"  border="1" wrap-text="1"> <?php echo $i;?> </xls>
+                                </td>
+                                <td>&nbsp;<xls row="<?php echo $row?>" font-size="11" column="<?php echo $excel_col[++$begin];?>" column-merge="<?php echo $excel_col[++$begin];?>" h-align="center" v-align="center"  border="1" wrap-text="1"> </xls></td>
+                                <td>&nbsp;<xls row="<?php echo $row?>"  font-size="11" column="<?php echo $excel_col[++$begin];?>"  h-align="center" v-align="center"  border="1" wrap-text="1"> </xls></td>
+                                <td>&nbsp;<xls row="<?php echo $row?>"  font-size="11" column="<?php echo $excel_col[++$begin];?>" h-align="center" v-align="center"  border="1" wrap-text="1"> </xls></td>
+                                <td>&nbsp;<xls row="<?php echo $row?>"  font-size="11" column="<?php echo $excel_col[++$begin];?>"  h-align="center" v-align="center"  border="1" wrap-text="1"> </xls></td>
+                            </tr>
+                            <?php $row++;?>
+                        <?php endfor;?>
+                    </table>
+                </div>
+                <br/>
+
+                <div class="bold">
+                    <xls row="<?php echo $row?>" column="A"  font-size="11" h-align="left" v-align="center" bold="1">c. Chất lượng vật tư</xls>
+
+                </div>
+                <?php $row++;?>
+
+                <div class="line">
+                    <xls row="<?php echo $row?>" column="A"  font-size="11" h-align="left" v-align="center" bold="1"> </xls>
+                </div>
+                <br/>
+                <?php $row++;?>
+
+                <div class="overflow bold">
+                    <span style="float: left; width: 20%">d. Các ý kiến khác nếu có:</span>
+                    <span style="float: left; width: 80%; border-bottom: 1px dashed #000;">&nbsp;</span>
+
+                    <div style="display: none;">
+                        <xls row="<?php echo $row?>" column="A"  font-size="11" h-align="left" v-align="center" bold="1"> d. Các ý kiến khác nếu có: ..........................................................................................................................................</xls>
+                    </div>
+                </div>
+                <?php $row++;?>
+
+                <div class="bold">
+                    <xls row="<?php echo $row?>" column="A"  font-size="11" h-align="left" v-align="center" bold="1"> V. Kết luận: </xls>
+
+                </div>
+                <?php $row++;?>
+
+                <div class="line">
+                    &nbsp;
+                    <div style="display: none;">
+                        <xls row="<?php echo $row?>" column="A"  font-size="11" h-align="left" v-align="center" bold="1">......................................................................................................................................................................................</xls>
+                    </div>
+                </div>
+                <?php $row++;?>
+
+                <div class="line">
+                    &nbsp;
+                    <div style="display: none;">
+                        <xls row="<?php echo $row?>" column="A"  font-size="11" h-align="left" v-align="center" bold="1">......................................................................................................................................................................................</xls>
+                    </div>
+                </div>
+                <br/>
+                <?php $row++;?>
+
+                <div style="text-indent: 10px;">
+                    <xls row="<?php echo $row?>" column="A" column-merge="<?php echo $lastCol;?>"  font-size="11" h-align="left" v-align="center" height="35" wrap-text="1">     Biên bản được lập thành 3 bản có giá trị như nhau, mỗi bên giữ một bản thống nhất các nội dung trên và làm cở sở để thực hiện các công việc tiếp theo.</xls>
+                </div>
+                <br/>
+                <?php $row++;?>
+
+                <table cellpadding="0" cellspacing="0" border="0">
+
+                    <tr>
+                        <td style="width:33%;" class="center bold">BAN CHỨC NĂNG </td>
+                        <td style="width:33%;" class="center bold">ĐƠN VỊ SẢN XUẤT</td>
+                        <td style="width:33%;" class="center bold">ĐỘI BTSC&XD</td>
+                    </tr>
+                </table>
+
+                <div style="display: none">
+
+                    <xls row="<?php echo $row?>" column="A" column-merge="<?php echo $lastCol;?>" font-size="11" h-align="center" v-align="center" bold="1">      BAN CHỨC NĂNG                                       ĐƠN VỊ SẢN XUẤT                             ĐỘI BTSC&XD</xls>
+                    <?php $row++;?>
+                    <?php $row++;?>
+                    <?php $row++;?>
+                    <?php $row++;?>
+                    <?php $row++;?>
+                    <?php $row++;?>
+                </div>
+
+
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+
+

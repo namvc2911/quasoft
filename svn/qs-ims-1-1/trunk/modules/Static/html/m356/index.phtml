@@ -1,0 +1,111 @@
+<script>
+    function printPreview()
+    {
+        var marvel = $('#marvel').val();
+        var err = '';
+        err += common_checkEmpty(marvel,'<?php echo $this->_translate(8) ?>')
+       
+
+        if(err)
+        {
+            qssAjax.alert(err);
+            return;
+        }
+        else
+        {
+            url  = '/static/m356/show';
+            data = $('#report').serialize();
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#print-area').html(jreturn);
+                // Viet trong $this->views->Report->PrintToolbar()
+                removePrintToolbarDisabled();
+            });
+        }
+    }
+</script>
+
+<div>
+    <div class="clear"></div>
+    <div id="view">
+        <div class="line-hr">
+            <span><?php echo Qss_Lib_System::getReportTitle('M356');?> </span>
+        </div>
+        <form id="report" method="get" action="/static/m356/show">
+            <table class="detail">
+            	<tr>
+                    <th width="20%" class="report-param-label"><?php echo $this->_translate(8) ?><span
+                    class="bold red">(*)</span>
+                    </th>
+                    <td>
+                        
+<?php
+        
+
+        $id = 'marvel';
+        $getDataObject = array('OKyCong' => array('MaKyCong', 'TenKyCong'));
+        $getFields = array('num' => 2,
+        'objects' => array('OKyCong' => array(
+        'id' => 'IOID'
+        , 'display1' => 'MaKyCong'
+        , 'display2' => 'TenKyCong')));
+
+        ?><?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields); ?>
+     
+                        
+                    </td>
+                <tr>
+                    <th width="20%" class="report-param-label"><?php echo $this->_translate(9) ?>
+                    </th>
+                    <td>
+                        
+<?php
+
+
+        $id = 'department';
+        $getDataObject = array('OPhongBan' => array('MaPhongBan', 'TenPhongBan'));
+        $getFields = array('num' => 2,
+        'objects' => array('OPhongBan' => array(
+        'id' => 'IOID'
+        , 'display1' => 'MaPhongBan'
+        , 'display2' => 'TenPhongBan')));
+
+        ?> <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields); ?>
+
+                        
+                    </td>
+                </tr>
+                <tr>
+                    <th width="20%" class="report-param-label"><?php echo $this->_translate(10) ?>
+                    </th>
+                    <td>
+                        
+<?php
+
+
+        $id = 'emloyee';
+        $getDataObject = array('ODanhSachNhanVien' => array('MaNhanVien', 'TenNhanVien'));
+        $getFields = array('num' => 2,
+        'objects' => array('ODanhSachNhanVien' => array(
+        'id' => 'IOID'
+        , 'display1' => 'MaNhanVien'
+        , 'display2' => 'TenNhanVien')));
+
+        ?> <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields); ?>
+
+                        
+                    </td>
+                </tr>
+              
+
+             
+            </table>
+        </form>
+        <hr>
+        <?php echo $this->views->Report->PrintToolbar(); ?>
+        <div id="print-content">
+            <div id="print-area"></div>
+        </div>
+    </div>
+</div>
+

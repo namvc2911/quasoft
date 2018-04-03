@@ -1,0 +1,113 @@
+<style>
+<!--
+input {
+	cursor: pointer;
+}
+
+#template_upload {
+	float: left;
+	line-height: 20px;
+}
+
+#template_exists {
+	float: left;
+	line-height: 20px;
+	margin-left: 5px;
+}
+
+#deleteTemplate:before {
+	content: ' | '
+}
+
+#downloadTemplate:before {
+	content: ' | '
+}
+-->
+</style>
+<form id="qss_form" method="post">
+	<div id="horizontal-toolbar" class="horizontal-toolbar">
+		<button id="btnSAVE" type="button" class="btn btn_main_top"
+			onclick="documentSave(<?php echo (int)@$this->doctype->DTID?>)">
+			<?php echo $this->_translate(34)?>
+		</button>
+		
+		<button type="button" class="btn btn_main_top"
+			onclick="documentBack()" >
+			<?php echo $this->_translate(32)?>
+		</button>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<table class="detail">
+			<tr>
+				<th width="200">Mã tài liệu</th>
+				<td><input value="<?php echo @$this->doctype->Code?>" style="width: 400px;" name="szCode"></td>
+			</tr>
+			<tr>
+				<th width="200"><?php echo $this->_translate(44,'Tên')?></th>
+				<td><input value="<?php echo @$this->doctype->Type?>" style="width: 400px;" name="szType"></td>
+			</tr>
+			<tr>
+				<th width="200">Trực thuộc</th>
+				<td><select name="intParentID" style="width: 400px;">
+						<option value="0">--- Không trực thuộc ---</option>
+						<?php foreach($this->doctypes as $item):?>
+						<option <?php if($item->DTID == @$this->doctype->ParentID):?>
+							selected <?php endif;?> value="<?php echo $item->DTID?>">
+							<?php echo $item->Type?>
+						</option>
+						<?php endforeach;?>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<th width="200">Mẫu</th>
+				<td>
+					<div id="template_upload">
+						<a id="upload" href="#!">Tải lên</a> <input type="hidden"
+							id="szFile" name="szFile">
+					</div> <?php if (@$this->doctype->File && file_exists(QSS_DATA_DIR.'/documents/template/'.@$this->doctype->DTID.'.'.@$this->doctype->File)):?>
+					<div id="template_exists">
+						<a id="deleteTemplate" href="#!"
+							onclick="deleteTemplate(<?php echo $this->doctype->DTID?>)">Xóa
+							mẫu</a> <a id="downloadTemplate" href="#!"
+							onclick="downloadTemplate(<?php echo $this->doctype->DTID?>)"><span
+							class="<?php echo @$this->doctype->File?> unknown"
+							style="display: inline-block !important; width: 18px;"
+							title="tải về">&nbsp;</span> </a>
+					</div> <?php endif;?>
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>
+<script>
+$(function() {
+	$('#upload').file(function(inp) {
+		inp.id = inp.name = 'myFileInput';
+		disabledLayout();
+		/* Upload file by ajax */
+		$('button').attr('disabled', true);
+		$.ajaxFileUpload({
+			url : sz_BaseUrl + '/user/field/uploadfile',
+			secureuri : false,
+			fileElementId : inp,
+			dataType : 'json',
+			success : function(data, status) {
+				/* Upload file successfully */
+				if (data.error) {
+					qssAjax.alert(data.message);
+				} else {
+					$('#szFile').val(data.image);
+					$('button').attr('disabled', false);
+				}
+				enabledLayout();
+			},
+			error : function(data, status, e) {
+				/* If upload error */
+				qssAjax.alert(e);
+			}
+		});
+	});
+});
+</script>

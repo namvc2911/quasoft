@@ -1,0 +1,311 @@
+<?php
+$common         = new Qss_Model_Extra_Extra();
+$excel_col      = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg             = Qss_Lib_Extra_Const::REPORT_EXCEL_THEAD_COLOR;
+$row            = 2;
+$totalColumn    = 5;
+$colWidths      = array(27,	225, 230, 79, 101);
+//$excelColWidths = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($colWidths);
+//$autoFit        = Qss_Lib_Report::changeWidthToFitScreen($colWidths);
+$rIndex         = 0;
+$wo             = $this->params;
+$detail         = $this->params->OCongViecBTPBT;
+$eq             = $common->getTableFetchOne('ODanhSachThietBi', array('IOID'=>$this->params->Ref_MaThietBi));
+
+$totalGenCol    = 3;
+$genColWidths   = array(1, 1, 1);
+$genAutoFit     = Qss_Lib_Report::changeWidthToFitScreen($genColWidths);
+
+// Cong viec bao duong (Lay phan nay lam can cu do rong excel)
+$totalWorkCol    = 5;
+$workColWidths   = array(27, 225, 230, 79, 101);
+$workExcel       = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($workColWidths);
+$workAutoFit     = Qss_Lib_Report::changeWidthToFitScreen($workColWidths);
+
+// Ket luan de xuat
+$totalResultCol    = 3;
+$resultColWidths   = array(1, 3, 3);
+$resultAutoFit     = Qss_Lib_Report::changeWidthToFitScreen($resultColWidths);
+
+// Chu ky
+$totalSignCol    = 3;
+$signColWidths   = array(1, 1, 1);
+$signAutoFit     = Qss_Lib_Report::changeWidthToFitScreen($signColWidths);
+
+
+// In tieu de
+$printEqType          = "<b>{$this->_translate(10)}:</b> {$eq->LoaiThietBi}";
+$printEqCodeAndSerial = "<b>{$this->_translate(11)}:</b>";
+$printEqCodeAndSerial.= " {$wo->MaThietBi}/{$eq->Serial}";
+$printPerformance     = "<b>{$this->_translate(12)}</b>";
+$printDes             = "<b>{$this->_translate(13)}:</b> {$wo->MoTa} ";
+$printTime            = "<b>{$this->_translate(14)}:</b> {$wo->NgayBatDau}";
+$printTime           .= " {$wo->GioBatDau}";
+
+
+$pass = true;
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+
+<div
+	class="portrait">
+	<excel
+		orientation="<?php echo Qss_Lib_Extra_Const::REPORT_ORIENTATION_PORTRAIT;?>"
+		font-name="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_NAME;?>"
+		font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_SIZE;?>"
+		margin-left="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_LEFT;?>"
+		margin-right="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_RIGHT;?>"
+		margin-top="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_TOP;?>"
+		margin-bottom="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_BOTTOM;?>" />
+
+	<!-- REPORT TITLE -->
+	<div id="head_print">
+	<?php echo $this->views->Common->Portrait() ?>
+	<?php //echo $this->views->Common->Legal() ?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalColumn] ?>"
+					font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_TITLE_FONT_SIZE;?>"
+					wrap-text="1" bold="1" h-align="center" v-align="center"> <?php echo $this->_translate(1);?>
+				</xls>
+			</h2>
+		</center>
+	</div>
+	<!-- end div#head_print -->
+	<?php $row++ ?>
+	<?php $row++ ?>
+
+	<!-- REPORT DATA -->
+	<div id="container">
+		<!-- Tiêu đề báo cáo  -->
+		<table class="">
+			<tr>
+			<?php $begin = 0;?>
+			<?php $genBegin = 0;?>
+				<!-- Loại máy -->
+				<td class="left" 
+                    style="width:<?php echo $genAutoFit[$genBegin++];?>px">
+					<xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>"
+						column-merge="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						v-align="top" h-align="left" border="1"> <?php echo $printEqType;?></xls>
+				</td>
+
+				<!-- Mã số/Số serial -->
+				<td class="left" 
+                    style="width:<?php echo $genAutoFit[$genBegin++];?>px">
+					<xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						v-align="top" h-align="left" border="1"> <?php echo $printEqCodeAndSerial;?></xls>
+				</td>
+
+				<!-- Công suất -->
+				<td class="left" 
+                    style="width:<?php echo $genAutoFit[$genBegin++];?>px">
+					<xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>"
+						column-merge="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						v-align="top" h-align="left" border="1"> <?php echo $printPerformance;?></xls>
+				</td>
+			</tr>
+			<?php $row++ ?>
+
+			<!-- Công việc được giao -->
+			<tr>
+				<td class="left" colspan="3"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[1]?>"
+						column-merge="<?php echo $excel_col[$totalColumn]?>" wrap-text="1"
+						v-align="top" h-align="left" border="1"> <?php echo $printDes;?></xls>
+				</td>
+			</tr>
+			<?php $row++ ?>
+
+			<!-- Thoi gian -->
+			<tr>
+				<td class="left" colspan="3"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[1]?>"
+						column-merge="<?php echo $excel_col[$totalColumn]?>" wrap-text="1"
+						v-align="top" h-align="left" border="1"> <?php echo $printTime;?></xls>
+				</td>
+			</tr>
+			<?php $row++ ?>
+		</table>
+		<br />
+		<?php $row++ ?>
+
+		<!-- Bảng biểu báo cáo -->
+		<table cellpadding="0" cellspacing="0" border="0" class="border"">
+			<tr class="bggrey">
+			<?php $begin = 0;?>
+				<!-- STT -->
+				<th class="center" style="width:<?php echo $workAutoFit[$begin];?>px">
+					<xls row="<?php echo $row?>"
+						width="<?php echo $workExcel[$begin];?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(15);?></xls>
+				</th>
+
+				<!-- Nội dung kiểm tra/ Bảo dưỡng -->
+				<th class="center" style="width:<?php echo $workAutoFit[$begin];?>px">
+					<xls row="<?php echo $row?>"
+						width="<?php echo $workExcel[$begin];?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(16);?></xls>
+				</th>
+
+				<!-- Điểm cần kiểm tra/ Bảo dưỡng -->
+				<th class="center" style="width:<?php echo $workAutoFit[$begin];?>px">
+					<xls row="<?php echo $row?>"
+						width="<?php echo $workExcel[$begin];?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(17);?></xls>
+				</th>
+
+				<!-- Kết quả -->
+				<th class="center" style="width:<?php echo $workAutoFit[$begin];?>px">
+					<xls row="<?php echo $row?>"
+						width="<?php echo $workExcel[$begin];?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(18);?></xls>
+				</th>
+
+				<!-- Ghi chú -->
+				<th class="center" style="width:<?php echo $workAutoFit[$begin];?>px">
+					<xls row="<?php echo $row?>"
+						width="<?php echo $workExcel[$begin];?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(19);?></xls>
+				</th>
+			</tr>
+			<?php $row++ ?>
+
+			<?php foreach($detail as $item):?>
+			<tr>
+			<?php $begin = 0;?>
+				<!-- STT -->
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						v-align="top" h-align="left" border="1"> <?php echo ++$rIndex;?></xls>
+				</td>
+
+				<!-- Nội dung kiểm tra/ Bảo dưỡng -->
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						v-align="top" h-align="left" border="1"> <?php echo $item->MoTa;;?></xls>
+				</td>
+
+				<!-- Điểm cần kiểm tra/ Bảo dưỡng -->
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						v-align="top" h-align="left" border="1"> <?php echo $item->BoPhan;?></xls>
+				</td>
+
+				<!-- Kết quả -->
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						v-align="top" h-align="left" border="1"> <?php echo $item->DanhGia?$this->_translate(27):$this->_translate(28);?></xls>
+				</td>
+                <?php if(!$item->DanhGia) { $pass = false; } ?>
+
+				<!-- Ghi chú -->
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						v-align="top" h-align="left" border="1"> <?php echo $item->GhiChu;?></xls>
+				</td>
+			</tr>
+			<?php $row++ ?>
+			<?php endforeach;?>
+		</table>
+		<br />
+		<?php $row++ ?>
+
+		<!-- Kết luận đề xuất  -->
+		<table cellpadding="0" cellspacing="0" border="0">
+			<tr>
+			<?php $begin = 0;?>
+			<?php $resultBegin = 0;?>
+				<!-- Kết luận -->
+				<td class="left" 
+                    style="width: <?php echo $resultAutoFit[$resultBegin++];?>px">
+					<xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						v-align="top" h-align="left" border="1"> <b><?php echo $this->_translate(20);?>
+					</b></xls>
+				</td>
+
+				<!-- Đủ điều kiện hoạt động -->
+				<td class="left" 
+                    style="width: <?php echo $resultAutoFit[$resultBegin++];?>px">
+					<xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>"
+						column-merge="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						v-align="top" h-align="left" border="1"> <?php echo $this->_translate(21);?></xls>
+                    <input type="checkbox" value="" id="equip_pass" readonly="true" <?php if($pass):?>checked="TRUE"<?php endif;?>/>
+				</td>
+
+				<!-- Không được hoạt động -->
+				<td class="left" 
+                    style="width: <?php echo $resultAutoFit[$resultBegin++];?>px">
+					<xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>"
+						column-merge="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						v-align="top" h-align="left" border="1"> <?php echo $this->_translate(22);?></xls>
+                    <input type="checkbox" value="" id="equip_eject" readonly="true" <?php if(!$pass):?>checked="TRUE"<?php endif;?>/>
+				</td>
+			</tr>
+			<?php $row++ ?>
+
+			<tr>
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[1]?>"
+						column-merge="<?php echo $excel_col[$totalColumn]?>" wrap-text="1"
+						v-align="top" h-align="left" border="1"> <?php echo $this->_translate(23);?></xls>
+				</td>
+			</tr>
+			<?php $row++ ?>
+		</table>
+		<br /> <br />
+		<?php $row++ ?>
+		<?php $row++ ?>
+
+		<!-- Chữ ký xác nhận -->
+		<table cellpadding="0" cellspacing="0" border="0">
+			<tr>
+			<?php $begin = 0;?>
+
+				<!-- Người thực hiện -->
+				<td class="center"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>"
+						column-merge="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						v-align="top" h-align="center" border="1"> <?php echo $this->_translate(24);?></xls>
+				</td>
+
+				<!-- "GS KỸ THUẬT ĐVQL Trực tiếp"-->
+				<td class="center"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						v-align="top" h-align="center" border="1"> <?php echo $this->_translate(25);?></xls>
+				</td>
+
+				<!-- Phòng Kỹ thuật -->
+				<td class="center"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>"
+						column-merge="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						v-align="top" h-align="center" border="1"> <?php echo $this->_translate(26);?></xls>
+				</td>
+			</tr>
+			<?php $row++ ?>
+		</table>
+		<!-- end table.border -->
+	</div>
+	<!-- end div#container -->
+</div>
+<!-- END REPORT -->

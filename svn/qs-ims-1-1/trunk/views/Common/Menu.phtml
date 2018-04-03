@@ -1,0 +1,8 @@
+<?php if ( $this->o_User instanceof Qss_Model_UserInfo ):?>
+    	<?php echo $this->banner;?>
+<?php endif;?>
+<script>
+$(document).ready(function(){
+	$("[code=<?php echo $this->selected?>]").addClass('menuactive');
+});
+</script>

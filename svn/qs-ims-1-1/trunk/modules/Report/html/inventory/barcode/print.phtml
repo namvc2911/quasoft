@@ -1,0 +1,70 @@
+<!-- A4: 6992x4960px -->
+<script>
+function printPreview(){
+        var msg  = '';
+	if($('#num-col').val() == '')	{
+		msg += 'Số cột yêu cầu bắt buộc!\n';
+	}
+        
+        if($('#num-row').val() == '')	{
+		msg += 'Số hàng yêu cầu bắt buộc!\n';
+	}
+
+/*
+	$('#report').submit(function() {
+        window.open('', 'formpopup', 'statusbar=no,resizable=yes,scrollbars=yes, addressbar=no,maximize=yes');
+        this.target = 'formpopup';
+    });
+	$('#report').submit();
+        */
+       if(msg != '')
+       {
+           qssAjax.alert(msg);
+           return;
+       }
+       else
+       {
+            var url = sz_BaseUrl + '/report/inventory/barcode/print1';
+            var data = $('#report').serialize();
+            qssAjax.getHtml(url, data, function(jreturn) {
+                    $('#qss_report').html(jreturn);
+            });
+        }
+}
+</script>
+
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix"></div>
+<div class="clear"></div>
+<div id="view">
+	<div class="line-hr">
+		<span>In Barcode</span>
+	</div>
+	<form id="report" method="post"
+		action="/report/inventory/barcode/print1">
+		<table class="detail">
+			<tr>
+				<th width="20%">Số hàng</th>
+				<td><input type="text" name="rows" id="num-row" /><span
+					class="bold red">(*)</span></td>
+			</tr>
+			<tr>
+				<th width="20%">Số cột</th>
+				<td><input type="text" name="cols" id="num-col" /><span
+					class="bold red">(*)</span></td>
+			</tr>
+			<tr>
+				<th width="20%">Hướng</th>
+				<td><input type="radio" name="demension" id="dimension" value="1"
+					checked /> Ngang <input type="radio" name="demension"
+					id="dimension" value="2" /> Dọc</td>
+			</tr>
+		</table>
+	</form>
+	<p>
+	
+	
+	<hr>
+	<button type="button" onclick="printPreview()" class="btn-custom">Xem</button>
+	<div id="qss_report"></div>
+</div>
+

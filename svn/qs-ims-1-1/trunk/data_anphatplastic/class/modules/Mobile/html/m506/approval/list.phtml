@@ -1,0 +1,216 @@
+<style>
+    .vattu_table td
+    {
+        padding-left: 2px;
+    }
+
+    .vattu_table tr
+    {
+        border-bottom: 1px #ccc solid;
+    }
+
+    .vattu_table tr:last-child, .vattu_table tr:first-child
+    {
+        border-bottom: none;
+    }
+</style>
+
+<script>
+    var initLineNum   = 10;
+    var mobile_m506_approval = {
+        loadMore : function () {
+            var display = 10;
+            var page    = parseInt($('#qss_form_pageno ').val());
+            var perpage = parseInt($('#qss_form_perpage ').val());
+            var count   = parseInt($('.mobile-box-data-line ').length);
+
+            // Voi truong hop ban dau can dua so trang ve theo so hien thi tren mot trang
+            // Tuy nhien neu so trang hien thi thuc te lon hon so trang hien thi quy uoc can tinh trang theo so trang hien thi
+            if(page <= 1)
+            {
+
+                if(perpage <= initLineNum)
+                {
+                    page = Math.ceil(initLineNum/display); // 10 ban ghi ban dau chia cho so luong hien thi
+                }
+                else
+                {
+                    page = Math.ceil(perpage/display);
+                }
+            }
+
+
+            page       +=1; // Cong them mot trang muon hien thi them
+
+
+
+            var url = '/mobile/m506/approval/more';
+            var dat = {page: page, perpage: display, end: count};
+
+            qssAjax.getHtml(url, dat, function(jreturn) {
+                $('.mobile-box-wrap').append(jreturn);
+
+                if(jreturn)
+                {
+                    // Thay doi trang
+                    $('#qss_form_pageno ').val(page);
+                }
+            });
+        },
+
+        returnDashboard: function () {
+            location.href = '/user/dashboard';
+        },
+
+        changeStatus : function (said, ifid, deptid) {
+            var url  = '/user/form/approve/';
+            var data = {said:said, ifid:ifid, deptid:deptid};
+
+            qssAjax.confirm(
+                'Bạn muốn duyệt vật tư?',
+                function () {
+                    qssAjax.call(url, data, function(jreturn) {
+                        if(jreturn.message != '')
+                        {
+                            qssAjax.notice(jreturn.message);
+                        }
+
+                        location.href = '/mobile/m506/approval/list?';
+                    }, function(jreturn) {
+                        qssAjax.alert(jreturn.message);
+                    })
+                }
+
+            );
+
+        }
+    };
+</script>
+
+<div class="control-box right control-box-wo">
+    <div class="btn-in-control-box">
+        <button class="btn-custom btn btn_main_top" type="button" onclick="mobile_m506_approval.returnDashboard()"> Trở lại </button>
+    </div>
+</div>
+
+<div>
+    <input type="hidden" id="qss_form_pageno" name="qss_form_pageno" value="<?php echo $this->page;?>"  />
+    <input type="hidden" id="qss_form_perpage" name="qss_form_perpage" value="<?php echo $this->perpage;?>"  />
+</div>
+
+<div class="mobile-box-wrap">
+    <?php $i = 0;?>
+    <?php foreach($this->list as $item):?>
+        <?php $i++;?>
+        <div class="mobile-box-data-line <?php echo $i%2==0?'bglightblue':'';?>" ifid="<?php echo $item->IFID_M506;?>">
+            <div>
+
+                <span class="title" >
+                    <?php echo $i;?>. <?php echo $item->SoChungTu;?></span> <span class="<?php echo $item->Color;?>">(<?php echo $item->Name;?>)
+                    <span>
+            </div>
+
+            <div>
+                <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
+                    <tr>
+                        <td style="width: 100px;">
+                            Kho:
+                        </td>
+
+                        <td>
+                            <?php echo $item->Kho;?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            Loại xuât kho:
+                        </td>
+
+                        <td>
+                            <?php echo $item->LoaiXuatKho;?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            Ngày:
+                        </td>
+
+                        <td>
+                            <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayChungTu);?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            Người yêu cầu:
+                        </td>
+
+                        <td class="left">
+                            <?php echo $item->TenNhanVien;?>
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td>
+                            Mô tả:
+                        </td>
+
+                        <td class="left">
+                            <?php echo $item->MoTa;?>
+                        </td>
+                    </tr>
+
+
+
+
+                    <tr>
+                        <td>
+                            Vật tư:
+                        </td>
+
+                        <td>
+                            &nbsp;
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+
+            <div>
+                <?php if($item->VatTuYeuCauDangTable):?>
+                    <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;" class="vattu_table">
+                        <tr>
+                            <td style="width: 20%"></td>
+                            <td style="width: 50%"></td>
+                            <td style="width: 15%"></td>
+                            <td style="width: 15%"></td>
+                        </tr>
+
+                        <?php echo $item->VatTuYeuCauDangTable;?>
+                    </table>
+                <?php endif;?>
+            </div>
+
+            <div style="position: absolute; top:2px; right: 2px;">
+                <?php if($item->Status == 2 || $item->Status == 5):?>
+                    <span class=" green">Đã duyệt VT</span>
+                <?php elseif($item->Status == 4):?>
+                    <button class="btn-custom btn btn_main_top center"
+                            type="button"
+                            onclick="mobile_m506_approval.changeStatus('<?php echo $item->SAID;?>', '<?php echo $item->IFID_M506;?>', <?php echo $this->deptid;?>);">
+                        Duyệt VT
+                    </button>
+                <?php endif;?>
+            </div>
+        </div>
+    <?php endforeach;?>
+</div>
+
+<div class="load-more-btn">
+    <button class="btn-custom btn btn_main_top center" type="button" onclick="mobile_m506_approval.loadMore()"> Tải thêm </button>
+</div>
+
+<div class="margin-bottom-36">&nbsp;</div>

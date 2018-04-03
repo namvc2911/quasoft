@@ -1,0 +1,17 @@
+<?php $i = 0?>
+<?php $lang = Qss_Translation::getInstance()->getLanguage();?>
+<?php $lang = ($lang=='vn')?'':'_'.$lang;?>
+<?php foreach($this->allsteps as $step):?>
+		<li>
+		<div style="width:20%;height: 100%;float:left;text-align: center;padding-top:10px;">
+			<input <?php if(!in_array($step->StepNo,$this->allow)):?>disabled<?php endif;?> 
+				onchange="sendFObjectRequest('<?php echo $this->form->FormCode?>','<?php echo $this->ifids?>','<?php echo $this->deptids?>','<?php echo $step->StepNo?>','<?php echo $step->Mix?>','<?php echo $this->refifid?>')"
+				 type="checkbox" <?php if($step->StepNo == $this->step->intStepNo):?>checked<?php endif;?>></div>
+		<div 
+		<?php if(in_array($step->StepNo,$this->allow)):?>
+			onclick="sendFObjectRequest('<?php echo $this->form->FormCode?>','<?php echo $this->ifids?>','<?php echo $this->deptids?>','<?php echo $step->StepNo?>','<?php echo $step->Mix?>','<?php echo $this->refifid?>')"
+		<?php endif;?>
+		class="<?php echo $step->Color?>" style="float:left;height: 100%;width: 80%;padding-top:10px;"><?php echo $step->{"Name".$lang}?></div> 
+		</li>
+	<?php $i++?>
+<?php endforeach;?>

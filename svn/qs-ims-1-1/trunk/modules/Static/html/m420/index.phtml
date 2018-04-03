@@ -1,0 +1,152 @@
+<script type="text/javascript">
+    function printPreview()
+    {
+        var url = sz_BaseUrl + '/static/m420/show';
+        var data = $('#report').serialize();
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#print-area').html(jreturn);
+            removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+        });
+    }
+
+    function excelReport()
+    {
+        $('#report').submit();
+    }
+
+    function removePrintToolbarDisabled()
+    {
+        $('.pt-button').each(function(){
+            $(this).prop('disabled',false);
+        });
+    }
+
+    function filterDepartment()
+    {
+        var url  = sz_BaseUrl + '/static/m420/departments/';
+        var data = {factory:$('#factory').val()};
+        var html = '<option value="">Chọn</option>';
+
+        qssAjax.call(url, data, function(jreturn) {
+            for(i in jreturn.data)
+            {
+                html += '<option value="'+jreturn.data[i].BoPhan+'">'+jreturn.data[i].BoPhan+'</option>'
+            }
+
+            $('#department').html(html);
+        }, function(jreturn) {
+            qssAjax.alert(jreturn.message);
+        });
+    }
+
+    $(document).ready(function () {
+        filterDepartment();
+    });
+</script>
+
+<div class="clear"></div>
+<div id="view">
+    <div class="line-hr">
+        <span> Báo cáo kiểm kê TSCN </span>
+    </div>
+    <form id="report" method="post" action="/static/m420/excel">
+
+        <input type="hidden" name="popup" value="1" />
+
+        <table class="detail">
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Ngày in báo cáo
+                </th>
+                <td>
+                    <?php echo $this->views->Report->Datepicker('date', date('d-m-Y'));?>
+                </td>
+            </tr>
+
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Nhà máy
+                </th>
+                <td>
+                    <?php //echo $this->views->Report->SimpleComboBox('factory', $this->factories, 'style="width:200px;" onchange="filterDepartment()"');?>
+                    <?php
+                    $id            = 'factory';
+                    $getFields     = array('num'=>3,
+                        'objects'=>array('OPhongBan'=>array(
+                            'id'=>'IOID'
+                        ,'display1'=>'TenPhongBan'
+                        ,'order' =>'TenPhongBan') ));
+                    ?> <?php echo $this->views->Report->ComboBox($id,$getFields,array(),array(), false, 'style="width:200px"', true, 0);?>
+                </td>
+            </tr>
+
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Bộ phận
+                </th>
+                <td>
+                    <?php //echo $this->views->Report->SimpleComboBox('department', $this->departments);?>
+                    <?php
+                    $id            = 'department';
+                    $getFields     = array('num'=>3,
+                        'objects'=>array('OBoPhan'=>array(
+                            'id'=>'IOID'
+                        ,'display1'=>'TenBoPhan'
+                        ,'order' =>'TenBoPhan') ));
+                    $filter         = array(
+                        0 => array(
+                            'id' => 'factory'
+                        , 'refField' => array(
+                                'OBoPhan' => 'Ref_MaPhongBan'
+                            )
+                        , 'required' => 1
+                        )
+                    );
+                    ?><?php echo $this->views->Report->ComboBox($id,$getFields,$filter,array(),false,'style="width:200px"',true,0);?>
+                </td>
+            </tr>
+
+            <!-- Người đề nghị -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Nhân viên
+                </th>
+                <td>
+                    <?php echo $this->views->Report->SimpleListBox('emp', '/static/m420/employee/');?>
+                </td>
+            </tr>
+
+            <!-- Phiếu đề nghị -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Tài sản
+                </th>
+                <td>
+                    <?php echo $this->views->Report->SimpleListBox('asset', '/static/m420/asset/');?>
+                </td>
+            </tr>
+            <tr>
+                <th width="20%" class="report-param-label">
+                    &nbsp;
+                </th>
+                <td>
+                     <input type="checkbox" name="all" value="1" id="m420_all"/>
+                     <label for="m420_all">Tất cả (Bao gồm thu hồi hết)</label>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <p>
+
+    <hr>
+
+    <div id="print-toolbar">
+        <button id="pt-showreport" class="btn-custom" onclick="printPreview()" type="button">Xem báo cáo</button>
+        <button class="btn-custom pt-button" onclick="printPage()" type="button">In html</button>
+        <button class="btn-custom pt-button" onclick="excelReport()" type="button"> Kiết xuất excel </button>
+    </div>
+
+    <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>

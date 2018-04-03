@@ -1,0 +1,92 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	if('<?php echo $this->data->FIIAD?>' != ''){
+		add_form('<?php echo $this->data->ToFormCode?>','<?php echo $this->data->FromFormCode?>');
+		add_object('<?php echo $this->data->FromFormCode?>','<?php echo $this->data->ObjectCode?>');
+	}
+});
+</script>
+<form method="post" id="qss_form">
+	<input type="hidden" name="FIID"
+		value="<?php echo $this->data->FIIAD?>">
+	<div id="horizontal-toolbar" class="horizontal-toolbar">
+		<div id="btnSAVE" class="btn_main_top" onclick="formInheritSave()"
+			title="<?php echo $this->_translate(34)?>">
+			<a href="#1" class="icon-32-apply"></a>
+		</div>
+		<div class="btn_main_top" onclick="formInheritBack()"
+			title="<?php echo $this->_translate(32)?>">
+			<a href="#1" class="icon-32-back"></a>
+		</div>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<div id="item-actions">
+			<ul>
+				<li class="item-action active"><a href="#1"><span><?php echo $this->_translate(120)?>
+					</span> </a></li>
+			</ul>
+		</div>
+		<table border="0">
+			<tr>
+				<td><?php echo $this->_translate(101)?></td>
+				<td><select
+					onchange="add_form(this.value,<?php echo $this->data->FromFormCode?>);"
+					name="TFID" id="TFID" style="width: 300px;">
+						<option value="">
+							-----
+							<?php echo $this->_translate(38)?>
+							-----
+						</option>
+						<?php foreach ($this->inherit as $inherit):?>
+						<option value="<?php echo $inherit->tofid?>"
+						<?php if($this->data->ToFormCode == $inherit->tofid):?> selected
+						<?php endif;?>>
+							<?php echo $inherit->toname?>
+						</option>
+						<?php endforeach;?>
+				</select></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(98,'Module được kế thừa')?></td>
+				<td><select
+					onchange="add_object(this.value,'<?php echo $this->data->ObjectCode?>');"
+					name="FFID" id="FFID" style="width: 300px;">
+						<option value="">
+							-----
+							<?php echo $this->_translate(38)?>
+							-----
+						</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(102)?> <?php echo $this->_translate(130)?>
+				</td>
+				<td><select id="ObjID" name="ObjID" style="width: 300px;">
+						<option value="">
+							-----
+							<?php echo $this->_translate(38)?>
+							-----
+						</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(136)?></td>
+				<td><input id="Step" name="Step" type="text"
+					value="<?php echo $this->data->Step?>"></td>
+			</tr>
+			<tr>
+				<td>Kiểu kế thừa</td>
+				<td><select id="Type" name="Type" style="width: 200px">
+						<option value="0" <?php if($this->data->Type == 0):?> selected
+						<?php endif;?>>Không ràng buộc</option>
+						<option value="1" <?php if($this->data->Type == 1):?> selected
+						<?php endif;?>>Chỉ kế thừa 1 lần cho một mô đun</option>
+						<option value="2" <?php if($this->data->Type == 2):?> selected
+						<?php endif;?>>Chỉ kế thừa 1 lần và xóa ở mô đun kế thừa</option>
+				</select>
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>

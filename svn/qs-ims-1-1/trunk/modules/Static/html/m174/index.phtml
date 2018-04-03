@@ -1,0 +1,569 @@
+<style>
+
+    #view1
+    {
+        overflow: auto;
+    }
+
+</style>
+
+<script>
+    var Static_M174 = {
+        enableFilter : function()
+        {
+            $('#m174_start').removeAttr('disabled').removeClass('readonly');
+            $('#m174_group').removeAttr('disabled').removeClass('readonly');
+            $('#m174_end').removeAttr('disabled').removeClass('readonly');
+            $('#m174_location').removeAttr('disabled').removeClass('readonly');
+            $('#m174_equip').removeAttr('disabled').removeClass('readonly');
+            $('#m174_equip_tag').removeAttr('disabled').removeClass('readonly');
+        },
+
+        // Luu lai filter
+        saveFilter : function()
+        {
+            $.cookie('M714_start', $('#m174_start').val() ,{path:'/'});
+            $.cookie('M714_end', $('#m174_end').val() ,{path:'/'});
+            $.cookie('M714_location', $('#m174_location').val() ,{path:'/'});
+        },
+
+        // Hiển thị theo tab
+        show : function(tab_no, SAID)
+        {
+            // Enable filter
+            Static_M174.enableFilter();
+
+            // Luu lai bo loc
+            Static_M174.saveFilter();
+
+            // Lay so hieu cua tab
+            if(tab_no)
+            {
+                // Ghi tab vao cookie de hien thi lai
+                $.cookie('M174_Tab_No',tab_no,{path:'/'});
+                $.cookie('M174_SAID',SAID,{path:'/'});
+            }
+            else if($.cookie('M174_Tab_No'))
+            {
+                tab_no = $.cookie('M174_Tab_No');
+                SAID   = $.cookie('M174_SAID');
+            }
+            else
+            {
+                tab_no = 'DUE_CALIBRATIONS';
+                SAID   = 0;
+            }
+
+            // Hien thi du lieu theo so hieu tab
+            switch(tab_no)
+            {
+                case 'DUE_CALIBRATIONS':
+                    Static_M174.showDueCalibrations();
+                break;
+
+                case 'DUE_PARAMS':
+                    var date = new Date();
+                    var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+                    var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+                    var d1      = firstDay.getDate();
+                    d1          = d1 < 10?'0'+d1:d1;
+                    var m1      = firstDay.getMonth() + 1;
+                    m1          = m1 < 10?'0'+m1:m1;
+
+                    var d2      = lastDay.getDate();
+                    d2          = d2 < 10?'0'+d2:d2;
+                    var m2      = lastDay.getMonth() + 1;
+                    m2          = m1 < 10?'0'+m2:m2;
+
+                    $('#m174_start').val(d1 +'-'+ m1 +'-' +firstDay.getFullYear());
+                    $('#m174_end').val(d2 +'-'+ m2 +'-' +firstDay.getFullYear());
+
+                    Static_M174.showDueParams();
+                break;
+
+                case 'OVERDUE_WORKORDERS': // x
+                    Static_M174.showOverdueWorkOrders();
+                break;
+
+                case 'DUE_WORKORDERS': //
+                    Static_M174.showDueWorkOrders();
+                break;
+
+                case 'REQUESTS':
+                    $('#m174_start').attr('disabled',true).addClass('readonly');
+                    $('#m174_end').attr('disabled',true).addClass('readonly');
+
+                    Static_M174.showRequests();
+                break;
+
+                case 'PREVENTIVE':
+                    Static_M174.showPreventive();
+                break;
+                
+                case 'WORKORDERS':
+                    Static_M174.showWorkorders();
+                break;
+
+                case 'UNDER_MINIMUM':
+                    $('#m174_start').attr('disabled',true).addClass('readonly');
+                    $('#m174_end').attr('disabled',true).addClass('readonly');
+                    $('#m174_location').attr('disabled',true).addClass('readonly');
+                    $('#m174_equip').attr('disabled',true).addClass('readonly');
+                    $('#m174_group').attr('disabled',true).addClass('readonly');
+                    $('#m174_equip_tag').attr('disabled',true).addClass('readonly');
+
+                    Static_M174.showUnderMinimumItems();
+                    break;
+
+                case 'APPROVER':
+                    $('#m174_start').attr('disabled',true).addClass('readonly');
+                    $('#m174_end').attr('disabled',true).addClass('readonly');
+                    $('#m174_location').attr('disabled',true).addClass('readonly');
+                    $('#m174_equip').attr('disabled',true).addClass('readonly');
+                    $('#m174_group').attr('disabled',true).addClass('readonly');
+                    $('#m174_equip_tag').attr('disabled',true).addClass('readonly');
+
+                    Static_M174.showApprover(SAID);
+                break;
+
+                case 'SALE_EVENT':
+                    $('#m174_location').attr('disabled',true).addClass('readonly');
+                    $('#m174_equip').attr('disabled',true).addClass('readonly');
+                    $('#m174_group').attr('disabled',true).addClass('readonly');
+                    $('#m174_equip_tag').attr('disabled',true).addClass('readonly');
+
+                    Static_M174.showSaleEvent();
+                break;
+            }
+
+            // Danh dau tab da chon
+            Static_M174.highlight(tab_no, SAID);
+        },
+
+        // Danh dau tab da chon
+        highlight : function(tab_no, SAID)
+        {
+            if(tab_no == undefined)
+            {
+                tab_no = 'DUE_CALIBRATIONS';
+            }
+
+            if(tab_no == 'UNDER_MINIMUM')
+            {
+                $('.M174_tab').parent().removeClass('active');
+                $('#M714_TAB_UNDER_MINIMUM').parent().addClass('active');
+
+                // Danh cho phien ban cu hon
+                $('.M174_tab').removeClass('active');
+                $('#M714_TAB_UNDER_MINIMUM').addClass('active');
+                return;
+            }
+
+            if(tab_no == 'APPROVER')
+            {
+                tab_no = 'APPROVER_'+SAID;
+            }
+
+
+            $('.M174_tab').parent().removeClass('active');
+            $('#M174_TAB_' + tab_no).parent().addClass('active');
+
+            // Danh cho phien ban cu hon
+            $('.M174_tab').removeClass('active');
+            $('#M174_TAB_' + tab_no).addClass('active');
+        },
+
+        showRequests : function()
+        {
+            var url = sz_BaseUrl + '/static/m174/requests';
+            var dat = $('#M174_form').serialize();
+
+            qssAjax.getHtml(url, dat, function(jreturn) {
+                $('#show_box').html(jreturn);
+            });
+        },
+
+        createOrderFromRequest : function(ifid)
+        {
+            var data = {ifid:ifid};
+            var url  = sz_BaseUrl + '/static/m174/createorder2/';
+
+            qssAjax.confirm('Bạn muốn tạo phiếu bảo trì hay không?', function(){
+                qssAjax.call(url, data, function(jreturn) {
+                    if(jreturn.message != '')
+                    {
+                        qssAjax.alert(jreturn.message);
+                    }
+                    Static_M174.show('REQUESTS');
+                }, function(jreturn) {
+                    qssAjax.alert(jreturn.message);
+                });
+            });
+        },
+
+        showPreventive : function()
+        {
+            var url = sz_BaseUrl + '/static/m174/preventive';
+            var dat = $('#M174_form').serialize();
+
+            qssAjax.getHtml(url, dat, function(jreturn) {
+                $('#show_box').html(jreturn);
+            });
+        },
+		
+        showWorkorders : function()
+        {
+            var url = sz_BaseUrl + '/static/m174/workorders';
+            var dat = $('#M174_form').serialize();
+
+            qssAjax.getHtml(url, dat, function(jreturn) {
+                $('#show_box').html(jreturn);
+            });
+        },
+
+        // Hiển thị hiệu chuẩn đến hạn
+        showDueCalibrations : function()
+        {
+            var url = sz_BaseUrl + '/static/m174/duecalibrations';
+            var dat = $('#M174_form').serialize();
+
+            qssAjax.getHtml(url, dat, function(jreturn) {
+                $('#show_box').html(jreturn);
+            });
+        },
+
+        // Thông số đến hạn đo
+        showDueParams : function()
+        {
+            var url = sz_BaseUrl + '/static/m174/dueparams';
+            var dat = $('#M174_form').serialize();
+
+            qssAjax.getHtml(url, dat, function(jreturn) {
+                $('#show_box').html(jreturn);
+            });
+        },
+
+        // Phiếu bảo trì đến hạn
+        showDueWorkOrders : function()
+        {
+            var url = sz_BaseUrl + '/static/m174/dueworkorders';
+            var dat = $('#M174_form').serialize();
+
+            qssAjax.getHtml(url, dat, function(jreturn) {
+                $('#show_box').html(jreturn);
+            });
+        },
+
+        // Phiếu bảo trì quá hạn
+        showOverdueWorkOrders : function()
+        {
+            var url = sz_BaseUrl + '/static/m174/overdueworkorders';
+            var dat = $('#M174_form').serialize();
+
+            qssAjax.getHtml(url, dat, function(jreturn) {
+                $('#show_box').html(jreturn);
+            });
+        },
+
+        showApprover : function(SAID)
+        {
+            var url     = sz_BaseUrl + '/static/m174/approver/';
+            var page    = $('#m174-approval-page').val()?$('#m174-approval-page').val():'';
+            var perpage = $('#m174-approval-display').val()?$('#m174-approval-display').val():'';
+
+            var dat     = {said:SAID, page:page, perpage:perpage};
+
+            qssAjax.getHtml(url, dat, function(jreturn) {
+                $('#show_box').html(jreturn);
+            });
+        },
+
+        // Mặt hàng có số lượng nhỏ hơn tối thiểu
+        showUnderMinimumItems : function()
+        {
+            var url = sz_BaseUrl + '/static/m174/underminimum';
+            var dat = $('#M174_form').serialize();
+
+            qssAjax.getHtml(url, dat, function(jreturn) {
+                $('#show_box').html(jreturn);
+            });
+        },
+
+        createOrder : function(equip, DailyIFID, DailyIOID)
+        {
+            var data = {Equip:equip, DailyIFID:DailyIFID, DailyIOID:DailyIOID};
+            var url  = sz_BaseUrl + '/static/m174/createorder/';
+
+            qssAjax.confirm('Bạn muốn tạo phiếu bảo trì hay không?', function(){
+                qssAjax.call(url, data, function(jreturn) {
+                    if(jreturn.message != '')
+                    {
+                        qssAjax.alert(jreturn.message);
+                    }
+                    Static_M174.show('DUE_PARAMS');
+                }, function(jreturn) {
+                    qssAjax.alert(jreturn.message);
+                });
+            });
+        },
+
+        rejectMonitor : function(ifid)
+        {
+            var data = {ifid:ifid};
+            var url  = sz_BaseUrl + '/static/m174/rejectmonitor/';
+
+            qssAjax.confirm('Bạn muốn bỏ qua thông số cảnh báo này không?', function(){
+                qssAjax.call(url, data, function(jreturn) {
+                    if(jreturn.message != '')
+                    {
+                        qssAjax.alert(jreturn.message);
+                    }
+                    Static_M174.show('DUE_PARAMS');
+                }, function(jreturn) {
+                    qssAjax.alert(jreturn.message);
+                });
+            });
+        },
+
+        approve : function (said, ifid, deptid) {
+            var url  = '/user/form/approve/';
+            var data = {said:said, ifid:ifid, deptid:deptid};
+
+            qssAjax.confirm(
+                'Bạn có muốn duyệt bản ghi này không?',
+                function () {
+                    qssAjax.call(url, data, function(jreturn) {
+                        Static_M174.show();
+                    }, function(jreturn) {
+                        qssAjax.alert(jreturn.message);
+                    })
+                }
+
+            );
+
+        },
+
+        reject : function (said,ifid, deptid) {
+            qssAjax.confirm('Bạn có muốn hủy duyệt bản ghi này không',function(){
+                var url = sz_BaseUrl + '/user/form/reject';
+                var data = {said:said,ifid:ifid,deptid:deptid};
+                qssAjax.call(url, data, function(jreturn) {
+                    Static_M174.show();
+                }, function(jreturn) {
+                    qssAjax.alert(jreturn.message);
+                });
+            });
+        },
+
+     // Show sale event
+        showSaleEvent: function()
+        {
+            var url = sz_BaseUrl + '/static/m174/saleevent';
+            var dat = $('#M174_form').serialize();
+
+            qssAjax.getHtml(url, dat, function(jreturn) {
+                $('#show_box').html(jreturn);
+            });
+        }
+        
+    };
+
+    $(document).ready(function(){
+        Static_M174.show();
+
+        var view_height     = $(window).height();;
+        var menu_height     = $('#header-menu').height();
+        var search_height   = $('.searchmodule').height();
+        var fil_height      = $('#filter_box').height();
+        var tab_height      = $('.navmenutab').height();
+        var other_padding   = 40;
+        var rest            = view_height - menu_height - search_height - fil_height - tab_height - other_padding ;
+
+        //alert(view_height + ' - ' + $('#leftside').height());
+
+        $('#view1').css({'height': rest + 'px'});
+
+    });
+</script>
+
+<?php
+$start    = (isset($_COOKIE['M174_start']) && $_COOKIE['M174_start'])?$_COOKIE['M174_start']:date('d-m-Y');
+$end      = (isset($_COOKIE['M174_end']) && $_COOKIE['M174_end'])?$_COOKIE['M174_end']:date('d-m-Y', strtotime("+7 days"));
+$location = (isset($_COOKIE['M174_location']) && $_COOKIE['M174_location'])?$_COOKIE['M174_location']:0;
+?>
+
+<?php
+// Khu vuc
+$getFields = array('num'=>3,'objects'=>array('OKhuVuc'=>array('id'=>'IOID', 'display1'=>'MaKhuVuc','display2'=>'Ten') ));
+?>
+
+<?php
+// Thiet Bi
+$filterBy    = array('ODanhSachThietBi'=>array('MaThietBi', 'TenThietBi'));
+$showFields  = array(
+    'num'=>2,
+    'objects'=>array(
+        'ODanhSachThietBi'=>array(
+            'id'=>'IOID'
+        ,'display1'=>'MaThietBi'
+        ,'display2'=>'TenThietBi'
+        )
+    )
+);
+
+
+?>
+
+
+
+<form id="M174_form">
+
+    <div id="view">
+
+
+        <div style="height: 100%">
+            <div id="filter_box">
+
+                <table class="detail">
+                    <tr>
+                    	<td rowspan="6" style="width:50%;">
+                            <select multiple style="width:100%;height:167px;" class="break-word">
+		                        <!-- Thiết bị đến hạn hiệu chuẩn -->
+		                        <?php if(Qss_Lib_System::formActive('M753') && $this->rightM753):?>
+		                            <option onclick="Static_M174.show('DUE_CALIBRATIONS');" href="#" id="M174_TAB_DUE_CALIBRATIONS" class="M174_tab"
+		                            title="<?php echo $this->_translate(1);?>">
+		                                    <span><?php echo $this->_translate(1);?></span>
+		                            </option>
+		                        <?php endif;?>
+		
+		                        <!-- Yêu cầu bảo trì -->
+		                        <?php if(Qss_Lib_System::formActive('M747') && $this->rightM747):?>
+		                            <option onclick="Static_M174.show('REQUESTS');" href="#" id="M174_TAB_REQUESTS" class="M174_tab"
+		                                    title="<?php echo $this->_translate(2);?>">
+		                                    <span ><?php echo $this->_translate(2);?></span>
+		                            </option>
+		                        <?php endif;?>
+								<!-- Thiết bị đến hạn bảo trì  -->
+								 <?php if(Qss_Lib_System::formActive('M759') && $this->rightM759):?>
+		                            <option onclick="Static_M174.show('PREVENTIVE');" href="#" id="M174_TAB_PREVENTIVE" class="M174_tab"
+		                                    title="<?php echo $this->_translate(13);?>">
+		                                    <span ><?php echo $this->_translate(13);?></span>
+		                            </option>
+		                        <?php endif;?>
+		                        <!-- Phiểu báo trì cần làm -->
+		                        <?php if(Qss_Lib_System::formActive('M759') && $this->rightM759):?>
+		                            <option onclick="Static_M174.show('WORKORDERS');" href="#" id="M174_TAB_WORKORDERS" class="M174_tab"
+		                                    title="<?php echo $this->_translate(3);?>">
+		                                    <span ><?php echo $this->_translate(3);?></span>
+		                            </option>
+		                        <?php endif;?>
+		
+		                        <!-- Vật tư dưới mức tối thiểu -->
+		                        <?php if(Qss_Lib_System::formActive('M602') && $this->rightM602):?>
+		                            <option onclick="Static_M174.show('UNDER_MINIMUM');" href="#" id="M714_TAB_UNDER_MINIMUM" class="M174_tab"
+		                                    title="<?php echo $this->_translate(4);?>">
+		                                    <span ><?php echo $this->_translate(4);?></span>
+		                            </option>
+		                        <?php endif;?>
+		
+		                        <!-- Thông số cảnh báo -->
+		                        <?php if(Qss_Lib_System::formActive('M765')):?>
+		                            <option onclick="Static_M174.show('DUE_PARAMS');" href="#" id="M174_TAB_DUE_PARAMS" class="M174_tab"
+		                                    title="<?php echo $this->_translate(5);?>">
+		                                    <span ><?php echo $this->_translate(5);?></span>
+		                            </option>
+		                        <?php endif;?>
+		
+		                        <?php foreach($this->approveList as $app):?>
+                                    <?php if(Qss_Lib_System::formActive($app->FormCode)):?>
+                                        <option onclick="Static_M174.show('APPROVER', '<?php echo $app->SAID;?>');" href="#" id="M174_TAB_APPROVER_<?php echo $app->SAID;?>"
+                                                                                                 class="M174_tab break-word <?php echo ((int)$this->countPendingApprovals[$app->SAID] > 0)?'red bold':'';?>"
+                                                                                                 title="<?php echo $app->Name;?> <?php echo $app->FormName;?> (<?php echo $this->countPendingApprovals[$app->SAID];?>)">
+                                            <span><?php echo $app->Name;?> <?php echo $app->FormName;?> (<?php echo $this->countPendingApprovals[$app->SAID];?>)</span>
+                                        </option>
+                                    <?php endif;?>
+		                        <?php endforeach;?>
+		                        
+		                        <!-- Giao dịch bán hàng -->
+		                        <?php if(Qss_Lib_System::formActive('M504') && $this->rightM504):?>
+		                            <option onclick="Static_M174.show('SALE_EVENT');" href="#" id="M174_TAB_SALE_EVENT" class="M174_tab"
+		                                    title="Giao dịch với khách hàng">
+		                                    <span><?php echo $this->_translate(12);?></span>
+		                            </option>
+		                        <?php endif;?>
+		                    </select>
+                        </td>
+                    	
+                        <th class="report-param-label">
+                            <?php echo $this->_translate(6);?>
+                        </th>
+
+                        <td>
+                            <?php  echo $this->views->Report->Datepicker('m174_start', $start);?>
+                        </td>
+					</tr>
+					<tr>
+                        <th class="report-param-label">
+                            <?php echo $this->_translate(7);?>
+                        </th>
+
+                        <td>
+                            <?php  echo $this->views->Report->Datepicker('m174_end', $end);?>
+                        </td>
+					</tr>
+					<tr>
+                        <th class="report-param-label">
+                            <?php echo $this->_translate(8);?>
+                        </th>
+
+                        <td>
+                            <?php echo $this->views->Report->ComboBox('m174_location', $getFields,array(), array(), false, 'style="width:150px"', true, $location);?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th class="report-param-label">
+                            <?php echo $this->_translate(9);?>
+                        </th>
+
+                        <td>
+                            <?php $getFields = array('num'=>3,'objects'=>array('ONhomThietBi'=>array('id'=>'IOID', 'display1'=>'LoaiThietBi') ));?>
+                            <?php echo $this->views->Report->ComboBox('m174_group', $getFields,array(), array(), false, 'style="width:150px"', true, $location);?>
+                        </td>
+					</tr>
+					<tr>
+                        <th class="report-param-label" width="10%">
+                            <?php echo $this->_translate(10);?>
+                        </th>
+					
+                        <td>
+                            <?php echo $this->views->Report->ListBox('m174_equip', $filterBy, $showFields, array(), array(), 'style="width:150px"', $this->m816_author_tag, $this->m816_author);?>
+                        </td>
+                        
+					</tr>
+					<tr>
+					 	<th class="report-param-label" width="10%">
+                            
+                        </th>
+                        <td>
+                            <button type="button" class="btn btn-custom" onclick="Static_M174.show()"> <?php echo $this->_translate(11);?> </button>
+                        </td>
+                        
+					</tr>
+                </table>
+            </div>
+
+            <div class="clear"></div>
+
+                <div id="wrap">
+                    <div id="show_box">
+
+                    </div>
+                    <!-- end #show_box -->
+                </div>
+        </div>
+
+    </div>
+
+
+</form>

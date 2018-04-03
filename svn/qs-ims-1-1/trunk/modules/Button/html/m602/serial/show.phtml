@@ -1,0 +1,113 @@
+<?php
+    $stt         = 0;
+    $reject      = 0; // So luong da danh serial truoc do
+    $widths      = array(1, 5, 5, 5);
+    $widths      = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+    $iLastSerial = $this->auto?(int)preg_replace("/{$this->prefix}/", '', $this->last):0;
+
+    function getSerial($iSerial, $auto, $prefix, $length)
+    {
+        $newSerial = ''; // So serial danh moi
+
+        if($auto) // Lay serial moi theo cai dat
+        {
+            $newSerial = $prefix . str_pad($iSerial, $length, '0', STR_PAD_LEFT);
+        }
+
+        return $newSerial;
+    }
+?>
+
+<form id="m602_change_serial">
+    <div class="clear"></div>
+
+    <div id="m602_serial_show_table">
+        <table class="border_table" cellpadding="0" cellspacing="0">
+
+            <?php $begin = 0;?>
+            <tr class="bggrey">
+                <th style="width: <?php echo $widths[$begin++];?>%">STT</th>
+                <th style="width: <?php echo $widths[$begin++];?>%">Vị trí</th>
+                <th style="width: <?php echo $widths[$begin++];?>%">Serial cũ</th>
+                <th style="width: <?php echo $widths[$begin++];?>%">Serial mới</th>
+            </tr>
+
+            <?php foreach($this->data as $item):?>
+                <?php
+                    if($item->SoSerial)
+                    {
+                        $reject++;
+                    }
+                ?>
+
+                <?php if(!$this->reject && $item->SoSerial): // Không từ chối các dòng đã đánh serial ?>
+                    <tr>
+                        <td class="center">
+                            <?php echo ++$stt;?>
+                            <input type="hidden" name="ioid[]" value="<?php echo $item->IOID;?>" />
+                            <input type="hidden" name="aifid[]" value="<?php echo $item->IFID_M602;?>">
+                            <input type="hidden" name="deptid[]" value="<?php echo $item->DeptID;?>">
+                            <input type="hidden" name="kho[]" value="<?php echo $item->Kho;?>" />
+                            <input type="hidden" name="ref_kho[]" value="<?php echo $item->Ref_Kho;?>" />
+                            <input type="hidden" name="bin[]" value="<?php echo $item->Bin;?>" />
+                            <input type="hidden" name="ref_bin[]" value="<?php echo $item->Ref_Bin;?>" />
+                            <input type="hidden" name="masanpham[]" value="<?php echo $item->MaSP;?>" />
+                            <input type="hidden" name="ref_masanpham[]" value="<?php echo $item->Ref_MaSP;?>" />
+                            <input type="hidden" name="tensanpham[]" value="<?php echo $item->TenSanPham;?>" />
+                            <input type="hidden" name="dactinhkythuat[]" value="<?php echo $item->DacTinhKyThuat;?>" />
+                            <input type="hidden" name="donvitinh[]" value="<?php echo $item->DonViTinh;?>" />
+                            <input type="hidden" name="ref_donvitinh[]" value="<?php echo $item->Ref_DonViTinh;?>" />
+                            <input type="hidden" name="old_serial[]" value="<?php echo $item->SoSerial;?>" />
+                            <input type="hidden" name="soluong[]" value="1" />
+                        </td>
+                        <td class="left"><?php echo $item->Bin;?></td>
+                        <td class="left"><?php echo $item->SoSerial;?></td>
+                        <td class="center">
+                            <input type="text" name="new_serial[]" size="25" value="<?php echo getSerial(++$iLastSerial, $this->auto, $this->prefix, $this->length);?>" />
+                        </td>
+                    </tr>
+                <?php endif;?>
+            <?php endforeach;?>
+
+            <?php if(count($this->data) && isset($item)):?>
+                <?php
+                $length = ceil($item->SoLuongHC - $reject); // So lan lap lai cho 1 ban ghi <Do moi serial co sl = 1>
+                ?>
+
+                <?php for($j = 0; $j < $length; $j++):?>
+                    <tr>
+                        <td class="center">
+                            <?php echo ++$stt;?>
+                            <input type="hidden" name="ioid[]" value="0">
+                            <input type="hidden" name="aifid[]" value="<?php echo $item->IFID_M602;?>">
+                            <input type="hidden" name="deptid[]" value="<?php echo $item->DeptID;?>">
+                            <input type="hidden" name="kho[]" value="<?php echo $item->Kho;?>" />
+                            <input type="hidden" name="ref_kho[]" value="<?php echo $item->Ref_Kho;?>" />
+                            <input type="hidden" name="bin[]" value="<?php echo $item->Bin;?>" />
+                            <input type="hidden" name="ref_bin[]" value="<?php echo $item->Ref_Bin;?>" />
+                            <input type="hidden" name="masanpham[]" value="<?php echo $item->MaSP;?>" />
+                            <input type="hidden" name="ref_masanpham[]" value="<?php echo $item->Ref_MaSP;?>" />
+                            <input type="hidden" name="tensanpham[]" value="<?php echo $item->TenSanPham;?>" />
+                            <input type="hidden" name="dactinhkythuat[]" value="<?php echo $item->DacTinhKyThuat;?>" />
+                            <input type="hidden" name="donvitinh[]" value="<?php echo $item->DonViTinh;?>" />
+                            <input type="hidden" name="ref_donvitinh[]" value="<?php echo $item->Ref_DonViTinh;?>" />
+                            <input type="hidden" name="old_serial[]" value="<?php echo $item->SoSerial;?>" />
+                            <input type="hidden" name="soluong[]" value="1" />
+                        </td>
+                        <td class="left"><?php echo $item->Bin;?></td>
+                        <td class="left">&nbsp;</td>
+                        <td class="center">
+                            <input type="text" name="new_serial[]" size="25" value="<?php echo getSerial(++$iLastSerial, $this->auto, $this->prefix, $this->length);?>" />
+                        </td>
+                    </tr>
+                <?php endfor;?>
+            <?php endif;?>
+        </table>
+    </div>
+</form>
+
+<div class="clear"></div>
+
+<div class="fr" style="padding: 5px 0px ;">
+    <button type="button" onclick="M602_SERIAL.save()" class="btn_main_top btn"> Cập nhật </button>
+</div>

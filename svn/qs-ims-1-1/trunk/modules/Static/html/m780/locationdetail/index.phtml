@@ -1,0 +1,38 @@
+<div class="einfo-main-info" id="einfo-show-equip-info">
+	<div id="einfo-tabs" class="navmenutab">
+		<ul>
+			<li class="splash"></li>
+			<li class=""><a id="einfo_tab_1"
+				onclick="einfo_load_tab_for_location(1)" href="#" tab="1"
+				class="einfo_tab"> <span>Thông tin chung
+				</span> </a></li>
+			<?php if(Qss_Lib_System::fieldActive('OBaoTriDinhKy', 'BaoTriKhuVuc')):?>
+			<li class="splash"></li>
+			<li class=""><a id="einfo_tab_2"
+				onclick="einfo_load_tab_for_location(2)" href="#" tab="2"
+				class="einfo_tab"> <span>Kế hoạch bảo trì
+				</span> </a></li>
+			<li class="splash"></li>
+			<li class=""><a id="einfo_tab_3"
+				onclick="einfo_load_tab_for_location(3)" href="#" tab="3"
+				class="einfo_tab"> <span>Lịch sử bảo trì
+				</span> </a></li>
+			<?php endif;?>
+		</ul>
+	</div>
+	<!-- end #einfo-tabs -->
+
+	<!-- NOI HIEN THI THONG TIN KHU VỰC -->
+	<div id="einfo-info-table">
+	<?php if ($this->loccode): ?>
+		<div class="bgwhite" id="einfo_inner_show_info"></div>
+
+		<script>
+		einfo_load_tab_for_location();
+	</script>
+	<?php else: ?>
+		<h2>Bạn cần chọn khu vực!</h2>
+		<?php endif; ?>
+	</div>
+	<!-- end #einfo-info-table -->
+</div>

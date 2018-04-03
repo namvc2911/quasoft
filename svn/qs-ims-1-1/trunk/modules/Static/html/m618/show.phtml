@@ -1,0 +1,262 @@
+<form id="excel" method="post" action="/report/index/excel" target="new">
+    <input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="portrait">
+    <excel orientation="portrait" font-name="Arial" font-size="11"
+           margin-left="0.5" margin-right="0.5" margin-top="0.75"
+           margin-bottom="0.75" />
+
+    <div id="head_print">
+        <?php $row = 2; ?>
+        <div class=" center">
+            <h2>
+                <center>
+                    <xls row="<?php echo $row ?>" column="C" column-merge="E"
+                         row-merge="1" font-size="14" h-align="center">THẺ KHO</xls>
+                </center>
+
+            </h2>
+
+        </div>
+        <div class="clear">&nbsp;</div>
+
+        <div class="fl">
+            <p>
+                <xls row="<?php echo $row ?>" column="A" column-merge="B">Đơn vị:</xls>
+            </p>
+
+            <p>
+                <xls row="<?php echo $row + 1 ?>" column="A" column-merge="B">Địa
+                    chỉ:</xls>
+            </p>
+        </div>
+
+
+        <div class="fr center">
+            <xls row="<?php echo $row ?>" column="F" column-merge="J"
+                 h-align="center" italic="1">Theo mẫu S12-DN</xls>
+            <br />
+
+            <xls row="<?php echo $row + 1 ?>" column="F" column-merge="J"
+                 h-align="center" italic="1">(Ban hành theo QĐ số 15/2006/QĐ-BTC</xls>
+            <br />
+
+            <xls row="<?php echo $row + 2 ?>" column="F" column-merge="J"
+                 h-align="center" italic="1">ngày 20/03/2006 của Bộ trưởng BCT)</xls>
+        </div>
+        <div class="clr"></div>
+
+    </div>
+    <?php $row = $row + 3; ?>
+
+    <p>
+        <xls row="<?php echo $row ?>" column="D" column-merge="E" height="20">Ngày
+            lập thẻ</xls>
+    </p>
+
+    <p>
+        <xls row="<?php echo $row + 1 ?>" column="D" column-merge="E"
+             height="20">Tờ</xls>
+    </p>
+
+    <p>
+        <xls row="<?php echo $row + 2 ?>" column="B" column-merge="F"
+             height="20">Tên, nhãn hiệu quy cách vật tư : <?php echo @$this->item->TenSanPham;?></xls>
+    </p>
+
+	<span style="padding-right: 50px"> <xls row="<?php echo $row + 3 ?>"
+                                            column="B" column-merge="C" height="20">Đơn vị: <?php echo @$this->item->DonViTinh;?></xls>
+	</span> <span> <xls row="<?php echo $row + 3 ?>" column="D"
+                        column-merge="E" height="20">Mã vật tư: <?php echo @$this->item->MaSanPham;?></xls>
+	</span>
+    <?php $row = $row + 5; ?>
+    <p>&nbsp;</p>
+
+    <div id="container">
+        <table class="border" width="100%" border="1" cellpadding="0"
+               cellspacing="0">
+            <tr class="bggrey">
+                <th rowspan="2"><xls row="<?php echo $row ?>" column="A"
+                                     wrap-text="1" width="3.9" height="23" row-merge="1"
+                                     h-align="center" v-align="center" border="1">STT</xls>
+                </th>
+
+                <th rowspan="2"><xls row="<?php echo $row ?>" column="B"
+                                     wrap-text="1" width="7.9" height="23" row-merge="1"
+                                     h-align="center" v-align="center" border="1">Ngày tháng</xls>
+                </th>
+
+                <th colspan="2"><xls row="<?php echo $row ?>" column="C"
+                                     column-merge="D" wrap-text="1" height="23" h-align="center"
+                                     v-align="center" border="1">Số hiệu chứng từ</xls>
+                </th>
+
+                <th rowspan="2"><xls row="<?php echo $row ?>" column="E"
+                                     wrap-text="1" width="17" row-merge="1" height="23"
+                                     h-align="center" v-align="center" border="1">Diễn giải</xls>
+                </th>
+
+                <th rowspan="2"><xls row="<?php echo $row ?>" column="F"
+                                     wrap-text="1" width="5.4" row-merge="1" height="23"
+                                     h-align="center" v-align="center" border="1">Ngày, nhập, xuất</xls>
+                </th>
+                <th colspan="3"><xls row="<?php echo $row ?>" column="G"
+                                     column-merge="I" wrap-text="1" height="23" h-align="center"
+                                     v-align="center" border="1">Số lượng</xls>
+                </th>
+
+                <th rowspan="2"><xls row="<?php echo $row ?>" column="J"
+                                     wrap-text="1" width="8.25" row-merge="1 " height="23"
+                                     h-align="center" v-align="center" border="1">Ký xác nhận của kế
+                        toán</xls>
+                </th>
+            </tr>
+
+            <tr class="center bggrey bold">
+                <?php $row++; ?>
+                <td><xls row="<?php echo $row ?>" column="C" wrap-text="1"
+                         width="7.5" height="23" h-align="center" border="1">Nhập</xls>
+                </td>
+
+                <td><xls row="<?php echo $row ?>" column="D" wrap-text="1"
+                         width="7.5" height="23" h-align="center" border="1">Xuất</xls>
+                </td>
+
+                <td><xls row="<?php echo $row ?>" column="G" wrap-text="1"
+                         width="9.5" height="23" h-align="center" border="1">Nhập</xls>
+                </td>
+
+                <td><xls row="<?php echo $row ?>" column="H" wrap-text="1"
+                         width="9.5" height="23" h-align="center" border="1">Xuất</xls>
+                </td>
+
+                <td><xls row="<?php echo $row ?>" column="I" wrap-text="1"
+                         width="9.5" height="23" h-align="center" border="1">Tồn</xls>
+                </td>
+            </tr>
+            <?php $row++; ?>
+
+            <tr class="center bggrey">
+                <td><xls row="<?php echo $row ?>" column="A" wrap-text="1"
+                         height="23" h-align="center" border="1">A</xls>
+                </td>
+
+                <td><xls row="<?php echo $row ?>" column="B" wrap-text="1"
+                         height="23" h-align="center" border="1">B</xls>
+                </td>
+
+                <td><xls row="<?php echo $row ?>" column="C" wrap-text="1"
+                         height="23" h-align="center" border="1">C</xls>
+                </td>
+
+                <td><xls row="<?php echo $row ?>" column="D" wrap-text="1"
+                         height="23" h-align="center" border="1">D</xls>
+                </td>
+
+                <td><xls row="<?php echo $row ?>" column="E" wrap-text="1"
+                         height="23" h-align="center" border="1">E</xls>
+                </td>
+
+                <td><xls row="<?php echo $row ?>" column="F" wrap-text="1"
+                         height="23" h-align="center" border="1">F</xls>
+                </td>
+
+                <td><xls row="<?php echo $row ?>" column="G" wrap-text="1"
+                         height="23" h-align="center" border="1">1</xls>
+                </td>
+
+                <td><xls row="<?php echo $row ?>" column="H" wrap-text="1"
+                         height="23" h-align="center" border="1">2</xls>
+                </td>
+
+                <td><xls row="<?php echo $row ?>" column="I" wrap-text="1"
+                         height="23" h-align="center" border="1">3</xls>
+                </td>
+
+                <td><xls row="<?php echo $row ?>" column="J" wrap-text="1"
+                         height="23" h-align="center" border="1">G</xls>
+                </td>
+
+            </tr>
+            <?php $row++; ?>
+
+            <tr>
+                <td class="center"><xls row="<?php echo $row ?>" column="A"
+                                        wrap-text="1" h-align="center" border="1"></xls>&nbsp;</td>
+
+                <td class="center"><xls row="<?php echo $row ?>" column="B"
+                                        wrap-text="1" h-align="center" border="1"></xls>&nbsp;</td>
+
+                <td class="center"><xls row="<?php echo $row ?>" column="C"
+                                        wrap-text="1" h-align="center" border="1"></xls>&nbsp;</td>
+
+                <td class="center"><xls row="<?php echo $row ?>" column="D"
+                                        wrap-text="1" h-align="center" border="1"></xls>&nbsp;</td>
+
+                <td><xls row="<?php echo $row ?>" column="E" wrap-text="1"
+                         h-align="center" border="1">Tồn đầu kỳ</xls>&nbsp;</td>
+
+                <td><xls row="<?php echo $row ?>" column="F" wrap-text="1"
+                         h-align="center" border="1"></xls>&nbsp;</td>
+
+                <td class="center"><xls row="<?php echo $row ?>" column="G"
+                                        wrap-text="1" h-align="center" border="1"></xls>&nbsp;</td>
+
+                <td class="center"><xls row="<?php echo $row ?>" column="H"
+                                        wrap-text="1" h-align="center" border="1"></xls>&nbsp;</td>
+
+                <td class="center"><xls row="<?php echo $row ?>" column="I"
+                                        wrap-text="1" h-align="center" border="1"> <?php echo $this->begin ?></xls>&nbsp;</td>
+
+                <td><xls row="<?php echo $row ?>" column="J" wrap-text="1"
+                         h-align="center" border="1"></xls>&nbsp;</td>
+            </tr>
+            <?php $i = 1; ?>
+            <?php $begin = $this->begin;?>
+
+            <?php foreach ($this->inout as $items): ?>
+                <?php foreach ($items as $item): ?>
+                    <?php $row++; ?>
+                    <tr>
+                        <td class="center"><xls row="<?php echo $row ?>" column="A"
+                                                wrap-text="1" h-align="center" border="1"> <?php echo $i ?></xls>&nbsp;</td>
+
+                        <td class="center"><xls row="<?php echo $row ?>" column="B"
+                                                wrap-text="1" h-align="center" border="1"> <?php echo Qss_Lib_Date::mysqltodisplay($item['NgayChungTu']) ?></xls>&nbsp;
+                        </td>
+
+                        <td class="center"><xls row="<?php echo $row ?>" column="C"
+                                                wrap-text="1" h-align="center" border="1"> <?php if ($item['Type']) echo @$item['SoChungTu'] ?></xls>&nbsp;</td>
+
+                        <td class="center"><xls row="<?php echo $row ?>" column="D"
+                                                wrap-text="1" h-align="center" border="1"> <?php if (!$item['Type']) echo @$item['SoChungTu'] ?></xls>&nbsp;
+                        </td>
+
+                        <td><xls row="<?php echo $row ?>" column="E" wrap-text="1"
+                                 h-align="center" border="1"></xls>&nbsp;</td>
+
+                        <td><xls row="<?php echo $row ?>" column="F" wrap-text="1"
+                                 h-align="center" border="1"> <?php echo Qss_Lib_Date::mysqltodisplay($item['NgayChuyenHang']) ?></xls>&nbsp;
+                        </td>
+
+                        <td class="center"><xls row="<?php echo $row ?>" column="G"
+                                                wrap-text="1" h-align="center" border="1"> <?php if ($item['Type']){ echo $item['SoLuong'];  $begin+=$item['SoLuong'];} else echo '0';?></xls>&nbsp;
+                        </td>
+
+                        <td class="center"><xls row="<?php echo $row ?>" column="H"
+                                                wrap-text="1" h-align="center" border="1"> <?php if (!$item['Type']){ echo $item['SoLuong'];  $begin-=$item['SoLuong'];} else echo '0';?></xls>&nbsp;
+                        </td>
+
+                        <td class="center"><xls row="<?php echo $row ?>" column="I"
+                                                wrap-text="1" h-align="center" border="1"> <?php echo $begin ?></xls>&nbsp;</td>
+
+                        <td><xls row="<?php echo $row ?>" column="J" wrap-text="1"
+                                 h-align="center" border="1"></xls>&nbsp;</td>
+                    </tr>
+                    <?php $i++; ?>
+                <?php endforeach; ?>
+            <?php endforeach; ?>
+        </table>
+    </div>
+</div>

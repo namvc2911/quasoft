@@ -1,0 +1,88 @@
+<?php 
+$infoWidthArr    = array(2,2,4,2,2,2,2,2);
+$width           = 1200;
+$padding         = 2;
+$fit             = Qss_Lib_Report::changeWidthToFitScreen2($infoWidthArr, $width, $padding);
+?>
+
+<div id="M413_info_wrap">
+    <!-- Thong tin don hang -->
+    <!-- 
+    Trường chưa sử dụng:
+        Nhân viên mua hàng
+        Giá trị đơn hàng
+        Thuế
+        Giẩm trừ
+        Tổng tiền 
+        Chi phí vận chuyển
+     -->
+    <h3>
+        Thông tin đơn hàng
+    </h3>     
+    
+    <?php if($this->order):?>
+    <table 
+        id="M413_info_table" 
+        cellpadding="0" 
+        cellspacing="0" 
+        border="0" 
+        style="width:<?php echo $width;?>px; table-layout: fixed;" >
+        <?php $begin = 0; ?>
+        <!-- Số đơn hàng -->
+        <tr>
+            <td class="left bold title" > Số đơn hàng: </td>
+            <td class="left"> <?php echo $this->order->SoDonHang; ?> </td>
+        </tr>
+        
+        <!-- Số kế hoạch -->
+        <tr>
+            <td class="left bold title" > Số kế hoạch: </td>
+            <td class="left"> <?php echo $this->order->SoKeHoach; ?> </td>
+        </tr>     
+        
+        <!-- Nhà cung cấp -->
+        <tr>
+            <td class="left bold title" > Nhà cung cấp: </td>
+            <td class="left"> <?php echo "{$this->order->MaNCC} - {$this->order->TenNCC}"; ?> </td>
+        </tr>     
+        
+        <!-- Ngày đặt hàng -->
+        <tr>
+            <td class="left bold title" > Ngày đặt hàng: </td>
+            <td class="left"> <?php echo Qss_Lib_Date::mysqltodisplay($this->order->NgayDatHang); ?> </td>
+        </tr> 
+        
+        <!-- Ngày nhận hàng -->
+        <tr>
+            <td class="left bold title" > Ngày nhận hàng: </td>
+            <td class="left"> <?php echo Qss_Lib_Date::mysqltodisplay($this->order->NgayYCNH); ?> </td>
+        </tr>   
+        
+        <!-- Tổng tiền đơn hàng -->
+        <tr>
+            <td class="left bold title" > Tổng tiền đơn hàng: </td>
+            <td class="left"> <?php echo Qss_Lib_Util::formatMoney($this->order->TongTienDH); ?> </td>
+        </tr>     
+        
+        <!-- Hóa đơn đã nhận -->
+        <tr>
+            <td class="left bold title" > Hóa đơn đã nhận: </td>
+            <td class="left"> 0 </td>
+        </tr>  
+        
+        <!-- Số tiền đã thanh toán -->
+        <tr>
+            <td class="left bold title" > Số tiền đã thanh toán: </td>
+            <td class="left"> 0 </td>
+        </tr>                                
+    </table>
+    <?php endif;?>
+    
+    <div class="clear"></div>
+    <br/>
+    <div>
+        <button type="button" class="btn btn-custom" onclick=""> Đóng đơn hàng </button>
+    </div>
+    <br/>
+    <hr/>
+</div><!-- end  #M413_info_wrap -->

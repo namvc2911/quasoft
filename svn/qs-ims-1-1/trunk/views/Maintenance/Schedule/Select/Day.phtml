@@ -1,0 +1,85 @@
+<div id="cal_day" class="cal_select_week">
+	<div class="info">
+    	<ul class="clearfix">
+            <li class="arow_top"><a href="#"
+                onclick="showDay('','<?php echo $this->prev[0]?>','<?php echo $this->prev[1]?>');"><img src="/images/calendar/left_arrow_16.png" /></a></li>
+            <li class="info_top">Tháng <?php echo $this->m?> năm <?php echo $this->y?></span>
+            <li class="arow_top"><a href="#"
+                onclick="showDay('','<?php echo $this->next[0]?>','<?php echo $this->next[1]?>');"><img  src="/images/calendar/right_arrow_16.png" /></a></li>
+		</ul>
+    </div>
+	<div class="weekday clearfix">
+    	<ul>
+		<li>T2</li>
+		<li>T3</li>
+		<li>T4</li>
+		<li>T5</li>
+		<li>T6</li>
+		<li class="sat">T7</li>
+        <li class="sun">CN</li>
+		</ul>
+	</div>
+    <div class="mid_lich">
+	<?php
+	$a = $this->sonar->adjustDate($this->m, $this->y);
+	$month = $a[0];
+	$year = $a[1];
+
+	$daysInMonth = $this->daysInMonth;
+	$date = getdate(mktime(12, 0, 0, $month, 1, $year));
+
+	$first = $date["wday"];
+	$monthName = $this->sonar->monthNames[$month - 1];
+	$d = - $first + 2;
+	while ($d > 1)
+	{
+		$d -= 7;
+	}
+
+	// Make sure we know when today is, so that we can use a different CSS style
+	$today = getdate(time());
+	?>
+	<?php while ($d <= $daysInMonth):?>
+	<div class="row clearfix">
+	<?php for ($i = 0; $i < 7; $i++):?>
+	<?php if ($d > 0 && $d <= $daysInMonth) :?>
+	<?php
+	$class='normal';
+	if($i==5)
+	{
+		$class = 'sat';
+	}
+	if($i==6)
+	{
+		$class = 'sun';
+	}
+	if($d==$this->selected['mday']&&$month==$this->selected['mon']&&$year==$this->selected['year'])
+	{
+		$class .= ' selected';
+	}
+	elseif($d==$this->today['mday']&&$month==$this->today['mon']&&$year==$this->today['year'])
+	{
+		$class .= ' today';
+	}
+	if(isset($this->lVacation[$d]))
+	{
+		$class .= 'vacation';
+	}
+	?>
+    	
+		<div class='<?php echo $class;?>'
+			onclick="showDay('<?php echo $d?>','<?php echo $month?>','<?php echo $year?>')">
+            <div class="solar"><?php echo $d;?></div>
+            <div class="lunar"><?php echo ($this->lunarMonth[$d-1]->day==1)?($this->lunarMonth[$d-1]->day.'/'.$this->lunarMonth[$d-1]->month .($this->lunarMonth[$d-1]->leap?'(*)':'')):$this->lunarMonth[$d-1]->day?></div>
+
+		</div>
+		<?php else:?>
+		<div class="<?php echo 'empty'?>">&nbsp;</div>
+		<?php endif;?>
+		<?php $d++; ?>
+		<?php endfor;?>
+	</div>
+
+	<?php endwhile;?>
+    </div>
+</div>

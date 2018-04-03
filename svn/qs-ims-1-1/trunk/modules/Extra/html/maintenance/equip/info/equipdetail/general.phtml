@@ -1,0 +1,518 @@
+<?php
+/**
+ * *****************************************************************************
+ * Thong Tin Chung Ve Thiet Bi
+ * *****************************************************************************
+ */
+
+$common = new Qss_Model_Extra_Extra();
+
+// series bao cao loai thiet bi
+// $series_einfo_maint_type_chart = '';
+// $comma                         = 0;
+
+// foreach ($this->mtypes as $mtypes)
+// {
+// 	$series_einfo_maint_type_chart .= ($comma) ? ',' : '';
+// 	$series_einfo_maint_type_chart .= "['{$mtypes->Loai}'," . @(int) $this->numOfWOByMtype[$mtypes->IOID] . "]";
+
+// 	if ($comma == 0)
+// 	{
+// 		$comma = 1;
+// 	}
+// }
+
+// Hien thi hinh anh thiet bi
+$imageResult = '';
+$image       = "/user/field/picture?file={$this->eq->Anh}";
+$imageExists = file_exists(QSS_DATA_DIR
+. "/documents/{$this->eq->Anh}");
+
+if ($imageExists && $this->eq->Anh)
+{
+	$imageResult = '<img src="'.$image.'" width="250px"/>';
+}
+else
+{
+	$imageResult = '<div '
+	. 'style="width: 250px; float:left; '
+	. 'background: #fff; font-size: 40px; '
+	. 'line-height: 100px; color: #ccc; text-align: center;">'
+	. ' NO IMAGE '
+	. '</div>';
+}
+
+// Kiem tra quyen cua cac field
+$fieldNguyenGia      = Qss_Lib_System::fieldActive('ODanhSachThietBi', 'NguyenGia');
+$fieldNgayMua        = Qss_Lib_System::fieldActive('ODanhSachThietBi', 'NgayMua');
+$fieldHangBaoHanh    = Qss_Lib_System::fieldActive('ODanhSachThietBi', 'HangBaoHanh');
+$fieldHanBaoHanh     = Qss_Lib_System::fieldActive('ODanhSachThietBi', 'HanBaoHanh');
+$fieldTuoiTho        = Qss_Lib_System::fieldActive('ODanhSachThietBi', 'TuoiTho');
+//$fieldTrungTamChiPhi = Qss_Lib_System::fieldActive('ODanhSachThietBi', 'TrungTamChiPhi');
+//$fieldTenTrungTam    = Qss_Lib_System::fieldActive('ODanhSachThietBi', 'TenTrungTam');
+$fieldLichLamViec    = Qss_Lib_System::fieldActive('ODanhSachThietBi', 'LichLamViec');
+$fieldMaKhuVuc       = Qss_Lib_System::fieldActive('ODanhSachThietBi', 'MaKhuVuc');
+//$fieldTenKhuVuc      = Qss_Lib_System::fieldActive('ODanhSachThietBi', 'TenKhuVuc');
+$fieldAnh            = Qss_Lib_System::fieldActive('ODanhSachThietBi', 'Anh');
+?>
+
+<script>
+	$(document).ready(function() {
+// 		var chart;
+// 		chart = new Highcharts.Chart({
+// 			chart: {
+// 				renderTo: 'einfo_maint_type_chart',
+// 				type: 'pie',
+// 				plotBackgroundColor: null,
+// 				plotBorderWidth: null,
+// 				plotShadow: false
+// 			},
+// 			title: {
+// 				text: ''
+// 			},
+// 			tooltip: {
+// 				formatter: function() {
+// 					return '<b>' + this.point.name + '</b><br/>' + this.y + '<br/>';
+// 				}
+// 			},
+// 			plotOptions: {
+// 				pie: {
+// 					allowPointSelect: true,
+// 					cursor: 'pointer',
+// 					dataLabels: {
+// 						enabled: true,
+// 						formatter: function() {
+// 							return '<b>' + this.point.name + ':</b> ' + this.y + '<br/>';
+// 						}
+// 					},
+// 					showInLegend: true
+// 				}
+// 			},
+// 			series: [{
+// 					type: 'pie',
+// 					data: [
+						<?php
+// 						//echo $series_einfo_maint_type_chart;
+// 						?>
+// 					]
+// 				}]
+// 		});
+
+// 		var chart2;
+// 		chart2 = new Highcharts.Chart({
+// 			chart: {
+// 				renderTo: 'einfo_available_time_chart',
+// 				type: 'pie',
+// 				plotBackgroundColor: null,
+// 				plotBorderWidth: null,
+// 				plotShadow: false
+// 			},
+// 			title: {
+// 				text: ''
+// 			},
+// 			tooltip: {
+// 				formatter: function() {
+// 					return '<b>' + this.point.name + '</b><br/>' + this.y + '<br/>';
+// 				}
+// 			},
+// 			plotOptions: {
+// 				pie: {
+// 					allowPointSelect: true,
+// 					cursor: 'pointer',
+// 					dataLabels: {
+// 						enabled: true,
+// 						formatter: function() {
+// 							return '<b>' + this.point.name + ':</b> ' + this.y + ' Giờ<br/>';
+// 						}
+// 					},
+// 					showInLegend: true
+// 				}
+// 			},
+// 			series: [{
+// 					type: 'pie',
+// 					data: [
+						//['<?php //echo $this->_translate(90);?>', <?php //echo $this->relax ?>],
+						//['<?php //echo $this->_translate(91);?>', <?php //echo $this->down ?>],
+						//['<?php //echo $this->_translate(92);?>', <?php //echo $this->work ?>]
+// 					]
+// 				}]
+// 		});
+
+	});
+</script>
+
+
+<div class="ui_box">
+<?php /*?>
+<div class="ui_box_s50_right">
+
+<div class="ui_box_s100">
+<div id="einfo_maint_type_chart" style="height:350px; width: 100%; margin-top: 15px;">
+<!-- Bieu do thong ke so luong pbt theo loai bao tri -->
+</div>
+</div>
+
+
+<div class="ui_box_s100">
+<div id="einfo_available_time_chart" style="height:350px; width: 100%; margin-top: 15px;">
+<!-- Bieu do thoi gian lam viec -->
+</div>
+</div>
+
+
+</div>
+*/?>
+
+	<div class="ui_box_s100">
+
+		<!-- FIELDSET: THONG TIN CHUNG -->
+		<div class="ui_box_s50_left">
+			<fieldset>
+				<legend>
+				<?php echo $this->_translate(1); // Thông tin chung     ?>
+				</legend>
+				<div class="ui_box_line">
+				<?php echo $imageResult ; // Hien thi anh thiet bi?>
+
+					<div style="float: right;">
+						<!-- Button: Ly lich thiet bi -->
+						<button type="button" style="width: 120px"
+							onclick="openModule('M778', '/report/maintenance/equipment/profile?eq_tag=<?php echo $this->eq->MaThietBi ?>&eq=<?php echo $this->eq->IOID ?>');"
+							class="btn-custom">
+							<?php echo $this->_translate(93);?>
+						</button>
+						<br>
+
+						<!-- Button: Sua thiet bi -->
+						<button type="button" style="width: 120px"
+							onclick="popupFormEdit('M705',<?php echo $this->eq->IFID_M705 ?>, 1, null, function() {
+									$('#EQUIP<?php echo $this->eq->IFID_M705 ?>_anchor').click();
+								});"
+							class="btn-custom">
+							<?php echo $this->_translate(94);?>
+						</button>
+						<br>
+
+						<!-- Button: Them bo phan -->
+						<button type="button" style="width: 120px"
+							onclick="popupObjectInsert(<?php echo $this->eq->IFID_M705 ?>, 1, 'OCauTrucThietBi', {OCauTrucThietBi_TrucThuoc:0}, function() {
+									$('#einfo-search-eq-table').jstree('load_node', $('#EQUIP<?php echo $this->eq->IFID_M705 ?>'));
+								})"
+							class="btn-custom">
+							<?php echo $this->_translate(95);?>
+						</button>
+					</div>
+				</div>
+
+				<div class="ui_box_line">
+					<table border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<td class="einfo_generaltab_label" style=""><label><?php echo $this->_translate(2); // Mã thiết bị     ?>
+							</label>
+							</td>
+
+							<td class="einfo_generaltab_element break-word"
+								style="width: 39%; padding-left: 1%"><?php echo @$this->eq->MaThietBi; ?>
+							</td>
+						</tr>
+
+						<tr>
+							<td class="einfo_generaltab_label" style="width: 10%"><label><?php echo $this->_translate(3); // Mã thiết bị     ?>
+							</label>
+							</td>
+
+							<td class="einfo_generaltab_element break-word"
+								style="width: 39%; padding-left: 1%"><?php echo @$this->eq->TenThietBi; ?>
+							</td>
+
+
+						</tr>
+
+						<tr>
+							<td class="einfo_generaltab_label"><label><?php echo $this->_translate(4); // Mã thiết bị     ?>
+							</label>
+							</td>
+
+							<td class="einfo_generaltab_element break-word"><?php echo @$this->eq->NhomThietBi; ?>
+							</td>
+						</tr>
+
+
+						<tr>
+							<td class="einfo_generaltab_label" style="width: 10%"><label><?php echo $this->_translate(96); // Mã thiết bị     ?>
+							</label>
+							</td>
+
+							<td class="einfo_generaltab_element break-word"
+								style="width: 39%; padding-left: 1%"><?php echo @$this->eq->LoaiThietBi; ?>
+							</td>
+						</tr>
+
+						<tr>
+							<td class="einfo_generaltab_label"><label><?php echo $this->_translate(6) // Mã thiết bị     ?>
+							</label>
+							</td>
+
+							<td class="einfo_generaltab_element break-word"><?php echo @$this->eq->Model; ?>
+							</td>
+						</tr>
+
+						<tr>
+
+							<td class="einfo_generaltab_label"><label><?php echo $this->_translate(98); // Mã thiết bị     ?>
+							</label>
+							</td>
+
+							<td class="einfo_generaltab_element break-word"><?php echo @$this->eq->Serial; ?>
+							</td>
+						</tr>
+
+						<tr>
+							<td class="einfo_generaltab_label"><label><?php echo $this->_translate(8) // Mã thiết bị     ?>
+							</label>
+							</td>
+
+							<td class="einfo_generaltab_element"><?php echo @Qss_Lib_Date::mysqltodisplay($this->eq->NgayDuaVaoSuDung); ?>
+							</td>
+						</tr>
+
+						<tr>
+
+							<td class="einfo_generaltab_label"><label><?php echo $this->_translate(5); // Mã thiết bị     ?>
+							</label>
+							</td>
+
+							<td class="einfo_generaltab_element"><?php echo @$this->eq->NamSanXuat; ?>
+							</td>
+						</tr>
+
+						<tr>
+							<td class="einfo_generaltab_label"><label><?php echo $this->_translate(7) // Mã thiết bị     ?>
+							</label>
+							</td>
+
+							<td class="einfo_generaltab_element break-word"><?php echo @$this->eq->XuatXu; ?>
+							</td>
+						</tr>
+						<tr>
+							<td class="einfo_generaltab_label"><label><?php echo $this->_translate(9) // Mã thiết bị     ?>
+							</label>
+							</td>
+
+							<td class="einfo_generaltab_element break-word"><?php echo @Qss_Lib_Util::textToHtml($this->eq->DacTinhKT); ?>
+							</td>
+						</tr>
+
+						<tr>
+							<td class="einfo_generaltab_label"><label><?php echo $this->_translate(102);?></label></td>
+
+							<td class="einfo_generaltab_element"><?php echo @$this->workingTime?$this->workingTime:0; ?></td>
+						</tr>
+					</table>
+				</div>
+			</fieldset>
+		</div>
+
+		<!-- FIELDSET: TAI SAN -->
+		<?php
+		if ($fieldNguyenGia
+		|| $fieldNgayMua
+		|| $fieldHangBaoHanh
+		|| $fieldHanBaoHanh
+		|| $fieldHanBaoHanh
+		|| $fieldTuoiTho
+		//|| $fieldTrungTamChiPhi
+		//|| $fieldTenTrungTam
+		):
+		?>
+		<div class="ui_box_s50_right">
+			<fieldset>
+				<legend>
+				<?php echo $this->_translate(10); //Tài sản  ?>
+				</legend>
+				<?php if ($fieldNguyenGia): ?>
+				<div class="ui_box_line">
+					<div class="label">
+						<label><?php echo $this->_translate(11); //Nguyên giá   ?> </label>
+					</div>
+
+					<div class="element">
+					<?php echo @Qss_Lib_Util::formatMoney($this->eq->NguyenGia); ?>
+					<?php echo $common->getDefaultCurrency(); ?>
+					</div>
+				</div>
+				<?php endif; ?>
+
+				<?php if ($fieldNgayMua): ?>
+				<div class="ui_box_line">
+					<div class="label">
+						<label><?php echo $this->_translate(12); //Ngày mua   ?> </label>
+					</div>
+					<div class="element">
+					<?php echo @$this->eq->NgayMua
+					? Qss_Lib_Date::mysqltodisplay($this->eq->NgayMua) : ''; ?>
+					</div>
+				</div>
+				<?php endif; ?>
+
+				<?php if ($fieldHangBaoHanh): ?>
+				<div class="ui_box_line">
+					<div class="label">
+						<label><?php echo $this->_translate(13); //Hãng bảo hành     ?> </label>
+					</div>
+
+					<div class="element">
+					<?php echo @$this->eq->HangBaoHanh; ?>
+					</div>
+				</div>
+				<?php endif; ?>
+
+				<?php if ($fieldHanBaoHanh): ?>
+				<div class="ui_box_line">
+					<div class="label">
+						<label><?php echo $this->_translate(14); //Hạn bảo hành   ?> </label>
+					</div>
+					<div class="element">
+					<?php echo @$this->eq->HanBaoHanh
+					? Qss_Lib_Date::mysqltodisplay($this->eq->HanBaoHanh) : ''; ?>
+					</div>
+				</div>
+				<?php endif; ?>
+
+				<?php if ($fieldTuoiTho): ?>
+				<div class="ui_box_line">
+					<div class="label">
+						<label><?php echo $this->_translate(16); //Tuổi thọ    ?> </label>
+					</div>
+
+					<div class="element">
+					<?php echo @$this->eq->TuoiTho; ?>
+					</div>
+				</div>
+				<?php endif; ?>
+
+				<?php /*
+				<?php if ($fieldTrungTamChiPhi): ?>
+				<div class="ui_box_line">
+				<div class="label">
+				<label><?php echo $this->_translate(17); //Mã TTCP     ?></label>
+				</div>
+					
+				<div class="element">
+				<?php echo @$this->eq->TrungTamChiPhi; ?>
+				</div>
+				</div>
+				<?php endif; ?>
+
+				<?php if ($fieldTenTrungTam): ?>
+				<div class="ui_box_line">
+				<div class="label">
+				<label><?php echo $this->_translate(18); //Tên trung tâm CP    ?></label>
+				</div>
+					
+				<div class="element">
+				<?php echo @$this->eq->TenTrungTam; ?>
+				</div>
+				</div>
+				<?php endif; ?>
+				*
+				*/?>
+			</fieldset>
+		</div>
+		<?php endif; ?>
+
+		<!-- FIELDSET: CAI DAT -->
+		<div class="ui_box_s50_right">
+			<fieldset>
+				<!-- Cai Dat -->
+				<legend>
+				<?php echo $this->_translate(19); //Cài đặt     ?>
+				</legend>
+				<div class="ui_box_line">
+					<div class="label">
+						<label><?php echo $this->_translate(97); //Du An     ?> </label>
+					</div>
+					<div class="element">
+					<?php echo @$this->eq->DuAn; ?>
+					</div>
+				</div>
+
+                <div class="ui_box_line">
+                    <div class="label">
+                        <label><?php echo $this->_translate(99); // NGay bat dau dieu chuyen    ?> </label>
+                    </div>
+                    <div class="element">
+                        <?php echo @$this->moving->NgayBatDau?Qss_Lib_Date::mysqltodisplay($this->moving->NgayBatDau):''; ?>
+                    </div>
+                </div>
+
+                <div class="ui_box_line">
+                    <div class="label">
+                        <label><?php echo $this->_translate(100); //Ngay ket thuc dieu chuyen     ?> </label>
+                    </div>
+                    <div class="element">
+                        <?php echo @$this->moving->NgayKetThuc?Qss_Lib_Date::mysqltodisplay($this->moving->NgayKetThuc):''; ?>
+                    </div>
+                </div>
+
+				<div class="ui_box_line">
+					<div class="label">
+						<label><?php echo $this->_translate(20); //Lịch làm việc     ?> </label>
+					</div>
+					<div class="element">
+					<?php echo @$this->eq->LichLamViec; ?>
+					</div>
+				</div>
+
+				<!-- Ma Khu Vuc -->
+				<div class="ui_box_line">
+					<div class="label">
+						<label><?php echo $this->_translate(21); //Mã khu vực    ?> </label>
+					</div>
+					<div class="element">
+					<?php echo @$this->eq->MaKhuVuc; ?>
+					</div>
+				</div>
+
+				<?php
+				/*
+				 <!-- Ten Khu Vuc -->
+				 <div class="ui_box_line">
+					<div class="label">
+					<label><?php echo $this->_translate(22); //Tên khu vực     ?></label>
+					</div>
+					<div class="element"> <?php echo @$this->eq->TenKhuVuc; ?> </div>
+					</div>
+					*/
+				?>
+			</fieldset>
+		</div>
+
+        <div class="ui_box_s50_right">
+            <fieldset>
+                <legend>
+                    <?php echo $this->_translate(101); // Loai bao tri ?>
+                </legend>
+
+
+                <div class="ui_box_line">
+
+                    <table border="0" cellpadding="0" cellspacing="0">
+                        <?php foreach ($this->mtypes as $mtypes):?>
+                        <tr>
+                            <td class="einfo_generaltab_label" style=""><label><?php echo $mtypes->Loai;?>
+                                </label>
+                            </td>
+
+                            <td class="einfo_generaltab_element break-word"
+                                style="width: 39%; padding-left: 1%"><?php echo @(int) $this->numOfWOByMtype[$mtypes->IOID]; ?>
+                            </td>
+                        </tr>
+                        <?php endforeach;?>
+
+                    </table>
+                </div>
+            </fieldset>
+        </div>
+	</div>
+</div>

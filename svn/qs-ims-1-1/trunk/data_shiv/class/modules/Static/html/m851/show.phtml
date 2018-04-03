@@ -1,0 +1,179 @@
+<?php
+$begin  = 0;
+$widths = array(5, 3, 3, 4, 5, 4, 3, 4, 2);
+$widths = Qss_Lib_Report::changeWidthToFitScreen($widths, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+?>
+
+<div class="landscape">
+    <excel orientation="landscape" font-name="Arial" font-size="9"
+           margin-left="0.5" margin-right="0.5" margin-top="0.75"
+           margin-bottom="0.75" />
+
+    <!-- REPORT TITLE -->
+	<div id="head_print">
+		<?php echo $this->views->Common->Landscape() ?>
+        <h2 class="center"><?php echo Qss_Lib_System::getUpperCaseReportTitle('M851');?></h2>
+	</div><!-- end div#head_print -->
+    <br/>
+
+    <!-- REPORT DATA -->
+    <div id="container">
+        <table cellpadding="0" cellspacing="0" border="0" class="border">
+            <tr class="bggrey">
+                <!-- Tên thiết bị -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                    Thiết bị
+                    <br/>
+                    Machine
+                </th>
+
+                <!--  Khu vực -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                    Khu vực
+                    <br/>
+                    Department
+                </th>
+
+                <!-- Ngày sự cố -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                    Ngày yêu cầu
+                    <br/>
+                    Request date
+                </th>
+
+                <!-- Người yêu cầu -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                    Người yêu cầu
+                    <br/>
+                    Request by
+                </th>
+
+                <!-- Người yêu cầu -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                    Nội dung sự cố
+                    <br/>
+                    Content
+                </th>
+
+
+
+                <!-- Người yêu cầu -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                    Trạng thái máy
+                    <br/>
+                    Status
+                </th>
+
+                <!-- Tình trạng -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                    Dự kiến hoàn thành
+                    <br/>
+                    Est. Completion
+                </th>
+
+                <!-- Tình trạng -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                    Đảm nhiệm
+                    <br/>
+                    Responsible
+                </th>
+
+                <!-- Đảm nhiệm -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                    Mức độ
+                    <br/>
+                    Level
+                </th>
+            </tr>
+
+            <?php $i = 0;?>
+
+            <?php foreach($this->data as $item):?>
+
+                <tr class="<?php echo (++$i%2==0)?'bglightblue':'bgwhite';?>">
+                    <!-- Tên thiết bị -->
+                    <td class="left">
+                        <?php echo $item->TenThietBi;?>
+                        <?php echo $item->TenKhac?"({$item->TenKhac})":"";?>
+                    </td>
+
+                    <!--  Khu vực -->
+                    <td class="left">
+                        <?php echo $item->TenKhuVuc;?>
+                    </td>
+
+                    <!-- Ngày yêu cầu -->
+                    <td class="center">
+                        <?php echo $item->ThoiGian?date('H:i', strtotime($item->ThoiGian)):'';?>
+                        <?php echo $item->Ngay?date('d/m/y', strtotime($item->Ngay)):'';?>
+                    </td>
+
+                    <!-- Người yêu cầu -->
+                    <td class="left">
+                        <?php
+                        $nguoiYeuCau = '';
+
+                        if($item->NguoiYeuCau)
+                        {
+                            $temp        = explode(' ', trim($item->NguoiYeuCau));
+                            $temp2       = end($temp);
+                            $titleName   = ($item->GioiTinh == 1)?'Mr.':'Ms.';
+                            $nguoiYeuCau = $titleName .' '. $temp2;
+                        }
+
+                        ?>
+                        <?php echo $nguoiYeuCau;?>
+                    </td>
+
+                    <!-- Nội dung sự cố -->
+                    <td class="left">
+                        <?php echo $item->MoTa;?>
+                    </td>
+
+                    <!-- Tình trạng -->
+                    <td class="center <?php echo $item->Color;?>">
+                        <?php echo $item->TinhTrang;?>
+                    </td>
+
+                    <!-- Dự kiến hoàn thành -->
+                    <td class="center">
+                        <?php echo $item->ThoiGianKetThucDuKien?date('H:i', strtotime($item->ThoiGianKetThucDuKien)):'';?>
+                        <?php echo $item->NgayDuKienHoanThanh?date('d/m/y', strtotime($item->NgayDuKienHoanThanh)):'';?>
+                    </td>
+
+                    <!-- Đảm nhiệm -->
+                    <td class="left">
+                        <?php
+                        $damNhiem = '';
+
+                        if($item->NguoiChiuTranhNhiem)
+                        {
+                            $temp        = explode(' ', trim($item->NguoiChiuTranhNhiem));
+                            $temp2       = end($temp);
+                            $titleName   = ($item->GioiTinh == 1)?'Mr.':'Ms.';
+                            $damNhiem    = $titleName .' '. $temp2;
+                        }
+
+                        ?>
+                        <?php echo $damNhiem;?>
+
+                    </td>
+
+                    <!-- Mức độ ưu tiên -->
+                    <td class="left">
+                        <?php echo @$item->MucDoUuTien;?>
+                    </td>
+                </tr>
+            <?php endforeach;?>
+        </table>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+    </div><!-- end div#container -->
+</div><!-- END REPORT -->
+
+

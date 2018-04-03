@@ -1,0 +1,130 @@
+<script src="/js/extra/static/m878.js"></script>
+<script src="/js/common.js"></script>
+
+<div class="clear"></div>
+
+<div id="horizontal-toolbar" class="">
+    <form id="m878_filter_form">
+        <div class="fl">
+            <div class="fl" style="width: 100px; line-height:24px;">
+                Đến ngày:
+            </div>
+
+            <div class="fr">
+                <?php echo $this->views->Report->Datepicker('end', date('t-m-Y'));?>
+            </div>
+        </div>
+
+        <div class="clear"></div>
+
+        <div class="fl">
+            <div class="fl" style="width: 100px; line-height:24px;">
+                Loại khóa học:
+            </div>
+
+            <div class="fr">
+                <?php
+                $id = 'course';
+                $getDataObject = array('OLoaiKhoaHoc' => array('TenKhoaHoc'));
+                $getFields = array('num' => 2,
+                    'objects' => array('OLoaiKhoaHoc' => array(
+                        'id' => 'IOID'
+                    , 'display1' => 'TenKhoaHoc')));
+
+                ?>
+
+                <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields); ?>
+            </div>
+        </div>
+
+        <div class="clear"></div>
+
+        <div class="fl">
+            <div class="fl" style="width: 100px; line-height:24px;">
+                Phòng ban:
+            </div>
+
+            <div class="fr">
+                <?php
+                $id = 'department';
+                $getDataObject = array('OPhongBan' => array('MaPhongBan', 'TenPhongBan'));
+                $getFields = array('num' => 2,
+                    'objects' => array('OPhongBan' => array(
+                        'id' => 'IOID'
+                    , 'display1' => 'MaPhongBan'
+                    , 'display2' => 'TenPhongBan')));
+                ?>
+
+                <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields); ?>
+            </div>
+        </div>
+
+        <div class="clear"></div>
+
+        <div class="fl">
+            <div class="fl" style="width: 100px; line-height:24px;">
+                Nhân viên:
+            </div>
+
+            <div class="fr">
+                <?php
+                $id = 'employee';
+                $getDataObject = array('ODanhSachNhanVien' => array('MaNhanVien', 'TenNhanVien'));
+                $getFields = array('num' => 2,
+                    'objects' => array('ODanhSachNhanVien' => array(
+                        'id' => 'IOID'
+                    , 'display1' => 'MaNhanVien'
+                    , 'display2' => 'TenNhanVien')));
+                ?>
+
+                <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields); ?>
+            </div>
+        </div>
+
+        <div class="clear"></div>
+
+        <div class="fl">
+            <div class="fl">
+                <input type="checkbox" name="filterEmp" value="1" id="filterEmp"/>
+            </div>
+
+            <div class="fr">
+                <label for="filterEmp">Lọc yêu cầu đào tạo theo nhân viên</label>
+            </div>
+        </div>
+
+        <div class="clear"></div>
+
+        <div class="fl">
+            <div class="fl">
+                <input type="checkbox" name="filterTitle" value="1" id="filterTitle"/>
+            </div>
+
+            <div class="fr">
+                <label for="filterTitle">Lọc yêu cầu đào tạo theo chức danh</label>
+            </div>
+        </div>
+
+        <div class="clear"></div>
+
+        <div class="fl">
+            <button type="button" class="btn_main_top btn" onclick="m878.show()"> Xem </button>
+        </div>
+
+        <div class="clear"></div>
+    </form>
+
+    <br/>
+</div>
+
+<div id="view">
+    <div id="m878_table">
+
+    </div>
+</div>
+
+
+
+
+<div id="qss_trace"></div>
+<div id="qss_combo"></div>

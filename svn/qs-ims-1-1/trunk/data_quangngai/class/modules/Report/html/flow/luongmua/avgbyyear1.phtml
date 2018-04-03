@@ -1,0 +1,77 @@
+<?php
+
+// *****************************************************************
+// === $series, gia tri cot ox, du lieu ve khoang cah; oy, du lieu ve cao do OZ
+// *****************************************************************
+$series = '';
+$seriesTemp = '';
+$xAxis  = '';
+
+// *****************************************************************
+// === Gan du lieu 
+// *****************************************************************
+
+
+$luuluong = array();
+foreach($this->luuluong as $dat)
+{
+	$luuluong[$dat->Year] = $dat->AVG;
+}
+
+
+
+for($i = $this->start; $i <= $this->end; $i++)
+{
+	$xAxis .= ($xAxis == '')?'':',';
+	$xAxis .= "'{$i}'";
+	
+    // Head of serie
+    $seriesTemp .= ($seriesTemp == '')?'':',';
+	$seriesTemp .= isset($luuluong[$i])?$luuluong[$i]:0;	
+}
+
+$series .= "{ name: 'Lượng mưa trung bình',data:[";
+$series .= $seriesTemp;
+$series .= "]}";
+?>
+
+
+
+<div id="container1" style="width: 95%; height: 400px; margin: 0 auto"></div>
+
+
+
+        <script type="text/javascript">
+            
+        $(document).ready(function() {
+	var chart;
+	chart = new Highcharts.Chart({
+        chart: {
+        	renderTo: 'container1'
+			, type: 'column'
+        } ,title: {
+                text: 'Biểu đồ lượng mưa trung bình năm'
+				+' trạm <?php echo trim($this->workstation);?>'
+				+' từ <?php echo $this->start;?>'
+				+' đến <?php echo $this->end;?>'
+            },
+            xAxis: {
+                categories: [<?php echo $xAxis;?>]
+            },
+            yAxis: {
+                title: {
+                    text: 'Lượng mưa (mm)'
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                         this.x + ' - '+ this.y ;
+                }
+            },
+            
+            series: [<?php echo $series;?>]
+        });
+            });
+        </script>
+

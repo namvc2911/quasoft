@@ -1,0 +1,102 @@
+<form id="m308_shift_form" method="post">
+<input type="hidden" name="fid" value="M308">
+<input type="hidden" id="ifid" name="ifid" value="<?php echo $this->calendar->IFID_M308?>">
+<input type="hidden" id="deptid" name="deptid" value="<?php echo $this->calendar->DeptID?>">
+<input type="hidden" name="OLichLamViecNhanVien_MaNhanVien" value="<?php echo $this->employee->IOID?>">
+<span class="bold red"><?php echo $this->employee->TenNhanVien?> <?php echo Qss_Lib_Date::mysqltodisplay($this->date)?></span>
+<table class="detail">
+	<tr>
+		<th class="left">Từ ngày</th>
+		<td><input type="text" name="OLichLamViecNhanVien_TuNgay" value="<?php echo Qss_Lib_Date::mysqltodisplay($this->calendar->TuNgay)?>"></td>
+	</tr>
+	<tr>
+		<th class="left">Đến ngày</th>
+		<td><input type="text" name="OLichLamViecNhanVien_DenNgay" value="<?php echo Qss_Lib_Date::mysqltodisplay($this->calendar->DenNgay)?>"></td>
+	</tr>
+	<tr>
+		<th class="left">Thứ 2</th>
+		<td>
+			<select name="OLichLamViecNhanVien_ThuHai" style="width: 200px;">
+				<option value=""></option>
+				<?php foreach ($this->shift as $item):?>
+					<option value="<?php echo $item->IOID?>" <?php if($item->IOID == $this->calendar->Ref_ThuHai):?>selected<?php endif;?>><?php echo $item->MaCa?> - <?php echo $item->TenCa?>
+				<?php endforeach;?>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<th class="left">Thứ 3</th>
+		<td>
+			<select name="OLichLamViecNhanVien_ThuBa" style="width: 200px;">
+				<option value=""></option>
+				<?php foreach ($this->shift as $item):?>
+					<option value="<?php echo $item->IOID?>" <?php if($item->IOID == $this->calendar->Ref_ThuBa):?>selected<?php endif;?>><?php echo $item->MaCa?> - <?php echo $item->TenCa?>
+				<?php endforeach;?>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<th class="left">Thứ 4</th>
+		<td>
+			<select name="OLichLamViecNhanVien_ThuTu" style="width: 200px;">
+				<option value=""></option>
+				<?php foreach ($this->shift as $item):?>
+					<option value="<?php echo $item->IOID?>" <?php if($item->IOID == $this->calendar->Ref_ThuTu):?>selected<?php endif;?>><?php echo $item->MaCa?> - <?php echo $item->TenCa?>
+				<?php endforeach;?>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<th class="left">Thứ 5</th>
+		<td>
+			<select name="OLichLamViecNhanVien_ThuNam" style="width: 200px;">
+				<option value=""></option>
+				<?php foreach ($this->shift as $item):?>
+					<option value="<?php echo $item->IOID?>" <?php if($item->IOID == $this->calendar->Ref_ThuNam):?>selected<?php endif;?>><?php echo $item->MaCa?> - <?php echo $item->TenCa?>
+				<?php endforeach;?>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<th class="left">Thứ 6</th>
+		<td>
+			<select name="OLichLamViecNhanVien_ThuSau" style="width: 200px;">
+				<option value=""></option>
+				<?php foreach ($this->shift as $item):?>
+					<option value="<?php echo $item->IOID?>" <?php if($item->IOID == $this->calendar->Ref_ThuSau):?>selected<?php endif;?>><?php echo $item->MaCa?> - <?php echo $item->TenCa?>
+				<?php endforeach;?>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<th class="left">Thứ 7</th>
+		<td>
+			<select name="OLichLamViecNhanVien_ThuBay" style="width: 200px;">
+				<option value=""></option>
+				<?php foreach ($this->shift as $item):?>
+					<option value="<?php echo $item->IOID?>" <?php if($item->IOID == $this->calendar->Ref_ThuBay):?>selected<?php endif;?>><?php echo $item->MaCa?> - <?php echo $item->TenCa?>
+				<?php endforeach;?>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<th class="left">CN</th>
+		<td>
+			<select name="OLichLamViecNhanVien_ChuNhat" style="width: 200px;">
+				<option value=""></option>
+				<?php foreach ($this->shift as $item):?>
+					<option value="<?php echo $item->IOID?>" <?php if($item->IOID == $this->calendar->Ref_ChuNhat):?>selected<?php endif;?>><?php echo $item->MaCa?> - <?php echo $item->TenCa?>
+				<?php endforeach;?>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<th class="left">Ghi chú</th>
+		<td>
+			<textarea name="OLichLamViecNhanVien_ChuNhat" style="width: 200px;"><?php echo $this->calendar->GhiChu?></textarea>
+		</td>
+	</tr>
+</table>
+<button type="button" class="btn" onclick="m308_calendar.saveTaskDate(<?php echo $this->eid?>,'<?php echo $this->date?>')">Lưu lại</button>
+<button type="button" <?php if(!$this->calendar->IFID_M308):?>disabled<?php endif;?> class="btn" onclick="m308_calendar.cancelTaskDate(<?php echo $this->eid?>,'<?php echo $this->date?>')">Xóa</button>
+</form>

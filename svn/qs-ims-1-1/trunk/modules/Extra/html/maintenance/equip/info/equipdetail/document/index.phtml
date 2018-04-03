@@ -1,0 +1,96 @@
+<?php
+/**
+ * *****************************************************************************
+ * Tai Lieu
+ * *****************************************************************************
+ */
+
+$common = new Qss_Model_Extra_Extra();
+
+function einfo_get_child_of_doc_type($dtid = 0, $lv = 0)
+{
+	$common = new Qss_Model_Extra_Extra();
+	$doctype = $common->getTable(array('*'), 'qsdocumenttype'
+	, array('ifnull(ParentID,0)' => $dtid), array(), 1000);
+	$lv = $lv + 1;
+
+	if ($doctype)
+	{
+		foreach ($doctype as $dt)
+		{
+			echo '<tr>';
+			echo '<td class="pointer einfo-doctab-select-doctype tree_level_' . $lv . ' tree_open"'
+			. ' onclick="einfo_show_document(' . $dt->DTID . ', 2)"'
+			. ' id="' . $dt->DTID . '"'
+			. ' type="2" '
+			. '>';
+			echo $dt->Type;
+			echo '</td>';
+			echo '</tr>';
+			einfo_get_child_of_doc_type($dt->DTID, $lv);
+		}
+	}
+	else
+	{
+		return;
+	}
+
+}
+?>
+
+<div class="einfo-tab-select-column">
+	<table>
+		<tr>
+			<td
+				class="left einfo-doctab-select-doctype pointer  einfo-first-click"
+				onclick="einfo_show_document(0, 0)" id="0" type="0"><?php echo $this->_translate(45); //Tất cả tài liệu    ?>
+			</td>
+		</tr>
+
+		<tr>
+			<td class="left einfo-doctab-select-doctype pointer"
+				onclick="einfo_show_document(0, 1)" id="0" type="1"><?php echo $this->_translate(44); //Chưa phân loại    ?>
+			</td>
+		</tr>
+		<?php einfo_get_child_of_doc_type(); ?>
+	</table>
+</div>
+<div id="document_table"
+	class="einfo-tab-show-column">
+	<div id="" style="padding: 2px 0px;">
+		<button class="btn-custom" onclick="rowRecord()" type="button">
+		<?php echo $this->_translate(46);?>
+			<!-- Thêm tài liệu -->
+		</button>
+	</div>
+
+	<table cellpadding="0" cellspacing="0" class="border_table" border="1"
+		style="width: 100%;" id='einfo-doc-attach'>
+		<tbody>
+			<tr class="bggrey center">
+				<td class="w05" style="width: 10%"><?php echo $this->_translate(42); ?>
+				</td>
+				<!-- end .cell 5-->
+				<td class="w2" style="width: 22.5%"><?php echo $this->_translate(39); ?>
+				</td>
+				<!-- end .cell 2-->
+				<td class="w2" style="width: 22.5%"><?php echo $this->_translate(40); ?>
+				</td>
+				<!-- end .cell 3-->
+				<td class="w2" style="width: 22.5%"><?php echo $this->_translate(41); ?>
+				</td>
+				<!-- end .cell 4-->
+				<td class="w15" style="width: 22.5%"><?php echo $this->_translate(43); ?>
+				</td>
+				<!-- end .cell 6-->
+			</tr>
+		</tbody>
+	</table>
+	<!-- end .document_table -->
+</div>
+
+<script>
+	$('#einfo-tab-select-column').css({'height': $('#view').height() * 0.72 + 'px', 'overflow-y': 'auto', 'overflow-x': 'hidden'});
+	
+	$('.einfo-first-click').click();
+</script>

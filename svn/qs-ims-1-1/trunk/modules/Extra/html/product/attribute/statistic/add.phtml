@@ -1,0 +1,360 @@
+<?php /*
+<?php
+// Init
+$serialLot = $this->serialLot;
+?>
+
+
+
+<div class="poFlyDiv" style="<?php if($serialLot->lot) echo 'left:200px'; else echo 'left:255px';?>">
+<!-- So san pham tren mot lo  -->
+<?php if($serialLot->lot): ?>
+<input type ="text" id ="lotQty" placeholder="Số lượng trên mỗi lô?" class="poInput"/>
+<?php endif;?>
+<a href="#1" onclick = "showStockStatus()"> Thiết lập lưu trữ </a> |
+<a  href="#1"  onclick = "poAttributesTableSave()" id="saveButton"> Cập nhật </a> |
+<a href="#LB"> Về đầu trang </a> |
+<a href="#LE"> Về cuối trang</a>
+</div>
+*
+*/
+?>
+
+<?php
+$serialLot  	 		= $this->serialLot;
+$attributes      		= $this->attributes;
+$oldValue        		= $this->oldValue;
+$zoneAndBin      		= $this->zoneAndBin;
+$hasBin          		= $zoneAndBin['hasBin'];
+$defaultZoneAndBinArray = $zoneAndBin['defaultArray']; // Mảng zone và bin khi có lot hoặc serial
+$itemQty         		= $this->itemQty;
+$col             		= 0;
+
+?>
+
+<?php if($serialLot->lot || $serialLot->serial || $hasBin):?>
+
+<style>
+<!--
+.attribute_table_text {
+	font-size: 11px;
+	font-weight: bold;
+	font-style: italic;
+	font-family: Arial;
+}
+
+.yellowBg {
+	background: yellow;
+}
+
+.poFlyDiv {
+	background: none repeat scroll 0 0 #EEEEEE;
+	border: 1px outset #ccc;
+	line-height: 20px;
+	position: absolute;
+	top: 30px;
+	padding: 0px 2px 0px 2px;
+}
+
+.btn-custom {
+	background-color: none;
+	border-bottom: none;
+	border-right: none;
+	color: white;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 11px;
+	min-width: 60px;
+	padding: 2px 6px;
+}
+
+input.poInput {
+	border: 1px #fcc solid;
+}
+
+.poFlyDiv a {
+	padding: 2px;
+	margin-left: 1px;
+	font-weight: bold;
+	color: #4C4C4C;
+}
+
+.poFlyDiv a:hover {
+	color: #111;
+}
+-->
+</style>
+
+<script type="text/javascript">
+	<!--
+                jQuery(document).ready(function($){
+                        $('.datepicker').each(function(){ $(this).datepicker({ dateFormat: "dd-mm-yy" }); });/* Datepicker*/
+                });
+		function showBin(line, ele)
+		{
+			var zone = ele.value;
+			var data = {
+					zone:zone
+					,refWarehouse:'<?php echo $serialLot->refWarehouse;?>'
+					,refItem:'<?php echo $serialLot->refItem?>'
+					,ifid:'<?php echo $this->ifid;?>'
+					,ioid:'<?php echo $this->ioid;?>'
+					,objid:'<?php echo $this->objid;?>'
+					}; 
+			var url = sz_BaseUrl + '/extra/product/attribute/in/bin'; 
+			qssAjax.getHtml(url, data, function(jreturn) {
+				$('.bin_'+line).html(jreturn); 
+			});
+		}
+
+		function showStockStatus()
+		{
+			var lotQty = $('#lotQty').val(); 
+			var url = sz_BaseUrl + '/extra/product/attribute/statistic/show'; 
+			var data = {
+						 lotQty:lotQty
+						,ifid:'<?php echo $this->ifid;?>'
+						,ioid:'<?php echo $this->ioid;?>'
+						,objid:'<?php echo $this->objid;?>'
+						,serialLot:'<?php echo serialize($serialLot); ?>'
+						,oldValue:'<?php echo serialize($oldValue); ?>'
+						,attributes:'<?php echo $attributes; ?>'
+						,itemQty:'<?php echo $itemQty;?>'
+						}; 
+			qssAjax.getHtml(url, data, function(jreturn) {
+				$('#po_attributes_table').html(jreturn);// 
+			});
+		}
+
+		/**
+		 * poAttributesTableSave()
+		 * Cập nhật dữ liệu từ show.phtml hoặc add.phtml vào csdl
+		 */
+		function poAttributesTableSave() 
+		{
+			$('#saveButton').attr('disabled',true);
+			var length = $('input[name="qty[]"]').size();
+			if(length)
+			{
+				var data = $('#po_attributes_form').serialize(); 
+				var url = sz_BaseUrl + '/extra/product/attribute/statistic/save'; 
+				qssAjax.call(url, data, function(jreturn) {
+					if(jreturn.message != '')
+					{
+						qssAjax.alert(jreturn.message);
+						$('#saveButton').removeAttr('disabled');
+					}
+				}, function(jreturn) {
+					qssAjax.alert(jreturn.message);
+					$('#saveButton').removeAttr('disabled');
+				});
+			}
+			else
+			{
+				qssAjax.alert('Bảng trạng thái lưu trữ chưa có giá trị!');
+				$('#saveButton').removeAttr('disabled');
+			}
+		}
+		-->
+	</script>
+
+
+<div class="line-hr">
+	<span>Nhập kho</span>
+</div>
+<!-- Control bar -->
+<div class="poFlyDiv" 
+             style="<?php if($serialLot->lot) echo 'left:150px'; else echo 'left:220px';?>">
+             <?php if($serialLot->lot): ?>
+	<input type="text" id="lotQty" placeholder="Số lượng trên mỗi lô?"
+		class="poInput" />
+		<?php endif;?>
+	<a href="#1" onclick="showStockStatus()"> Thiết lập lưu trữ </a> | <a
+		href="#1" onclick="poAttributesTableSave()" id="saveButton"> Cập nhật
+	</a> | <a href="#LB"> Về đầu trang </a> | <a href="#LE"> Về cuối trang</a>
+</div>
+<br />
+
+<!-- Tieu de -->
+<div class="attribute_table_text">
+	<a name="LB">&nbsp;</a>
+	<!--  Quay về đầu trang -->
+	<br /> <br /> <br />
+
+</div>
+<br />
+
+<div id="po_attributes_div">
+	<form id="po_attributes_form">
+		<input type="hidden" name="ioid" value="<?php echo $this->ioid;?>" />
+		<input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" />
+		<input type="hidden" name="objid" value="<?php echo $this->objid;?>" />
+		<input type="hidden" name="obj"
+			value="<?php echo $this->getDataObject;?>" /> <input type="hidden"
+			name="module" value="<?php echo $this->module;?>" /> <input
+			type="hidden" name="serialLot"
+			value='<?php echo serialize($serialLot); ?>' /> <input type="hidden"
+			name="attributes" value='<?php echo $attributes; ?>' /> <input
+			type="hidden" name="itemQty" value='<?php echo $itemQty; ?>' /> <input
+			type="hidden" name="oldValue"
+			value='<?php echo serialize($oldValue);?>' /> <input type="hidden"
+			name="addLines" value="<?php echo count((array)$oldValue);?>" /> <input
+			type="hidden" name="zoneAndBin"
+			value='<?php echo serialize($defaultZoneAndBinArray);?>' /> <input
+			type="hidden" name="hasBin" value="<?php echo $hasBin?>" />
+
+		<table id="po_attributes_table" class="borderX" width="100%"
+			cellpadding="0" cellspacing="0" border="1"
+			style="text-align: center;">
+			<tr class="bggrey">
+				<td>STT</td>
+				<?php $col++;?>
+
+				<?php if($serialLot->serial && $this->stockInfo['Serial']): ?>
+				<td>Số serial <?php $col++;?>
+				</td>
+				<?php endif;?>
+
+				<?php if($serialLot->lot && $this->stockInfo['Lot']):?>
+				<td>Số lô <?php $col++;?>
+				</td>
+				<?php endif;?>
+
+				<?php if(($serialLot->lot && $this->stockInfo['Lot']) || ($serialLot->serial && $this->stockInfo['Serial'])):?>
+				<td>Ngày nhận hàng <?php $col++;?>
+				</td>
+
+				<td>Ngày sx <?php $col++;?>
+				</td>
+
+				<td>Ngày hạn <?php $col++;?>
+				</td>
+				<?php endif;?>
+
+
+				<?php if($this->attributeExists):?>
+				<td>Thuộc tính <?php $col++;?>
+				</td>
+				<?php endif;?>
+
+
+
+				<?php if($hasBin):?>
+				<td>Bin <?php $col++;?>
+				</td>
+				<?php endif; // hasBin?>
+
+				<td>Số lượng <?php $col++;?>
+				</td>
+			</tr>
+
+
+			<?php $i=0; ?>
+			<?php if(count((array)$oldValue)):?>
+			<tr>
+				<td colspan="<?php echo $col?>"><b><i>Số lượng sản phẩm : <?php echo $itemQty.' '.($serialLot->itemUOM);?>
+					</i> </b></td>
+			</tr>
+
+			<?php foreach($oldValue as $val): ?>
+			<tr>
+				<td><?php echo ($i+1);?><input type="hidden" name="no[]"
+					value="<?php echo ($i+1);?>" /></td>
+
+					<?php if($serialLot->serial && isset($val['SoSerial']) && $this->stockInfo['Serial']):?>
+				<td><input type="text" name="serial[]"
+					value="<?php echo $val['SoSerial'];?>" class="width_100" />
+				</td>
+				<?php endif;?>
+
+				<?php if($serialLot->lot && isset($val['SoLo']) && $this->stockInfo['Lot']): ?>
+				<td><input type="text" name="lot[]"
+					value="<?php echo $val['SoLo'];?>" class="width_100" />
+				</td>
+				<?php endif;?>
+
+
+				<?php if( (($serialLot->lot && $this->stockInfo['Lot']) || ($serialLot->serial && $this->stockInfo['Serial']))):?>
+				<td>
+					<!-- Ngay Nhan --> <input type="text" name="receiveDate[]"
+					value="<?php echo Qss_Lib_Date::mysqltodisplay($val['ReceiveDate']);?>"
+					class="width_70 datepicker" /> <?php $col++;?>
+				</td>
+
+				<td>
+					<!-- Ngay sx --> <input type="text" name="productionDate[]"
+					value="<?php echo Qss_Lib_Date::mysqltodisplay($val['ProductDate']);?>"
+					class="width_70 datepicker" /> <?php $col++;?>
+				</td>
+
+				<td>
+					<!-- Ngay han --> <input type="text" name="expiryDate[]"
+					value="<?php echo Qss_Lib_Date::mysqltodisplay($val['ExpiryDate']);?>"
+					class="width_70 datepicker" /> <?php $col++;?>
+				</td>
+				<?php endif;?>
+
+
+				<?php if($this->attributeExists): ?>
+				<td><?php echo $val['MaThuocTinh'];?>
+				</td>
+				<?php endif;?>
+
+				<?php if((($serialLot->lot && $this->stockInfo['Lot']) || ($serialLot->serial && $this->stockInfo['Serial']))):?>
+
+
+				<?php if($hasBin): ?>
+				<td><input type="hidden" name="bin[]"
+					value="<?php echo $val['Bin']?>" /> <?php echo $val['Bin']?>
+				</td>
+				<?php endif;?>
+
+				<?php else:?>
+				<input type="hidden" name="ioidExists[]"
+					value="<?php echo $val['IOID']?>" />
+
+
+					<?php if($hasBin):?>
+				<td><input type="hidden" name="bin[]"
+					value="<?php echo $val['Bin']?>" /> <?php echo $val['Bin']?>
+				</td>
+				<?php endif;?>
+				<?php endif;?>
+
+				<td><?php 
+				$lineQtyAccess   = '';
+				if($serialLot->serial && $this->stockInfo['Serial'])
+				{
+					$lineQtyAccess  = 'readonly="readonly"';
+				}
+				?> <input type="text" class="width_50" name="qty[]"
+				<?php echo $lineQtyAccess;?> value="<?php  echo $val['SoLuong'];?>" />
+				</td>
+
+
+			</tr>
+			<?php $i++;?>
+			<?php endforeach; // $oldValue?>
+
+
+			<tr>
+				<td colspan="<?php echo $col?>"><b><i>Số lượng sản phẩm : <?php echo $itemQty.' '.($serialLot->itemUOM);?>
+					</i> </b></td>
+			</tr>
+			<?php endif; // count((array)$oldValue) ?>
+
+
+		</table>
+	</form>
+</div>
+<br />
+
+<div>
+	<a name="LE">&nbsp;</a>
+</div>
+
+			<?php else:?>
+<b><i>Sản phẩm "<?php echo $serialLot->itemName;?>" với mã "<?php echo $serialLot->itemCode;?>"
+		không quản lý theo serial hay lô hoặc kho hiện tại không có bin nào !</i>
+</b>
+			<?php endif;?>

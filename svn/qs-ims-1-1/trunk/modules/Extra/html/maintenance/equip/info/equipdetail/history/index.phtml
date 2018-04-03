@@ -1,0 +1,29 @@
+<?php
+/**
+ * *****************************************************************************
+ * Hien Thi Lich Su Bao Tri
+ * *****************************************************************************
+ */
+?>
+<script src="/js/object-list.js"></script>
+<?php echo $this->_translate(1);?>
+<select name="einfo_history_display" id="einfo-history-display"
+	onchange="einfo_history_show()">
+	<option value="5">5</option>
+	<option value="10">10</option>
+	<option value="20" selected="">20</option>
+	<option value="50">50</option>
+	<option value="100">100</option>
+</select>
+
+<?php echo $this->_translate(2);?>
+<select name="einfo_history_page" id="einfo-history-page"
+	onchange="einfo_history_show()" total="1">
+	<option value="1">1</option>
+</select>
+<br />
+<br />
+
+<!-- HIEN THI LICH SU BAO TRI -->
+<div id="einfo-tab-show-table"></div>
+<script>einfo_history_show()</script>

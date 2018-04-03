@@ -1,0 +1,98 @@
+<?php $err = 0; ?>
+
+<div class="overflow margin_top_5">
+	<div id="material" class="fl" style="width: 64%;">
+		<table cellspacing="0" cellpadding="0" border="1" id=""
+			class="borderX">
+			<tr class="bggrey">
+				<th class="" width="10%">
+					<!-- Ma --> <?php  echo $this->_translate(20);?></th>
+				<th class="" width="30%">
+					<!-- Ten --> <?php  echo $this->_translate(21);?></th>
+				<th class="" width="20%">
+					<!-- T.Tinh --> <?php  echo $this->_translate(22);?></th>
+				<th class="" width="10%">
+					<!-- ĐVTinh --> <?php  echo $this->_translate(23);?></th>
+				<th class="" width="10%">
+					<!-- SLuong --> <?php  echo $this->_translate(24);?></th>
+				<th class="" width="10%">
+					<!-- SlTon --> <?php  echo $this->_translate(25);?></th>
+				<th class="" width="10%">
+					<!-- Thừa thiếu --> <?php  echo $this->_translate(26);?></th>
+			</tr>
+
+
+			<?php foreach ($this->material as $item): // In danh sach?>
+			<?php
+			//PHP
+			$slCan = $item['Assembly']?$this->qty[$item['Key']]:($this->qty[$item['Key']]*$item['Qty'])/$item['BOMQty'];
+			$thuaThieu = $item['Inv'] - $slCan;
+			if($thuaThieu < 0)
+			{
+				$classThuaThieu = 'bgred';
+				$err = 1;
+			}
+			else
+			{
+				$classThuaThieu = 'bggreen';
+			}
+			?>
+			<tr class="<?php echo $classThuaThieu;?>">
+				<td class="left"><?php echo $item['Code'];?></td>
+				<td class="left"><?php echo $item['Name'];?></td>
+				<td class="left"><?php echo $item['Attr'];?></td>
+				<td class="left"><?php echo $item['UOM'];?></td>
+				<td class="right"><?php echo $slCan;?></td>
+				<td class="right"><?php echo $item['Inv'];?></td>
+				<td class="right"><?php echo $thuaThieu;?></td>
+			</tr>
+			<?php endforeach; // Ket thuc in danh sach?>
+		</table>
+	</div>
+
+	<div id="capacity" class="fr" style="width: 34%;">
+		<table cellspacing="0" cellpadding="0" border="1" id=""
+			class="borderX">
+			<tr class="bggrey">
+				<th class="" width="40%">
+					<!-- C.Đoan --> <?php  echo $this->_translate(27);?></th>
+				<th class="" width="20%">
+					<!-- Y.Cau --> <?php  echo $this->_translate(28);?></th>
+				<th class="" width="20%">
+					<!-- K.Nang --> <?php  echo $this->_translate(29);?></th>
+				<th class="" width="20%">
+					<!-- Da len ke hoach --> <?php  echo $this->_translate(30);?></th>
+			</tr>
+			<?php foreach ($this->operation as $item): // In danh sach?>
+			<?php
+			//PHP
+			$count = isset($this->countWC[$item['ID']])?$this->countWC[$item['ID']]:0;
+			$planed = isset($this->planed[$item['ID']])?$this->planed[$item['ID']]:0;
+			$wTime = $count * $this->workingHours;
+
+			if( ($wTime * 10)%10 != 0 )
+			{
+				$wTime = rtrim(rtrim($wTime, '0'),'.');
+			}
+
+			if($item['Time'] <= $wTime)
+			{
+				$class = 'bggreen';
+			}
+			else
+			{
+				$class = 'bgred';
+				$err = 1;
+			}
+			?>
+			<tr class="<?php echo $class;?>">
+				<td class="left"><?php echo $item['Name']?></td>
+				<td class="right"><?php echo $item['Time']?></td>
+				<td class="right"><?php echo $wTime;?></td>
+				<td class="right"><?php echo $planed;?></td>
+			</tr>
+			<?php endforeach; // Ket thuc in danh sach?>
+		</table>
+	</div>
+	<span id="err_save" val="<?php echo $err;?>"></span>
+</div>

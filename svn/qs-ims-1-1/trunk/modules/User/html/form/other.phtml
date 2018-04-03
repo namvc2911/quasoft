@@ -1,0 +1,65 @@
+<?php $i = 0;?>
+<?php foreach($this->bashes as $item):?>
+<?php if(!$this->objid && !$iteminitData):?>
+<?php switch($item->Type):
+case 2:?>
+<?php case 3:?>
+<p>
+	<button type="button" class="btn-custom"
+		onclick="bashRun(<?php echo $this->form->i_IFID?>,<?php echo $item->BID?>,'<?php echo $item->BashName?>')">
+		<?php echo $item->BashName?>
+	</button>
+</p>
+		<?php break;?>
+		<?php case 4:?>
+<p>
+	<button type="button" class="btn-custom"
+		onclick="popupOther(<?php echo $this->form->i_IFID?>,'<?php echo $item->Class?>')">
+		<?php echo $item->BashName?>
+	</button>
+</p>
+		<?php break;?>
+		<?php case 5:?>
+<p>
+	<button type="button" class="btn-custom"
+		onclick="openOther(<?php echo $this->form->i_IFID?>,'<?php echo $item->Class?>')">
+		<?php echo $item->BashName?>
+	</button>
+</p>
+		<?php break;?>
+		<?php endswitch;?>
+		<?php $i++;?>
+		<?php elseif($this->objid == $iteminitData):?>
+		<?php switch($item->Type):
+case 2:?>
+<?php case 3:?>
+<p>
+	<button type="button" class="btn-custom"
+		onclick="bashRun(<?php echo $this->form->i_IFID?>,<?php echo $item->BID?>,'<?php echo $item->BashName?>')">
+		<?php echo $item->BashName?>
+	</button>
+</p>
+		<?php break;?>
+		<?php case 4:?>
+<p>
+	<button type="button" class="btn-custom"
+		onclick="popupOther(<?php echo $this->form->i_IFID?>,<?php echo $this->objid?>,<?php echo $this->ioid?>,'<?php echo $item->Class?>')">
+		<?php echo $item->BashName?>
+	</button>
+</p>
+		<?php break;?>
+		<?php case 5:?>
+<p>
+	<button type="button" class="btn-custom"
+		onclick="openOther(<?php echo $this->form->i_IFID?>,<?php echo $this->objid?>,<?php echo $this->ioid?>,'<?php echo $item->Class?>')">
+		<?php echo $item->BashName?>
+	</button>
+</p>
+		<?php break;?>
+		<?php endswitch;?>
+		<?php $i++;?>
+		<?php endif;?>
+		<?php endforeach;?>
+<?php if(!$i):?>
+<?php echo $this->_translate(1);?>
+<?php endif;?>

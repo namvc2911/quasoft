@@ -1,0 +1,8 @@
+<input id="<?php echo $this->name?>" name="<?php echo $this->name?>" placeholder="dd-mm-yy" value="<?php echo @$this->default?>">
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#<?php echo $this->name?>').datepicker({ dateFormat: "dd-mm-yy" });
+	$('#<?php echo $this->name?>').val('<?php echo $this->default?>');
+	
+});
+</script>

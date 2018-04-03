@@ -1,0 +1,43 @@
+
+<div style="position: relative !important;">
+    <input type="text" name="<?php echo $this->id;?>_tag" id="<?php echo $this->id;;?>_tag" value="<?php echo $this->defaultText;?>">
+    <input type="hidden" name="<?php echo $this->name?$this->name:$this->id;?>" id="<?php echo $this->id;?>" value="<?php echo $this->defaultID;?>" <?php echo $this->htmlAttribute;?>>
+</div>
+
+<script>
+    $(function () {
+        reportSimpleListboxSelect_<?php echo $this->id;?>();
+    });
+
+    function reportSimpleListboxSelect_<?php echo $this->id;?>()
+    {
+        var data = {};
+        var url  = sz_BaseUrl + '<?php echo $this->url;?>?'+decodeURIComponent($.param(data));
+        
+        $('#<?php echo $this->id;?>_tag').tagSuggest({
+            url: url,
+            delay: 300,
+            separator : '*',
+            tagContainer: 'div',
+            placeHolder: '<?php echo $this->placeHolder?>',
+            callback: function(workingTags,id){
+            	var newid = $('#<?php echo $this->id;?>').val();
+            	if(newid == '0'){
+    				newid = 0;
+                } 
+            	if(newid != id){//nhằm phân biệt nếu có thay đổi
+	                workingTags = workingTags.toString().replace(/&nbsp;/g,'');
+	                $('#<?php echo $this->id;?>_tag').val(workingTags);
+	                if(id)
+	                {
+	                    $('#<?php echo $this->id;?>').val(id).triggerHandler('change');
+	                }
+	                else
+	                {
+	                    $('#<?php echo $this->id;?>').val('').triggerHandler('change');
+	                }
+            	}
+            }
+        });
+    }
+</script>

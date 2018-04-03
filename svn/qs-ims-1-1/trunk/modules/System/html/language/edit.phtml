@@ -1,0 +1,47 @@
+<form method="post" id="qss_form">
+	<input type="hidden" value="<?php echo $this->language->code?>"
+		name="Code" />
+	<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+		<button id="btnSAVE" type="button" class="btn btn_main_top" onclick="LanguageSave()">
+			<?php echo $this->_translate(34)?> 
+		</button>
+		<button type="button" class="btn btn_main_top" onclick="LanguageBack()">
+			<?php echo $this->_translate(32)?>
+		</button>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<div id="item-actions">
+			<ul>
+				<li class="item-action active"><a href="#1"><span><?php echo $this->_translate(7)?>
+					</span>
+				</a>
+				</li>
+			</ul>
+		</div>
+		<table border="0" width="450">
+			<tr>
+				<td width="110"><?php echo $this->_translate(68)?>
+				</td>
+				<td width="338"><input type="text"
+					value="<?php echo $this->language->code?>" style="width: 100px;"
+					name="Code" />
+				</td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(44)?>
+				</td>
+				<td><input type="text" value="<?php echo $this->language->name?>"
+					style="width: 200px;" name="Name" />
+				</td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(53)?>
+				</td>
+				<td><input type="checkbox" value="1"
+				<?php if($this->language->active) echo 'checked';?> name="Active" />
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>

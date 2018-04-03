@@ -1,0 +1,37 @@
+<div class="fl">
+    <table cellpadding="0" cellspacing="0" class="border_table" border="1" id="m401_material_box" style="table-layout: fixed;">
+        <!-- Tieu de -->
+        <tr>
+            <th style="width: 10%;"><input type="checkbox" class="remov_all_line" onclick="m401_material_button.checkAllItems(this)"></th>
+
+            <th style="width: 25%;"> Mã MH</th>
+            <th style="width: 25%;"> Tên MH</th>
+            <th style="width: 15%;"> Số YC</th>
+            <th style="width: 10%;"> ĐVT</th>
+            <th style="width: 15%;"> Số lượng </th>
+        </tr>
+
+        <?php foreach($this->order as $item):?>
+            <tr class="selected_line"  >
+                <td class="center"><input type="checkbox" class="remov_line" onclick="m401_material_button.checkItem(this)"></td>
+                <td class="left"> <?php echo $item->MaSP;?>
+                    <input type="hidden" value="<?php echo $item->Ref_MaSP;?>" class="RefItem" name="RefItem[]" >
+                    <input type="hidden" value="<?php echo $item->Ref_DonViTinh;?>" class="RefUOM" name="RefUOM[]" >
+                    <input class="itemcode" type="hidden" value="<?php echo $item->MaSP;?>">
+                    <input class="itemname" type="hidden" value="<?php echo $item->TenSanPham;?>">
+                    <input class="uom" type="hidden" value="<?php echo $item->DonViTinh;?>">
+                    <input class="groupmarker" type="hidden" value="<?php echo $item->Ref_SoYeuCau;?>">
+                    <input class="request" type="hidden" value="<?php echo $item->SoYeuCau;?>">
+                    <input class="requestioid" type="hidden" name="RefRequest[]" value="<?php echo $item->Ref_SoYeuCau;?>">
+                    <input class="ordered" type="hidden" value="0">
+                </td>
+                <td class="left"> <?php echo $item->TenSanPham;?></td>
+                <td class="left"> <?php echo $item->SoYeuCau;?></td>
+                <td class="left"> <?php echo $item->DonViTinh;?></td>
+                <td class="center">
+                    <input type="text" size="5" class="right qty" value="<?php echo $item->SoLuong;?>" name="Qty[]" />
+                </td>
+            </tr>
+        <?php endforeach;?>
+    </table>
+</div>

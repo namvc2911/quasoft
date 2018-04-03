@@ -1,0 +1,130 @@
+<!--  @todo: fix bug chrome multiple select element -->
+<style>
+    #item_dial_box {
+        overflow: hidden;
+    }
+
+    #select_item_box {
+        float: left;
+        width: 45%;
+    }
+
+    #select_item_box select {
+        width: 95%;
+    }
+
+    #button_box {
+        width: 10%;
+        float: left;
+    }
+
+    #button_box .btn-custom {
+        padding: 0px;
+        margin: 0px;
+        width: 90%;
+    }
+
+    #add_button {
+        margin-top: 40px;
+    }
+
+    #items_box {
+        float: left;
+        width: 45%;
+    }
+
+    #items_box select {
+        width: 95%;
+    }
+
+    #qss_report {
+        margin: 5px 0px;
+    }
+</style>
+
+
+<script type="text/javascript">
+
+    function printPreview()
+    {
+        var items = $('#items_box select option').length;
+//        var msg   = '';
+        $('#items_box select option').attr('selected','selected');
+
+
+//        if(items == 0)
+//        {
+//            msg += '<?php //echo $this->_translate(8);?>//';
+//        }
+
+//        if(msg != '')
+//        {
+//            qssAjax.alert(msg);
+//            return;
+//        }
+//        else
+        {
+            var url = sz_BaseUrl + '/static/m608/show';
+            var data = $('#report').serialize();
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#print-area').html(jreturn);
+                removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+            });
+        }
+    }
+
+</script>
+
+<div class="clear"></div>
+<div id="view">
+    <div class="line-hr">
+        <span><?php echo Qss_Lib_System::getReportTitle('M608');?> </span>
+    </div>
+    <form id="report" method="post" action="">
+        <table class="detail">
+
+            <!-- Mặt hàng
+            <tr>
+                <th width="20%" class="report-param-label">
+                    <?php //echo $this->_translate(3)?> </th>
+                <td>
+                    <?php // echo $this->views->Report->DialBox('items', $this->items);?>
+                </td>
+            </tr>
+            -->
+
+            <!-- Kho -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                    <?php echo $this->_translate(9)?></th>
+                <td><?php
+                    $id            = 'warehouse';
+                    $getFields     = array('num'=>2,
+                        'objects'=>array('ODanhSachKho'=>array(
+                            'id'=>'IOID'
+                        ,'display1'=>'MaKho'
+                        ,'display2'=>'TenKho')) );
+                    ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+
+                    <input type="checkbox" name="alerttype[]" value="1" id="alerttype_thua"/><Span  class="bgred" style="display: inline-block; width: 120px; padding:2px; float left; text-align:center;"> <label for="alerttype_thua">Thừa</label> </Span>
+                    <input type="checkbox" name="alerttype[]" value="2" id="alerttype_thieu"/><Span  class="bgpink" style="display: inline-block; width: 120px; padding:2px; float left; text-align:center;"> <label for="alerttype_thieu">Thiếu</label> </Span>
+                    <input type="checkbox" name="alerttype[]" value="4" id="alerttype_du"/><Span  class="bggreen" style="display: inline-block; width: 120px; padding:2px; float left; text-align:center;"> <label for="alerttype_du">Đủ</label> </Span>
+                    <input type="checkbox" name="alerttype[]" value="5" id="alerttype_het"/><Span  class="bgorange" style="display: inline-block; width: 120px; padding:2px; float left; text-align:center;"> <label for="alerttype_het">Hết</label> </Span>
+
+                    <!--
+                    <input type="checkbox" name="alerttype[]" value="3" id="alerttype_min_max"/>
+                    <Span  class="bgyellow" style="display: inline-block; width: 120px; padding:2px; float left; text-align:center;"> <label for="alerttype_min_max">Chưa cài đặt min max</label> </Span>
+                    -->
+                </td>
+            </tr>
+        </table>
+    </form>
+    <p>
+
+
+    <hr>
+    <?php echo $this->views->Report->PrintToolbar();?>
+    <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>

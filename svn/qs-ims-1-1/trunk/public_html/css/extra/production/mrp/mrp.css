@@ -1,0 +1,267 @@
+.disabled {
+	background: #999 !important;
+	color: #ccc;
+}
+
+.disable_glass {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+}
+
+.getOut {
+	display: none;
+	visibility: visible;
+}
+
+.hidden {
+	visibility: visible;
+	display: none;
+}
+
+.marker {
+	border: none;
+	border: 1px orange double;
+}
+
+.width_100 {
+	width: 100px;
+}
+
+.width_50 {
+	width: 50px;
+}
+
+.tree_level_1 {
+	padding-left: 15px;
+	background: url(/images/tree_open.png) 0 no-repeat !important;
+}
+
+.tree_level_2 {
+	padding-left: 25px;
+	background: url(/images/tree_open.png) 0 no-repeat !important;
+	background-position: 10px !important;
+}
+
+.tree_level_3 {
+	padding-left: 35px;
+	background: url(/images/tree_open.png) 0 no-repeat !important;
+	background-position: 20px !important;
+}
+
+.tree_level_4 {
+	padding-left: 45px;
+	background: url(/images/tree_open.png) 0 no-repeat !important;
+	background-position: 30px !important;
+}
+
+.tree_level_5 {
+	padding-left: 55px;
+	background: url(/images/tree_open.png) 0 no-repeat !important;
+	background-position: 40px !important;
+}
+
+.tree_level_6 {
+	padding-left: 65px;
+	background: url(/images/tree_open.png) 0 no-repeat !important;
+	background-position: 50px !important;
+}
+
+.tree_level_7 {
+	padding-left: 75px;
+	background: url(/images/tree_open.png) 0 no-repeat !important;
+	background-position: 60px !important;
+}
+
+.tree_level_8 {
+	padding-left: 85px;
+	background: url(/images/tree_open.png) 0 no-repeat !important;
+	background-position: 70px !important;
+}
+
+.tree_level_9 {
+	padding-left: 95px;
+	background: url(/images/tree_open.png) 0 no-repeat !important;
+	background-position: 80px !important;
+}
+
+.tree_level_10 {
+	padding-left: 105px;
+	background: url(/images/tree_open.png) 0 no-repeat !important;
+	background-position: 90px !important;
+}
+
+.bggrey {
+	background: #eee;
+}
+
+.bggrey2 {
+	background: #ddd;
+}
+/*
+.bgorange
+{
+	background:#FFFE99;
+}
+*/
+th {
+	padding-top: 1px;
+	padding-bottom: 1px;
+}
+
+#mrp a {
+	color: red;
+}
+
+select option,select {
+	line-height: 12px;
+	font-size: 10px
+}
+
+.smallText {
+	font-size: 9px;
+}
+
+.yellowBg {
+	background: #FFFF33;
+}
+
+.redBg {
+	background: red;
+}
+
+.left {
+	padding-left: 1px;
+}
+
+.right {
+	padding-right: 1px;
+}
+
+.selectFormat {
+	width: 50px;
+}
+
+.selectText1Format {
+	width: 60px;
+}
+
+.selectText2Format {
+	width: 100px;
+}
+
+.borderX {
+	border-top: 1px dotted #bbb;
+	border-right: 1px dotted #bbb;
+}
+
+.borderX tr {
+	border-bottom: 1px dotted #bbb;
+}
+
+.borderX td,.borderX th {
+	border-left: 1px dotted #bbb;
+	word-wrap: break-word;
+}
+
+#mrp {
+	font-family: arial;
+	font-size: 11px;
+	margin-bottom: 30px;
+}
+
+#search_item .siElement {
+	margin: -5px 5px;
+}
+
+#search_item .siButton {
+	margin: -3px 1px;
+}
+
+.marker {
+	border: none;
+	border: 1px red solid;
+}
+
+.text_step_style {
+	font-family: arial;
+	font-size: 11px;
+	line-height: 24px;
+	color: #666;
+	cursor: pointer;
+}
+
+.arrow_step {
+	clear: both;
+	position: relative;
+}
+
+.arrow_step {
+	clear: both;
+	height: 24px;
+	overflow: hidden;
+}
+
+.arrow_step span {
+	padding-left: 15px;
+}
+
+.first_step {
+	background: url('/images/progress/first-step.png');
+	width: 121px;
+	height: 24px;
+	position: absolute;
+	z-index: 100;
+}
+
+.first_step_selected {
+	background:
+		url('/images/progress/first-step-selected.png');
+	width: 120px;
+	height: 24px;
+	position: absolute;
+	color: white;
+	z-index: 120;
+}
+
+.middle_step {
+	background: url('/images/progress/middle-step.png');
+	width: 120px;
+	height: 24px;
+	position: absolute;
+	z-index: 100;
+}
+
+.middle_step_selected {
+	background:
+		url('/images/progress/middle-step-selected.png');
+	width: 120px;
+	height: 24px;
+	position: absolute;
+	color: white;
+	z-index: 120;
+}
+
+.last_step {
+	background: url('/images/progress/last-step.png');
+	width: 120px;
+	height: 24px;
+	position: absolute;
+	z-index: 100;
+}
+
+.last_step_selected {
+	background:
+		url('/images/progress/last-step-selected.png');
+	width: 120px;
+	height: 24px;
+	position: absolute;
+	color: white;
+	z-index: 120;
+}
+
+#purchase_plan_control label {
+	padding: 0px 5px 0px 2px;
+}

@@ -1,0 +1,71 @@
+<?php
+    $total = @(int)$this->count->CountStep1
+        + @(int)$this->count->CountStep2
+        + @(int)$this->count->CountStep3;
+
+    $step1 = Qss_Lib_Util::formatNumber(($total?@(int)$this->count->CountStep1/$total:0) * 100);
+    $step2 = Qss_Lib_Util::formatNumber(($total?@(int)$this->count->CountStep2/$total:0) * 100);
+    $step3 = Qss_Lib_Util::formatNumber(($total?@(int)$this->count->CountStep3/$total:0) * 100);
+
+    $steps = Qss_Lib_System::getStepsArray('M759');
+?>
+
+
+
+<script>
+    $(function () {
+        $('#container_openwopie').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: '<?php echo $this->_translate(1)?>'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.2f} %</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:.2f} %',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        }
+                    }
+                }
+            },
+            colors: [
+                'yellow',
+                'orange',
+                'aqua'
+            ],
+            series: [{
+                name: 'Brands',
+                colorByPoint: true,
+                data: [{
+                    name: '<?php echo @$steps[1]->Name;?> <br/>(<?php echo @(int)$this->count->CountStep1;?> <?php echo $this->_translate(2)?>)',
+                    y: <?php echo $step1;?>
+                }, {
+                    name: '<?php echo @$steps[2]->Name;?> <br/>(<?php echo @(int)$this->count->CountStep2;?> <?php echo $this->_translate(2)?>)',
+                    y: <?php echo $step2;?>,
+                    sliced: true,
+                    selected: true
+                }, {
+                    name: '<?php echo @$steps[3]->Name;?> <br/>(<?php echo @(int)$this->count->CountStep3;?> <?php echo $this->_translate(2)?>)',
+                    y: <?php echo $step3;?>
+
+                }]
+            }]
+        });
+    });
+</script>
+
+<div id="container_openwopie"  style="width: 390px; height: 250px;">
+
+</div>

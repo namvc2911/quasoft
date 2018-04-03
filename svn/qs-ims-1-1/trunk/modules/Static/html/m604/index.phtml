@@ -1,0 +1,82 @@
+<script type="text/javascript">
+<!--
+function calculate(m,y){
+	qssAjax.confirm(Language.translate('CONFIRM_PROCESS'),function(){
+		var url = sz_BaseUrl + '/static/m604/calculate';
+		var data = {month:m,year:y};
+		qssAjax.call(url, data, function(jreturn) {
+		}, function(jreturn) {
+			qssAjax.alert(jreturn.message);
+		});
+	});
+}
+function removeCal(m,y){
+	qssAjax.confirm(Language.translate('CONFIRM_PROCESS'),function(){
+		var url = sz_BaseUrl + '/static/m604/remove';
+		var data = {month:m,year:y};
+		qssAjax.call(url, data, function(jreturn) {
+			window.location.reload();
+		}, function(jreturn) {
+			qssAjax.alert(jreturn.message);
+		});
+	});
+}
+function addnew(){
+	var m = $('#month').val();
+	var y = $('#year').val();
+	qssAjax.confirm(Language.translate('CONFIRM_PROCESS'),function(){
+		var url = sz_BaseUrl + '/static/m604/calculate';
+		var data = {month:m,year:y};
+		qssAjax.call(url, data, function(jreturn) {
+			window.location.reload();
+		}, function(jreturn) {
+			qssAjax.alert(jreturn.message);
+		});
+	});
+}
+//-->
+</script>
+<div class="clear"></div>
+<div id="view">
+	<select id="month" style="width:50px;">
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+		<option value="5">5</option>
+		<option value="6">6</option>
+		<option value="7">7</option>
+		<option value="8">7</option>
+		<option value="9">9</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+	</select> 
+	
+	<input id="year" name="year" value="<?php echo date('Y')?>" style="width:50px;">
+	
+	<button type="button" class="btn-custom" onclick="addnew()">Tính mới</button>
+	<table class="detail">
+		<tr>
+			<th>Tháng</th>
+			<th>Năm</th>
+			<th>Tải excel</th>
+			<th>Tính lại</th>
+			<th>Import</th>
+		</tr>
+		<?php foreach ($this->all as $item):?>
+		<tr>
+			<td><?php echo $item->Month?></td>
+			<td><?php echo $item->Year?></td>
+			<td>Tải excel</td>
+			<td><button type="button" class="btn-custom"
+					onclick="calculate(<?php echo (int)$item->Month?>,<?php echo (int)$item->Year?>)">Tính
+					lại</button></td>
+			<td><button type="button" class="btn-custom"
+					onclick="removeCal(<?php echo (int)$item->Month?>,<?php echo (int)$item->Year?>)">Xóa</button>
+			</td>
+			<td></td>
+		</tr>
+		<?php endforeach;?>
+	</table>
+</div>

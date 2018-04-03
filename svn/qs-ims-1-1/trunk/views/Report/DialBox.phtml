@@ -1,0 +1,339 @@
+<?php
+$size = 12;
+if(is_array($this->id))
+{
+	$id   = $this->id['ID'];
+	$size = $this->id['Size'];
+}
+else
+{
+	$id = $this->id;
+}
+?>
+
+<style>
+#<?php echo $id;?>_dial_box
+{
+	overflow:hidden;
+}
+#select_<?php echo $id;?>_box
+{
+	float:left;
+	width:45%;
+}
+#select_<?php echo $id;?>_box select
+{
+	width:95%;
+}
+#<?php echo $id;?>_button_box
+{
+	width:10%;
+	float:left;
+}
+#<?php echo $id;?>_button_box .btn-custom
+{
+	padding:0px;
+	margin:0px;
+	width:90%;
+}
+#<?php echo $id;?>_add_button
+{
+	margin-top:40px;
+}
+#<?php echo $id;?>_box
+{
+	float:left;
+	width:45%;
+}
+#<?php echo $id;?>_box select
+{
+	width:95%;
+}
+#qss_report
+{
+	margin:5px 0px;
+}
+</style>
+
+<script>
+
+	$(document).ready(function(){
+		$('#<?php echo $id;?>_filter_dialbox').keypress(function (e) {
+			if (e.which == 13) {
+				<?php echo $id;?>_search_dialbox();
+				return false;    //<---- Add this line
+			}
+		});
+
+		$('#<?php echo $id;?>_filter_dialbox').keyup(function ()
+		{
+			<?php echo $id;?>_search_dialbox();
+		});
+	});
+
+function dialbox_<?php echo $id;?>_addItem()
+{
+	var add   = $('#select_<?php echo $id;?>_box select option[value!="0"]').filter(":selected").filter(":not(:hidden)");
+
+	$('.<?php echo $id;?>_empty_option').each(function () {
+		$(this).remove();
+	});
+
+	add.each(function(){
+		$('#<?php echo $id;?>_box select').append('<option value="'+$(this).val()
+			+'" groupmarker="'+$(this).attr('groupmarker')
+			+'" ondblclick="dialbox_<?php echo $id;?>_removeItem()"'
+            +'>'+$(this).text()+'</option>');
+		$(this).remove();
+	});
+
+	if($('#select_<?php echo $id;?>_box select option:hidden').length == $('#select_<?php echo $id;?>_box select option').length)
+	{
+		$('#select_<?php echo $id;?>_box select').append('<option class=\"<?php echo $id;?>_empty_option\" value=\"0\" disabled>&nbsp;</option>');
+	}
+}
+
+function dialbox_<?php echo $id;?>_addAllItem()
+{
+    var add = $('#select_<?php echo $id;?>_box select  option[value!="0"]').filter(":not(:hidden)");
+
+    $('.<?php echo $id;?>_empty_option').each(function () {
+        $(this).remove();
+    });
+
+    add.each(function(){
+        $('#<?php echo $id;?>_box select').append('<option value="'+$(this).val()
+            +'" groupmarker="'+$(this).attr('groupmarker')
+            +'" ondblclick="dialbox_<?php echo $id;?>_removeItem()"'
+            +'>'+$(this).text()+'</option>');
+        $(this).remove();
+    });
+
+    if($('#select_<?php echo $id;?>_box select option:hidden').length == $('#select_<?php echo $id;?>_box select option').length)
+    {
+        $('#select_<?php echo $id;?>_box select').append('<option class=\"<?php echo $id;?>_empty_option\" value=\"0\" disabled>&nbsp;</option>');
+    }
+
+}
+
+function dialbox_<?php echo $id;?>_removeItem()
+{
+	var remove = $('#<?php echo $id;?>_box select option[value!="0"]').filter(":selected").filter(":not(:hidden)");
+
+	$('.<?php echo $id;?>_empty_option').each(function () {
+		$(this).remove();
+	});
+
+	remove.each(function(){
+		//optgroup[groupmarker="'+$(this).attr('groupmarker')+'"]
+		var groupmarker = parseInt($(this).attr('groupmarker'));
+		if(groupmarker != 0)
+		{
+			$('#select_<?php echo $id;?>_box select '
+					+'optgroup[groupmarker="'+$(this).attr('groupmarker')+'"]').prepend('<option value="'
+					+$(this).val()
+					+'" groupmarker="'+$(this).attr('groupmarker')
+                    +'" ondblclick="dialbox_<?php echo $id;?>_addItem()"'
+                    + '>'+$(this).text()+'</option>');
+		}
+		else
+		{
+			$('#select_<?php echo $id;?>_box select ').prepend('<option value="'
+					+$(this).val()
+					+'" groupmarker="'+$(this).attr('groupmarker')
+                    +'" ondblclick="dialbox_<?php echo $id;?>_addItem()"'
+                    +'>'+$(this).text()+'</option>');
+		}
+		$(this).remove();
+	});
+
+    if($('#<?php echo $id;?>_box select option').length == 0)
+    {
+        $('#<?php echo $id;?>_box select').append('<option class=\"<?php echo $id;?>_empty_option\" value=\"0\" disabled>&nbsp;</option>');
+    }
+}
+
+function dialbox_<?php echo $id;?>_removeAllItem()
+{
+    var remove = $('#<?php echo $id;?>_box select option[value!="0"]').filter(":not(:hidden)");
+
+    $('.<?php echo $id;?>_empty_option').each(function () {
+        $(this).remove();
+    });
+
+    remove.each(function(){
+        //optgroup[groupmarker="'+$(this).attr('groupmarker')+'"]
+        var groupmarker = parseInt($(this).attr('groupmarker'));
+        if(groupmarker != 0)
+        {
+            $('#select_<?php echo $id;?>_box select '
+                +'optgroup[groupmarker="'+$(this).attr('groupmarker')+'"]').prepend('<option value="'
+                +$(this).val()
+                +'" groupmarker="'+$(this).attr('groupmarker')
+                +'" ondblclick="dialbox_<?php echo $id;?>_addItem()"'
+                + '>'+$(this).text()+'</option>');
+        }
+        else
+        {
+            $('#select_<?php echo $id;?>_box select ').prepend('<option value="'
+                +$(this).val()
+                +'" groupmarker="'+$(this).attr('groupmarker')
+                +'" ondblclick="dialbox_<?php echo $id;?>_addItem()"'
+                +'>'+$(this).text()+'</option>');
+        }
+        $(this).remove();
+    });
+
+    if($('#<?php echo $id;?>_box select option').length == 0)
+    {
+        $('#<?php echo $id;?>_box select').append('<option class=\"<?php echo $id;?>_empty_option\" value=\"0\" disabled>&nbsp;</option>');
+    }
+
+}
+
+function <?php echo $id;?>_search_dialbox()
+{
+	var xval = $('#<?php echo $id;?>_filter_dialbox').val();
+
+	$('.<?php echo $id;?>_empty_option').each(function () {
+		$(this).remove();
+	});
+
+	if(xval == '')
+	{
+		$('#select_<?php echo $id;?>_box select option').each(function(){
+			$(this).show();
+		});
+	}
+	else
+	{
+		$('#select_<?php echo $id;?>_box select option').each(function(){
+			var text = $(this).text();
+			var re = new RegExp(xval, "i");
+
+			if(text.search(re) !== -1){
+				$(this).show();
+			}
+			else
+			{
+				$(this).hide();
+			}
+		});
+	}
+
+	if($('#select_<?php echo $id;?>_box select option:hidden').length == $('#select_<?php echo $id;?>_box select option').length)
+	{
+		$('#select_<?php echo $id;?>_box select').append('<option class=\"<?php echo $id;?>_empty_option\" value=\"0\" disabled>&nbsp;</option>');
+	}
+
+
+}
+</script>
+
+<div id="<?php echo $id;?>_dial_box">
+	<div id="select_<?php echo $id;?>_box">
+		<input type="text" id="<?php echo $id;?>_filter_dialbox" placeholder="Search" style="width: 94%" onchange="<?php echo $id;?>_search_dialbox()"/>
+		<select size="<?php echo ($size - 1);?>" multiple="multiple">
+			<?php 
+				$selected   = array();
+				$countGroup = count($this->data);
+				$first      = '';
+				$tempHtml   = '';
+				$html       = '';
+				
+				foreach($this->data as $index=>$dat)
+				{
+					$dat['GroupID']   = isset($dat['GroupID'])?$dat['GroupID']:0;
+					$dat['GroupName'] = isset($dat['GroupName'])?$dat['GroupName']:'';
+					
+					if($dat['GroupID'] != 0)
+					{
+						$tempHtml.= "<optgroup label=\"{$dat['GroupName']}\" "
+							. "groupmarker=\"{$dat['GroupID']}\">";
+					}
+					
+					foreach($dat['Dat'] as $dat2)
+					{
+						
+						$dat2['Selected'] = isset($dat2['Selected'])?$dat2['Selected']:false;
+						if(!$dat2['Selected'])
+						{
+							$tempHtml.= "<option ondblclick='dialbox_{$id}_addItem()' groupmarker=\"{$dat['GroupID']}\" value=\"{$dat2['ID']}\">";
+							$tempHtml.= $dat2['Display'];
+							$tempHtml.= "</option>";
+						}
+						else 
+						{
+							$dat2['GroupID'] = $dat['GroupID'];
+							$selected[] = $dat2;
+						}
+					}
+					
+					
+					if($dat['GroupID'] != 0)
+					{
+						$tempHtml.= "</optgroup>";
+					}
+					
+					// Xap xep cac option ko co nhom len dau
+					if($countGroup > 1 &&  $dat['GroupID'] == 0)
+					{
+						$first.= $tempHtml;
+						$tempHtml   = '';
+					}
+					else
+					{
+						$html.= $tempHtml;
+						$tempHtml   = '';
+					}
+				}
+				echo $first.$html;
+			?>
+
+		</select>
+	</div>
+			
+	<div id="<?php echo $id;?>_button_box">
+
+		<div id="<?php echo $id;?>_add_button">
+			<button onclick="dialbox_<?php echo $id;?>_addItem()"
+					class="btn-custom"
+					type="button"> &gt;&gt; </button>
+		</div>
+
+		<div id="">
+			<button onclick="dialbox_<?php echo $id;?>_removeItem()"
+					class="btn-custom"
+					type="button"> &lt;&lt; </button>
+		</div>
+
+		<div id="">
+			<button onclick="dialbox_<?php echo $id;?>_addAllItem()"
+					class="btn-custom"
+					type="button"> &gt;&gt;&gt;&gt; </button>
+		</div>
+
+		<div id="<?php echo $id;?>_remove_button">
+			<button onclick="dialbox_<?php echo $id;?>_removeAllItem()"
+					class="btn-custom"
+					type="button"> &lt;&lt;&lt;&lt; </button>
+		</div>
+	</div>
+
+
+	<div id="<?php echo $id;?>_box">
+		<select class="" id="<?php echo $id;?>" 
+				name="<?php echo $id;?>[]" 
+				multiple="multiple" 
+				size="<?php echo $size;?>">
+			<?php
+				foreach($selected as $se)
+				{
+					echo "<option ondblclick='dialbox_{$id}_removeItem()' groupmarker=\"{$se['GroupID']}\" value=\"{$se['ID']}\">";
+					echo $se['Display'];
+					echo "</option>";
+				}
+			?>
+		</select>
+	</div>
+</div>

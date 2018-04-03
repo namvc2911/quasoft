@@ -1,0 +1,271 @@
+
+
+<?php
+$excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg = "#EEEEEE";
+$row = 2;
+$totalColumn = 10;
+?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="landscape">
+	<excel orientation="landscape" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+	<div id="head_print">
+	<?php echo $this->views->Common->Landscape()?>
+
+		<center>
+			<h2>
+				<xls row="<?php echo $row?>" column="A"
+					column-merge="<?php echo $excel_col[$totalColumn]?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(1)?>
+				(<?php echo $this->_translate(2)?> <?php echo $this->start?> <?php echo $this->_translate(3)?>
+				<?php echo $this->end?>) </xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++?>
+
+
+	<div id="container">
+		<table cellspacing="0" cellpadding="0" border="1" id="" class="border">
+			<tr class="bggrey">
+			<?php $begin = 0;?>
+
+				<!-- MaThietBi -->
+				<th class="center" style="width: 80px;"><xls width="12"
+						row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1" bold="1" bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(10)?></xls>
+				</th>
+				<!-- TenSP - NhomThietBi -->
+				<th class="center" style="width: 80px;"><xls width="12"
+						row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1" bold="1" bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(12)?></xls>
+				</th>
+				<!-- LoaiThietBi -->
+				<th class="center" style="width: 80px;"><xls width="12"
+						row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1" bold="1" bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(11)?></xls>
+				</th>
+				<!-- MaKhuVuc -->
+				<th class="center" style="width: 80px;"><xls width="12"
+						row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1" bold="1" bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(15)?></xls>
+				</th>
+				<!-- NamSanXuat -->
+				<th class="center" style="width: 80px;"><xls width="12"
+						row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1" bold="1" bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(13)?></xls>
+				</th>
+				<!-- NgayDuaVaoSuDung -->
+				<th class="center" style="width: 80px;"><xls width="12"
+						row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1" bold="1" bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(14)?></xls>
+				</th>
+				<!-- XuatXu -->
+				<th class="center" style="width: 80px;"><xls width="12"
+						row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1" bold="1" bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(16)?></xls>
+				</th>
+				<!-- DacTinhKT -->
+				<th class="center" style="width: 120px;"><xls width="15"
+						row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1" bold="1" bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(17)?></xls>
+				</th>
+				<?php foreach($this->time as $item):?>
+				<th class="center" style="width: 50px;"><xls width="8"
+						row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1" bold="1" bgcolor="<?php echo $bg;?>"> <?php echo $item['Display']?></xls>
+						<?php endforeach;?>
+			
+			</tr>
+			<?php $row++?>
+
+			<?php foreach ($this->eq as $data): // In danh sach?>
+			<tr>
+			<?php $begin = 0;?>
+			<?php $item = $data[0]?>
+			<?php $availability = $data[1]?>
+				<!-- MaThietBi -->
+				<td class="left" width=""><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"
+						v-align="center" h-align="left" border="1"> <?php echo $item->MaThietBi?></xls>
+				</td>
+				<!-- TenSP - NhomThietBi -->
+				<td class="left" width=""><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"
+						v-align="center" h-align="left" border="1"> <?php echo $item->LoaiThietBi?></xls>
+				</td>
+				<!-- LoaiThietBi -->
+				<td class="left" width=""><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"
+						v-align="center" h-align="left" border="1"> <?php echo $item->NhomThietBi?></xls>
+				</td>
+				<!-- MaKhuVuc -->
+				<td class="left" width=""><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"
+						v-align="center" h-align="left" border="1"> <?php echo $item->MaKhuVuc?>
+					<!-- - --> <?php //echo $item->TenKhuVuc?></xls></td>
+				<!-- NamSanXuat -->
+				<td class="center" width=""><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"
+						v-align="center" h-align="center" border="1"> <?php echo $item->NamSanXuat?></xls>
+				</td>
+				<!-- NgayDuaVaoSuDung -->
+				<td class="center" width=""><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"
+						v-align="center" h-align="center" border="1"> <?php echo $item->NgayDuaVaoSuDung?></xls>
+				</td>
+				<!-- XuatXu -->
+				<td class="left" width=""><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"
+						v-align="center" h-align="left" border="1"> <?php echo $item->XuatXu?></xls>
+				</td>
+				<!-- DacTinhKT -->
+				<td class="left" width=""><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"
+						v-align="center" h-align="left" border="1"> <?php echo $item->DacTinhKT?></xls>
+				</td>
+				<?php foreach($this->time as $time):?>
+				<?php
+				if(!isset($column[$time['Key']])) $column[$time['Key']] = 0;
+				$khaNang = (isset($availability[$time['Key']]))?$availability[$time['Key']]:0;
+				$column[$time['Key']]  += $khaNang;
+				?>
+				<td class="right" width=""><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"
+						v-align="center" h-align="right" border="1"> <?php echo $khaNang;?></xls>
+				</td>
+				<?php endforeach;?>
+			</tr>
+			<?php $row++?>
+			<?php endforeach; // Ket thuc in danh sach?>
+
+
+			<tr>
+			<?php $begin = 0;?>
+				<!-- MaThietBi -->
+				<td class="center" width=""><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"
+						v-align="center" h-align="center" border="1">x</xls></td>
+				<!-- TenSP - NhomThietBi -->
+				<td class="center" width=""><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"
+						v-align="center" h-align="left" border="1">x</xls></td>
+				<!-- LoaiThietBi -->
+				<td class="center" width=""><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"
+						v-align="center" h-align="center" border="1">x</xls></td>
+				<!-- MaKhuVuc -->
+				<td class="center" width=""><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"
+						v-align="center" h-align="center" border="1">x</xls></td>
+				<!-- NamSanXuat -->
+				<td class="center" width=""><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"
+						v-align="center" h-align="center" border="1">x</xls></td>
+				<!-- NgayDuaVaoSuDung -->
+				<td class="center" width=""><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"
+						v-align="center" h-align="center" border="1">x</xls></td>
+				<!-- XuatXu -->
+				<td class="center" width=""><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"
+						v-align="center" h-align="center" border="1">x</xls></td>
+				<!-- DacTinhKT -->
+				<td class="center" width=""><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"
+						v-align="center" h-align="center" border="1">x</xls></td>
+						<?php foreach($column as $item):?>
+				<td class="right" width=""><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"
+						v-align="center" h-align="right" border="1"> <?php echo Qss_Lib_Extra::numberFormat($item/$this->countEq)?></xls>
+				</td>
+				<?php endforeach;?>
+			</tr>
+			<?php $row++?>
+		</table>
+	</div>
+</div>
+<br />
+<div
+	id="container1" style="width: 95%; height: 400px; margin: 0 auto"></div>
+
+<script>
+$(document).ready(function() {
+	var chart;
+	chart = new Highcharts.Chart({
+        chart: {
+        	renderTo: 'container1',
+	         plotBackgroundColor: null,
+	         plotBorderWidth: null,
+	         plotShadow: false
+        },
+        title: {
+            text: '<?php echo $this->_translate(5)?>'
+        },
+        xAxis: {
+            labels: {
+                rotation: -45,
+                align: 'right'
+            },
+            categories: [
+                        <?php $begin = true;?>
+                        <?php $total = 0;?>
+                        <?php foreach ($this->time as $item):?>
+                         	<?php if(!$begin):?>,<?php endif;?>
+							'<?php echo $item['Display'];?>'
+	                        <?php $begin = false;?>
+                        <?php endforeach;?>
+                        ]
+        },
+        yAxis: [{ // Secondary yAxis
+            title: {
+                text: '<?php echo $this->_translate(4)?>',
+                style: {
+                    color: '#4572A7'
+                }
+            },
+            offset:1
+        }],
+        tooltip: {
+            formatter: function() {
+                s = ''+this.x  +': '+ this.y;
+                return s;
+            }
+        },
+        labels: {
+            items: [{
+                style: {
+                    left: '40px',
+                    top: '8px',
+                    color: 'black'
+                }
+            }]
+        },
+        series: [{
+            type: 'column',
+            showInLegend: false, 
+            data: [
+                   <?php $begin = true;?>
+                   <?php foreach ($column as $item):?>
+                    	<?php if(!$begin):?>,<?php endif;?>
+                       <?php echo $this->countEq?$item/$this->countEq:0;?>
+                       <?php $begin = false;?>
+                        <?php endforeach;?>
+					]
+        }]
+    });
+});
+</script>

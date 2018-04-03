@@ -1,0 +1,26 @@
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+	<button id="Insert" type="button" class="btn btn_main_top"  onClick="rowUIBoxInsert('<?php echo $this->objid?>',<?php echo $this->gid?>)">
+		<?php echo $this->_translate(12)?>
+	</button>
+	<button id="Update" type="button" class="btn btn_main_top" disabled onClick="rowUIBoxEdit('<?php echo $this->objid?>',<?php echo $this->gid?>)">
+		<?php echo $this->_translate(13)?>
+	</button>
+	<button id="Delete" type="button" class="btn btn_main_top" disabled onClick="rowUIBoxDelete('<?php echo $this->objid?>',<?php echo $this->gid?>)">
+		<?php echo $this->_translate(14)?>
+	</button>
+	<button id="Fields" type="button" class="btn btn_main_top" onClick="rowUIBoxBack('<?php echo $this->objid?>')">
+		<?php echo $this->_translate(1)?>
+	</button>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#1"><span><?php echo $this->_translate(102)?>
+				</span> </a></li>
+		</ul>
+	</div>
+	<div id="qss_object_list">
+	<?php echo $this->views->Common->List($this->data,'UIBID','Title') ;?>
+	</div>
+</div>

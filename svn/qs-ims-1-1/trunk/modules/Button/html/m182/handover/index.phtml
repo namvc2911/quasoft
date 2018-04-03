@@ -1,0 +1,555 @@
+<style>
+    #wrap, #change_view label
+    {
+        font-size: 12px !important;
+    }
+
+    #select_m182HandOver_oimp_box, #select_m182HandOver_opmi_box
+    {
+        float:left;
+        width:95%;
+    }
+    #select_m182HandOver_oimp_box .select, #select_m182HandOver_opmi_box .select
+    {
+        width:98%;
+        overflow: auto;
+    }
+    #M182_Handover_oimp_box, #M182_Handover_opmi_box
+    {
+        width:10%;
+        float:left;
+    }
+    #m182HandOver_opmi_box, #m182HandOver_oimp_box
+    {
+        width: 98%;
+    }
+</style>
+
+<script src="/js/object-list.js"></script>
+
+<script>
+    var M182_Handover = {
+        /**
+         * Thay đổi view bàn giao
+         * 1 - Bàn giao theo tài sản (Mặc định)
+         * 2 - Bàn giao theo người
+         * Hàm chạy khi khởi động hoặc click vào phần change view
+         * @param int view_id 1|2
+         */
+        change_view : function(view_id)
+        {
+            var url, data;
+
+            if(view_id == 2) // Hien thi ban giao theo nguoi
+            {
+                $('#one_item_many_persons').attr('checked', true);
+                $('#one_person_many_items').removeAttr('checked');
+                url  = sz_BaseUrl + '/button/m182/handover/byperson/index/';
+                data = {ifid:parseInt($('#m182HandOver_ifid').val()), clawback: parseInt($('#m182HandOver_clawback').val())};
+            }
+            else // Hien thi ban giao theo tài sản (Mặc định)
+            {
+                $('#one_person_many_items').attr('checked', true);
+                $('#one_item_many_persons').removeAttr('checked');
+                url  = sz_BaseUrl + '/button/m182/handover/byasset/index/';
+                data = {ifid:parseInt($('#m182HandOver_ifid').val()), clawback: parseInt($('#m182HandOver_clawback').val())};
+            }
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#m182HandOver_show').html(jreturn);
+            });
+        },
+
+        search_oimp : function()
+        {
+            // Gia tri tim kiem
+            var xval = $('#m182HandOver_oimp_filter_dialbox').val();
+            var text = '';
+            var re;
+
+            // Xoa nhung option trắng
+            $('.m182HandOver_empty_option').each(function () {
+                $(this).remove();
+            });
+
+            // An hien option theo gia tri tim kiem
+            if(xval == '')
+            {
+                $('#select_m182HandOver_oimp_box select option').each(function(){
+                    $(this).show();
+                });
+            }
+            else
+            {
+                $('#select_m182HandOver_oimp_box select option').each(function(){
+                    text = $(this).text();
+                    re   = new RegExp(xval, "i");
+
+                    if(text.search(re) !== -1){
+                        $(this).show();
+                    }
+                    else
+                    {
+                        $(this).hide();
+                    }
+                });
+            }
+
+            // Them the trang vao trong truong hop so luog the bi hide bang dung so luong the dang co
+            if($('#select_m182HandOver_oimp_box select option:hidden').length == $('#select_m182HandOver_oimp_box select option').length)
+            {
+                $('#select_m182HandOver_oimp_box select').append('<option class=\"m182HandOver_empty_option\" value=\"0\" disabled>&nbsp;</option>');
+            }
+        },
+
+
+        search_opmi : function()
+        {
+            // Gia tri tim kiem
+            var xval = $('#m182HandOver_opmi_filter_dialbox').val();
+            var text = '';
+            var re;
+
+            // Xoa nhung option trắng
+            $('.m182HandOver_empty_option').each(function () {
+                $(this).remove();
+            });
+
+            // An hien option theo gia tri tim kiem
+            if(xval == '')
+            {
+                $('#select_m182HandOver_opmi_box select option').each(function(){
+                    $(this).show();
+                });
+            }
+            else
+            {
+                $('#select_m182HandOver_opmi_box select option').each(function(){
+                    text = $(this).text();
+                    re   = new RegExp(xval, "i");
+
+                    if(text.search(re) !== -1){
+                        $(this).show();
+                    }
+                    else
+                    {
+                        $(this).hide();
+                    }
+                });
+            }
+
+            // Them the trang vao trong truong hop so luog the bi hide bang dung so luong the dang co
+            if($('#select_m182HandOver_opmi_box select option:hidden').length == $('#select_m182HandOver_opmi_box select option').length)
+            {
+                $('#select_m182HandOver_opmi_box select').append('<option class=\"m182HandOver_empty_option\" value=\"0\" disabled>&nbsp;</option>');
+            }
+        },
+
+        add_opmi : function(all){
+            var add;
+            var addHtml = '';
+            var employee= parseInt($('#m182HandOver_opmi_employee').val());
+            var qty     = parseInt($('#m182HandOver_opmi_qty').val());
+            var clawback = parseInt($('#m182HandOver_clawback').val());
+            employee    = (isNaN(employee))?0:employee;
+            qty         = (isNaN(qty))?0:qty;
+            clawback    = (isNaN(clawback))?0:clawback;
+
+
+            if(employee <= 0 || (qty <= 0 && $('#m182HandOver_opmi_qty').length  > 0))
+            {
+                qssAjax.alert('Phải chọn nhân viên và số lượng trước!');
+                return;
+            }
+
+            if(all != undefined && all)
+            {
+                add = $('#select_m182HandOver_opmi_box select  option[value!="0"]').filter(":not(:hidden)");
+            }
+            else
+            {
+                add = $('#select_m182HandOver_opmi_box select option[value!="0"]').filter(":selected").filter(":not(:hidden)");
+            }
+
+            $('.m182HandOver_empty_option').each(function () {
+                $(this).remove();
+            });
+
+            add.each(function(){
+                tempQty = clawback?$(this).attr('soLuong'):qty;
+
+                addHtml  = '';
+                addHtml += '<tr class="selected_line" onclick="M182_Handover.checkItem(this)">';
+                addHtml += '<td class="center"><input type="checkbox" class="remov_line" onclick="M182_Handover.checkItem(this)"></td>';
+                addHtml += '<td class="left">'+$(this).attr('maNhanVien');
+                addHtml += '<input type="hidden" value="'+$(this).attr('refNhanVien')+'" class="refNhanVien" name="refNhanVien[]" >';
+                addHtml += '<input type="hidden" value="'+$(this).attr('maNhanVien')+'" class="maNhanVien" />';
+                addHtml += '<input type="hidden" value="'+$(this).attr('tenNhanVien')+'" class="tenNhanVien" />';
+                addHtml += '<input type="hidden" value="'+$(this).attr('nhaMay')+'" class="nhaMay" name="nhaMay[]" />';
+                addHtml += '<input type="hidden" value="'+$(this).attr('boPhan')+'" class="boPhan" name="boPhan[]"/>';
+                addHtml += '<input type="hidden" value="'+$(this).attr('refNhaMay')+'" class="refNhaMay" name="refNhaMay[]"/>';
+                addHtml += '<input type="hidden" value="'+$(this).attr('refBoPhan')+'" class="refBoPhan" name="refBoPhan[]"/>';
+                addHtml += '<input type="hidden" value="'+$(this).attr('maTaiSan')+'" class="maTaiSan" />';
+                addHtml += '<input type="hidden" value="'+$(this).attr('tenTaiSan')+'" class="tenTaiSan" />';
+                addHtml += '<input type="hidden" value="'+$(this).attr('refTaiSan')+'" class="refTaiSan" name="refTaiSan[]"/>';
+                addHtml += '<input type="hidden" value="'+$(this).attr('donViTinh')+'" class="donViTinh" />';
+                addHtml += '<input type="hidden" value="'+$(this).attr('refDonViTinh')+'" class="refDonViTinh" name="refDonViTinh[]" >';
+                addHtml += '<input type="hidden" value="'+$(this).attr('groupmarker')+'" class="groupmarker" >';
+                addHtml += '</td>';
+                addHtml += '<td class="left">'+$(this).attr('tenNhanVien')+'</td>';
+                addHtml += '<td class="left">'+$(this).attr('maTaiSan')+'</td>';
+                addHtml += '<td class="left">'+$(this).attr('tenTaiSan')+'</td>';
+                addHtml += '<td class="left">'+$(this).attr('donViTinh')+'</td>';
+
+
+                addHtml += '<td class="center"><input type="text" size="5" class="right soLuong" value="'+tempQty+'" name="soLuong[]" /></td>';
+
+                addHtml += '<td class="center"><input type="text" size="5" class="right donGia" value="'+$(this).attr('donGia')+'" name="donGia[]" /></td>';
+
+                addHtml += '<td class="center"><input type="text" size="5" class="right thoiGianSuDung" value="'+$(this).attr('thoiGianSuDung')+'" name="thoiGianSuDung[]" /></td>';
+
+                addHtml += '</tr>';
+                $('#m182HandOver_opmi_box').append(addHtml);
+                $(this).remove();
+            });
+
+            if($('#select_m182HandOver_opmi_box select option:hidden').length == $('#select_m182HandOver_opmi_box select option').length)
+            {
+                $('#select_m182HandOver_opmi_box select').append('<option class=\"m182HandOver_empty_option\" value=\"0\" disabled>&nbsp;</option>');
+            }
+        },
+
+        remove_opmi : function(all){
+            var remove;
+            var html   = '';
+
+            if(all != undefined && all)
+            {
+                remove = $('.selected_line');
+            }
+            else
+            {
+                remove = $('.selected_line').filter(".marker");
+            }
+
+            $('.m182HandOver_empty_option').each(function () {
+                $(this).remove();
+            });
+
+            remove.each(function(){
+                html  = '<option ';
+                html += 'groupmarker="'+$(this).find('.groupmarker').val()+'" ';
+                html += 'refTaiSan="'+$(this).find('.refTaiSan').val()+'" ';
+                html += 'maTaiSan="'+$(this).find('.maTaiSan').val()+'" ';
+                html += 'tenTaiSan="'+$(this).find('.tenTaiSan').val()+'" ';
+                html += 'donViTinh="'+$(this).find('.donViTinh').val()+'" ';
+                html += 'nhaMay="'+$(this).find('.nhaMay').val()+'" ';
+                html += 'boPhan="'+$(this).find('.boPhan').val()+'" ';
+                html += 'refDonViTinh="'+$(this).find('.refDonViTinh').val()+'" ';
+                html += 'refNhanVien="'+$(this).find('.refNhanVien').val()+'" ';
+                html += 'maNhanVien="'+$(this).find('.maNhanVien').val()+'" ';
+                html += 'tenNhanVien="'+$(this).find('.tenNhanVien').val()+'" ';
+                html += 'soLuong="'+$(this).find('.soLuong').val()+'" ';
+                html += 'donGia="'+$(this).find('.donGia').val()+'" ';
+                html += 'thoiGianSuDung="'+$(this).find('.thoiGianSuDung').val()+'" ';
+                html += 'phanTramKhauHao="'+$(this).find('.phanTramKhauHao').val()+'" >';
+                html += $(this).find('.maTaiSan').val()+' - '+$(this).find('.tenTaiSan').val()
+                html += '</option>';
+
+
+
+                if(parseInt($(this).find('.groupmarker').val()) != 0)
+                {
+
+                    $('#select_m182HandOver_opmi_box select optgroup[groupmarker="'+$(this).find('.groupmarker').val()+'"]').prepend(html);
+                }
+                else
+                {
+                    $('#select_m182HandOver_opmi_box select ').prepend(html);
+                }
+                $(this).remove();
+            });
+
+            if($('#m182HandOver_opmi_box select option').length == 0)
+            {
+                $('#m182HandOver_opmi_box select').append('<option class=\"m182HandOver_empty_option\" value=\"0\" disabled>&nbsp;</option>');
+            }
+        },
+
+        add_oimp : function(all){
+            var add;
+            var addHtml = '';
+            var asset   = parseInt($('#m182HandOver_oimp_asset').val());
+            var qty     = parseInt($('#m182HandOver_oimp_qty').val());
+            var clawback = parseInt($('#m182HandOver_clawback').val());
+            asset       = (isNaN(asset))?0:asset;
+            qty         = (isNaN(qty))?0:qty;
+            clawback    = (isNaN(clawback))?0:clawback;
+
+            if(asset <= 0 || (qty <= 0 && $('#m182HandOver_oimp_qty').length  > 0))
+            {
+                qssAjax.alert('Phải chọn tài sản và số lượng trước!');
+                return;
+            }
+
+            if(all != undefined && all)
+            {
+                add = $('#select_m182HandOver_oimp_box select  option[value!="0"]');
+            }
+            else
+            {
+                add = $('#select_m182HandOver_oimp_box select option[value!="0"]').filter(":selected");
+            }
+            $('.m182HandOver_empty_option').each(function () {
+                $(this).remove();
+            });
+
+            add.each(function(){
+            	if($(this).css('display') == 'none') {
+                    return true;
+                }
+                tempQty = clawback?$(this).attr('soLuong'):qty;
+
+                addHtml  = '';
+                addHtml += '<tr class="selected_line" onclick="M182_Handover.checkItem(this)">';
+                addHtml += '<td class="center"><input type="checkbox" class="remov_line" onclick="M182_Handover.checkItem(this)"></td>';
+                addHtml += '<td class="left">'+$(this).attr('maNhanVien');
+                addHtml += '<input type="hidden" value="'+$(this).attr('refNhanVien')+'" class="refNhanVien" name="refNhanVien[]" >';
+                addHtml += '<input type="hidden" value="'+$(this).attr('maNhanVien')+'" class="maNhanVien" />';
+                addHtml += '<input type="hidden" value="'+$(this).attr('tenNhanVien')+'" class="tenNhanVien" />';
+                addHtml += '<input type="hidden" value="'+$(this).attr('maTaiSan')+'" class="maTaiSan" />';
+                addHtml += '<input type="hidden" value="'+$(this).attr('tenTaiSan')+'" class="tenTaiSan" />';
+                addHtml += '<input type="hidden" value="'+$(this).attr('refTaiSan')+'" class="refTaiSan"  name="refTaiSan[]"/>';
+                addHtml += '<input type="hidden" value="'+$(this).attr('nhaMay')+'" class="nhaMay" name="nhaMay[]" />';
+                addHtml += '<input type="hidden" value="'+$(this).attr('boPhan')+'" class="boPhan" name="boPhan[]"/>';
+                addHtml += '<input type="hidden" value="'+$(this).attr('refNhaMay')+'" class="refNhaMay" name="refNhaMay[]"/>';
+                addHtml += '<input type="hidden" value="'+$(this).attr('refBoPhan')+'" class="refBoPhan" name="refBoPhan[]"/>';
+                //html += 'refNhaMay="'+$(this).find('.refNhaMay').val()+'" ';
+                addHtml += '<input type="hidden" value="'+$(this).attr('donViTinh')+'" class="donViTinh" />';
+                addHtml += '<input type="hidden" value="'+$(this).attr('refDonViTinh')+'" class="refDonViTinh" name="refDonViTinh[]" >';
+                addHtml += '<input type="hidden" value="'+$(this).attr('groupmarker')+'" class="groupmarker" >';
+                addHtml += '</td>';
+                addHtml += '<td class="left">'+$(this).attr('tenNhanVien')+'</td>';
+                addHtml += '<td class="left">'+$(this).attr('maTaiSan')+'</td>';
+                addHtml += '<td class="left">'+$(this).attr('tenTaiSan')+'</td>';
+                addHtml += '<td class="left">'+$(this).attr('donViTinh')+'</td>';
+
+
+                addHtml += '<td class="center"><input type="text" size="5" class="right soLuong" value="'+tempQty+'" name="soLuong[]" /></td>';
+
+                addHtml += '<td class="center"><input type="text" size="5" class="right donGia" value="'+$(this).attr('donGia')+'" name="donGia[]" /></td>';
+
+                addHtml += '<td class="center"><input type="text" size="5" class="right thoiGianSuDung" value="'+$(this).attr('thoiGianSuDung')+'" name="thoiGianSuDung[]" /></td>';
+
+                addHtml += '</tr>';
+                $('#m182HandOver_oimp_box').append(addHtml);
+                $(this).remove();
+            });
+
+            if($('#select_m182HandOver_oimp_box select option:hidden').length == $('#select_m182HandOver_oimp_box select option').length)
+            {
+                $('#select_m182HandOver_oimp_box select').append('<option class=\"m182HandOver_empty_option\" value=\"0\" disabled>&nbsp;</option>');
+            }
+        },
+
+        remove_oimp : function(all){
+            var remove;
+            var html   = '';
+
+            if(all != undefined && all)
+            {
+                remove = $('.selected_line');
+            }
+            else
+            {
+                remove = $('.selected_line').filter(".marker");
+            }
+
+            $('.m182HandOver_empty_option').each(function () {
+                $(this).remove();
+            });
+
+            remove.each(function(){
+                html  = '<option ';
+                html += 'groupmarker="'+$(this).find('.groupmarker').val()+'" ';
+                html += 'refTaiSan="'+$(this).find('.refTaiSan').val()+'" ';
+                html += 'maTaiSan="'+$(this).find('.maTaiSan').val()+'" ';
+                html += 'tenTaiSan="'+$(this).find('.tenTaiSan').val()+'" ';
+                html += 'donViTinh="'+$(this).find('.donViTinh').val()+'" ';
+                html += 'refDonViTinh="'+$(this).find('.refDonViTinh').val()+'" ';
+                html += 'refNhanVien="'+$(this).find('.refNhanVien').val()+'" ';
+                html += 'maNhanVien="'+$(this).find('.maNhanVien').val()+'" ';
+                html += 'tenNhanVien="'+$(this).find('.tenNhanVien').val()+'" ';
+                html += 'nhaMay="'+$(this).find('.nhaMay').val()+'" ';
+                html += 'boPhan="'+$(this).find('.boPhan').val()+'" ';
+                html += 'soLuong="'+$(this).find('.soLuong').val()+'" ';
+                html += 'donGia="'+$(this).find('.donGia').val()+'" ';
+                html += 'thoiGianSuDung="'+$(this).find('.thoiGianSuDung').val()+'" ';
+                html += 'phanTramKhauHao="'+$(this).find('.phanTramKhauHao').val()+'" >';
+                html += $(this).find('.maNhanVien').val()+' - '+$(this).find('.tenNhanVien').val()
+                html += '</option>';
+
+
+
+                if(parseInt($(this).find('.groupmarker').val()) != 0)
+                {
+
+                    $('#select_m182HandOver_oimp_box select optgroup[groupmarker="'+$(this).find('.groupmarker').val()+'"]').prepend(html);
+                }
+                else
+                {
+                    $('#select_m182HandOver_oimp_box select ').prepend(html);
+                }
+                $(this).remove();
+            });
+
+            if($('#m182HandOver_oimp_box select option').length == 0)
+            {
+                $('#m182HandOver_oimp_box select').append('<option class=\"m182HandOver_empty_option\" value=\"0\" disabled>&nbsp;</option>');
+            }
+        },
+
+        checkItem : function(ele)
+        {
+            if($(ele).is(':checked'))
+            {
+                $(ele).parent().parent().addClass('marker');
+                $(ele).attr('checked', true);
+            }
+            else
+            {
+                $(ele).parent().parent().removeClass('marker');
+                $(ele).removeAttr('checked');
+            }
+        },
+
+        checkAllItems : function(ele)
+        {
+            if($(ele).is(':checked'))
+            {
+                $('.remov_line').each(function(){
+                    $(this).attr('checked', true);
+                    $(this).parent().parent().addClass('marker');
+                });
+            }
+            else
+            {
+                $('.remov_line').each(function(){
+                    $(this).removeAttr('checked', true);
+                    $(this).parent().parent().removeClass('marker');
+                });
+            }
+        },
+
+        save : function()
+        {
+            var url  = sz_BaseUrl + '/button/m182/handover/save';
+            var data = $('#m182HandOver_form').serialize();
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != '')
+                {
+                    qssAjax.notice(jreturn.message);
+                }
+                opener.rowObjectSearch(parseInt($('#m182HandOver_ifid').val()), parseInt($('#m182HandOver_deptid').val()),'OChiTietBanGiaoTaiSan');
+                window.close();
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+        },
+
+        load_employees : function()
+        {
+            var asset = parseInt($('#m182HandOver_oimp_asset').val());
+            asset     = isNaN(asset)?0:asset;
+
+
+            if(asset)
+            {
+                var qty   = parseInt($('#m182HandOver_oimp_qty').val());
+                qty       = isNaN(qty)?0:qty;
+
+                url  = sz_BaseUrl + '/button/m182/handover/byasset/employees/';
+                data = {ifid:parseInt($('#m182HandOver_ifid').val()), clawback: parseInt($('#m182HandOver_clawback').val()), asset: asset, qty : qty};
+
+                qssAjax.getHtml(url, data, function(jreturn) {
+                    $('#select_m182HandOver_oimp_box select').html(jreturn);
+                });
+            }
+        },
+
+        load_assets : function()
+        {
+            var employee = parseInt($('#m182HandOver_opmi_employee').val());
+            employee     = isNaN(employee)?0:employee;
+
+            if(employee)
+            {
+                var qty   = parseInt($('#m182HandOver_opmi_qty').val());
+                qty       = isNaN(qty)?0:qty;
+
+                url  = sz_BaseUrl + '/button/m182/handover/byperson/assets/';
+                data = {ifid:parseInt($('#m182HandOver_ifid').val()), clawback: parseInt($('#m182HandOver_clawback').val()), employee: employee, qty: qty};
+
+                qssAjax.getHtml(url, data, function(jreturn) {
+                    $('#select_m182HandOver_opmi_box select').html(jreturn);
+                });
+            }
+
+        }
+    };
+
+    $(document).ready(function(){
+        M182_Handover.change_view(1);
+    });
+</script>
+
+<div class="clear"></div>
+<div id="view" style="height: 297px;">
+    <div id="wrap">
+
+        <form id="m182HandOver_form">
+            <input type="hidden" name="ifid" id="m182HandOver_ifid" value="<?php echo $this->ifid;?>">
+            <input type="hidden" name="ioid" id="m182HandOver_ioid" value="<?php echo $this->handover->IOID;?>">
+            <input type="hidden" name="date" id="m182HandOver_date" value="<?php echo Qss_Lib_Date::mysqltodisplay($this->handover->Ngay); ?>" />
+            <input type="hidden" name="docno" id="m182HandOver_docNo" value="<?php echo $this->handover->SoPhieu;?>">
+            <input type="hidden" name="deptid" id="m182HandOver_deptid" value="<?php echo $this->handover->DeptID;?>">
+            <input type="hidden" name="clawback" id="m182HandOver_clawback" value="<?php echo (int)$this->handover->Ref_PhieuThuHoi;?>">
+
+            <div id="change_view">
+                <label for="one_person_many_items">Bàn giao theo tài sản</label><input type="radio" value="1" name="change_view" id="one_person_many_items" onclick="M182_Handover.change_view(1)"/>
+                <label for="one_item_many_persons">Bàn giao theo người</label><input type="radio" value="2" name="change_view" id="one_item_many_persons" onclick="M182_Handover.change_view(2)"/>
+            </div>
+
+            <br/>
+
+            <div>
+                <p>
+                    <b> Phiếu: </b> <?php echo $this->handover->SoPhieu; ?>
+                </p>
+
+                <p>
+                    <b> Ngày: </b> <?php echo Qss_Lib_Date::mysqltodisplay($this->handover->Ngay); ?>
+                </p>
+
+                <p>
+                    <b> Phiếu thu hồi: </b> <?php echo $this->handover->PhieuThuHoi; ?>
+                </p>
+
+                <p>
+                    <b> Diễn giải: </b> <?php echo $this->handover->DienGiai; ?>
+                </p>
+            </div>
+            <br/>
+
+            <div id="m182HandOver_show">
+
+            </div>
+
+            <!--=======================================================================================================-->
+
+
+        </form>
+    </div>
+</div>
+

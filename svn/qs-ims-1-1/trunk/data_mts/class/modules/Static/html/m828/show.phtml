@@ -1,0 +1,321 @@
+<?php $excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);?>
+<?php
+$widthArr = array(1,5.5, 2, 2, 2, 2, 2, 2, 2, 2, 5);//, 2, 3, 2, 2,2, 2, 2
+$totalCol = count($widthArr);
+$widthArr = Qss_Lib_Report::changeWidthToFitScreen3($widthArr);
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+    <input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="landscape">
+    <excel orientation="landscape" font-name="Arial" font-size="9"
+           margin-left="0.5" margin-right="0.5" margin-top="0.75"
+           margin-bottom="0.75" />
+
+    <div id="head_print">
+        <table>
+            <tr>
+                <td style="width: 40%;" class="center">Công ty…………</td>
+                <td  class="center">Cộng hòa xã hội chủ nghĩa Việt nam</td>
+            </tr>
+            <tr>
+                <td  class="center">Xí nghiệp:………………...……..</td>
+                <td  class="center">Độc lập - Tự do - Hạnh phúc</td>
+            </tr>
+            <tr>
+                <td  class="center">Số:………./BC - KT</td>
+                <td  class="right">…………, ngày……tháng……năm 20….</td>
+            </tr>
+        </table>
+
+        <div class="">
+            <div class="fl" style="width: 90%">
+                <h2 class="center">BÁO CÁO THỰC HIỆN KẾ HOẠCH TRUNG ĐẠI TU VÀ SỬA CHỮA THƯỜNG XUYÊN TSCĐ</h2>
+            </div>
+            <div class="fr" style="font-weight: normal !important; font-size: 12px !important;">Mẫu số: BC - KT 02</div>
+        </div>
+        <div class="clear"></div>
+        <p class="center"> <?php echo $this->subTitle;?> </p>
+    </div>
+
+    <div id="container">
+        <p class="right">
+            ĐVT: Tr.đồng
+        </p>
+
+        <table width="" cellpadding="0" cellspacing="0" class="border" border="0">
+            <?php $begin = 0;?>
+            <tr class="bggrey">
+                <th rowspan="3"  style="width: <?php echo $widthArr[$begin++];;?>%">TT</th>
+                <th rowspan="3"  style="width: <?php echo $widthArr[$begin++];;?>%">Tên loại thiết bị, số đăng ký, chế tạo</th>
+                <th rowspan="3"  style="width: <?php echo $widthArr[$begin++];;?>%">Kế hoạch</th>
+                <th colspan="5">Giá trị thực hiện</th>
+                <?php $begin = $begin + 4;?>
+                <th rowspan="3"  style="width: <?php echo $widthArr[$begin++];;?>%">Địa điểm sửa chữa</th>
+                <th rowspan="3"  style="width: <?php echo $widthArr[$begin++];;?>%">Thời gian thực hiện (ngày)</th>
+                <th rowspan="3"  style="width: <?php echo $widthArr[$begin++];;?>%">Ghi chú</th>
+            </tr>
+            <tr class="bggrey">
+                <th rowspan="2">Tổng số</th>
+                <th rowspan="2">Tự làm</th>
+                <th colspan="3">Thuê ngoài</th>
+            </tr>
+            <tr class="bggrey">
+                <th>Trong C. ty</th>
+                <th>Trong TKV</th>
+                <th>Ngoài TKV</th>
+            </tr>
+            <?php $begin = 0;?>
+            <tr class="bggrey">
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">1</th>
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">2</th>
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">3</th>
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">4</th>
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">5</th>
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">6</th>
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">7</th>
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">8</th>
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">9</th>
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">10</th>
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">11</th>
+            </tr>
+
+
+            <?php $oldKhuVuc      = ''; // Để in dòng khu vực ?>
+            <?php $oldLoaiBaoTri  = ''; // Để in dòng loại bảo trì ?>
+            <?php $sttLoaiBaoTri  = 0 ; // Số thứ tự in dòng loại bảo trì ?>
+            <?php $oldNhomThietBi = ''; // Để in dòng nhóm thiết bị ?>
+            <?php $sttNhomThietBi = 0 ; // Số thứ tự in dòng nhóm thiết bị ?>
+            <?php $oldLoaiThietBi = ''; // Để in dòng loại thiết bị ?>
+            <?php $sttLoaiThietBi = 0 ; // Số thứ tự in dòng loại thiết bị ?>
+            <?php $sttDong        = 0 ; // Số thứ tự từng dòng ?>
+            <?php $exsitLoaiBaoTri = array(); // Loại bảo trì đã in trong khu vực ;?>
+
+            <?php if(count($this->report)):?>
+                <tr>
+                    <td class="bold center"></td>
+                    <td class="bold center">Tổng cộng</td>
+                    <td class="bold right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum['total']['TongSoKeHoach']);?></td>
+                    <td class="right bold"><?php echo Qss_Lib_Util::formatMoney(@$this->sum['total']['TongSo']);?></td>
+                    <td class="right bold"><?php echo Qss_Lib_Util::formatMoney(@$this->sum['total']['TuLam']);?></td>
+                    <td class="right bold"><?php echo Qss_Lib_Util::formatMoney(@$this->sum['total']['TrongCongTy']);?></td>
+                    <td class="right bold"><?php echo Qss_Lib_Util::formatMoney(@$this->sum['total']['TrongTKV']);?></td>
+                    <td class="right bold"><?php echo Qss_Lib_Util::formatMoney(@$this->sum['total']['NgoaiTKV']);?></td>
+                    <td class="bold center">x</td>
+                    <td class="bold center">x</td>
+                    <td class="bold center">x</td>
+                </tr>
+            <?php endif;?>
+
+            <?php foreach($this->report as $item):?>
+                <!-- Khu vực -->
+                <?php if($oldKhuVuc != $item->KhuVucIOID):?>
+                    <?php $key = (int)$item->KhuVucIOID;?>
+
+                    <!-- IN Loại bảo trì trong một khu vực phần phía dưới của loại bảo trì đang có dựa theo lft -->
+                    <?php if($oldKhuVuc !== '' && $oldLoaiBaoTri !== ''):?>
+                        <?php foreach ($this->loaiBaoTri as $lft=>$loaiBaotri):?>
+                            <?php if(!isset($exsitLoaiBaoTri[$lft])):?>
+                                <tr class="bggrey"> <!-- bgorange -->
+                                    <td class="bold center"><?php echo $excel_col[++$sttLoaiBaoTri];?></td>
+                                    <td class="bold left"><?php echo $loaiBaotri->Loai;?></td>
+                                    <td class="right">0</td>
+                                    <td class="right">0</td>
+                                    <td class="right">0</td>
+                                    <td class="right">0</td>
+                                    <td class="right">0</td>
+                                    <td class="right">0</td>
+                                    <td class="center">x</td>
+                                    <td class="center">x</td>
+                                    <td class="center">x</td>
+                                </tr>
+                            <?php endif;?>
+                        <?php endforeach;?>
+                    <?php endif;?>
+
+
+                    <tr class="bggrey"> <!-- bgpink -->
+                        <td class="bold center"></td>
+                        <td class="bold left"><?php echo $item->TenKhuVuc;?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['TongSoKeHoach']);?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['TongSo']);?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['TuLam']);?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['TrongCongTy']);?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['TrongTKV']);?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['NgoaiTKV']);?></td>
+                        <td class="center">x</td>
+                        <td class="center">x</td>
+                        <td class="center">x</td>
+                    </tr>
+
+                    <?php $sttLoaiBaoTri = 0; // reset tat ca ve 0 ?>
+                    <?php $sttNhomThietBi = 0; // reset về 0 khi sang một loại bảo trì mới;?>
+                    <?php $sttLoaiThietBi = 0; // reset về 0 khi sang một loại bảo trì mới, reset thêm một lần nữa ở phần in nhóm tb?>
+                    <?php $sttDong = 0; //reset 1?>
+                    <?php $exsitLoaiBaoTri = array(); //reset ;?>
+                <?php endif;?>
+
+
+                <!-- In Dòng LOẠI BẢO TRÌ -->
+                <?php if($oldKhuVuc != $item->KhuVucIOID || $oldLoaiBaoTri != $item->LoaiBaoTriLft):?>
+                    <?php $key = (int)$item->KhuVucIOID.'-'.(int)$item->LoaiBaoTriLft;?>
+
+                    <!-- IN Loại bảo trì trong một khu vực phần phía trên của loại bảo trì đang có dựa theo lft -->
+                    <?php foreach ($this->loaiBaoTri as $lft=>$loaiBaotri):?>
+                        <?php if($lft < $item->LoaiBaoTriLft && !isset($exsitLoaiBaoTri[$lft])):?>
+                            <tr class="bggrey"> <!-- bgorange -->
+                                <td class="bold center"><?php echo $excel_col[++$sttLoaiBaoTri];?></td>
+                                <td class="bold left"><?php echo $loaiBaotri->Loai;?></td>
+                                <td class="right">0</td>
+                                <td class="right">0</td>
+                                <td class="right">0</td>
+                                <td class="right">0</td>
+                                <td class="right">0</td>
+                                <td class="right">0</td>
+                                <td class="center">x</td>
+                                <td class="center">x</td>
+                                <td class="center">x</td>
+                            </tr>
+                            <?php $exsitLoaiBaoTri[$lft] = 1;?>
+                        <?php endif;?>
+                    <?php endforeach;?>
+
+                    <tr class="bggrey"> <!-- bgorange -->
+                        <td class="bold center"><?php echo $excel_col[++$sttLoaiBaoTri];?></td>
+                        <td class="bold left"><?php echo $item->LoaiBaoTri;?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['TongSoKeHoach']);?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['TongSo']);?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['TuLam']);?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['TrongCongTy']);?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['TrongTKV']);?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['NgoaiTKV']);?></td>
+                        <td class="center">x</td>
+                        <td class="center">x</td>
+                        <td class="center">x</td>
+                    </tr>
+                    <?php $exsitLoaiBaoTri[$item->LoaiBaoTriLft] = 1;?>
+
+                    <?php $sttNhomThietBi = 0; // reset về 0 khi sang một loại bảo trì mới;?>
+                    <?php $sttLoaiThietBi = 0; // reset về 0 khi sang một loại bảo trì mới, reset thêm một lần nữa ở phần in nhóm tb?>
+                    <?php $sttDong = 0; //reset 1?>
+                <?php endif;?>
+
+                <!-- In Dòng NHÓM THIẾT BỊ -->
+                <?php if($oldKhuVuc != $item->KhuVucIOID || $oldLoaiBaoTri != $item->LoaiBaoTriLft || $oldNhomThietBi != $item->NhomThietBiIOID):?>
+                    <?php $key = (int)$item->KhuVucIOID.'-'.(int)$item->LoaiBaoTriLft.'-'.(int)$item->NhomThietBiIOID;?>
+                    <tr class=""> <!-- bgyellow -->
+                        <td class="bold center"><?php echo mb_strtolower($excel_col[++$sttNhomThietBi]);?></td>
+                        <td class="bold left"><?php echo $item->NhomThietBi;?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['TongSoKeHoach']);?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['TongSo']);?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['TuLam']);?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['TrongCongTy']);?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['TrongTKV']);?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['NgoaiTKV']);?></td>
+                        <td class="center">x</td>
+                        <td class="center">x</td>
+                        <td class="center">x</td>
+                    </tr>
+
+                    <?php $sttLoaiThietBi = 0; // reset lần 2 khi thay đổi nhóm ?>
+                    <?php $sttDong = 0; //reset 2?>
+                <?php endif;?>
+
+                <!-- In Dòng LOẠI THIẾT BỊ -->
+                <?php if($oldKhuVuc != $item->KhuVucIOID || $oldLoaiBaoTri != $item->LoaiBaoTriLft || $oldNhomThietBi != $item->NhomThietBiIOID || $oldLoaiThietBi != $item->LoaiThietBiIOID):?>
+                    <?php $key = (int)$item->KhuVucIOID.'-'.(int)$item->LoaiBaoTriLft.'-'.(int)$item->NhomThietBiIOID.'-'.$item->LoaiThietBiIOID;?>
+                    <tr class=""> <!-- bgforestgreen -->
+                        <td class="bold center"><?php echo Qss_Lib_Util::numberToRome(++$sttLoaiThietBi);?></td>
+                        <td class="bold left"><?php echo $item->LoaiThietBi;?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['TongSoKeHoach']);?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['TongSo']);?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['TuLam']);?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['TrongCongTy']);?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['TrongTKV']);?></td>
+                        <td class="right"><?php echo Qss_Lib_Util::formatMoney(@$this->sum[$key]['NgoaiTKV']);?></td>
+                        <td class="center">x</td>
+                        <td class="center">x</td>
+                        <td class="center">x</td>
+                    </tr>
+                    <?php $sttDong = 0; //reset 3?>
+                <?php endif;?>
+
+                <!-- In DỮ LIỆU -->
+                <tr>
+                    <!-- TT -->
+                    <td class="center">
+                        <?php echo ++$sttDong;?>
+                    </td>
+                    <!-- Tên loại thiết bị, số đăng ký, chế tạo -->
+                    <td  class="left">
+                        <?php echo $item->TenThietBi;?>
+                    </td>
+                    <!-- Kế hoạch số: … ngày…/… -->
+                    <td class="right">
+                        <?php echo Qss_Lib_Util::formatMoney($item->TongSoKeHoach);?>
+                    </td>
+                    <!-- Giá trị thực hiện: Tổng số -->
+                    <td class="right">
+                        <?php echo Qss_Lib_Util::formatMoney($item->TongSo);?>
+                    </td>
+                    <!-- Giá trị thực hiện: Tự làm -->
+                    <td class="right">
+                        <?php echo Qss_Lib_Util::formatMoney($item->TuLam);?>
+                    </td>
+                    <!-- Giá trị thực hiện: Thuê ngoài : Trong C. ty -->
+                    <td class="right">
+                        <?php echo Qss_Lib_Util::formatMoney($item->TrongCongTy);?>
+                    </td>
+                    <!-- Giá trị thực hiện: Thuê ngoài : Trong TKV -->
+                    <td class="right">
+                        <?php echo Qss_Lib_Util::formatMoney($item->TrongTKV);?>
+                    </td>
+                    <!-- Giá trị thực hiện: Thuê ngoài : Ngoài TKV-->
+                    <td class="right">
+                        <?php echo Qss_Lib_Util::formatMoney($item->NgoaiTKV);?>
+                    </td>
+                    <!-- Địa điểm sửa chữa -->
+                    <td class="left">
+                        <?php echo @$item->DiaDiemSuaChua;?>
+                    </td>
+                    <!-- Thời gian thực hiện (ngày) -->
+                    <td class="center">
+                        <?php echo Qss_Lib_Date::mysqltodisplay(@$item->NgayBatDau);?>
+                    </td>
+                    <!-- Ghi chú -->
+                    <td class="left">
+                        <?php echo @$item->MoTa;?>
+                    </td>
+                </tr>
+
+                <?php $oldKhuVuc      = $item->KhuVucIOID;?>
+                <?php $oldLoaiBaoTri  = $item->LoaiBaoTriLft;?>
+                <?php $oldNhomThietBi = $item->NhomThietBiIOID;?>
+                <?php $oldLoaiThietBi = $item->LoaiThietBiIOID;?>
+            <?php endforeach;?>
+
+            <?php if($oldKhuVuc !== '' && $oldLoaiBaoTri !== ''): /// Lần in thứ 2 dành cho dòng cuối cùng ?>
+                <!-- IN Loại bảo trì trong một khu vực phần phía trên của loại bảo trì đang có dựa theo lft -->
+                <?php foreach ($this->loaiBaoTri as $lft=>$loaiBaotri):?>
+                    <?php if(!isset($exsitLoaiBaoTri[$lft])):?>
+                        <tr class="bggrey"> <!-- bgorange -->
+                            <td class="bold center"><?php echo $excel_col[++$sttLoaiBaoTri];?></td>
+                            <td class="bold left"><?php echo $loaiBaotri->Loai;?></td>
+                            <td class="right">0</td>
+                            <td class="right">0</td>
+                            <td class="right">0</td>
+                            <td class="right">0</td>
+                            <td class="right">0</td>
+                            <td class="right">0</td>
+                            <td class="center">x</td>
+                            <td class="center">x</td>
+                            <td class="center">x</td>
+                        </tr>
+                    <?php endif;?>
+                <?php endforeach;?>
+            <?php endif;?>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,110 @@
+<?php 
+$excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg = "#EEEEEE";
+$row = 7;
+$totalColumn = 3;
+$pxWidthArr    = array(5, 2, 2);
+// px html to excel width
+$excelWidthArr = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($pxWidthArr, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+// auto fit (px html)
+$pxWidthArr    = Qss_Lib_Report::changeWidthToFitScreen($pxWidthArr, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+
+?>
+
+<style>
+.border th, .border td
+{
+	font-size: 13px;
+}
+</style>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+    <input type="hidden" id="content" name="content" value="">
+</form>
+<div class="landscape">
+    <excel orientation="landscape" font-name="Arial" font-size="11" margin-left="0.5" margin-right="0.5" margin-top="0.75" margin-bottom="0.75"/>
+    <div id="head_print"> <?php echo $this->views->Common->Landscape('BM.09.03','Ngày hiệu lực : 01/03/2013')?> <br/>
+        <br/>
+        <center>
+            <h2 class="report-title">
+                <xls row="<?php echo $row?>" column="A" column-merge="<?php echo $excel_col[$totalColumn]?>"  font-size="14" wrap-text="1" h-align="center" v-align="center" ><?php echo $this->_translate(1)?> </xls>
+            </h2>
+            <?php $row++;?>
+            <h2 class="report-title">
+                <xls row="<?php echo $row?>" column="A" column-merge="<?php echo $excel_col[$totalColumn]?>"  font-size="12" wrap-text="1" h-align="center" v-align="center" ><?php echo ($this->loc)?mb_convert_case($this->locName, MB_CASE_UPPER, "UTF-8").' - ':''?> <?php echo $this->_translate(30)?> <?php echo $this->date;?> </xls>
+            </h2>
+        </center>
+    </div>
+    <?php $row++?>
+    <div id="container">
+        <table cellspacing="0" cellpadding="0" border="1" id="" class="border" >
+        <THEAD>
+            <tr  class="bggrey"> 
+                <?php $begin = 0;?> 
+                <!-- mo ta cong viec -->
+                <th class="center" style="width:<?php echo $pxWidthArr[0];?>px"><xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>" width="<?php echo $excelWidthArr[0];?>"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1" bgcolor="<?php echo $bg;?>"><?php echo $this->_translate(16)?></xls></th>
+                <!--  noi dung thuc hien -->
+                <th class="center" style="width:<?php echo $pxWidthArr[1];?>px"><xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>" width="<?php echo $excelWidthArr[1];?>"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1" bgcolor="<?php echo $bg;?>"><?php echo $this->_translate(17)?></xls></th>
+                <!-- vat tu thay the -->
+                <th class="center" style="width:<?php echo $pxWidthArr[2];?>px"><xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>" width="<?php echo $excelWidthArr[2];?>"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1" bgcolor="<?php echo $bg;?>"><?php echo $this->_translate(18)?></xls></th>
+            </tr>
+            </THEAD>
+            <?php $row++ ;?>
+	<?php foreach ($this->report as $item): // In danh sach?>
+        <?php
+        $tempCongViec = $item->congviec;
+        //$tempCongViec = trim($tempCongViec);
+        //$boldCongViec = (strpos( $tempCongViec, '*') === 0)?true:false; // dat truoc thay the br
+        $tempCongViec = Qss_Lib_Util::textToHtml($tempCongViec);
+
+        //$find = array('/\*^((?!\<br\/\>).)*\<br\/\>$/');
+        //(?s)<script>(?:(?!</?script>).)*</script>
+        // (?s)<object((?!youtube).)*?object>
+        $find = array('/(?s)\*((?!\<br\/\>).)*?\<br\/\>/'); // loc ra bat dau bang * ket thuc bang <br/> va ko chua <br/>
+        $replace = array('<b>\0</b>');
+        $tempCongViec = preg_replace($find, $replace,
+                $tempCongViec);
+        ?>
+			<tr>
+                <!--  <td class="center" width=""><xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"  v-align="center" h-align="center" border="1"><?php echo $item->SoPhieu?></xls></td> -->
+                <?php $begin = 0;?>
+                <!--  -->
+                <th colspan="3" class="left" width="" valign="middle"><?php //var_dump(strpos( $tempCongViec, '*'))  ;?>
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>" column-merge="<?php echo $excel_col[$totalColumn]?>" width="" wrap-text="1"  v-align="top" h-align="left" border="1"><?php echo $item->MaThietBi?>: <?php echo $item->TenThietBi?>; <?php echo $item->LoaiBaoTri?>; <?php echo $item->Ca?></xls>
+                </th>
+            </tr>
+            <?php $begin = 0;?>
+            <?php $row++?>
+            <tr>
+            	<td class="left " width="" valign="top"><xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"  v-align="top" h-align="left" border="1"><?php echo $tempCongViec;?></xls></td>
+                <!--  -->
+                <td class="left " width="" valign="top"><xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"  v-align="top" h-align="left" border="1"><?php echo '';?></xls></td>
+                <!--  -->
+                <td class="left " width="" valign="top"><xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>" width="" wrap-text="1"  v-align="top" h-align="left" border="1"><?php echo '';?></xls></td>
+                <!--  -->
+            
+            </tr>
+            <?php $row++?>
+            <?php endforeach; // Ket thuc in danh sach?>
+        </table>
+        <br/>
+        <table>
+            <?php $row++?>
+            <tr>
+                <td class="right" colspan="3"><xls row="<?php echo $row?>" column="<?php echo $excel_col[1]?>" column-merge="<?php echo $excel_col[8]?>" width="" wrap-text="1"  v-align="center" h-align="right" border="0" >Ngày ....... Tháng ....... Năm .......</xls></td>
+            </tr>
+            <?php $row++?>
+            <tr>
+                <td class="right" colspan="3">&nbsp;</td>
+            </tr>
+            <?php $row++?>
+            <tr class="center">
+                <?php $begin = 0;?>
+                <td width="33%" class="bold"><xls row="<?php echo $row?>" column="<?php echo $excel_col[1]?>" column-merge="<?php echo $excel_col[3]?>" width="" wrap-text="1"  v-align="center" h-align="center" border="0" >BGĐ</xls></td>
+                <td width="33%" class="bold"><xls row="<?php echo $row?>" column="<?php echo $excel_col[4]?>" column-merge="<?php echo $excel_col[6]?>" width="" wrap-text="1"  v-align="center" h-align="center" border="0" >P.TBC/P.TBĐ</xls></td>
+                <td width="33%" class="bold"><xls row="<?php echo $row?>" column="<?php echo $excel_col[7]?>" column-merge="<?php echo $excel_col[8]?>" width="" wrap-text="1"  v-align="center" h-align="center" border="0" >Người lập</xls></td>
+            </tr>
+            <?php $row++?>
+        </table>
+    </div>
+</div>

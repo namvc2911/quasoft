@@ -1,0 +1,108 @@
+<?php
+$begin   = 0;
+$widths  = array(2, 2, 2, 2, 2.5, 1.5, 1.5, 3, 4, 1);
+$fitHtml = Qss_Lib_Report::changeWidthToFitScreen($widths);
+$stt     = 1;
+?>
+
+<script>
+    function excelRender()
+    {
+        $('#report').submit();
+    }
+
+    function saveXLS()
+    {
+        var url  = sz_BaseUrl + '/print/m838/save/excel/template1';
+        var data = $("#report").serialize();
+        qssAjax.call(url, data, function(jreturn) {
+            qssAjax.alert(Language.translate('DOCUMENT_SAVE'));
+        }, function(jreturn) {
+            qssAjax.alert(jreturn.message);
+        });
+    }
+</script>
+
+<form id="report" method="get" action="/print/m838/template1excel">
+    <input type="hidden" name="ifid" value="<?php echo $this->data->IFID_M838;?>" />
+    <div class="portrait">
+        <?php  echo $this->views->Common->Portrait(); ?>
+        <excel
+            orientation="<?php echo Qss_Lib_Extra_Const::REPORT_ORIENTATION_PORTRAIT; ?>"
+            font-name="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_NAME; ?>"
+            font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_SIZE; ?>"
+            margin-left="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_LEFT; ?>"
+            margin-right="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_RIGHT; ?>"
+            margin-top="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_TOP; ?>"
+            margin-bottom="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_BOTTOM; ?>" />
+
+        <h1 class="center">KẾ HOẠCH TỔNG THỂ</h1>
+        <center class="center">Ngày in: <?php echo date('d-m-Y');?></center>
+        <br/>
+
+        <table cellpadding="0" cellspacing="0" border="0" style="width: 78%; margin-left: 22%">
+            <tr>
+                <th class="left" style="width: 20%">Mã KH:</th>
+                <td style="width: 30%"><?php echo $this->data->Ma;?></td>
+                <th class="left" style="width: 20%">Tên KH:</th>
+                <td style="width: 30%"><?php echo $this->data->Ten;?></td>
+            </tr>
+            <tr>
+                <th class="left">Từ ngày:</th>
+                <td><?php echo Qss_Lib_Date::mysqltodisplay($this->data->NgayBatDau);?></td>
+                <th class="left">Đến ngày:</th>
+                <td><?php echo Qss_Lib_Date::mysqltodisplay($this->data->NgayKetThuc);?></td>
+            </tr>
+            <tr>
+                <th class="left">Người tạo:</th>
+                <td><?php echo $this->data->NguoiTao;?></td>
+                <th class="left">Ngày tạo:</th>
+                <td><?php echo Qss_Lib_Date::mysqltodisplay($this->data->NgayTao);?></td>
+            </tr>
+            <tr>
+                <th class="left">Người phê duyệt: </th>
+                <td><?php echo $this->data->NguoiPheDuyet;?></td>
+                <th class="left">Ngày phê duyệt:</th>
+                <td><?php echo Qss_Lib_Date::mysqltodisplay($this->data->NgayPheDuyet);?></td>
+            </tr>
+        </table>
+        <br/>
+
+        <table cellpadding="0" cellspacing="0" border="0" class="border">
+            <tr>
+                <th class="center" style="width: <?php echo $fitHtml[$begin++];?>px">Ngày bắt đầu</th>
+                <th class="center" style="width: <?php echo $fitHtml[$begin++];?>px">Ngày kết thúc</th>
+                <th class="center" style="width: <?php echo $fitHtml[$begin++];?>px">Khu vực</th>
+                <th class="center" style="width: <?php echo $fitHtml[$begin++];?>px">Mã thiết bị</th>
+                <th class="center" style="width: <?php echo $fitHtml[$begin++];?>px">Tên thiết bị</th>
+                <th class="center" style="width: <?php echo $fitHtml[$begin++];?>px">Bộ phận</th>
+                <th class="center" style="width: <?php echo $fitHtml[$begin++];?>px">Loại bảo trì</th>
+                <th class="center" style="width: <?php echo $fitHtml[$begin++];?>px">Chu kỳ</th>
+                <th class="center" style="width: <?php echo $fitHtml[$begin++];?>px">Tên công việc</th>
+                <th class="center" style="width: <?php echo $fitHtml[$begin++];?>px">Nội bộ</th>
+            </tr>
+
+            <?php $aliasLoaiBaoTri = '';?>
+            <?php foreach($this->detail as $item):?>
+                <?php if($aliasLoaiBaoTri != '' && is_numeric($item->LoaiBaoTri)) { $aliasLoaiBaoTri = 'Ref_LoaiBaoTri';} else { $aliasLoaiBaoTri = 'LoaiBaoTri';} ?>
+            <tr>
+                <td class="center" valign="top"><?php echo Qss_Lib_Date::mysqltodisplay($item->NgayBatDau);?> </td>
+                <td class="center" valign="top"><?php echo Qss_Lib_Date::mysqltodisplay($item->NgayKetThuc);?></td>
+                <td class="left" valign="top"><?php   echo @$item->MaKhuVuc;?>                                </td>
+                <td class="left" valign="top"><?php   echo $item->MaThietBi;?>                                </td>
+                <td class="left" valign="top"><?php   echo $item->TenThietBi;?>                               </td>
+                <td class="left" valign="top"><?php   echo $item->BoPhan;?>                                   </td>
+                <td class="left" valign="top"><?php   echo $item->{$aliasLoaiBaoTri};?>                       </td>
+                <td class="left" valign="top"><?php   echo $item->ChuKy;?>                                    </td>
+                <td class="left" valign="top"><?php   echo $item->MoTa;?>                                     </td>
+                <td class="center" valign="top"><?php echo @(int)$item->Ngoai?'':'v';?>                       </td>
+            </tr>
+            <?php endforeach;?>
+
+
+
+        </table>
+
+    </div>
+</form>
+

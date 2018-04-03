@@ -1,0 +1,24 @@
+<table cellpadding="0" cellspacing="0" border="0">
+    <?php foreach ($this->printers as $printer): ?>
+        <tr>
+            <td style="width: 15px;">
+                <input id="<?php echo $printer->FPID ?>" type="radio" value="<?php echo $printer->FPID ?>" name="designid" url="<?php echo(strpos($printer->Path, '?') ? $printer->Path : ($printer->Path . '?1=1')) ?>">
+            </td>
+
+            <td>
+                <label for="<?php echo $printer->FPID ?>"><?php echo $printer->Name ?></label>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+</table>
+<br/>
+
+<div class="center">
+    <?php if (count((array)$this->printers)): ?>
+        <button type="button" class="btn-custom" onclick="formPrintPreview()"> <?php echo $this->_translate(15) ?></button>
+    <?php else: ?>
+        <?php echo $this->_translate(1) ?>
+    <?php endif; ?>
+</div>
+
+

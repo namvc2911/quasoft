@@ -1,0 +1,179 @@
+<?php
+$countExists = 0;
+$max         = 10;
+$iLastSerial = $this->auto?(int)preg_replace("/{$this->prefix}/", '', $this->last):0;
+
+function getSerial($iSerial, $auto, $prefix, $length)
+{
+    $newSerial = ''; // So serial danh moi
+
+    if($auto) // Lay serial moi theo cai dat
+    {
+        $newSerial = $prefix . str_pad($iSerial, $length, '0', STR_PAD_LEFT);
+    }
+
+    return $newSerial;
+}
+
+?>
+
+<script src="/js/common.js"></script>
+<script>
+
+    var last = <?php echo $iLastSerial;?>;
+
+    function renew()
+    {
+        $('.m402_position_serial').each(function(){
+
+            newSerial = ''; // So serial danh moi
+
+            if(<?php echo $this->auto;?>) // Lay serial moi theo cai dat
+            {
+                newSerial = '<?php echo $this->prefix;?>' + common_str_pad(++last, <?php echo $this->length;?>, '0', 'STR_PAD_LEFT');
+            }
+
+            $(this).val(newSerial);
+        });
+    }
+</script>
+
+
+<input type="hidden" name="quanlytheoma" value="<?php echo $this->itemConfig?$this->itemConfig->QuanLyTheoMa:0;?>"/>
+
+<?php if ($this->itemConfig && $this->itemConfig->QuanLyTheoMa):?>
+    <a href="#1" onclick="renew();" id="m402-position-renew-button">Đánh lại serial</a><br/><br/>
+<?php endif;?>
+
+<table class="border_table" cellpadding="0" cellspacing="0" border="0" style="width: 100%">
+    <tr>
+        <th style="width: 30%" class="center"><?php echo $this->_translate(1)?></th>
+        <th style="width: 30%" class="center">Serial</th>
+        <th style="width: 20%" class="center"><?php echo $this->_translate(2)?></th>
+        <th style="width: 20%" class="center"><?php echo $this->_translate(3)?></th>
+    </tr>
+
+    <!-- In vi tri da chon -->
+    <?php if($this->inputLineIOID && $this->itemConfig):
+        // In danh sach cu voi dieu kien co dong cu
+        // va co truyen len san pham, don vi tinh, so luong
+        ?>
+        <?php foreach($this->stockstatus as $item):?>
+            <?php $countExists++; // Dem so luong vi tri da co ?>
+            <tr class="m402-position-data-line">
+                <td class="left required">
+                    <select class="m402_position_select" rights="<?php echo $this->rights;?>"
+                         style="width: 100px;"
+                         ioid="<?php echo $this->inputLineIOID;?>"
+                         ssioid="<?php echo $item->StockStatusIOID;?>"
+                         <?php if( !($this->rights &4) ):?>disabled<?php endif;?>
+                        >
+
+                        <option value="0">--- Chọn ---</option>
+                        <?php foreach($this->positions as $position):?>
+                            <option value="<?php echo $position->IOID;?>" <?php echo ($item->Ref_Bin == $position->IOID)?'selected':'';?>>
+                                <?php echo str_repeat('&nbsp;', (($position->LEVEL-1)*3)).$position->MaBin;?>
+                            </option>
+                        <?php endforeach;?>
+                    </select>
+                </td>
+
+                <td class="center required">
+
+                    <input type="hidden" size="4" class="left m402_position_quanlytheoma" value="<?php echo $this->itemConfig->QuanLyTheoMa;?>"/>
+
+                    <?php if(!$this->itemConfig || !$this->itemConfig->QuanLyTheoMa):?>
+                        <input type="hidden" size="8" ioid="<?php echo $this->inputLineIOID;?>"
+                               class="left m402_position_serial" value="<?php echo $item->SoSerial;?>"
+                               <?php if( !($this->rights &4) ):?>disabled readonly<?php endif;?>
+                            <?php echo (!$this->itemConfig || !$this->itemConfig->QuanLyTheoMa)?'disabled':'';?>/>
+                    <?php else:?>
+                        <input type="text" size="8" ioid="<?php echo $this->inputLineIOID;?>"
+                               class="left m402_position_serial" value="<?php echo $item->SoSerial;?>"
+                               <?php if( !($this->rights &4) ):?>disabled readonly<?php endif;?>
+                            <?php echo (!$this->itemConfig || !$this->itemConfig->QuanLyTheoMa)?'disabled':'';?>/>
+                    <?php endif;?>
+
+                </td>
+
+                <td class="right">
+
+                </td>
+
+                <td class="center required">
+
+                    <input type="text "
+                        <?php echo (!$this->itemConfig || !$this->itemConfig->QuanLyTheoMa)?'':'readonly'; ?>
+                           <?php if( !($this->rights &4) ):?>disabled readonly<?php endif;?>
+                           value="<?php echo $item->SoLuong?$item->SoLuong:0;?>"
+                           size="4"
+                           class="right m402_position_qty <?php if( !($this->rights &4) ):?>disabled readonly<?php endif;?> <?php echo (!$this->itemConfig || !$this->itemConfig->QuanLyTheoMa)?'':'readonly'; ?>">
+                </td>
+            </tr>
+        <?php endforeach;?>
+    <?php endif;?>
+
+    <?php if($this->itemConfig && $this->itemConfig->QuanLyTheoMa): // Neu quan ly theo ma in so dong theo so luong?>
+        <!-- In = so luong -->
+        <?php for($i = 0; $i < ($this->qty - $countExists); $i++):?>
+            <tr class="m402-position-data-line">
+                <td class="left required">
+                    <select class="m402_position_select <?php echo (!count($this->positions))?'disabled':'';?>" style="width: 100px;"
+
+                            ioid="<?php echo $this->inputLineIOID;?>"
+                            ssioid="0"
+                            <?php if( !($this->rights &4) ):?>disabled<?php endif;?>
+                        <?php echo (!count($this->positions))?'disabled':'';?>
+
+                        >
+                        <option value="0">--- Chọn ---</option>
+                        <?php foreach($this->positions as $position):?>
+                            <option value="<?php echo $position->IOID;?>"><?php echo str_repeat('&nbsp;', (($position->LEVEL-1)*3)).$position->MaBin;?></option>
+                        <?php endforeach;?>
+                    </select>
+                </td>
+
+                <td class="center">
+                    <input type="hidden" size="4" class="left m402_position_quanlytheoma" value="<?php echo $this->itemConfig->QuanLyTheoMa;?>"/>
+
+                    <input type="text required" size="8" ioid="<?php echo $this->inputLineIOID;?>" name="serial[]" class="m402_position_serial" value="<?php echo getSerial(++$iLastSerial, $this->auto, $this->prefix, $this->length);?>"/>
+                </td>
+
+                <td class="right">
+
+                </td>
+
+                <td class="center required">
+                    <input type="text" value="1" size="4" class=" readonly right m402_position_qty"
+                           readonly <?php if( !($this->rights &4) ):?>disabled<?php endif;?>> </td>
+            </tr>
+        <?php endfor;?>
+    <?php else: // In ra du 10 dong trong ?>
+        <!-- In du 10 dong -->
+        <?php for($i = 0; $i < ($max - $countExists); $i++):?>
+            <tr class="m402-position-data-line">
+                <td class="left required">
+                    <select class="m402_position_select <?php echo (!count($this->positions))?'disabled':'';?>" style="width: 100px;"
+                            ioid="<?php echo $this->inputLineIOID;?>"
+                        <?php echo (!count($this->positions))?'disabled':'';?>
+                            ssioid="0"
+                            <?php if( !($this->rights &4) ):?>disabled<?php endif;?>
+                        >
+                        <option value="0">--- Chọn ---</option>
+                        <?php foreach($this->positions as $position):?>
+                            <option value="<?php echo $position->IOID;?>"><?php echo str_repeat('&nbsp;', (($position->LEVEL-1)*3)).$position->MaBin;?></option>
+                        <?php endforeach;?>
+                    </select>
+                </td>
+
+                <td class="center">
+                </td>
+
+                <td class="right">
+                </td>
+
+                <td class="center required"><input type="text" value="0" size="4" class="right m402_position_qty" <?php if( !($this->rights &4) ):?>disabled<?php endif;?>> </td>
+            </tr>
+        <?php endfor;?>
+    <?php endif;?>
+</table>

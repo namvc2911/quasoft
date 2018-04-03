@@ -1,0 +1,14 @@
+<table class="border_table" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <th style="width: 50%;" class="center">Biện pháp khắc phục</th>
+        <th style="width: 16%;" class="center">Tần suất</th>
+    </tr>
+
+    <!-- Loai hu hong cua thiet bi va bo phan -->
+    <?php foreach($this->remedyList as $item):?>
+        <tr class="remedy_line" >
+            <td class="left"><?php echo $item->BienPhapKhacPhuc;?></td>
+            <td class="right"><?php echo $item->TanSuat?$item->TanSuat:0;?></td>
+        </tr>
+    <?php endforeach;?>
+</table>

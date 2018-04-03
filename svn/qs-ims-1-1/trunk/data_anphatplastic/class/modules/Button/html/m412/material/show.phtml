@@ -1,0 +1,51 @@
+<?php
+    $widths = array(1, 3, 5, 2, 3, 3, 3, 3, 3, 3, 3);
+    $widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+?>
+
+    <div class="fl">
+        <table cellpadding="0" cellspacing="0" class="border_table" border="0" id="m412_material_box" style="table-layout: fixed;">
+            <!-- Tieu de -->
+            <?php $begin = 0;?>
+            <tr>
+                <th style="width: <?php echo $widths[$begin++];?>%;"><input type="checkbox" class="remov_all_line" onclick="m412_material_button.checkAllItems(this)"></th>
+
+                <th style="width: <?php echo $widths[$begin++];?>%;"> Mã MH</th>
+                <th style="width: <?php echo $widths[$begin++];?>%;"> Tên MH</th>
+                <th style="width: <?php echo $widths[$begin++];?>%;"> ĐVT</th>
+                <th style="width: <?php echo $widths[$begin++];?>%;"> Địa điểm giao </th>
+                <th style="width: <?php echo $widths[$begin++];?>%;"> Số lượng cần mua </th>
+                <th style="width: <?php echo $widths[$begin++];?>%;"> Định mức </th>
+                <th style="width: <?php echo $widths[$begin++];?>%;"> Tồn kho thực tế </th>
+                <th style="width: <?php echo $widths[$begin++];?>%;"> Đã yêu cầu </th>
+            </tr>
+
+            <?php $i = 1;?>
+            <?php foreach($this->order as $item):?>
+                <tr class="selected_line"  >
+                    <td class="center">
+<!--                        <input type="checkbox" class="remov_line" onclick="m412_material_button.checkItem(this)">-->
+                    </td>
+
+                    <td class="left"> <?php echo $item->MaSP;?>
+                        <input type="hidden" value="<?php echo $item->Ref_MaSP;?>" class="RefItem" name="RefItem[]" >
+                        <input type="hidden" value="<?php echo $item->Ref_DonViTinh;?>" class="RefUOM" name="RefUOM[]" >
+                        <input class="itemcode" type="hidden" value="<?php echo $item->MaSP;?>">
+                        <input class="itemname" type="hidden" value="<?php echo $item->TenSP;?>">
+                        <input class="uom" type="hidden" value="<?php echo $item->DonViTinh;?>">
+                        <input class="stock" type="hidden" value="<?php echo (int)$item->Ref_MaKho;?>" name="stock[]">
+                    </td>
+                    <td class="left"> <?php echo $item->TenSP;?></td>
+                    <td class="left"> <?php echo $item->DonViTinh;?></td>
+                    <td class="left"> <?php echo $item->MaKho;?></td>
+                    <td class="center">
+                        <input type="text" size="3" class="right qty" value="<?php echo Qss_Lib_Util::formatNumber($item->SoLuong);?>" name="Qty[]" />
+                    </td>
+                    <td class="right"> <?php echo Qss_Lib_Util::formatNumber($item->SLToiThieu);?> </td>
+                    <td class="center"> -</td>
+                    <td class="center"> -</td>
+                </tr>
+            <?php endforeach;?>
+        </table>
+    </div>
+

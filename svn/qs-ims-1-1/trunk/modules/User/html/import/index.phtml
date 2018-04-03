@@ -1,0 +1,45 @@
+<div id="horizontal-toolbar" class="horizontal-toolbar">
+	<div
+		onclick="objectImport('<?php echo $this->form->FormCode;?>',
+					<?php echo $this->form->i_IFID;?>,
+					<?php echo $this->form->i_DepartmentID;?>,
+					'<?php echo $this->object->ObjectCode;?>');"
+		title="<?php echo $this->_translate(34)?>" class="btn_main_top">
+		<a class="icon-32-apply" href="#1"></a>
+	</div>
+	<div <?php if($this->form->i_IFID):?>
+		onclick="objectBack('<?php
+				echo $this->object->i_IFID?>','<?php
+				echo $this->object->intDepartmentID?>','<?php
+				echo $this->object->ObjectCode?>');"
+				<?php else:?>
+		onclick="formBack('<?php echo $this->object->FormCode?>');"
+		<?php endif;?> title="<?php echo $this->_translate(32)?>"
+		class="btn_main_top">
+		<a class="icon-32-back" href="#1"></a>
+	</div>
+	<div onclick="showSearch();" title="<?php echo $this->_translate(24)?>"
+		id="btnSEARCH" class="btn_main_top">
+		<a class="icon-32-search" href="#1"></a>
+	</div>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="div-search" class="clearfix" style="display: none;">
+	<?php
+	echo $this->searchform;
+	?>
+	</div>
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#1"><span><?php echo $this->_translate(39)?>
+				</span> </a></li>
+		</ul>
+	</div>
+	<div id="qss_object">
+	<?php
+	echo $this->pager;
+echo $this->listview;
+?>
+	</div>
+</div>

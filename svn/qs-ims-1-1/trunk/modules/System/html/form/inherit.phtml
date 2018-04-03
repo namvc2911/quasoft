@@ -1,0 +1,40 @@
+<div id="horizontal-toolbar" class="horizontal-toolbar">
+	<div class="btn_main_top " title="<?php echo $this->_translate(12)?>"
+		onclick="rowFormInheritInsert()">
+		<a href="#1" class="icon-32-new"></a>
+	</div>
+	<div class="btn_main_top btn_disabled" title="Sửa đổi"
+		onclick="rowFormInheritEdit()">
+		<a href="#1" class="icon-32-edit"></a>
+	</div>
+	<div class="btn_main_top btn_disabled" ID="Delete"
+		onClick="rowFormInheritDelete()"
+		title="<?php echo $this->_translate(14)?>">
+		<a href="#1" class="icon-32-delete"></a>
+	</div>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#1"><span><?php echo $this->_translate(120)?>
+				</span> </a></li>
+		</ul>
+	</div>
+	<table class="grid">
+		<tr>
+			<th><?php echo $this->_translate(101)?></th>
+			<th><?php echo $this->_translate(98)?></th>
+			<th><?php echo $this->_translate(102)?></th>
+			<th><?php echo $this->_translate(136)?></th>
+		</tr>
+		<?php foreach ($this->inherits as $inherit):?>
+		<tr onclick="rowCLK(this)" id="<?php echo $inherit->FIIAD?>">
+			<td><?php echo $inherit->toname?></td>
+			<td><?php echo $inherit->fromname?></td>
+			<td><?php echo $inherit->objectname?></td>
+			<td><?php echo $inherit->Step?></td>
+		</tr>
+		<?php endforeach;?>
+	</table>
+</div>

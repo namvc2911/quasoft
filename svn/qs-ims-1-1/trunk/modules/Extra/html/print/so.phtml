@@ -1,0 +1,283 @@
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<excel
+	orientation="portrait" font-name="Arial" font-size="10"
+	margin-left="0.5" margin-right="0.5" margin-top="0.75"
+	margin-bottom="0.75" />
+
+<?php $row = 5;?>
+<?php $i = 0;?>
+
+<div class="portrait">
+	<div id="head_print">
+	<?php echo $this->views->Common->Portrait();?>
+	<?php $row++;?>
+		<table width="100%">
+
+			<tr>
+				<td class="center" colspan="8"><h1 style="font-size: 18px;">
+						<xls row="<?php echo $row?>" column="A" column-merge="H"
+							wrap-text="1" v-align="center" h-align="center" bold="1"
+							font-size="18px">ĐƠN BÁN HÀNG <?php echo $this->SoDonHang; ?></xls>
+					</h1></td>
+			</tr>
+
+			<?php $row++;?>
+			<?php $row++;?>
+			<tr>
+				<td colspan="8">&nbsp;</td>
+			</tr>
+
+			<tr>
+				<td class="center" colspan="2"><xls row="<?php echo $row?>"
+						column="A" column-merge="B" wrap-text="1" v-align="center"
+						h-align="center">Số đơn hàng</xls></td>
+				<td class="center" colspan="2"><xls row="<?php echo $row?>"
+						column="C" column-merge="D" wrap-text="1" v-align="center"
+						h-align="center">Loại tiền </xls></td>
+				<td class="center" colspan="2"><xls row="<?php echo $row?>"
+						column="E" column-merge="F" wrap-text="1" v-align="center"
+						h-align="center">Ngày yêu cầu </xls></td>
+				<td class="center" colspan="2"><xls row="<?php echo $row?>"
+						column="G" column-merge="H" wrap-text="1" v-align="center"
+						h-align="center">Khách hàng </xls></td>
+			</tr>
+
+			<?php $row++;?>
+
+
+			<tr id="head_print" style="line-height: 25px; width: 100%;">
+				<td class="center" colspan="2"><xls row="<?php echo $row?>"
+						column="A" column-merge="B" wrap-text="1" v-align="center"
+						h-align="center"> <?php echo $this->SoDonHang; ?></xls></td>
+				<td class="center" colspan="2"><xls row="<?php echo $row?>"
+						column="C" column-merge="D" wrap-text="1" v-align="center"
+						h-align="center"> <?php echo $this->LoaiTien; ?></xls></td>
+				<td class="center" colspan="2"><xls row="<?php echo $row?>"
+						column="E" column-merge="F" wrap-text="1" v-align="center"
+						h-align="center"> <?php echo $this->NgayYCNH; ?></xls></td>
+				<td class="center" colspan="2"><xls row="<?php echo $row?>"
+						column="G" column-merge="H" wrap-text="1" v-align="center"
+						h-align="center"> <?php echo $this->TenKH; ?></xls></td>
+			</tr>
+
+			<tr>
+				<td colspan="8">&nbsp;</td>
+			</tr>
+		</table>
+		<!-- end table -->
+	</div>
+	<!-- end #head-print -->
+
+	<div id="container">
+		<table width="100%" class="border" border="1" cellspacing="0"
+			cellpadding="0">
+			<?php $row++;?>
+			<?php $row++;?>
+
+			<tr>
+				<td class="center"><xls row="<?php echo $row?>" column="A"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1">STT</xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="B"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1">Mã SP</xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="C"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1">Tên SP</xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="D"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1">Nhóm Thuế</xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="E"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1">Đơn giá</xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="F"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1">ĐVT</xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="G"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1">Số Lượng</xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="H"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1">Thành tiền</xls></td>
+			</tr>
+
+			<?php $row++;?>
+
+			<tr>
+				<td class="center"><xls row="<?php echo $row?>" column="A"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1">A</xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="B"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1">B</xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="C"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1">C</xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="D"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1">D</xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="E"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1">E</xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="F"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1">F</xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="G"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1">G</xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="H"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						repeat="1">H = E x G</xls></td>
+			</tr>
+
+
+			<?php foreach ($this->DanhSach as $val):?>
+			<?php $row++;?>
+			<?php $i++;?>
+			<tr>
+				<td class="center"><xls row="<?php echo $row?>" column="A"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						width="5.4px"> <?php echo $i; ?></xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="B"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						width="11.4px"> <?php echo $val->MaSP; ?></xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="C"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						width="14.4px"> <?php echo $val->TenSP; ?></xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="D"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						width="14.4px"> <?php echo $val->NhomThue; ?></xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="E"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						width="11.4px"> <?php echo Qss_Lib_Util::formatMoney($val->DonGia, $this->LoaiTien); ?></xls>
+				</td>
+				<td class="center"><xls row="<?php echo $row?>" column="F"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						width="11.4px"> <?php echo $val->DonViTinh; ?></xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="G"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						width="11.4px"> <?php echo $val->SoLuong; ?></xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="H"
+						wrap-text="1" v-align="center" h-align="center" border="1"
+						width="11.4px"> <?php echo Qss_Lib_Util::formatMoney($val->ThanhTien, $this->LoaiTien); ?></xls>
+				</td>
+			</tr>
+			<?php endforeach;?>
+
+
+			<?php $row++;?>
+
+			<tr>
+				<td class="center"><xls row="<?php echo $row?>" column="A"
+						wrap-text="1" v-align="center" h-align="center" border="1">x</xls>
+				</td>
+				<td class="center"><xls row="<?php echo $row?>" column="B"
+						wrap-text="1" v-align="center" h-align="center" border="1">x</xls>
+				</td>
+				<td class="center"><xls row="<?php echo $row?>" column="C"
+						wrap-text="1" v-align="center" h-align="center" border="1"> Tổng
+					Cộng </xls></td>
+				<td class="center"><xls row="<?php echo $row?>" column="D"
+						wrap-text="1" v-align="center" h-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($this->Thue, $this->LoaiTien); ?></xls>
+				</td>
+				<td class="center"><xls row="<?php echo $row?>" column="E"
+						wrap-text="1" v-align="center" h-align="center" border="1">x</xls>
+				</td>
+				<td class="center"><xls row="<?php echo $row?>" column="F"
+						wrap-text="1" v-align="center" h-align="center" border="1">x</xls>
+				</td>
+				<td class="center"><xls row="<?php echo $row?>" column="G"
+						wrap-text="1" v-align="center" h-align="center" border="1">x</xls>
+				</td>
+				<td class="center"><xls row="<?php echo $row?>" column="H"
+						wrap-text="1" v-align="center" h-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($this->ThanhTien, $this->LoaiTien); ?></xls>
+				</td>
+			</tr>
+
+
+		</table>
+		<!-- end table -->
+
+		<table width="100%">
+		<?php $row++;?>
+		<?php $row++;?>
+			<tr>
+				<td colspan="8">&nbsp;</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td width="25%"><xls row="<?php echo $row?>" column="D"
+						column-merge="F" wrap-text="1" v-align="center" h-align="left">Tổng
+					tiền (Untaxed amount) :</xls></td>
+				<td width="15%" align="right"><xls row="<?php echo $row?>"
+						column="G" column-merge="H" wrap-text="1" v-align="center"
+						h-align="right"> <?php echo Qss_Lib_Util::formatMoney($this->ThanhTien, $this->LoaiTien); ?></xls>
+				</td>
+
+			</tr>
+
+			<?php $row++;?>
+
+			<tr>
+				<td>&nbsp;</td>
+				<td width="25%"><xls row="<?php echo $row?>" column="D"
+						column-merge="F" wrap-text="1" v-align="center" h-align="left">Số
+					tiền thuế (Tax amount) :</xls></td>
+				<td width="15%" align="right"><xls row="<?php echo $row?>"
+						column="G" column-merge="H" wrap-text="1" v-align="center"
+						h-align="right"> <?php echo Qss_Lib_Util::formatMoney( $this->Thue, $this->LoaiTien); ?></xls>
+				</td>
+
+			</tr>
+
+			<?php $row++;?>
+
+			<tr>
+				<td>&nbsp;</td>
+				<td width="25%"><xls row="<?php echo $row?>" column="D"
+						column-merge="F" wrap-text="1" v-align="center" h-align="left">Giảm
+					trừ (Discount) :</xls></td>
+				<td width="15%" align="right"><xls row="<?php echo $row?>"
+						column="G" column-merge="H" wrap-text="1" v-align="center"
+						h-align="right"> <?php echo Qss_Lib_Util::formatMoney( $this->GiamTru, $this->LoaiTien); ?></xls>
+				</td>
+
+			</tr>
+
+			<?php $row++;?>
+
+			<tr>
+				<td>&nbsp;</td>
+				<td width="25%"><xls row="<?php echo $row?>" column="D"
+						column-merge="F" wrap-text="1" v-align="center" h-align="left">Chi
+					phí vận chuyển (Freight) :</xls></td>
+				<td width="15%" align="right"><xls row="<?php echo $row?>"
+						column="G" column-merge="H" wrap-text="1" v-align="center"
+						h-align="right"> <?php echo Qss_Lib_Util::formatMoney( $this->ChiPhiVC, $this->LoaiTien); ?></xls>
+				</td>
+
+			</tr>
+
+			<?php $row++;?>
+
+			<tr>
+				<td>&nbsp;</td>
+				<td width="25%"><xls row="<?php echo $row?>" column="D"
+						column-merge="F" v-align="center" h-align="left">Tổng tiền đơn
+					hàng (Gross total) :</xls></td>
+				<td width="15%" align="right"><xls row="<?php echo $row?>"
+						column="G" column-merge="H" v-align="center" h-align="right"> <?php echo Qss_Lib_Util::formatMoney($this->TongTienDH, $this->LoaiTien); ?></xls>
+				</td>
+
+			</tr>
+			<?php $row++;?>
+
+		</table>
+		<!-- end table -->
+
+	</div>
+	<!-- end #container -->
+</div>
+<!-- end #portrait -->

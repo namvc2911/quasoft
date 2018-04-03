@@ -1,0 +1,92 @@
+<script>
+    function printPreview()
+    {
+        var month1 = $('#month').val();
+        var year1  = $('#year').val();
+        var msg    = '';
+
+        msg += common_checkEmpty(month1, '<?php echo $this->_translate(2) ?>');
+        msg += common_checkEmpty(year1, '<?php echo $this->_translate(3) ?>');
+
+        if(msg)
+        {
+            qssAjax.alert(msg);
+            return;
+        }
+        else
+        {
+            var url = sz_BaseUrl + '/report/transport/month1';
+            var data = $('#report').serialize();
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#print-area').html(jreturn);
+                removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+            });
+        }
+    }
+</script>
+
+<div>
+    <div class="clear"></div>
+    <div id="view">
+        <div class="line-hr">
+            <span><?php echo $this->_translate(1) ?> </span>
+        </div>
+        <form id="report" method="get"
+              action="/report/transport/month1">
+            <table class="detail" style="margin: 10px">
+
+                <tr>
+                    <th width="20%" class="report-param-label"><?php echo $this->_translate(2)?>
+                    </th>
+
+                    <td><?php echo $this->views->Report->SelectMonth('month');?>
+                        <span class="bold red">(*)</span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th width="20%" class="report-param-label"><?php echo $this->_translate(3)?>
+                    </th>
+                    <td><?php echo $this->views->Report->SelectYear('year');?>
+                        <span class="bold red">(*)</span>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <th width="20%" class="report-param-label"><?php echo $this->_translate(4)?>
+                    </th>
+                    <td><?php
+                        $id            = 'location';
+                        $getFields     = array('num'=>3,
+                            'objects'=>array('OKhuVuc'=>array(
+                                'id'=>'IOID'
+                            ,'display1'=>'MaKhuVuc'
+                            ,'display2'=>'Ten') ));
+                        ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th width="20%" class="report-param-label"><?php echo $this->_translate(5)?>
+                    </th>
+                    <td><?php
+                        $id            = 'eqtype';
+                        $getFields     = array('num'=>3,
+                            'objects'=>array('OLoaiThietBi'=>array(
+                                'id'=>'IOID'
+                            ,'display1'=>'TenLoai'
+                            ) ));
+                        ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+        <hr>
+        <?php echo $this->views->Report->PrintToolbar(); ?>
+        <div id="print-content">
+            <div id="print-area"></div>
+        </div>
+    </div>
+</div>

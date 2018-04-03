@@ -1,0 +1,202 @@
+<?php 
+	// Nguyen nhan su co: ONguyenNhanSuCo
+	// Nhan cong: ODichVu
+	// Phu tung: OPhuTung
+	// Vat tu: OVatTu
+	// Cong viec bt: OCongViecBT
+	$row = 9;
+	$excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+  <input type="hidden" id="content" name="content" value="">
+</form>
+<excel orientation="portrait" font-name="Arial" font-size="10" margin-left="0.5" margin-right="0.5" margin-top="0.75" margin-bottom="0.75"/>
+
+<div  class="portrait">
+	<div id="head_print">
+		<?php echo $this->views->Common->Portrait();?>
+		<?php $row++;?>
+		<table width="">
+			<tr>
+				<td  class="center" colspan="8"><h1 style="font-size:18px;"><xls row="<?php echo $row?>" column="A" column-merge="L" wrap-text="1"  v-align="center" h-align="center" bold="1" font-size="18px">Phiếu bảo trì<?php //echo $this->_translate(10)?></xls></h1></td>
+			</tr>
+			<?php $row++;?>
+		</table><!-- end table -->
+	</div><!-- end #head-print -->
+	
+	<div id="container">
+		<table width="" class="border" border="1" cellspacing="0" cellpadding="0">
+			<?php $row++;?>
+			<tr>
+				<!-- Số phiếu --><th class="center"><xls row="<?php echo $row?>" column="A"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1" > Số phiếu<?php //echo $this->_translate(10)?></xls></th>
+				<!-- GT Số phiếu --><td class="center"><xls row="<?php echo $row?>" column="B"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" ><?php echo $this->data->SoPhieu?></xls></td>
+				<!-- Số phiếu YC --><th class="center"><xls row="<?php echo $row?>" column="C"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1" >Số phiếu yêu cầu<?php //echo $this->_translate(10)?></xls></th>
+				<!-- GT So phieu YC --><td class="center"><xls row="<?php echo $row?>" column="D"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" ><?php echo $this->data->SoYeuCau?$this->data->SoYeuCau:'-'?></xls></td>
+				<!-- Ngày --><th class="center"><xls row="<?php echo $row?>" column="E"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1" >Ngày<?php //echo$this->_translate(10)?></xls></th>
+				<!-- GT Ngay --><td class="center"><xls row="<?php echo $row?>" column="F"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" ><?php echo $this->data->Ngay?> </xls></td>			
+				<!-- Ca --><th class="center"><xls row="<?php echo $row?>" column="G"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Ca <?php //echo $this->_translate(10)?></xls></th>
+				<!-- GT Ca --><td class="center"><xls row="<?php echo $row?>" column="H"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1"><?php echo $this->data->Ca?></xls></td>
+				<!-- Loại bảo trì --><th class="center"><xls row="<?php echo $row?>" column="I"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1">Loại bảo trì<?php //echo $this->_translate(10)?></xls></th>
+				<!-- GT Loai bao tri --><td class="center"><xls row="<?php echo $row?>" column="J"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1">Sự cố<?php //echo $this->data->LoaiBaoTri?></xls></td>
+				<!-- Mức độ ưu tiên --><th class="center"><xls row="<?php echo $row?>" column="K"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1">Mức độ ưu tiên<?php //echo $this->_translate(10)?></xls></th>
+				<!-- GT Mức độ ưu tiên --><td class="center"><xls row="<?php echo $row?>" column="L"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1"><?php echo $this->data->MucDoUuTien?></xls></td>
+			</tr>
+			<?php $row++;?>
+			
+			<tr>
+				<!-- Mã TB/KV --><th class="center"><xls row="<?php echo $row?>" column="A"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1">Mã TB/KV<?php //echo $this->_translate(10)?></xls></th>
+				<!-- GT Mã TB/KV --><td class="center"><xls row="<?php echo $row?>" column="B"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1"><?php echo $this->data->MaThietBi?></xls></td>
+				<!-- Tên TB/KV --><th class="center"><xls row="<?php echo $row?>" column="C"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1">Tên TB/KV<?php //echo $this->_translate(10)?></xls></th>
+				<!-- GT Tên TB/KV --><td class="center"><xls row="<?php echo $row?>" column="D"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1"><?php echo $this->data->TenThietBi?></xls></td>
+				<!-- Khu vực --><th class="center"><xls row="<?php echo $row?>" column="E"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1">Khu vực<?php //echo $this->_translate(10)?></xls></th>
+				<!-- GT Khu vực --><!-- Comment --><td class="center"><xls row="<?php echo $row?>" column="F"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1"><?php isset($this->location->MaKhuVuc)?$this->location->MaKhuVuc:$this->data->MaThietBi?></xls></td>
+				<!-- ĐV Bảo trì --><th class="center"><xls row="<?php echo $row?>" column="G"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1">ĐV Bảo trì<?php //echo $this->_translate(10)?></xls></th>
+				<!-- GT ĐV Bảo trì --><td class="center"><xls row="<?php echo $row?>" column="H"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1"><?php echo $this->data->TenDVBT?></xls></td>
+				<!-- Người thực hiện --><th class="center"><xls row="<?php echo $row?>" column="I"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1">Người thực hiện<?php //echo $this->_translate(10)?></xls></th>
+				<!-- GT Người thực hiện --><!-- Comment --><td class="center"><xls row="<?php echo $row?>" column="J"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1"><?php echo $this->data->NguoiThucHien?></xls></td>
+				<!--  --><th class="center"><xls row="<?php echo $row?>" column="K"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"></xls></th>
+				<!--  --><td class="center"><xls row="<?php echo $row?>" column="L"  wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1"></xls></td>
+			
+			</tr>
+			<?php $row++;?>
+			<?php /*
+			<tr>
+				<!-- Nguyên nhân --><th colspan="12" border="0" class="left"><xls row="<?php echo $row?>" column="A" column-merge="L" wrap-text="1"  v-align="center" h-align="left" border="0" bold="1" repeat="1">Nguyên nhân</xls></th>
+			</tr>
+			<?php $row++;?>
+			
+			<tr>
+				<!-- Mã --><th class="center bggrey" colspan="3"><xls row="<?php echo $row?>" column="A"  column-merge="C" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Mã <?php //echo $this->_translate(10)?></xls></th>
+				<!-- Tên --><th class="center bggrey" colspan="3"><xls row="<?php echo $row?>" column="D"  column-merge="F" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Tên <?php //echo $this->_translate(10)?></xls></th>
+				<!-- Mã --><th class="center bggrey" colspan="3"><xls row="<?php echo $row?>" column="G"  column-merge="I" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Mã <?php //echo $this->_translate(10)?></xls></th>
+				<!-- Tên --><th class="center bggrey" colspan="3"><xls row="<?php echo $row?>" column="J"  column-merge="L" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Tên <?php //echo $this->_translate(10)?></xls></th>
+			</tr>
+			<?php $row++;?>
+                        
+			
+			<?php for($i = 1; $i <=5; $i++):?>
+			<tr>
+				<!-- Mã --><td class="center" colspan="3">&nbsp;<xls row="<?php echo $row?>" column="A"  column-merge="C" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" > </xls></td>
+				<!-- Tên --><td class="center" colspan="3">&nbsp;<xls row="<?php echo $row?>" column="D"  column-merge="F" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" > </xls></td>
+				<!-- Mã --><td class="center" colspan="3">&nbsp;<xls row="<?php echo $row?>" column="G"  column-merge="I" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1"> </xls></td>
+				<!-- Tên --><td class="center" colspan="3">&nbsp;<xls row="<?php echo $row?>" column="J"  column-merge="L" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1"> </xls></td>
+			</tr>
+			<?php $row++;?>
+			<?php endfor;?>
+                        */?>
+			
+			
+			<tr>
+				<!-- Nhân công --><th colspan="12" border="0" class="left"><xls row="<?php echo $row?>" column="A" column-merge="L" wrap-text="1"  v-align="center" h-align="left" border="0" bold="1" repeat="1">Thuê ngoài</xls></th>
+			</tr>
+			<?php $row++;?>
+			
+			<tr>
+				<!-- Công việc BT --><th class="center bggrey" colspan="2"><xls row="<?php echo $row?>" column="A"  column-merge="B" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Công việc BT <?php //echo $this->_translate(10)?></xls></th>
+				<!-- Mã ĐT/NV --><th class="center bggrey" colspan="2"><xls row="<?php echo $row?>" column="C"  column-merge="D" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Mã ĐT <?php //echo $this->_translate(10)?></xls></th>
+				<!-- Tên ĐT/NV --><th class="center bggrey" colspan="2"><xls row="<?php echo $row?>" column="E"  column-merge="F" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Tên ĐT <?php //echo $this->_translate(10)?></xls></th>
+				<!-- Chi phí --><th class="center bggrey" colspan="2"><xls row="<?php echo $row?>" column="G"  column-merge="H" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Chi phí <?php //echo $this->_translate(10)?></xls></th>
+				<!-- Mô tả --><th class="center bggrey" colspan="4"><xls row="<?php echo $row?>" column="I"  column-merge="L" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Mô tả <?php //echo $this->_translate(10)?></xls></th>
+			</tr>
+			<?php $row++;?>
+			
+			<?php for($i = 1; $i <=5; $i++):?>
+			<tr>
+				<!-- Công việc BT --><td class="center " colspan="2">&nbsp;<xls row="<?php echo $row?>" column="A"  column-merge="B" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1">  <?php //echo $this->_translate(10)?></xls></td>
+				<!-- Mã ĐT/NV --><td class="center " colspan="2">&nbsp;<xls row="<?php echo $row?>" column="C"  column-merge="D" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1">  <?php //echo $this->_translate(10)?></xls></td>
+				<!-- Tên ĐT/NV --><td class="center " colspan="2">&nbsp;<xls row="<?php echo $row?>" column="E"  column-merge="F" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> <?php //echo $this->_translate(10)?></xls></td>
+				<!-- Chi phí --><td class="center " colspan="2">&nbsp;<xls row="<?php echo $row?>" column="G"  column-merge="H" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1">  <?php //echo $this->_translate(10)?></xls></td>
+				<!-- Mô tả --><td class="center " colspan="4">&nbsp;<xls row="<?php echo $row?>" column="I"  column-merge="L" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1">  <?php //echo $this->_translate(10)?></xls></td>
+			</tr>
+			<?php $row++;?>
+			<?php endfor;?>
+			
+			
+			<?php /*
+			<tr>
+				<!-- Phụ tùng --><th colspan="12" border="0" class="left"><xls row="<?php echo $row?>" column="A" column-merge="L" wrap-text="1"  v-align="center" h-align="left" border="0" bold="1" repeat="1">Phụ tùng</xls></th>
+			</tr>
+			<?php $row++;?>
+			
+			<tr>
+				<!-- Vị trí --><th class="center bggrey" colspan="2"><xls row="<?php echo $row?>" column="A"  column-merge="B" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Công việc BT <?php //echo $this->_translate(10)?></xls></th>
+				<!-- Mã PT --><th class="center bggrey" colspan="2"><xls row="<?php echo $row?>" column="C"  column-merge="D" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Mã ĐT/NV <?php //echo $this->_translate(10)?></xls></th>
+				<!-- Tên PT --><th class="center bggrey" colspan="2"><xls row="<?php echo $row?>" column="E"  column-merge="F" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Tên ĐT/NV <?php //echo $this->_translate(10)?></xls></th>
+				<!-- ĐVT --><th class="center bggrey" colspan="2"><xls row="<?php echo $row?>" column="G"  column-merge="H" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Chi phí <?php //echo $this->_translate(10)?></xls></th>
+				<!-- Thay thế --><th class="center bggrey" colspan="2"><xls row="<?php echo $row?>" column="I"  column-merge="J" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Mô tả <?php //echo $this->_translate(10)?></xls></th>
+				<!-- Nguyên nhân lỗi --><th class="center bggrey" colspan="2"><xls row="<?php echo $row?>" column="K"  column-merge="L" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Nguyên nhân lỗi <?php //echo $this->_translate(10)?></xls></th>
+			</tr>
+			<?php $row++;?>
+			
+			<?php for($i = 1; $i <=5; $i++):?>
+			<tr>
+				<!-- Vị trí --><td class="center " colspan="2">&nbsp;<xls row="<?php echo $row?>" column="A"  column-merge="B" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1">  <?php //echo $this->_translate(10)?></xls></td>
+				<!-- Mã PT --><td class="center " colspan="2">&nbsp;<xls row="<?php echo $row?>" column="C"  column-merge="D" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1">  <?php //echo $this->_translate(10)?></xls></td>
+				<!-- Tên PT --><td class="center " colspan="2">&nbsp;<xls row="<?php echo $row?>" column="E"  column-merge="F" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> <?php //echo $this->_translate(10)?></xls></td>
+				<!-- ĐVT --><td class="center " colspan="2">&nbsp;<xls row="<?php echo $row?>" column="G"  column-merge="H" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1">  <?php //echo $this->_translate(10)?></xls></td>
+				<!-- Thay thế --><td class="center " colspan="2">&nbsp;<xls row="<?php echo $row?>" column="I"  column-merge="J" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> <?php //echo $this->_translate(10)?></xls></td>
+				<!-- Nguyên nhân lỗi --><td class="center " colspan="2">&nbsp;<xls row="<?php echo $row?>" column="K"  column-merge="L" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> <?php //echo $this->_translate(10)?></xls></td>
+			</tr>
+			<?php $row++;?>
+			<?php endfor;?>
+                         * 
+                         */
+                        ?>
+			
+			
+			<tr>
+				<!-- Phụ tùng --><th colspan="12" border="0" class="left"><xls row="<?php echo $row?>" column="A" column-merge="L" wrap-text="1"  v-align="center" h-align="left" border="0" bold="1" repeat="1">Vật tư</xls></th>
+			</tr>
+			<?php $row++;?>
+			
+			<tr>
+				<!-- Vị trí --><th class="center bggrey" colspan="2"><xls row="<?php echo $row?>" column="A"  column-merge="B" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Mã <?php //echo $this->_translate(10)?></xls></th>
+				<!-- Mã PT --><th class="center bggrey" colspan="3"><xls row="<?php echo $row?>" column="C"  column-merge="D" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Tên <?php //echo $this->_translate(10)?></xls></th>
+				<!-- Tên PT --><th class="center bggrey" colspan="3"><xls row="<?php echo $row?>" column="E"  column-merge="F" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Thuộc tính <?php //echo $this->_translate(10)?></xls></th>
+				<!-- ĐVT --><th class="center bggrey" colspan="2"><xls row="<?php echo $row?>" column="G"  column-merge="H" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Đơn vị tính <?php //echo $this->_translate(10)?></xls></th>
+				<!-- Thay thế --><th class="center bggrey" colspan="2"><xls row="<?php echo $row?>" column="I"  column-merge="J" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Số lượng <?php //echo $this->_translate(10)?></xls></th>
+			</tr>
+			<?php $row++;?>
+			
+			<?php for($i = 1; $i <=5; $i++):?>
+			<tr>
+				<!-- Vị trí --><td class="center " colspan="2">&nbsp;<xls row="<?php echo $row?>" column="A"  column-merge="B" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1">  <?php //echo $this->_translate(10)?></xls></td>
+				<!-- Mã PT --><td class="center " colspan="3">&nbsp;<xls row="<?php echo $row?>" column="C"  column-merge="D" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1">  <?php //echo $this->_translate(10)?></xls></td>
+				<!-- Tên PT --><td class="center " colspan="3">&nbsp;<xls row="<?php echo $row?>" column="E"  column-merge="F" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> <?php //echo $this->_translate(10)?></xls></td>
+				<!-- ĐVT --><td class="center " colspan="2">&nbsp;<xls row="<?php echo $row?>" column="G"  column-merge="H" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1">  <?php //echo $this->_translate(10)?></xls></td>
+				<!-- Thay thế --><td class="center " colspan="2">&nbsp;<xls row="<?php echo $row?>" column="I"  column-merge="J" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> <?php //echo $this->_translate(10)?></xls></td>
+			</tr>
+			<?php $row++;?>
+			<?php endfor;?>
+			
+			<tr>
+				<!-- Phụ tùng --><th colspan="12" border="0" class="left"><xls row="<?php echo $row?>" column="A" column-merge="L" wrap-text="1"  v-align="center" h-align="left" border="0" bold="1" repeat="1">Công việc bảo trì</xls></th>
+			</tr>
+			<?php $row++;?>
+			
+			<tr>
+				<!-- Vị trí --><th class="center bggrey" colspan="6"><xls row="<?php echo $row?>" column="A"  column-merge="B" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Tên <?php //echo $this->_translate(10)?></xls></th>
+				<!-- Mã PT --><th class="center bggrey" colspan="6"><xls row="<?php echo $row?>" column="C"  column-merge="D" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Mô tả<?php //echo $this->_translate(10)?></xls></th>
+	
+			</tr>
+			<?php $row++;?>
+			
+			<?php for($i = 1; $i <=5; $i++):?>
+			<tr>
+				<!-- Vị trí --><td class="center " colspan="6">&nbsp;<xls row="<?php echo $row?>" column="A"  column-merge="B" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1">  <?php //echo $this->_translate(10)?></xls></td>
+				<!-- Mã PT --><td class="center " colspan="6">&nbsp;<xls row="<?php echo $row?>" column="C"  column-merge="D" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1">  <?php //echo $this->_translate(10)?></xls></td>
+			</tr>
+			<?php $row++;?>
+			<?php endfor;?>
+			
+		</table><!-- end table -->	
+		<table border="0" width="100%">
+		<tr style="height: 100px">
+			<!-- Vị trí --><th class="center" colspan="6"><xls row="<?php echo $row?>" column="A"  column-merge="B" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Người thực hiện <?php //echo $this->_translate(10)?></xls></th>
+				<!-- Mã PT --><th class="center" colspan="6"><xls row="<?php echo $row?>" column="C"  column-merge="D" wrap-text="1"  v-align="center" h-align="center" border="1" repeat="1" bold="1"> Người phê duyệt<?php //echo $this->_translate(10)?></xls></th>
+			</tr>
+		</table>
+	</div><!-- end #container -->
+</div><!-- end #portrait -->
+

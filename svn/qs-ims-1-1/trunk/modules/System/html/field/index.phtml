@@ -1,0 +1,144 @@
+<?php
+	$widths = array( 0.5, 2, 2, 1.2, 1.5, 0.8, 0.8, 1, 0.8, 1, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 1.1, 1.1, 2.5);
+	$widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+
+	$active = array();
+	$active[0] = '-';
+	$active[1] = 'Active';
+
+	$activeClass[0] = 'bgred white center';
+	$activeClass[1] = 'bggreen bold white center';
+
+	$Unique = array();
+	$Unique[0] = '-';
+	$Unique[1] = 'Case <br/> sensitive';
+	$Unique[2] = 'Case <br/> insensitive';
+
+	$UniqueClass[0] = '';
+	$UniqueClass[1] = 'blue';
+	$UniqueClass[2] = 'blue';
+
+	$search = array();
+	$search[0] = '-';
+	$search[1] = 'Search';
+
+	$require = array();
+	$require[0] = '-';
+	$require[1] = 'Required';
+
+	$requireClass[0] = 'center';
+	$requireClass[1] = 'center red';
+
+	$refresh = array();
+	$refresh[0] = '-';
+	$refresh[1] = 'Refresh';
+
+	$refreshClass[0] = 'center';
+	$refreshClass[1] = 'center green';
+	?>
+
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+	<button type="button" class="btn btn_main_top" onclick="rowFieldInsert('<?php echo $this->objid?>')">
+		<?php echo $this->_translate(12)?>
+	</button>
+	<button ID="Update" type="button" class="btn btn_main_top" disabled onClick="rowFieldEdit('<?php echo $this->objid?>')">
+		<?php echo $this->_translate(13)?>
+	</button>
+	<button ID="Delete" type="button" class="btn btn_main_top" disabled onClick="rowFieldDelete('<?php echo $this->objid?>')">
+		<?php echo $this->_translate(14)?>
+	</button>
+	<?php if($this->objid):?>
+		<button id="btnUI" type="button" class="btn btn_main_top" onClick="rowUIGroup()">
+			UI box
+		</button>
+	<?php endif;?>
+	<button type="button" class="btn btn_main_top" onclick="rowFieldBack()">
+		<?php echo $this->_translate(32)?>
+	</button>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#1"><span><?php echo $this->_translate(102)?>
+						- <?php echo $this->_translate(103)?> </span> </a></li>
+		</ul>
+	</div>
+	<input type="hidden" id="objid" value="<?php echo $this->objid?>">
+	<table class="grid border_table" cellpadding="0" cellspacing="0">
+		<tr>
+			<?php $begin = 0;?>
+
+			<th style="width: <?php echo $widths[$begin++];?>%">Order</th>
+			<th style="width: <?php echo $widths[$begin++];?>%"> Mã </th>
+			<th style="width: <?php echo $widths[$begin++];?>%"> Name </th>
+			<th style="width: <?php echo $widths[$begin++];?>%">Kiểu <br/> dữ liệu</th>
+			<th style="width: <?php echo $widths[$begin++];?>%">Kiểu <br/> nhập liệu</th>
+			<th style="width: <?php echo $widths[$begin++];?>%"><?php echo $this->_translate(125)?></th>
+			<th style="width: <?php echo $widths[$begin++];?>%">Default</th>
+			<th style="width: <?php echo $widths[$begin++];?>%">Unique</th>
+			<th style="width: <?php echo $widths[$begin++];?>%">Search</th>
+			<th style="width: <?php echo $widths[$begin++];?>%">Required</th>
+			<th style="width: <?php echo $widths[$begin++];?>%">Active</th>
+			<th style="width: <?php echo $widths[$begin++];?>%">Grid</th>
+			<th style="width: <?php echo $widths[$begin++];?>%">Mobile</th>
+			<th style="width: <?php echo $widths[$begin++];?>%">PC <br/> hide</th>
+			<th style="width: <?php echo $widths[$begin++];?>%">Mobile <br/> hide</th>
+			<th style="width: <?php echo $widths[$begin++];?>%">Refresh</th>
+            <th style="width: <?php echo $widths[$begin++];?>%">TValue</th>
+            <th style="width: <?php echo $widths[$begin++];?>%">FValue</th>
+			<th style="width: <?php echo $widths[$begin++];?>%">Calculate</th>
+
+		</tr>
+		<?php $title = '';?>
+		<?php foreach($this->fields as $field):?>
+			<?php if($field->Title != '' && $title != $field->Title):?>
+				<tr>
+					<td colspan="11" class="center bold italic"><?php echo $field->Title?></td>
+				</tr>
+			<?php endif;?>
+
+			<?php
+				$title  = 'Đa ngôn ngữ &#013;';
+				$title .= '--------------------------------------'.'&#013;';
+				$title .= 'Tên tiếng Việt: '.$field->FieldName.'&#013;';
+				$title .= 'Tên tiếng Anh: '.$field->FieldName_en.'&#013;';
+
+				if($field->RefFormCode) {
+                    $title .= ' &#013;';
+                    $title .= 'Lookup &#013;';
+                    $title .= '--------------------------------------'.'&#013;';
+                    $title .= $field->RefFormCode?'Module tham chiếu: '.$field->RefFormCode.'&#013;':'';
+                    $title .= $field->RefObjectCode?'Object tham chiếu: '.$field->RefObjectCode.'&#013;':'';
+                    $title .= $field->RefFieldCode?'Trường tham chiếu: '.$field->RefFieldCode.'&#013;':'';
+                    $title .= $field->RefDisplayCode?'Trường hiển thị thêm: '.$field->RefDisplayCode.'&#013;':'';
+                }
+			?>
+
+			<tr id="<?php echo $field->FieldCode?>" onclick="rowCLK(this);" title="<?php echo $title;?>">
+				<td class="center break-word break "><?php echo $field->FieldNo?></td>
+				<td class="left break-word <?php echo ($field->RefFormCode)?'green bold':'';?>"><?php echo $field->FieldCode?></td>
+				<td class="left <?php echo (!$field->FieldName_en || $field->FieldName_en == $field->FieldName)?'bgpink':'';?>"><?php echo $field->FieldName?></td>
+				<td class="left "><?php echo Qss_Lib_Const::$FIELD_TYPE[$field->FieldType]?></td>
+				<td class="left "><?php echo Qss_Lib_Const::$FIELD_INPUT[$field->InputType]?></td>
+				<td class="center break-word"><?php echo $field->FieldWidth?></td>
+				<td class="center break-word"><?php echo $field->DefaultVal?></td>
+				<td class="center break-word blue"><?php echo @$Unique[(int)$field->Unique];?></td>
+				<td class="center break-word blue"><?php echo @$search[(int)$field->Search];?></td>
+				<td class="center break-word <?php echo @$requireClass[(int)$field->Required];?>"><?php echo @$require[(int)$field->Required];?></td>
+				<td class="center break-word <?php echo @$activeClass[(int)$field->Effect];?>"><?php echo @$active[(int)$field->Effect];?></td>
+				<td class="center break-word"><?php echo $field->Grid&1?'Grid':'-';?></td>
+				<td class="center break-word"><?php echo $field->Grid&2?'Mobile':'-';?></td>
+				<td class="center break-word <?php echo $field->Grid&4?'orange':'';?>"><?php echo $field->Grid&4?'PC <br/> hide':'-';?></td>
+				<td class="center break-word  <?php echo $field->Grid&8?'orange':'';?>"><?php echo $field->Grid&8?'Mobile <br/> hide':'-';?></td>
+				<td class="center <?php echo @$refreshClass[(int)$field->isRefresh];?>"><?php echo @$refresh[(int)$field->isRefresh];?></td>
+
+                <td class="center break-word"><?php echo $field->TValue;?></td>
+                <td class="center break-word"><?php echo $field->FValue;?></td>
+
+				<td class="center break-word"><?php echo $field->Regx?></td>
+			</tr>
+			<?php $title = $field->Title;?>
+		<?php endforeach;?>
+	</table>
+</div>

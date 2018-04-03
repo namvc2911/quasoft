@@ -1,0 +1,53 @@
+<div id="horizontal-toolbar" class="horizontal-toolbar">
+	<div class="btn_main_top" onclick="rowFormTransferInsert()"
+		title="<?php echo $this->_translate(12)?>">
+		<a href="#1" class="icon-32-new"></a>
+	</div>
+	<div class="btn_main_top btn_disabled" ID="btnEDIT"
+		onClick="rowFormTransferEdit()"
+		title="<?php echo $this->_translate(13)?>">
+		<a href="#1" class="icon-32-edit"></a>
+	</div>
+	<div class="btn_main_top btn_disabled" ID="Delete"
+		onClick="rowFormTransferDelete()"
+		title="<?php echo $this->_translate(14)?>">
+		<a href="#1" class="icon-32-delete"></a>
+	</div>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#1"><span><?php echo $this->_translate(121)?>
+				</span> </a></li>
+		</ul>
+	</div>
+	<table class="grid">
+		<tr>
+			<th><?php echo $this->_translate(101)?></th>
+			<th><?php echo $this->_translate(102)?></th>
+			<th><?php echo $this->_translate(103)?></th>
+			<th><?php echo $this->_translate(98)?></th>
+			<th><?php echo $this->_translate(99)?></th>
+			<th><?php echo $this->_translate(100)?></th>
+			<th><?php echo $this->_translate(138)?></th>
+			<th><?php echo $this->_translate(54)?></th>
+			<th><?php echo $this->_translate(136)?></th>
+			<th><?php echo $this->_translate(132)?></th>
+		</tr>
+		<?php foreach ($this->transfers as $transfer):?>
+		<tr onclick="rowCLK(this);" id="<?php echo $transfer->FTID?>">
+			<td><?php echo $transfer->FName?></td>
+			<td><?php echo $transfer->FOName?></td>
+			<td><?php echo $transfer->FFName?></td>
+			<td><?php echo $transfer->TName?></td>
+			<td><?php echo $transfer->TOName?></td>
+			<td><?php echo $transfer->TFName?></td>
+			<td><?php echo $transfer->LFName?></td>
+			<td><?php echo $transfer->Expr?></td>
+			<td><?php echo $transfer->StepNo?></td>
+			<td><?php echo $transfer->Value?></td>
+		</tr>
+		<?php endforeach;?>
+	</table>
+</div>

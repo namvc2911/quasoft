@@ -1,0 +1,15 @@
+<div class="navmenutab tabs-menu"><ul><li class="splash"></li><li class="active normal"><a href="#form_tab_0"><span><?php echo Qss_Lib_System::getUIGroupName(0,$this->user->user_lang);?></span></a></li></ul></div><div style="border-top: 1px solid #999; clear: both;"></div><div class="ui_box" id="form_tab_0"><div class="ui_box_s50_left"><fieldset><div class="ui_box_line OTinhLuong_Thang" >
+												<div class="label">
+												<label><?php echo $this->objects["OTinhLuong"]->getFieldByCode("Thang")->szFieldName;?></label>
+												</div>
+												<div class="element" >
+												<?php echo $this->objects["OTinhLuong"]->sz_fGetFormFieldElement("Thang",$this->user,$this->dialog);?>
+												</div>
+												</div><div class="ui_box_line OTinhLuong_Nam" >
+												<div class="label">
+												<label><?php echo $this->objects["OTinhLuong"]->getFieldByCode("Nam")->szFieldName;?></label>
+												</div>
+												<div class="element" >
+												<?php echo $this->objects["OTinhLuong"]->sz_fGetFormFieldElement("Nam",$this->user,$this->dialog);?>
+												</div>
+												</div></fieldset></div></div>

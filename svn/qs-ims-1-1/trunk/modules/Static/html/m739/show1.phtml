@@ -1,0 +1,30 @@
+<?php $workingCalendar = 0;?>
+
+<select id="item" name="item" onchange="changeItem()">
+	<option value="" bomattr="" qtyattr="" itemattr="">
+		---
+		<?php echo $this->_translate(1)?>
+		---
+	</option>
+	<?php foreach ($this->items as $it):?>
+	<?php /*bomattr="<?php echo $it->Ref_CauThanhSanPham;?>" */ ?>
+	<option value="<?php echo $it->Ref_MaSanPham;?>"
+	<?php /*bomattr="" qtyattr="<?php echo $it->SoLuongTrenGio;?>" itemattr="<?php echo $it->MaSanPham;?>" */?>>
+		<?php
+		echo "{$it->MaSanPham} - {$it->TenSanPham}";
+		//$workingCalendar = $it->Ref_LichLamViec;
+		?>
+	</option>
+	<?php endforeach;?>
+</select>
+<span class="bold red">(*)</span>
+
+<input
+	type="hidden" name="workingCalendar"
+	value="<?php echo $workingCalendar;?>" />
+<input
+	type="hidden" name="BOM" id="BOM" value="0" />
+<input
+	type="hidden" name="qtyPerHour" id="qtyPerHour" value="0" />
+<input
+	type="hidden" name="itemCode" id="itemCode" value="" />

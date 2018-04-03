@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu>
+	<block title="Quản trị hệ thống" text="56">
+		<item title="Cài đặt tham số" text="67" href="{baseURL}/system/param" code="param"/>
+		<item title="Lưu trữ dữ liệu" text="104">
+			<item title="Danh sách đối tượng" text="102" href="{baseURL}/system/object" code="object"/>
+			<item title="Danh sách module" text="101" href="{baseURL}/system/form" code="module"/>
+			<item title="Kết chuyển dữ liệu" text="121" href="{baseURL}/system/form/transfer" code="transfer"/>
+			<item title="Kết chuyển tự động" text="" href="{baseURL}/system/bash" code="bash"/>
+			<item title="Kế thừa đối tượng" text="120" href="{baseURL}/system/form/inherit" code="inherit"/>
+			<item title="Nhóm module trên menu" text="119" href="{baseURL}/system/menu" code="menu"/>
+			<item title="Cấu hình lịch" text="0" href="{baseURL}/system/calendar" code="calendar"/>
+		</item>
+		<item title="Nâng cao" text="7">
+			<item title="Copy database" text="1" href="{baseURL}/system/database" code="database"/>
+			<item title="Quản lý ngôn ngữ" text="2" href="{baseURL}/system/language" code="language"/>
+			<item title="Dịch" text="115" href="{baseURL}/system/language/translate" code="translate"/>
+		</item>
+	</block>
+</menu>

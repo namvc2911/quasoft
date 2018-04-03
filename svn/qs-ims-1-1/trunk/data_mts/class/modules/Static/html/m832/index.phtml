@@ -1,0 +1,166 @@
+<script>
+    function printPreview()
+    {
+        var url  = sz_BaseUrl + '/static/m832/show';
+        var data = $('#report').serialize();
+
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#print-area').html(jreturn);
+            removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+        });
+
+
+//        var msg   = '';
+//        msg += common_checkEmpty($('#start').val(), 'Ngày bắt đầu');
+//        msg += common_checkEmpty($('#end').val(), 'Ngày kết thúc');
+//
+//        if(msg != '')
+//        {
+//            qssAjax.alert(msg);
+//            return;
+//        }
+//        else
+//        {
+//            var url  = sz_BaseUrl + '/static/m832/show';
+//            var data = $('#report').serialize();
+//
+//            qssAjax.getHtml(url, data, function(jreturn) {
+//                $('#print-area').html(jreturn);
+//                removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+//            });
+//        }
+    }
+
+    function _changeDateTime() {
+        var type  = $('input[name="type"]:checked').val();
+
+        if(!type) {
+            type = 'QUY1';
+        }
+
+        var year  = parseInt($('#year').val());
+        var start = '';
+        var end   = '';
+
+        switch (type) {
+            case 'QUY1':
+                start = '01-01-'+year;
+                end   = '31-03-'+year;
+                break;
+
+            case 'QUY2':
+                start = '01-04-'+year;
+                end   = '30-06-'+year;
+                break;
+
+            case 'QUY3':
+                start = '01-07-'+year;
+                end   = '30-09-'+year;
+                break;
+
+            case 'QUY4':
+                start = '01-10-'+year;
+                end   = '31-12-'+year;
+                break;
+
+            case '6THANGDAU':
+                start = '01-01-'+year;
+                end   = '30-06-'+year;
+                break;
+
+            case '6THANGCUOI':
+                start = '01-07-'+year;
+                end   = '31-12-'+year;
+                break;
+
+            case 'CANAM':
+                start = '01-01-'+year;
+                end   = '31-12-'+year;
+                break;
+        }
+
+        if(start) $('#start').val(start);
+        if(end) $('#end').val(end);
+    }
+
+    $(document).ready(function () {
+        $('input[name="type"]').click(function () {
+            _changeDateTime();
+        });
+
+        $('#year').change(function () {
+            _changeDateTime();
+        });
+    });
+</script>
+
+
+
+<div class="clear"></div>
+<div id="view">
+    <div class="line-hr">
+        <span>
+            <?php echo Qss_Lib_System::getReportTitle('M832');?>
+        </span>
+    </div>
+
+    <form id="report" method="get" action="/static/m832/show">
+        <table class="detail">
+
+            <tr>
+
+                <th width="20%" class="report-param-label">
+                    Năm
+                </th>
+
+                <td>
+                    <?php echo $this->views->Report->SelectYear('year');?>
+
+                </td>
+            </tr>
+
+            <!-- Thời gian -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Loại
+                </th>
+
+                <td>
+
+                    <?php echo $this->views->Report->RegxComboBox('type', 'OKeHoachBaoTri', 'LoaiKeHoach'); ?>
+
+                    <?php /*
+                    <input type="radio" name="type" id="TYPE_QUY1" value="QUY1"> <label for="TYPE_QUY1"> Qúy 1 </label>
+                    <input type="radio" name="type" id="TYPE_QUY2" value="QUY2"> <label for="TYPE_QUY2"> Qúy 2 </label>
+                    <input type="radio" name="type" id="TYPE_QUY3" value="QUY3"> <label for="TYPE_QUY3"> Qúy 3 </label>
+                    <input type="radio" name="type" id="TYPE_QUY4" value="QUY4"> <label for="TYPE_QUY4"> Qúy 4 </label>
+                    <input type="radio" name="type" id="TYPE_6THANGDAU" value="6THANGDAU">   <label for="TYPE_6THANGDAU">6 tháng đầu năm </label>
+                    <input type="radio" name="type" id="TYPE_6THANGCUOI" value="6THANGCUOI"> <label for="TYPE_6THANGCUOI">6 tháng cuối năm </label>
+                    <input type="radio" name="type" id="TYPE_CANAM" value="CANAM">           <label for="TYPE_CANAM">Cả năm </label>
+                    <input type="radio" name="type" id="TYPE_TUYCHON" value="TUYCHON" checked>           <label for="TYPE_TUYCHON"> Tùy chọn </label>
+                    */?>
+                </td>
+            </tr>
+
+            <tr>
+                <th width="20%" class="report-param-label">Khu vực
+                </th>
+                <td>
+                    <?php
+                    $id        = 'location';
+                    $getFields = array('num'=>3, 'objects'=>array('OKhuVuc'=>array('id'=>'IOID','display1'=>'MaKhuVuc','display2'=>'Ten')));
+                    ?>
+                    <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+                </td>
+            </tr>
+
+        </table>
+    </form>
+    <p>
+
+    <hr>
+    <?php echo $this->views->Report->PrintToolbar();?>
+    <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>

@@ -1,0 +1,550 @@
+<style>
+    .clicked
+    {
+        background: yellow;
+    }
+    #m753_material_dial_box
+    {
+        overflow:hidden;
+    }
+    #select_m753_material_box
+    {
+        float:left;
+        width:95%;
+    }
+    #select_m753_material_box .select
+    {
+        width:98%;
+        overflow: auto;
+    }
+    #m753_multi_button_box
+    {
+        width:10%;
+        float:left;
+    }
+
+    #m753_material_box
+    {
+        width: 98%;
+    }
+
+    #equipType_tag
+    {
+        width: 90% !important;
+    }
+</style>
+
+
+<style>
+    .m753_filter_box
+    {
+        float: left;
+        display: inline;
+        line-height: 24px;
+        height: 24px;
+        padding-bottom: 5px;
+        vertical-align: middle;
+    }
+    .m753_filter_box_title
+    {
+        min-width: 120px;
+        font-weight: bold;
+        float: left;
+    }
+    .m753_filter_box_dat
+    {
+        min-width: 100px;
+        margin-right: 10px;
+        float: left;
+    }
+    .m753_filter_box_dat input[type="text"], .m753_filter_box_dat select
+    {
+        width: 150px !important;
+    }
+
+    .m753_filter_box_dat #start, .m753_filter_box_dat #end
+    {
+        width: 80px !important;
+    }
+
+    .m753_data table
+    {
+        margin-top: 5px;;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+    }
+
+    .label
+    {
+        display: inline-block;
+        width: 65px;
+        line-height: 24px;
+        height: 24px;
+        font-size: 12px;
+    }
+</style>
+
+<script type="text/javascript" src="/js/common.js"></script>
+
+<script>
+    var m753_multi_button = {
+        filterEquip : function () {
+            var xval = $('#m174_filter_equip').val();
+
+            $('.m174_filter_equip_empty_option').each(function () {
+                $(this).remove();
+            });
+
+            if(xval == '')
+            {
+                $('#m753_multi_equips option').each(function(){
+                    $(this).show();
+                });
+            }
+            else
+            {
+                $('#m753_multi_equips option').each(function(){
+                    var text = $(this).text();
+                    var re = new RegExp(xval, "i");
+
+                    if(text.search(re) !== -1){
+                        $(this).show();
+                    }
+                    else
+                    {
+                        $(this).hide();
+                    }
+                });
+            }
+
+            if($('#m753_multi_equips option:hidden').length == $('#m753_multi_equips option').length)
+            {
+                $('#m753_multi_equips').append('<option class=\"m174_filter_equip_empty_option\" value=\"0\" disabled>&nbsp;</option>');
+            }
+        },
+
+        show : function()
+        {
+            var url  = sz_BaseUrl + '/button/m753/multi/show';
+            var data = $('#m753_multi_form').serialize();
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#m753_material_show').html(jreturn);
+            });
+        },
+
+        select : function()
+        {
+            var selected = $('input[type="radio"][name="m753_equip_filter"]:checked').val();
+
+            if(selected == 'OVERDUE')
+            {
+                $('#select_m753_material_box #equipType').attr('disabled', true);
+                $('#select_m753_material_box #equipType_tag').attr('disabled', true);
+            }
+            else
+            {
+                $('#select_m753_material_box #equipType').removeAttr('disabled');
+                $('#select_m753_material_box #equipType_tag').removeAttr('disabled');
+            }
+
+            var url  = sz_BaseUrl + '/button/m753/multi/select';
+            var data = $('#m753_multi_form').serialize();
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#m753_material_select #m753_multi_equips').html(jreturn);
+            });
+        },
+
+        save : function()
+        {
+            var url  = sz_BaseUrl + '/button/m753/multi/save';
+            var data = $('#m753_multi_form').serialize();
+
+            qssAjax.confirm('Bạn có muốn lưu lại hiểu chỉnh thiết bị hay không?',function(){
+                qssAjax.call(url, data, function(jreturn) {
+                    if(jreturn.message != '')
+                    {
+                        qssAjax.notice(jreturn.message);
+                    }
+                }, function(jreturn) {
+                    qssAjax.alert(jreturn.message);
+                });
+            });
+        },
+
+        add : function(all)
+        {
+            var add;
+            var addHtml = '';
+
+            if(all != undefined && all)
+            {
+                add = $('#select_m753_material_box #m753_multi_equips  option[value!="0"]').filter(":not(:hidden)");
+            }
+            else
+            {
+                add = $('#select_m753_material_box #m753_multi_equips option[value!="0"]').filter(":selected").filter(":not(:hidden)");
+            }
+
+            $('.m753_material_empty_option').each(function () {
+                $(this).remove();
+            });
+
+            add.each(function(){
+                addHtml  = '';
+                addHtml += '<tr class="selected_line" >';
+                addHtml += '<td class="center"><input type="checkbox" class="remov_line" onclick="m753_multi_button.checkItem(this)"></td>';
+                addHtml += '<td class="left">'+$(this).attr('equipcode');
+                addHtml += '<input type="hidden" value="'+$(this).val()+'" class="equip" name="equip[]" >';
+                addHtml += '<input type="hidden" value="'+$(this).attr('groupmarker')+'" class="groupmarker" >';
+                addHtml += '<input type="hidden" value="'+$(this).attr('equipcode')+'" class="equipcode" >';
+                addHtml += '<input type="hidden" value="'+$(this).attr('equipname')+'" class="equipname" >';
+                addHtml += '<input type="hidden" value="'+$(this).attr('equipifid')+'" class="equipifid" >';
+                addHtml += '</td>';
+                addHtml += '<td class="left">';
+                addHtml += '<select class="component" equip="'+$(this).val()+'" style="width:150px;"  loaded="0" name="component[]"';
+                addHtml += 'equipifid="'+$(this).attr('equipifid')+'" ';
+                addHtml += 'onclick="m753_multi_button.loadComponent(this)">';
+                addHtml += '<option value="0">--- Chọn ---</option>';
+                addHtml += '</select>';
+                addHtml += '</td>';
+                addHtml += '</tr>';
+                $('#m753_material_box').append(addHtml);
+                $(this).remove();
+            });
+
+            if($('#select_m753_material_box #m753_multi_equips option:hidden').length == $('#select_m753_material_box select option').length)
+            {
+                $('#select_m753_material_box #m753_multi_equips').append('<option class=\"m753_material_empty_option\" value=\"0\" disabled>&nbsp;</option>');
+            }
+        },
+
+        remove : function(all)
+        {
+
+            var remove;
+            var html   = '';
+
+            if(all != undefined && all)
+            {
+                remove = $('.selected_line');
+            }
+            else
+            {
+                remove = $('.selected_line').filter(".marker");
+            }
+
+            $('.m753_material_empty_option').each(function () {
+                $(this).remove();
+            });
+
+
+
+            remove.each(function(){
+                html  = '<option ';
+                html += 'groupmarker="'+$(this).find('.groupmarker').val()+'" ';
+                html += 'equipcode="'+$(this).find('.equipcode').val()+'" ';
+                html += 'equipname="'+$(this).find('.equipname').val()+'" ';
+                html += 'equipifid="'+$(this).find('.equipifid').val()+'" ';
+                html += 'value="'+$(this).find('.RefItem').val()+'"> ';
+                html += $(this).find('.equipcode').val() + ' - ' + $(this).find('.equipname').val();
+                html += '</option>';
+
+                if($(this).find('.groupmarker').val())
+                {
+                    $('#select_m753_material_box #m753_multi_equips ').prepend(html);
+                }
+                else
+                {
+                    $('#select_m753_material_box #m753_multi_equips ').prepend(html);
+                }
+
+                $(this).remove();
+            });
+
+            if($('#m753_material_box select option').length == 0)
+            {
+                $('#m753_material_box select').append('<option class=\"m753_material_empty_option\" value=\"0\" disabled>&nbsp;</option>');
+            }
+        },
+
+        checkItem : function(ele)
+        {
+            if($(ele).is(':checked'))
+            {
+                $(ele).parent().parent().addClass('marker');
+                $(ele).attr('checked', true);
+            }
+            else
+            {
+                $(ele).parent().parent().removeClass('marker');
+                $(ele).removeAttr('checked');
+            }
+        },
+
+        checkAllItems : function(ele)
+        {
+            if($(ele).is(':checked'))
+            {
+                $('.remov_line').each(function(){
+                    $(this).attr('checked', true);
+                    $(this).parent().parent().addClass('marker');
+                });
+            }
+            else
+            {
+                $('.remov_line').each(function(){
+                    $(this).removeAttr('checked', true);
+                    $(this).parent().parent().removeClass('marker');
+                });
+            }
+        },
+
+        loadComponent : function(ele)
+        {
+            var loaded = $(ele).attr('loaded');
+
+            // chi load bo phan khi chua cho phan tu
+            if(loaded == 0)
+            {
+                $(ele).attr('loaded', 1);
+                var url  = sz_BaseUrl + '/button/m753/component';
+                var data = {equipifid: $(ele).attr('equipifid')};
+                var html = '<option value="0"> --- Chọn --- </option>';
+
+                qssAjax.call(url, data, function(jreturn) {
+                    for(i in jreturn)
+                    {
+                        html += '<option value="'+jreturn[i].id+'">'+jreturn[i].value+'</option>';
+                    }
+
+                    $(ele).html('');
+                    $(ele).html(html);
+                });
+            }
+        }
+    };
+
+    $(document).ready(function(){
+        m753_multi_button.show();
+        m753_multi_button.select();
+
+        $('input[type="radio"][name="m753_equip_filter"]').change(function(){
+            m753_multi_button.select();
+        });
+
+        $('.datepicker').each(function(){
+            $(this).datepicker();
+        });
+    });
+</script>
+
+<div id="wrapper">
+    <form id="m753_multi_form">
+        <input type="hidden" name="ifid" value="<?php echo $this->ifid;?>">
+        <div class="clear"></div>
+
+        <!-- Nhap du lieu -->
+        <div>
+            <!-- Ngay hieu chuan -->
+            <div class="m753_filter">
+                <div class="m753_filter_box">
+                    <div class="m753_filter_box_title">
+                        Ngày:
+                    </div>
+
+                    <div class="m753_filter_box_dat">
+                        <?php echo $this->views->Report->Datepicker('date', date('d-m-Y')); ?>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+
+            <!-- Loai hieu chuan -->
+            <div class="m753_filter">
+                <div class="m753_filter_box">
+                    <div class="m753_filter_box_title">
+                        Loại hiệu chuẩn:
+                    </div>
+
+                    <div class="m753_filter_box_dat">
+                        <div class="radio">
+                            <?php foreach($this->type as $key=>$val):?>
+                                <input type="radio" value="<?php echo $key;?>" name="type"  id="OHieuChuanKiemDinh_Loai_<?php echo $key;?>">
+                                <span class="label">
+                                    <label for="OHieuChuanKiemDinh_Loai_<?php echo $key;?>" style="width: 100px;">
+                                        <?php echo $val;?>
+                                    </label>
+                                </span>
+                            <?php endforeach;?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+
+            <!-- Chu ky hieu chuan -->
+            <div class="m753_filter">
+                <div class="m753_filter_box">
+                    <div class="m753_filter_box_title">
+                        Chu kỳ:
+                    </div>
+
+                    <div class="m753_filter_box_dat">
+                        <div class="radio">
+                            <?php foreach($this->period as $key=>$val):?>
+                                <input type="radio" value="<?php echo $key;?>" name="period"  id="OHieuChuanKiemDinh_ChuKy_<?php echo $key;?>">
+                                <span class="label">
+                                    <label for="OHieuChuanKiemDinh_ChuKy_<?php echo $key;?>" style="width: 100px;">
+                                        <?php echo $val;?>
+                                    </label>
+                                </span>
+                            <?php endforeach;?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+
+            <!-- Don vi kiem dinh -->
+            <div class="m753_filter">
+                <div class="m753_filter_box">
+                    <div class="m753_filter_box_title">
+                        Đơn vị kiểm định:
+                    </div>
+
+                    <div class="m753_filter_box_dat">
+                        <?php echo $this->views->Report->SimpleComboBox('workcenter', $this->workcenters);?>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+
+            <!-- Noi bo -->
+            <div class="m753_filter">
+                <div class="m753_filter_box">
+                    <div class="m753_filter_box_title">
+                        Nội bộ:
+                    </div>
+
+                    <div class="m753_filter_box_dat">
+                        <input type="checkbox" name="intenral" id="internal" value="1"/>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+
+            <!-- Noi dung hieu chuan -->
+            <div class="m753_filter">
+                <div class="m753_filter_box">
+                    <div class="m753_filter_box_title">
+                        Nội dung:
+                    </div>
+
+                    <div class="m753_filter_box_dat">
+                        <input type="text" name="content" style="width: 300px !important;"/>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+
+            <!-- Thong so kiem tra -->
+            <div class="m753_filter">
+                <div class="m753_filter_box">
+                    <div class="m753_filter_box_title">
+                        Thông số kiểm tra:
+                    </div>
+
+                    <div class="m753_filter_box_dat">
+                        <input type="text" name="tech" style="width: 300px !important; "/>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+        <div class="clear"></div>
+
+        <br/>
+        <hr>
+        <br/>
+
+        <!-- Chon thiet bi bo phan hieu chuan -->
+        <div>
+            <!-- Loc chon thiet bi -->
+            <div>
+                <input type="radio" id="Checkbox_Overdue" name="m753_equip_filter" value="OVERDUE" checked />
+                <label for="Checkbox_Overdue"> Đến hạn </label>
+
+                <input type="radio" id="Checkbox_Equip" name="m753_equip_filter" value="EQUIP"  />
+                <label for="Checkbox_Equip"> Thiết bị </label>
+            </div>
+            <br/>
+
+            <div id="">
+                <div style="width: 37%;" class="fl" id="m753_material_select">
+                    <div id="select_m753_material_box">
+                        <!-- Loc thiet bi theo loai thiet bi -->
+                        <?php // echo $this->views->Report->SimpleComboBox('equipType', $this->equipTypes, 'style="width: 98%" onchange="m753_multi_button.select();"');?>
+
+                        <?php
+                        $id            = 'equipType';
+                        $getDataObject = array('OLoaiThietBi'=>array('MaLoai', 'TenLoai'));
+                        //,'OKhuVuc'=>array('MaKhuVuc','Ten')
+                        $getFields     = array('num'=>2,
+                            'objects'=>array('OLoaiThietBi'=>array(
+                                'id'=>'IOID'
+                            ,'display1'=>'MaLoai'
+                            ,'display2'=>'TenLoai')) );
+                        $getLookupFilter = array();
+                        ?> <?php echo $this->views->Report->ListBox($id, $getDataObject,$getFields, $getLookupFilter, array()
+                            , ' style="width: 98%" onchange="m753_multi_button.select();"');?>
+
+
+
+                        <input type="text" id="m174_filter_equip" placeholder="Search" style="width: 98%" onkeyup="m753_multi_button.filterEquip()"/>
+
+                        <!-- Danh sach thiet bi chon -->
+                        <select class="select" size="16" multiple="multiple" id="m753_multi_equips" name="equip[]">
+
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Cac nut chuyen  -->
+                <div id="m753_multi_button_box" class="fl">
+                    <div id="m753_material_add_button">
+                        <button onclick="m753_multi_button.add()" class="btn-custom" type="button"> &gt;&gt; </button>
+                    </div>
+
+                    <div id="">
+                        <button onclick="m753_multi_button.remove()" class="btn-custom" type="button"> &lt;&lt; </button>
+                    </div>
+
+                    <div id="">
+                        <button onclick="m753_multi_button.add(1)" class="btn-custom" type="button"> &gt;&gt;&gt;&gt; </button>
+                    </div>
+
+                    <div id="m753_material_remove_button">
+                        <button onclick="m753_multi_button.remove(1)" class="btn-custom" type="button"> &lt;&lt;&lt;&lt; </button>
+                    </div>
+                </div>
+
+                <!-- Danh sach cac thiet bi hieu chuan -->
+                <div style="width: 53%;" class="fl" id="m753_material_show">
+
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <br/>
+    <div class="clear"></div>
+    <br/>
+
+    <!-- Nut cap nhat -->
+    <div class="fr">
+        <button type="button" class="btn btn-custom" onclick="m753_multi_button.save()"> Cập nhật </button>
+    </div>
+</div>

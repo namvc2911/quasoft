@@ -1,0 +1,93 @@
+<script>
+function saveCustom() {	
+	var data = $('#qss_form_custom').serialize();
+	var url = sz_BaseUrl + '/system/workflow/step/save/custom';
+	qssAjax.call(url, data, function(jreturn) {
+		$('#qss_dialog').dialog('close');
+	}, function(jreturn) {
+		alert(jreturn.message);
+	});
+}
+function deleteCustom() {
+	qssAjax.confirm(Language.translate('CONFIRM_DELETE'),function(){
+		var data = $('#qss_form_custom').serialize();
+		var url = sz_BaseUrl + '/system/workflow/step/delete/custom';
+		qssAjax.call(url, data, function(jreturn) {
+			$('#qss_dialog').dialog('close');	
+		}, function(jreturn) {
+			alert(jreturn.message);
+		});
+	});
+}
+function checkAllSubCol(objid,type)
+{
+	$('#qss_form_custom .'+type+'_'+objid).each(function(){
+		if($(this).is(':checked')){
+			$(this).removeAttr('checked');
+		}
+		else{
+			$(this).attr('checked',true);
+		}
+	});
+}
+</script>
+<form method="post" id="qss_form_custom">
+	<input type="hidden" value="<?php echo $this->step->intStepID?>" name="SID" />
+	<input type="hidden" value="<?php echo $this->wfid?>" name="WFID" />
+	<input type="hidden" value="<?php echo $this->groupid?>" name="GroupID" />
+					<table>
+						<tr>
+							<td align="center"><?php echo $this->_translate(103)?></td>
+							<td align="center"><?php echo $this->_translate(137)?></td>
+							<td align="center"><?php echo $this->_translate(13)?></td>
+							<td align="center"><?php echo $this->_translate(130)?></td>
+						</tr>
+						<?php $objid = 0;?>
+						<?php $groupid = 0;?>
+						<?php foreach ($this->fields as $field):?>
+						<?php if($objid !== $field->ObjectCode):?>
+						<tr class="step_rights">
+							<th colspan="4">
+								<hr />
+							</th>
+						</tr>
+						<tr class="step_rights">
+							<th><?php echo $field->objectname?>:</th>
+							<td align="center"><input type="checkbox"
+								onclick="checkAllSubCol('<?php echo $field->ObjectCode?>','c');" /></td>
+							<td align="center"><input type="checkbox"
+								onclick="checkAllSubCol('<?php echo $field->ObjectCode?>','r');" /></td>
+							<td align="center"><input type="checkbox"
+								onclick="checkAllSubCol('<?php echo $field->ObjectCode?>','u');" /></td>
+						</tr>
+						<tr class="step_rights">
+							<th colspan="4">
+								<hr />
+							</th>
+						</tr>
+						<?php endif;?>
+						<tr class="step_rights">
+							<td><?php echo $field->FieldName?>:</td>
+							<td align="center"><input type="checkbox"
+								class="c_<?php echo $field->ObjectCode?>"
+								name="C_<?php echo $field->ObjectCode?>_<?php echo $field->FieldCode?>"
+								<?php if($field->Rights & 1) echo 'checked';?> /></td>
+							<td align="center"><input type="checkbox"
+								class="r_<?php echo $field->ObjectCode?>"
+								name="R_<?php echo $field->ObjectCode?>_<?php echo $field->FieldCode?>"
+								<?php if($field->Rights & 2) echo 'checked';?> /></td>
+							<td align="center"><input type="checkbox"
+								class="u_<?php echo $field->ObjectCode?>"
+								name="U_<?php echo $field->ObjectCode?>_<?php echo $field->FieldCode?>"
+								<?php if($field->Rights & 4) echo 'checked';?> /></td>
+						</tr>
+						<?php $objid = $field->ObjectCode;?>
+						<?php endforeach;?>
+					</table>
+		<p align="center">
+		<button type="button" class="btn-custom" onclick="saveCustom()">Cập
+			nhật</button>
+		<button type="button" class="btn-custom" onclick="deleteCustom()">Xóa</button>
+		<button type="button" class="btn-custom"
+			onclick="$('#qss_dialog').dialog('close')">Đóng</button>
+</form>

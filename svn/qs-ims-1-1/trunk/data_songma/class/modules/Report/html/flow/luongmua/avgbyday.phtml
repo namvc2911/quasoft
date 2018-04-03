@@ -1,0 +1,111 @@
+<script>
+function printPreview(){
+	var workstation = $('#workstation').val();
+	var month       = $('#month').val();
+	var year         = $('#year').val();
+	var msg    = '';
+	
+	msg += common_checkEmpty(workstation, 'Trạm');
+	msg += common_checkEmpty(month, 'Tháng');
+	msg += common_checkEmpty(year, 'Năm');
+	
+	if(msg != '')
+	{
+		qssAjax.alert(msg);
+		return;
+	}
+	else
+	{
+		var url = sz_BaseUrl + '/report/flow/luongmua/avgbyday1';
+		var data = $('#report').serialize();
+		// LAY GIA TRI DANG CHUOI CUA DIEU KIEN LOC
+		data += "&workstationStr="  + encodeURIComponent($('#workstation option:selected').text());
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#print-area').html(jreturn);
+		});
+	}
+}
+
+function removePrintToolbarDisabled()
+{
+	$('.pt-button').each(function(){
+		$(this).removeClass('btn-disabled');
+		$(this).removeAttr('disabled');
+	});
+}
+</script>
+
+
+<?php
+$start = 1;
+?>
+
+<div class="clear"></div>
+<div id="view">
+<div class="line-hr"><span>Biểu đồ lượng mưa trung bình tháng</span></div>
+<form id="report" method="post" action="/report/flow/luongmua/avgbyyear1">
+<table class="detail" style="margin: 10px">
+<tr>
+	<th width="20%"> Trạm</th>
+	<td>
+		<select id="workstation" name="workstation">
+			<!-- Trạm -->
+			<option value=""> Chọn </option>
+			<?php foreach($this->workstation as $sec):?>
+			<option value="<?php echo $sec->IOID;?>"
+					<?php if($start == 1) { echo 'selected'; $start = 0;}?>
+					> 
+				<?php echo $sec->TenTram; ?>
+			</option>
+			<?php endforeach;?>
+		</select>
+		<span class="bold red">(*)</span>
+	</td>
+</tr>
+
+<tr>
+	<th width="20%">Tháng</th>
+	<td>
+		<select id="month" name="month">
+			<option value="1" <?php if(date('m') == '01'):?>selected<?php endif;?>>Tháng 1</option>
+			<option value="2" <?php if(date('m') == '02'):?>selected<?php endif;?>>Tháng 2</option>
+			<option value="3" <?php if(date('m') == '03'):?>selected<?php endif;?>>Tháng 3</option>
+			<option value="4" <?php if(date('m') == '04'):?>selected<?php endif;?>>Tháng 4</option>
+			<option value="5" <?php if(date('m') == '05'):?>selected<?php endif;?>>Tháng 5</option>
+			<option value="6" <?php if(date('m') == '06'):?>selected<?php endif;?>>Tháng 6</option>
+			<option value="7" <?php if(date('m') == '07'):?>selected<?php endif;?>>Tháng 7</option>
+			<option value="8" <?php if(date('m') == '08'):?>selected<?php endif;?>>Tháng 8</option>
+			<option value="9" <?php if(date('m') == '09'):?>selected<?php endif;?>>Tháng 9</option>
+			<option value="10" <?php if(date('m') == '10'):?>selected<?php endif;?>>Tháng 10</option>
+			<option value="11" <?php if(date('m') == '11'):?>selected<?php endif;?>>Tháng 11</option>
+			<option value="12" <?php if(date('m') == '12'):?>selected<?php endif;?>>Tháng 12</option>
+		</select>
+		<span class="bold red">(*)</span>
+	</td>
+</tr>
+
+<tr>
+	<th width="20%">Năm</th>
+	<td>
+		<input type="text" id="year" name="year" value="<?php echo date('Y');?>"/>
+		<span class="bold red">(*)</span>
+	</td>
+</tr>
+
+
+</table>
+</form>
+
+
+<br/>
+
+<p>
+<hr>
+    <button type="button" onclick="printPreview()" class="btn-custom" id="pt-showreport">Xem báo cáo</button>
+    <br/>
+    <br/>
+    <div id="print-content">
+            <div id="print-area"></div>		
+    </div>
+
+</div>

@@ -1,0 +1,78 @@
+<?php
+    
+    
+    $total = 0;
+   
+        foreach ($this->data as $item) {
+            $total += @(int)$item->SoLuong;
+        }
+       
+     
+        
+        foreach ($this->data as $item) {
+            $item->PhanTram = ($item->SoLuong/$total)*100;
+         
+        }
+       
+?>
+
+
+<script>
+    $(function () {
+        $('#container_department').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: '<?php echo $this->_translate(1)?>'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.2f} %</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:.2f} %',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        }
+                    }
+                }
+            },
+            colors: [
+                'yellow',
+                'orange',
+                'aqua',
+                'blue'
+            ],
+            series: [{
+                name: 'Brands',
+                colorByPoint: true,
+                data: [
+                    <?php $start = true;?>
+                   <?php foreach($this->data as $item):?>
+                   <?php if(!$start):?>
+                    ,
+                   <?php endif;?>
+                   {
+                    
+                        name: '<?php echo $item->TenPhongBan; ?> <br/>(<?php echo @(int)$item->SoLuong ?> <?php echo $this->_translate(2) ?>)',
+                        y   : <?php echo $item->PhanTram ?>
+                    }
+                     <?php $start = false;?>
+                    <?php endforeach; ?>
+                ]
+            }]
+        });
+    });
+</script>
+
+<div id="container_department"  style="width: 490px; height: 350px;">
+
+</div>

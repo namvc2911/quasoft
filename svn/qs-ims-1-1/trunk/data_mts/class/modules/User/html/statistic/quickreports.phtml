@@ -1,0 +1,89 @@
+<script>
+$(document).ready(function(){
+	$('#settingquickreports').hover(function() {
+		mouse_is_inside = true;
+	}, function() {
+		mouse_is_inside = false;
+	});
+	
+	$('.notify4').hover(function() {
+		mouse_is_click = true;
+	}, function() {
+		mouse_is_click = false;
+	});
+	<?php foreach($this->reports as $report): //'/user/statistic/detailuserquickreports?urid=php echo $report->URID'?>
+	loadbyid('report_<?php echo $report->URID?>','<?php echo $report->Params?>');
+	<?php endforeach;?>
+});
+function showReportSetting() {
+	var isvisible = $("#settingquickreports").is(":visible");
+	if (isvisible) {
+		$("#settingquickreports").hide();
+	} else {
+		var url = sz_BaseUrl + '/user/statistic/settingquickreports';
+		var data = {};
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#settingquickreports').addClass('qss_notify4');
+			$('#settingquickreports').removeClass('qss_notify4');
+			$('#settingquickreports').html(jreturn);
+			$("#settingquickreports").show('blind', {
+				to : {
+					width : 280,
+					height : 185
+				}
+			}, 500);
+		});
+	}
+}
+function openReportSetting(urid,checked,path){
+	/*var url = sz_BaseUrl + '/user/report?fid=' + fid;
+	qssAjax.getHtml(url, {dashboad:1}, function(jreturn) {
+		if(jreturn!=''){
+			$('#qss_trace').html(jreturn);
+			$('#qss_trace').dialog({ maxHeight: 400 });	
+		}
+	});*/
+	var url = sz_BaseUrl + '/user/statistic/savequickreport';
+	var data = {urid:urid,checked:checked};
+	qssAjax.call(url, data, function(jreturn) {
+		//loadbyid('detail_user_quickacess','/user/statistic/detailuserquickaccess');
+		if(checked == 0){
+			$('#report_'+urid).remove();
+		}
+		else{
+			$('#detail_user_quickreports').append('<div id="report_'+urid+'">');
+			loadbyid('report_'+urid,path);
+		}
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});	
+}
+function filterQuickReports(ele){
+	var search = $(ele).val();
+	$('.dashboad_tr').each(function(){
+		if($(this).find('label').text().toString().search(new RegExp(search, 'i')) >= 0 || search == ''){
+			//$(this).attr('checked', true);
+			$(this).show();
+		}
+		else{
+			$(this).hide();
+		}
+	});
+}
+</script>
+
+<?php foreach($this->reports as $report):?>
+	<div id="report_<?php echo $report->URID?>" class="box_das2"></div>
+<?php endforeach;?>
+
+
+<?php if(!count($this->reports)):?>
+<script>
+$(document).ready(function(){
+	loadbyid('report_1','/dashboard/m705/countbygroup');
+	loadbyid('report_2','/dashboard/m759mts/implement');
+});
+</script>
+	<div id="report_1" class="box_das2"></div>
+	<div id="report_2" class="box_das2"></div>
+<?php endif;?>

@@ -1,0 +1,73 @@
+<div class="einfo-main-info" id="einfo-show-equip-info">
+	<div id="einfo-tabs" class="navmenutab">
+		<ul>
+			<li class="splash"></li>
+			<li class=""><a id="einfo_tab_1"
+				onclick="einfo_load_tab_for_equip(1)" href="#" tab="1"
+				class="einfo_tab"> <span><?php echo $this->_translate(105); // thong tin thiet bi   ?>
+				</span> </a></li>
+			<li class="splash"></li>
+			
+			<?php if(Qss_Lib_System::objectInForm('M705','OCauTrucThietBi')):?>
+			<li class=""><a id="einfo_tab_7"
+				onclick="einfo_load_tab_for_equip(7)" href="#" tab="2"
+				class="einfo_tab"> <span><?php echo $this->_translate(106); // dspt  ?>
+				</span> </a></li>
+			<?php endif;?>
+
+            <?php if(Qss_Lib_System::objectInForm('M705','ODanhSachDiemDo')):?>
+            <li class="splash"></li>
+			<li class=""><a id="einfo_tab_2"
+				onclick="einfo_load_tab_for_equip(2)" href="#" tab="2"
+				class="einfo_tab"> <span><?php echo $this->_translate(107); // thong so ky thuat   ?>
+				</span> </a></li>
+            <?php endif;?>
+			<li class="splash"></li>
+			<li class=""><a id="einfo_tab_3"
+				onclick="einfo_load_tab_for_equip(3)" href="#" tab="3"
+				class="einfo_tab"> <span><?php echo $this->_translate(108); // tai lieu   ?>
+				</span> </a></li>
+			<li class="splash"></li>
+			<li class=""><a id="einfo_tab_4"
+				onclick="einfo_load_tab_for_equip(4)" href="#" tab="4"
+				class="einfo_tab"> <span><?php echo $this->_translate(110); // bao tri dinh ky   ?>
+				</span> </a></li>
+			<li class="splash"></li>
+			<li class=""><a id="einfo_tab_5"
+				onclick="einfo_load_tab_for_equip(5)" href="#" tab="5"
+				class="einfo_tab"> <span><?php echo $this->_translate(109); // lich su bao tri   ?>
+				</span> </a></li>
+
+            <?php // if(Qss_Lib_System::formActive('M707')): // phieu su co ?>
+            <li class="splash"></li>
+            <li class=""><a id="einfo_tab_6"
+                            onclick="einfo_load_tab_for_equip(6)" href="#" tab="6"
+                            class="einfo_tab"> <span><?php echo $this->_translate(111); // su co  ?>
+				</span> </a></li>
+            <?php // endif;?>
+
+			<?php if(Qss_Lib_System::formActive('M172')): // Class hu hong ?>
+				<li class="splash"></li>
+				<li class=""><a id="einfo_tab_8"
+								onclick="einfo_load_tab_for_equip(8)" href="#" tab="8"
+								class="einfo_tab"> <span><?php echo $this->_translate(112); // hu hong  ?>
+				</span> </a></li>
+			<?php endif;?>
+		</ul>
+	</div>
+	<!-- end #einfo-tabs -->
+
+	<!-- NOI HIEN THI THONG TIN THIET BI -->
+	<div id="einfo-info-table">
+	<?php if ($this->eqID): ?>
+		<div class="bgwhite" id="einfo_inner_show_info"></div>
+
+		<script>
+		einfo_load_tab_for_equip();
+	</script>
+	<?php else: ?>
+		<h2>Bạn cần chọn thiết bị !</h2>
+		<?php endif; ?>
+	</div>
+	<!-- end #einfo-info-table -->
+</div>

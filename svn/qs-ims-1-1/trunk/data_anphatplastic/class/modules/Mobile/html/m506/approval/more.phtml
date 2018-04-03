@@ -1,0 +1,104 @@
+<?php $i = $this->end;?>
+<?php foreach($this->list as $item):?>
+    <?php $i++;?>
+    <div class="mobile-box-data-line <?php echo $i%2==0?'bglightblue':'';?>" ifid="<?php echo $item->IFID_M506;?>">
+        <div>
+
+                <span class="title" >
+                    <?php echo $i;?>. <?php echo $item->SoPhieu;?></span> <span class="<?php echo $item->Color;?>"><?php echo $item->Name;?>)
+                    <span>
+        </div>
+
+        <div>
+            <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
+                <tr>
+                    <td style="width: 100px;">
+                        Kho:
+                    </td>
+
+                    <td>
+                        <?php echo $item->Kho;?>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        Loại xuât kho:
+                    </td>
+
+                    <td>
+                        <?php echo $item->LoaiXuatKho;?>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        Ngày:
+                    </td>
+
+                    <td>
+                        <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayChungTu);?>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        Người yêu cầu:
+                    </td>
+
+                    <td class="left">
+                        <?php echo $item->TenNhanVien;?>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        Mô tả:
+                    </td>
+
+                    <td class="left">
+                        <?php echo $item->MoTa;?>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        Vật tư:
+                    </td>
+
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+        <div>
+            <?php if($item->VatTuYeuCauDangTable):?>
+                <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;" class="vattu_table">
+                    <tr>
+                        <td style="width: 20%"></td>
+                        <td style="width: 50%"></td>
+                        <td style="width: 15%"></td>
+                        <td style="width: 15%"></td>
+                    </tr>
+
+                    <?php echo $item->VatTuYeuCauDangTable;?>
+                </table>
+            <?php endif;?>
+        </div>
+
+        <div style="position: absolute; top:2px; right: 2px;">
+            <?php if($item->Status == 2 || $item->Status == 5):?>
+                <span class=" green">Đã duyệt VT</span>
+            <?php elseif($item->Status == 4):?>
+                <button class="btn-custom btn btn_main_top center"
+                        type="button"
+                        onclick="mobile_m506_approval.changeStatus('<?php echo $item->IFID_M506;?>');">
+                    Duyệt VT
+                </button>
+            <?php endif;?>
+        </div>
+    </div>
+<?php endforeach;?>

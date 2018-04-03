@@ -1,0 +1,217 @@
+<?php
+$excel_col     = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg            = "#EEEEEE";
+$row           = 2;
+$totalColumn   = 1;
+$pxWidthArr    = array(24);
+
+// px html to excel width
+$excelWidthArr = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($pxWidthArr, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+
+// auto fit (px html)
+$pxWidthArr    = Qss_Lib_Report::changeWidthToFitScreen($pxWidthArr, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+?>
+
+<?php
+if(!function_exists('print_mo_ta_cong_viec'))
+{
+	function print_mo_ta_cong_viec($cong_viec)
+	{
+		$cong_viec = Qss_Lib_Util::textToHtml($cong_viec);
+
+		// loc ra bat dau bang * ket thuc bang <br/> va ko chua <br/>
+		$find         = array('/(?s)\*((?!\<br\/\>).)*?\<br\/\>/');
+		$replace      = array('<b>\0</b>');
+		$cong_viec    = preg_replace($find, $replace, $cong_viec);
+
+		return $cong_viec;
+	}
+}
+if(!function_exists('print_xu_ly_cong_viec'))
+{
+	function print_xu_ly_cong_viec($comment, $mo_ta, $thuc_hien_cong_viec, $phan_tram_hoan_thanh)
+	{
+		$xu_ly  = '';
+		$xu_ly .= (trim($comment)) ? "<b>Chỉ đạo:</b><br/> " . $comment : '';
+		$xu_ly .= $mo_ta ? ((trim($xu_ly) != '') ? '<br/><br/>' . "<b>Mô tả:</b> " . $mo_ta: "Mô tả: " . $mo_ta) : '';
+		$xu_ly .= $thuc_hien_cong_viec ? ((trim($xu_ly) != '') ? '<br/><br/>' . "<b>Xử lý:</b> " . $thuc_hien_cong_viec : "Xử lý: " . $thuc_hien_cong_viec) : '';
+		//	$xu_ly .= (trim($xu_ly) != '') ? '<br/><br/>' . "<b>Phần trăm hoàn thành:</b>" . @(int) $phan_tram_hoan_thanh . "% " : "<b>Phần trăm hoàn thành:</b>" . @(int) $phan_tram_hoan_thanh . '%';
+		return $xu_ly;
+	}
+}
+?>
+
+<style>
+.report-title {
+	font-weight: bold;
+	color: #3366FF;
+	font-size: 16px;
+	line-height: 24px;
+}
+
+.landscape {
+	margin: 0 auto;
+	width: 1200px;
+}
+
+.border tr td {
+	border-top: 1px dotted black;
+	border-left: 1px dotted black;
+	border-bottom: none;
+	border-right: none;
+}
+
+.border tr th {
+	border-top: 1px dotted black;
+	border-left: 1px dotted black;
+	border-bottom: none;
+	border-right: none;
+	height: 25px;
+}
+
+.border tr td,.border tr th {
+	word-wrap: break-word;
+	min-width: 25px;
+	padding: 0 5px;
+}
+
+.border {
+	border-collapse: collapse;
+	border-top: none;
+	border-left: none;
+	border-bottom: 1px dotted black;
+	border-right: 1px dotted black;
+	table-layout: fixed;
+	width: auto !important;
+}
+
+.left {
+	text-align: left;
+	padding-left: 1px;
+}
+
+.right {
+	text-align: right;
+	padding-right: 1px;
+}
+</style>
+
+<div class="landscape">
+	<form id="excel" method="post" action="/report/index/excel"
+		target="new">
+		<input type="hidden" id="content" name="content" value="">
+	</form>
+
+	<excel orientation="portrait" font-name="Arial" font-size="10"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+
+	<div id="head_print">
+		<center>
+			<h2 class="report-title">
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalColumn] ?>"
+					font-size="14" wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(20) ?>
+				</xls>
+			</h2>
+			<?php $row++; ?>
+		</center>
+	</div>
+
+
+
+
+
+	<div id="container">
+		<table cellspacing="0" cellpadding="0" border="1" id="" class="border">
+		<?php $row++; ?>
+
+		<?php foreach ($this->report as $ifid=>$maintainOrder): // In danh sach?>
+		<?php
+		$href = sprintf('%1$s/user/form/edit?ifid=%2$d&deptid=%3$d',
+		QSS_BASE_URL,
+		$ifid,
+		1);
+		$line_title = "<a href='{$href}'>{$maintainOrder['Info']['DocNo']}</a>: "
+		. "{$maintainOrder['Info']['Code']}; "
+		. "{$maintainOrder['Info']['Name']}; "
+		. "{$maintainOrder['Info']['Type']}; "
+		. "{$maintainOrder['Info']['Shift']}; "
+		. "{$maintainOrder['Info']['WorkCenter']}; "
+		. "{$maintainOrder['Info']['Employee']}";
+		?>
+
+			<!-- Tieu De Dong: Phieu bao tri -->
+			<tr>
+				<th 
+					style="text-align: left; width:<?php echo $pxWidthArr[0];?>px;"
+					class="left" 
+					colspan="<?php echo $totalColumn ?>"
+					valign="middle"><xls row="<?php echo $row ?>"
+						width="<?php echo $excelWidthArr[0];?>"
+						column="<?php echo $excel_col[1] ?>"
+						column-merge="<?php echo $excel_col[$totalColumn] ?>"
+						wrap-text="1" v-align="top" h-align="left" border="1" bold="1"> <?php echo $line_title;?></xls>
+				</th>
+			</tr>
+			<?php $row++; ?>
+
+			<?php $componentIndex = 0;?>
+			<?php foreach($maintainOrder['Component'] as $key=>$com): // loop theo bo phan co bao tri?>
+
+			<?php if($key != 0): // chi in khi co bo phan vi tri?>
+			<?php $line_title = (isset($com['ViTri']) && $com['ViTri'])?"{$com['ViTri']} {$com['BoPhan']}":'';?>
+			<!-- Tieu De Dong: Bo Phan -->
+			<tr>
+				<th style="text-align: left;" class="left"
+					colspan="<?php echo $totalColumn ?>" valign="middle"><xls
+						row="<?php echo $row ?>" column="<?php echo $excel_col[1] ?>"
+						column-merge="<?php echo $excel_col[$totalColumn] ?>"
+						wrap-text="1" v-align="top" h-align="left" border="1" bold="1"> <?php echo $line_title;?></xls>
+				</th>
+			</tr>
+			<?php $row++; ?>
+			<?php endif; // chi in khi co bo phan vi tri?>
+
+			<?php
+			//$materialCounter = count(@(array)$com['Material']);
+			$workCounter     = count(@(array)$com['Work']);
+			$lineCounter     = $workCounter?$workCounter:1;
+			?>
+
+			<?php for($jk = 0; $jk < $lineCounter; $jk++): // lap qua cong viec?>
+			<tr>
+			<?php $begin = 0; ?>
+			<?php
+			$congViec = (isset($com['Work'][$jk]['MoTa']) && $com['Work'][$jk]['MoTa'])?print_mo_ta_cong_viec($com['Work'][$jk]['MoTa']):'&nbsp;';
+
+			$ghiChu = (isset($com['Work'][$jk]['GhiChu']) && $com['Work'][$jk]['GhiChu'])?print_mo_ta_cong_viec($com['Work'][$jk]['GhiChu']):'&nbsp;';
+
+			$ok       = (isset($com['Work'][$jk]['Dat']) && $com['Work'][$jk]['Dat'])?'X':'&nbsp;';
+
+			if($jk == 0)
+			{
+				$rowspan      = (isset($com['RowSpan']) && ($com['RowSpan'] > 1))?$com['RowSpan']:1;
+				$rowspanHtml  = ($rowspan > 1)?' rowspan="'.$rowspan.'" ':'';
+				$rowspanExcel = ($rowspan > 1)?' row-merge="'.($rowspan - 1).'" ':'';
+			}
+			?>
+				<!-- Mo Ta Cong Viec  -->
+				<td style="text-align: left;" class="left" valign="top"><xls
+						row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>"
+						column-merge="<?php echo $excel_col[$totalColumn] ?>"
+						wrap-text="1" v-align="top" h-align="left" border="1"> <?php echo $congViec; ?></xls>
+				</td>
+			</tr>
+			<?php $row++; ?>
+			<?php endfor; // lap qua cong viec?>
+			<?php endforeach;//// loop theo bo phan co bao tri ?>
+			<?php endforeach; // Ket thuc in danh sach ?>
+		</table>
+		<br />
+		<?php $row++ ?>
+
+	</div>
+	<div id="qss_trace"></div>
+</div>

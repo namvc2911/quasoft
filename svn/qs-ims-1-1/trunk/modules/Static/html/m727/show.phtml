@@ -1,0 +1,238 @@
+<?php
+$totalCol       = 16 ;
+$excel_col      = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$row            = 2;
+$widthArr       = array(3, 3, 2, 2, 2, 2, 2, 2, 2, 1);
+$widthArr       = Qss_Lib_Report::changeWidthToFitScreen($widthArr, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+$widtdExcel     = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($widthArr, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+
+// XU LY IN TITLE BAO CAO
+$title          = $this->_translate(1);
+$title         .= ' '.$this->_translate(18).' ' . $this->start;
+$title         .= ' '.$this->_translate(19).' '. $this->end  ;
+$title         .= '<br/>';
+
+$subTitle       = array();
+
+if($this->locationIOID)
+{
+	$subTitle[] = ' '.$this->_translate(20).':  ' .$this->location;
+}
+
+if($this->eqGroupIOID )
+{
+	$subTitle[] = ' '.$this->_translate(21).': ' .$this->eqGroup ;
+}
+
+if($this->eqTypeIOID  )
+{
+	$subTitle[] = ' '.$this->_translate(22).': ' .$this->eqType;
+}
+
+if($this->eqIOID     )
+{
+	$subTitle[] = ' '.$this->_translate(23).':  ' .$this->eq;
+}
+
+$title         .= implode(' - ', $subTitle);
+
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="landscape">
+	<excel orientation="landscape" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+
+	<div id="head_print">
+	<?php echo $this->views->Common->Landscape() ?>
+
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $title ?>
+				</xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++ ?>
+
+	<div id="container">
+		<table width="100%" cellpadding="0" cellspacing="0" class="border"
+			border="1">
+			<tr class="bggrey">
+			<?php $begin = 0; ?>
+
+				<!-- Mã thiết bị -->
+				<th width="<?php echo $widthArr[$begin];?>px"
+					class="report_title_marker" id="col<?php echo $begin; ?>"
+					col="<?php echo $begin; ?>"><xls row="<?php echo $row ?>"
+						width="<?php echo $widtdExcel[$begin++];?>"
+						column="<?php echo $excel_col[$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(2) ?></xls>
+				</th>
+
+				<!-- Tên thiết bị -->
+				<th width="<?php echo $widthArr[$begin];?>px"
+					class="report_title_marker" id="col<?php echo $begin; ?>"
+					col="<?php echo $begin; ?>"><xls row="<?php echo $row ?>"
+						width="<?php echo $widtdExcel[$begin++];?>"
+						column="<?php echo $excel_col[$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(25) ?></xls>
+				</th>
+
+				<!-- Model -->
+				<th width="<?php echo $widthArr[$begin];?>px"
+					class="report_title_marker remove_col"
+					id="col<?php echo $begin; ?>" col="<?php echo $begin; ?>"><xls
+						row="<?php echo $row ?>"
+						width="<?php echo $widtdExcel[$begin++];?>"
+						column="<?php echo $excel_col[$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(9) ?></xls>
+				</th>
+
+				<!-- Từ ngày  -->
+				<th width="<?php echo $widthArr[$begin];?>px"
+					class="report_title_marker" id="col<?php echo $begin; ?>"
+					col="<?php echo $begin; ?>"><xls row="<?php echo $row ?>"
+						width="<?php echo $widtdExcel[$begin++];?>"
+						column="<?php echo $excel_col[$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(4) ?></xls>
+				</th>
+
+				<!-- Đến ngày -->
+				<th width="<?php echo $widthArr[$begin];?>px"
+					class="report_title_marker" id="col<?php echo $begin; ?>"
+					col="<?php echo $begin; ?>"><xls row="<?php echo $row ?>"
+						width="<?php echo $widtdExcel[$begin++];?>"
+						column="<?php echo $excel_col[$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(16) ?></xls>
+				</th>
+
+
+				<!-- Khu vực -->
+				<th width="<?php echo $widthArr[$begin];?>px"
+					class="report_title_marker" id="col<?php echo $begin; ?>"
+					col="<?php echo $begin; ?>"><xls row="<?php echo $row ?>"
+						width="<?php echo $widtdExcel[$begin++];?>"
+						column="<?php echo $excel_col[$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(17) ?></xls>
+				</th>
+
+
+				<!-- Lịch -->
+				<th width="<?php echo $widthArr[$begin];?>px"
+					class="report_title_marker" id="col<?php echo $begin; ?>"
+					col="<?php echo $begin; ?>"><xls row="<?php echo $row ?>"
+						width="<?php echo $widtdExcel[$begin++];?>"
+						column="<?php echo $excel_col[$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(24) ?></xls>
+				</th>
+
+				<!-- Dự án -->
+				<th width="<?php echo $widthArr[$begin];?>px"
+					class="report_title_marker" id="col<?php echo $begin; ?>"
+					col="<?php echo $begin; ?>"><xls row="<?php echo $row ?>"
+						width="<?php echo $widtdExcel[$begin++];?>"
+						column="<?php echo $excel_col[$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(26) ?></xls>
+				</th>
+
+				<!-- Thợ vận hành -->
+				<th width="<?php echo $widthArr[$begin];?>px"
+					class="report_title_marker" id="col<?php echo $begin; ?>"
+					col="<?php echo $begin; ?>"><xls row="<?php echo $row ?>"
+						width="<?php echo $widtdExcel[$begin++];?>"
+						column="<?php echo $excel_col[$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(27) ?></xls>
+				</th>
+
+				<!-- Số giờ hoạt động -->
+				<th width="<?php echo $widthArr[$begin];?>px"
+					class="report_title_marker" id="col<?php echo $begin; ?>"
+					col="<?php echo $begin; ?>"><xls row="<?php echo $row ?>"
+						width="<?php echo $widtdExcel[$begin++];?>"
+						column="<?php echo $excel_col[$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(28) ?></xls>
+				</th>
+			</tr>
+			<?php $row++; ?>
+
+
+			<?php foreach ($this->eqs as $dat): ?>
+			<?php $begin = 0; ?>
+			<tr>
+				<!-- Mã thiết bị -->
+				<td class="left break-word" col="<?php echo $begin++; ?>"><a
+					href="#"
+					onclick="openModule('M778', '/report/maintenance/equipment/profile?eq_tag=<?php echo $dat['MaThietBi'] ?>&eq=<?php echo $dat['TBIOID'] ?>');">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"> <?php echo $dat['MaThietBi']; ?></xls>
+				</a>
+				</td>
+
+				<!-- Tên thiết bị -->
+				<td class="left" col="<?php echo $begin++; ?>"><xls
+						row="<?php echo $row ?>" column="<?php echo $excel_col[$begin] ?>"
+						wrap-text="1" h-align="left" v-align="center" border="1"> <?php echo $dat['TenThietBi']; ?></xls>
+				</td>
+
+				<!-- Model -->
+				<td class="center" col="<?php echo $begin++; ?>"><xls
+						row="<?php echo $row ?>" column="<?php echo $excel_col[$begin] ?>"
+						wrap-text="1" h-align="center" v-align="center" border="1"> <?php echo $dat['Model']; ?></xls>
+				</td>
+
+				<!-- Từ ngày -->
+				<td class="center" col="<?php echo $begin++; ?>"><xls
+						row="<?php echo $row ?>" column="<?php echo $excel_col[$begin] ?>"
+						wrap-text="1" h-align="center" v-align="center" border="1"> <?php echo $dat['TuNgay']; ?></xls>
+				</td>
+
+				<!-- Đến ngày -->
+				<td class="center" col="<?php echo $begin++; ?>"><xls
+						row="<?php echo $row ?>" column="<?php echo $excel_col[$begin] ?>"
+						wrap-text="1" h-align="center" v-align="center" border="1"> <?php echo $dat['DenNgay']; ?></xls>
+				</td>
+
+
+				<!-- Khu vực -->
+				<td class="left" col="<?php echo $begin++; ?>"><xls
+						row="<?php echo $row ?>" column="<?php echo $excel_col[$begin] ?>"
+						wrap-text="1" h-align="left" v-align="center" border="1"> <?php echo $dat['KhuVuc']; ?></xls>
+				</td>
+
+				<!-- Lịch -->
+				<td class="left" col="<?php echo $begin++; ?>"><xls
+						row="<?php echo $row ?>" column="<?php echo $excel_col[$begin] ?>"
+						wrap-text="1" h-align="left" v-align="center" border="1"> <?php echo $dat['LichLamViec']; ?></xls>
+				</td>
+
+				<!-- Dự án -->
+				<td class="left" col="<?php echo $begin++; ?>"><xls
+						row="<?php echo $row ?>" column="<?php echo $excel_col[$begin] ?>"
+						wrap-text="1" h-align="left" v-align="center" border="1"> <?php echo $dat['DuAn']; ?></xls>
+				</td>
+
+				<!-- Thợ vận hành -->
+				<td class="left" col="<?php echo $begin++; ?>"><xls
+						row="<?php echo $row ?>" column="<?php echo $excel_col[$begin] ?>"
+						wrap-text="1" h-align="left" v-align="center" border="1"> <?php echo $dat['ThoVanHanh']; ?></xls>
+				</td>
+
+				<!-- So giờ hoạt động -->
+				<td class="right" col="<?php echo $begin++; ?>"><xls
+						row="<?php echo $row ?>" column="<?php echo $excel_col[$begin] ?>"
+						wrap-text="1" h-align="right" v-align="center" border="1"> <?php echo $dat['SoGioHoatDong']; ?></xls>
+				</td>
+			</tr>
+			<?php $row++; ?>
+			<?php endforeach; ?>
+		</table>
+	</div>
+</div>

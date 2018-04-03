@@ -1,0 +1,276 @@
+<style>
+    .m607_filter_box
+    {
+        float: left;
+        display: inline;
+        line-height: 24px;
+        height: 24px;
+        padding-bottom: 5px;
+        vertical-align: middle;
+    }
+    .m607_filter_box_title
+    {
+        min-width: 60px;
+        font-weight: bold;
+        float: left;
+    }
+    .m607_filter_box_dat
+    {
+        min-width: 155px;
+        margin-right: 10px;
+        float: left;
+    }
+    .m607_filter_box_dat input[type="text"], .m607_filter_box_dat select
+    {
+        width: 150px !important;
+    }
+
+    .m607_filter_box_dat #start, .m607_filter_box_dat #end
+    {
+        width: 80px !important;
+    }
+
+    .m607_data table
+    {
+        margin-top: 5px;;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+    }
+
+    .status_box
+    {
+        clear: both;
+        width: 100%;
+        margin: 1px;
+        font-size: 11px;
+    }
+
+    .status_color
+    {
+        float: left;
+        padding: 6px;
+        text-align: center;
+        border: 1px #ccc solid;
+    }
+
+    .status_text {
+        float: left;
+        padding: 6px;
+    }
+
+    .status_one_color {
+        background: yellow none repeat scroll 0 0;
+        font-weight: bold;
+    }
+
+
+    .status_two_color {
+        background: pink none repeat scroll 0 0;
+        font-weight: bold;
+    }
+</style>
+
+<script>
+    var m607 = {
+        show : function()
+        {
+            var url  = sz_BaseUrl + '/static/m607/show';
+            var data = $('#m607_form').serialize();
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('.m607_data').html(jreturn);
+            });
+        }
+    };
+
+    $(document).ready(function(){
+        $('.datepicker').each(function(){ $(this).datepicker({ dateFormat: "dd-mm-yy" }); });/* Datepicker*/
+
+        var view_height = $('#view').height();
+
+        $('#view').height(view_height - 100);
+    })
+</script>
+
+<form id="m607_form">
+    <div id="m607_wrap">
+
+        <div class="m607_filter">
+
+            <div class="m607_filter_box">
+                <div class="m607_filter_box_title">
+                    Thời gian:
+                </div>
+
+                <div class="m607_filter_box_dat">
+                    <input type="text" class="datepicker" value="<?php echo date('d-m-Y');?>" name="start"/>
+                    <input type="text" class="datepicker" value="<?php echo date('d-m-Y');?>" name="end"/>
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+        <div class="clear"></div>
+
+        <div class="m607_filter">
+
+
+            <!-- Nhập   -->
+            <div class="m607_filter_box">
+                <div class="m607_filter_box_title">
+                    Nhập:
+                </div>
+
+                <div class="m607_filter_box_dat">
+                    <input type="checkbox" name="input" checked onclick="if($(this).is(':checked')) { $('#input').val(1);}else {$('#input').val(0);}"/>
+                    <input type="hidden" name="input" value="1" id="input"/>
+                </div>
+            </div>
+
+            <!--  xuất  -->
+            <div class="m607_filter_box">
+                <div class="m607_filter_box_title">
+                    Xuất:
+                </div>
+
+                <div class="m607_filter_box_dat">
+                    <input type="checkbox" name="output" checked onclick="if($(this).is(':checked')) { $('#output').val(1);}else {$('#output').val(0);}"/>
+                    <input type="hidden" name="output" value="1" id="output"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="clear"></div>
+
+        <div class="m607_filter">
+
+
+            <!-- Loc theo kho -->
+            <div class="m607_filter_box">
+                <div class="m607_filter_box_title">
+                    Kho:
+                </div>
+
+                <div class="m607_filter_box_dat">
+                    <?php echo $this->views->Report->SimpleComboBox('stock', $this->stocks);?>
+                </div>
+            </div>
+
+
+            <!--  Măt hàng -->
+            <div class="m607_filter_box">
+                <div class="m607_filter_box_title">
+                    Mặt hàng:
+                </div>
+
+                <div class="m607_filter_box_dat">
+                    <?php echo $this->views->Report->SimpleListBox('item', '/static/m607/items');?>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+
+        <div class="clear"></div>
+
+        <div class="m607_filter">
+
+            <!--  Loai nhap  -->
+            <div class="m607_filter_box">
+                <div class="m607_filter_box_title">
+                    Loại nhập:
+                </div>
+
+                <div class="m607_filter_box_dat">
+                    <?php echo $this->views->Report->SimpleComboBox('input_type', $this->inputTypes);?>
+                </div>
+            </div>
+
+            <!--  Loai xuat  -->
+            <div class="m607_filter_box">
+                <div class="m607_filter_box_title">
+                    Loại xuất:
+                </div>
+
+                <div class="m607_filter_box_dat">
+                    <?php echo $this->views->Report->SimpleComboBox('output_type', $this->outputTypes);?>
+                </div>
+            </div>
+
+            <div class="m607_filter_box">
+                <div class="m607_filter_box_title">
+                </div>
+
+                <div class="m607_filter_box_dat">
+                    <button type="button" class="btn btn-custom" onclick="m607.show()"> Xem</button>
+                </div>
+            </div>
+
+            <div class="fr">
+                Trang:
+                <a class="bold"
+                   onclick="$('#einfo-history-page').val('1'); m607.show();"
+                   href="#" title="Trang trước"
+                    id ="einfo-history-back-page">
+                    <<
+                </a>
+
+                <input id="einfo-history-page"
+                       value="1"
+                       style="width: 20px !important; text-align: center;"
+                       onchange="m607.show();"
+                       name="einfo_history_page"> / <span id="einfo-history-total-page">1</span>
+
+                <a class="bold"
+                   onclick="$('#einfo-history-page').val('1'); m607.show();"
+                   href="#"
+                   title="Trang sau"
+                   id ="einfo-history-next-page">
+                    >>
+                </a>
+                Hiển thị:
+
+                <select id="einfo-history-display"
+                        onchange="m607.show();"
+                        style="width: 100;"
+                        name="einfo_history_display">
+                    <option value="10">10</option>
+                    <option value="20" selected >20</option>
+                    <option value="50" >50</option>
+                    <option value="100" >100</option>
+                </select>
+
+            </div>
+        </div>
+
+        <div class="clear"></div>
+        <div class="clear"></div>
+
+        <div id="view">
+
+            <div class=" status_box">
+                <div class="fl">
+                    <div class="status_color status_one_color"> A </div>
+                    <div class="status_text"> Nhập kho </div>
+                    <div class="status_color status_two_color"> A </div>
+                    <div class="status_text"> Xuất kho </div>
+                </div>
+            </div>
+
+            <div class="clear"></div>
+
+            <div class="m607_data">
+
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    m607.show();
+</script>

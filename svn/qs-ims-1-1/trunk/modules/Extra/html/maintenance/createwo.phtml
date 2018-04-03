@@ -1,0 +1,147 @@
+<link type="text/css" href="/css/calendar.css" rel="stylesheet">
+<script type="text/javascript">
+var createwo_file = {
+	showWeek: function(w,m,y) {
+		$('#cal_view_2').attr('style', 'opacity : 0.4');
+		var url = sz_BaseUrl + '/extra/maintenance/showwo';
+		if(w) $('#cweek').val(w);
+		if(m) $('#cmonth').val(m);
+		if(y) $('#cyear').val(y);
+		$('#ctype').val('week');
+
+		var data = $('#cal_form_popup').serialize(); //+ '&fid2=<?php echo $this->fid;?>' ;
+
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#cal_view_2').html(jreturn);
+			$('#cal_view_2').attr('style', 'opacity : 1');
+		});
+		createwo_file.removeSelected();
+		$('#btnWEEK').addClass('extra-selected');
+	},
+
+	removeSelected: function(){
+		$('.extra-button').each(function(){
+			$(this).removeClass('extra-selected');
+		});
+	},
+
+ 	saveWorkOrder: function(fid)
+	{
+		$('#saveButton').attr('disabled',true);
+		var data = $('#work_order_add_form').serialize() + '&fid='+ fid
+		+ '&viewtype='+ $('#type').val()
+		+ '&week='+ $('#week').val()
+		+ '&month='+ $('#month').val()
+		+ '&year='+ $('#year').val();//, #shiftsFilter
+		var url  = sz_BaseUrl + '/extra/maintenance/savewo';
+
+
+		qssAjax.call(url, data, function(jreturn) {
+			if(jreturn.message != '')
+			{
+				qssAjax.alert(jreturn.message);
+			}
+			$('#qss_trace').dialog('close');
+
+
+
+			if(fid == 'M759')
+			{
+				rowSearch('M759');
+			}
+			else
+			{
+				reloadCalendar();
+			}
+
+
+			$('#saveButton').removeAttr('disabled');
+		}, function(jreturn) {
+			qssAjax.alert(jreturn.message);
+			$('#saveButton').removeAttr('disabled');
+		});
+
+	}
+};
+
+</script>
+
+<form name="cal_form_popup" id="cal_form_popup">
+	<input type="hidden" id="cfid" name="cfid"
+		value="<?php echo $this->fid?>"> 
+	<input type="hidden" id="ctype"
+		name="ctype" value="<?php echo $this->type?>"> 
+	<input type="hidden"
+		id="cday" name="cday" value="<?php echo $this->day?>"> 
+	<input
+		type="hidden" id="cweek" name="cweek" value="<?php echo $this->week?>">
+	<input type="hidden" id="cmonth" name="cmonth"
+		value="<?php echo $this->month?>"> 
+	<input type="hidden" id="cyear"
+		name="cyear" value="<?php echo $this->year?>">
+		<?php /*
+		<?php
+		$id            = 'workcenter';
+		$getFields     = array('num'=>2,
+		'objects'=>array('ODonViSanXuat'=>array(
+		'id'=>'IOID'
+		,'display1'=>'Ma'
+		,'display2'=>'Ten'
+		,'order'=>'Ma'
+		)) );
+		?>
+		<div class="fl">
+		Đơn vị: <?php echo $this->views->Report->ComboBox($id, $getFields); ?>
+		</div>
+
+		<?php
+		$id = 'responseid';
+		$getDataObject = array('ODanhSachNhanVien' => array('MaNhanVien', 'TenNhanVien'));
+		//,'OKhuVuc'=>array('MaKhuVuc','Ten')
+		$getFields = array('num' => 2,
+		'objects' => array('ODanhSachNhanVien' => array(
+		'id' => 'IOID'
+		, 'display1' => 'TenNhanVien'
+		, 'display2' => 'MaNhanVien'
+		, 'order'=> 'TenNhanVien')));
+		?>
+
+		<div class="fl">
+		<div class="fl" style="line-height: 22px">Chịu trách nhiệm:</div>
+		<div class="fl"><?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields); ?> </div>
+		</div>
+
+		<button class="btn-custom" type="button" onclick=""> Lọc </button>
+		*/?>
+		
+	Lọc khu vực:
+    <select id="location" name="location" onchange="createwo_file.showWeek();">
+    	<option> --- ---- </option>
+    	<?php foreach($this->location as $data):?>
+		<?php 
+			$level = (int)@$data->level;
+			$level = ($level > 0)?($level -1):0;
+			$whitespace = str_repeat('&nbsp;&nbsp;',$level);
+		?>
+			<option value="<?php echo $data->IOID?>"><?php echo $whitespace.$data->Ten?></option>
+		<?php endforeach;?>
+    </select>
+		
+	<button class="btn-custom fr" onclick="createwo_file.saveWorkOrder('<?php echo $this->fid;?>')" type="button"
+		onclick="">Tạo phiếu bảo trì</button>
+</form>
+
+<div class="clear"></div>
+<div id="view">
+	<div class="cal_view_2" id="cal_view_2">
+		<div class="cal_content_wrap">
+			<div class="cal_content" style="margin-left: 0px !important">
+				<form id="work_order_add_form">
+				<?php echo $this->content?>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="qss_combo" title=""></div>
+<div id="qss_trace" title=""></div>

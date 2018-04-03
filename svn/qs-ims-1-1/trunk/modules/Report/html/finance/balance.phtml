@@ -1,0 +1,28 @@
+<script>
+function printPreview(){
+	
+}
+</script>
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix"></div>
+<div class="clear"></div>
+<div id="view">
+	<div class="line-hr">
+		<span>Bảng cân đối</span>
+	</div>
+	<table class="detail">
+		<tr>
+			<th width="20%" class="report-param-label">Năm tài chính</th>
+			<td><select style="width: 250px"></select></td>
+		</tr>
+	</table>
+	<p>
+	
+	
+	<hr>
+	<button type="button" onclick="printPreview()" class="btn-custom">Xem
+		báo cáo</button>
+</div>
+<script type="text/javascript">
+$('#thang').val(<?php echo date('m')?>);
+$('#nam').val(<?php echo date('Y')?>);
+</script>

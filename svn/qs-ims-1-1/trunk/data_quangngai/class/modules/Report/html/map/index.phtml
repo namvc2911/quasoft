@@ -1,0 +1,288 @@
+<style>
+        #view
+        {
+                overflow:hidden;
+                height: (100vh - 200);
+        }
+        #qss_form
+        {
+                overflow:hidden;
+        }
+        #control-box
+        {
+                width:18%;
+                height: 515px; 
+                float:right;
+                overflow:auto;
+                border: 1px #ccc solid;
+                background: #fff;
+        }
+        #show-map
+        {
+                width:81%;
+                height: 90vh;
+                float:left;
+                overflow:auto;
+                border: 1px #ccc solid;
+        }
+        #view_1
+        {
+        	height:100vh !important;
+        }
+        .map-group-filter
+        {
+                list-style: none;
+        }
+        .group-title
+        {
+                line-height:20px;
+                font-size: 12px;
+                font-weight:bold;
+                color:#3B5998;
+                padding: 0px 5px;
+                margin:0px 5px;
+                cursor:pointer;
+        }
+		.group-title:before {
+		    content: "+";
+		}	
+        .group-content
+        {
+		   display:none;
+		   padding-left: 10px;
+        }
+        .show-map-button
+        {
+                padding: 5px 5px;
+                margin:0px 5px;  
+        }
+</style>
+
+<!--<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>-->
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+<script type="text/javascript">
+function removePrintToolbarDisabled()
+{
+    $('.pt-button').each(function(){
+        $(this).prop('disabled',false);
+    });
+}
+<?php /*
+  var markers = [
+  <?php foreach ($this->workstation as $tram):?>
+  <?php if($tram->KinhDo && $tram->ViDo):?>
+  ['<?php echo $tram->TenTram; ?>', <?php echo $tram->KinhDo;?> , <?php echo $tram->ViDo;?>],
+  <?php endif;?>
+  <?php endforeach;?>
+  ];
+ * 
+ */
+?>
+        var sz_BaseUrl = 'http://' + location.host;
+        var newRoad = new Array();
+        var arrtemp = new Array();
+        var newRoad1 = new Array();
+        var arrtemp1 = new Array();
+        var map;
+        var mapWorkstationMarkers = [];
+        var mapSectionMarkers = [];
+        var mapXoiLoBoiTuMarkers = [];
+        var mapHoKhoanMarkers = [];
+        var mapHoChuaMarkes = [];
+        var mapHoChuaMarkers = [];
+        var markers = []; // workstation
+        var markers2 = []; // section
+        var XoiLoBoiTuMarkers = [];
+        var HoKhoanMarkers = [];
+        var HoChuaMarkers = [];
+        function initializeMaps() {
+        	if (document.getElementsByClassName == undefined) {
+				document.getElementsByClassName = function(className)
+				{
+					var hasClassName = new RegExp("(?:^|\s)" + className + "(?:$|\s)");
+					var allElements = document.getElementsByTagName("*");
+					var results = [];
+			
+					var element;
+					for (var i = 0; (element = allElements[i]) != null; i++) {
+						var elementClass = element.className;
+						if (elementClass && elementClass.indexOf(className) != -1 && hasClassName.test(elementClass))
+							results.push(element);
+					}
+			
+					return results;
+				}
+			}
+			
+                var myOptions = {
+                        center: new google.maps.LatLng(15.124002, 108.802647),
+                        zoom: 9,
+                        disableDefaultUI: false,
+                        mapTypeId: google.maps.MapTypeId.HYBRID,
+                        mapTypeControl: true
+                };
+                map = new google.maps.Map(document.getElementById("show-map"), myOptions);
+                var legend = document.getElementById('legend');
+            	map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
+        }
+        ;
+
+        window.onload = initializeMaps;
+
+
+        // Sets the map on all markers in the array.
+        function clearMarkers(mapMarkers) {
+                for (var i = 0; i < mapMarkers.length; i++) {
+                        if (mapMarkers[i] != null) {
+                                mapMarkers[i].setMap(null);
+                                mapMarkers[i] = null;
+                        }
+                }
+        }
+
+		function showSectionDetail(ioid, section) {
+		    var url = [sz_BaseUrl, '/report/map/section?id=', ioid , '&section=' ,section].join('');
+		    qssAjax.getHtml(url, {}, function(jreturn) {
+		            if (jreturn != '') {
+		                    $('#map-detail-script').html(jreturn);
+		                    $('#map-detail-script').dialog({width: 1000, height: 700});
+		            }
+		    });
+		}
+
+        function showWorkstationDetail(ioid)
+        {
+                var url = [sz_BaseUrl, '/report/map/workstation?id=', ioid].join('');
+                var data = $('#tram_form').serialize();
+                qssAjax.getHtml(url, data, function(jreturn) {
+                        if (jreturn != '') {
+                                $('#map-detail-script').html(jreturn);
+                                $('#map-detail-script').dialog({width: 1000, height: 700});
+                        }
+                });
+        }
+        
+        function openLinkModule(code,url){
+                $( this ).dialog( "close" );
+                openModule(code,url);
+        }
+
+        function showDownload(ioid)
+        {
+			$('#map-download').dialog({width: 600, height: 100});
+        }
+
+        function download(ioid)
+        {
+        	var type = $('#loaidulieu').val();
+			var start = $('#start_download').val();
+			var end = $('#end_download').val();
+			if(start == '' || end == ''){
+				alert('Nhập ngày bắt đầu và ngày kết thúc!');
+				return;
+			}
+			 var url = [sz_BaseUrl, '/report/map/download?type=', type,'&start=',start,'&end=',end].join('');
+			window.open(url);
+        }
+window.onload = initializeMaps;
+    
+function searchMap()
+{
+	var data = $('#report').serialize();
+	var url2 = sz_BaseUrl + '/report/map/search'; 
+	qssAjax.getHtml(url2, data, function(jreturn) {
+		$('#map-search-script').html(jreturn);
+	});
+}
+    
+    // Sets the map on all markers in the array.
+function clearMarkers(mapMarkers) {
+	for (var i = 0; i < mapMarkers.length; i++) {
+		if(mapMarkers[i] != null){
+	    	mapMarkers[i].setMap(null);
+	    	mapMarkers[i] = null;
+		}
+  	}
+}
+$(document).ready(function(){
+	$('.group-click').click(function(){
+		$(this).siblings().toggle();
+	});
+});  
+</script>
+
+
+<div class="clear"></div>
+<div id="view_1">
+	<div id="qss_form">
+		<div id="show-map" style="">
+		</div><!-- end #map -->
+
+		<div id="control-box">
+			<form action="post" id="report">
+				<!-- Group 1 -->
+                <ul class="map-group-filter">
+					<li class="group-title">
+						<span class="group-click">Lớp bản đồ nền</span>
+						<ul class="group-content">
+	                    <?php foreach ($this->layers as $ws): ?>
+							<li>
+	                        	<input id="layer_<?php echo $ws->IOID; ?>" type="checkbox" name="layers[]" value="<?php echo $ws->IOID; ?>" onchange="searchMap()" class="layer-checkbox"/>
+	                            <label for="layer_<?php echo $ws->IOID; ?>">
+	                            	<?php echo $ws->Ten;?>
+	                            	<?php if($ws->Icon):?>
+	                            		<img src="/data_quangngai/documents/<?php echo $ws->Icon;?>">
+	                            	<?php endif;?>
+	                            </label>
+							</li>
+						<?php endforeach; ?>
+						</ul>
+                   	</li>
+                   	<?php $id = 0;?>
+					<?php foreach($this->AnhVeTinh as $item):?>
+						<?php if($id != $item->IOID):?>
+							<?php if($id):?>
+								</ul>
+								</li>
+							<?php endif;?>
+							<li class="group-title">
+								<span class="group-click"><?php echo $item->Ten?></span>
+								<ul class="group-content">
+						<?php endif;?>
+							<li>
+	                        	<input id="anhvetinh_<?php echo $item->ID; ?>" type="checkbox" name="anhvetinh[]" value="<?php echo $item->ID; ?>" onchange="searchMap()" class="layer-checkbox"/>
+	                            <label for="anhvetinh_<?php echo $item->ID; ?>"><?php echo $item->TenLop; ?></label>
+							</li>
+
+						<?php $id = $item->IOID;?>
+					<?php endforeach;?>
+					<?php if($id):?>
+								</ul>
+								</li>
+							<?php endif;?>
+				</ul>
+			</form>
+		<button class="btn-custom" onclick="showDownload()">Tải dữ liệu khí tượng thủy văn</button>
+       </div>
+</div>
+<div id="map-search-script">
+
+</div>
+<div id="map-detail-script">
+</div>
+<div id="map-download" style="display: none;">
+	<select id="loaidulieu" style="width: 150px">
+		<option value="0">Lượng mưa</option>
+		<option value="1">Lưu lượng</option>
+		<option value="2">Mực nước</option>
+	</select>
+	Từ ngày: <input class="datepicker required" id="start_download" style="width: 100px;">
+	Từ ngày: <input class="datepicker required" id="end_download" style="width: 100px;">
+	<button class="btn" type="button" onclick="download()">Tải về</button>
+</div>
+<div id="legend"><img src=""></img></div>
+</div>
+<script type="text/javascript">
+$('#start_download').datepicker({ dateFormat: "dd-mm-yy" });
+$('#end_download').datepicker({ dateFormat: "dd-mm-yy" });
+</script>

@@ -1,0 +1,222 @@
+<link rel='stylesheet' href='/css/themes/base/jquery.ui.slider.css'
+	type='text/css'>
+<script type="text/javascript">
+<!--
+function setSlide(id,start,end)
+{
+    $("#slider-range_"+id).slider({
+        range: true,
+        min: 0,
+        max: 1440,
+        step: 15,
+        values: [start,end],
+        slide: function(e, ui) {
+            var hours = Math.floor(ui.values[0] / 60);
+            var minutes = ui.values[0] - (hours * 60);
+
+            if(hours.length == 1) hours = '0' + hours;
+            if(minutes.length == 1) minutes = '0' + minutes;
+
+            $('#time-start_'+id).html(hours+':'+minutes);
+            $('#event_from_'+id).val(hours+':'+minutes);
+            
+            var hours = Math.floor(ui.values[1] / 60);
+            var minutes = ui.values[1] - (hours * 60);
+
+            if(hours.length == 1) hours = '0' + hours;
+            if(minutes.length == 1) minutes = '0' + minutes;
+
+            $('#time-end_'+id).html(hours+':'+minutes);
+            $('#event_to_'+id).val(hours+':'+minutes);
+        }
+    });
+}
+//-->
+</script>
+<style>
+.time-ruler {
+	width: 316px;
+	border: 1px solid #ccc;
+	height: 50px;
+	/*margin: 20px;*/
+	background-color: #FFB894; /*#dfdfdf;*/
+	margin: 0;
+	padding: 0;
+}
+
+.m {
+	float: left;
+	width: 1px;
+	height: 50px;
+	padding: 0;
+	margin: 0;
+	vertical-align: top;
+}
+
+.i {
+	float: left;
+	width: 0in;
+	border-left: 1px solid black;
+	height: 45px;
+	padding: 0;
+	margin: 0;
+	vertical-align: top;
+	margin-top: 5px;
+	position: relative;
+}
+
+.n {
+	position: absolute;
+	top: 0px;
+	left: 80px;
+	font-weight: bold;
+	font-size: 11px;
+}
+
+.e {
+	float: left;
+	width: 0in;
+	border-left: 1px solid black;
+	height: 15px;
+	padding: 0;
+	margin: 0;
+	margin-top: 35px;
+}
+
+.q {
+	float: left;
+	width: 0in;
+	border-left: 1px solid black;
+	height: 30px;
+	padding: 0;
+	margin: 0;
+	margin-top: 20px;
+}
+</style>
+
+<?php
+$solar             = new Qss_Model_Calendar_Solar();
+$startRuler        = $this->startDate;
+$endRuler          = $this->endDate;
+$dateDiv           = Qss_Lib_Date::divDate($startRuler, $endRuler);
+$filByMonth        = false;
+
+$dateRange   = $solar->createDateRangeArray($startRuler, $endRuler);
+$numColOfOne = 24;
+//		// Lay so cot hien thi theo thoi gian
+//		if($dateDiv > 150) // In ra theo nam
+//		{
+//			$dateRange   = $solar->createYearRangeArray($strDateFrom, $strDateTo);
+//			$numColOfOne = 12;
+//		}
+//		elseif($dateDiv > 31) // in ra theo thang
+//		{
+//			$dateRange   = $solar->createMonthRangeArray($strDateFrom, $strDateTo);
+//			$filByMonth  = true;
+//			$numColOfOne = 31;// thay doi co thang co 28, 29, 30, 31
+//		}
+//		elseif($dateDiv > 3) // in ra theo tuan
+//		{
+//			$dateRange   = $solar->createWeekRangeArray($startRuler, $endRuler);
+//			$numColOfOne = 7;
+//		}
+//		else // in ra theo ngay
+//		{
+//			$dateRange   = $solar->createDateRangeArray($startRuler, $endRuler);
+//			$numColOfOne = 24;
+//		}
+
+$dateRange         = $solar->createDateRangeArray($startRuler, $endRuler);
+$defaultRularWidth = 900; // px
+$paddingLeft       = 20; // col
+$paddingRight      = 5; // col
+$rulerUnit         = 10; // px
+$numOfRuler        = (( $dateDiv * $numColOfOne) + 1) + ($paddingLeft + $paddingRight); // col
+$rulerWidth        = $rulerUnit * $numOfRuler; // px
+
+// Thay doi do rong thuoc neu do rong thuoc qua nho (khoang ngay it)
+if($rulerWidth < $defaultRularWidth)
+{
+	$rulerUnit  = $numOfRuler?floor($defaultRularWidth/$numOfRuler):$defaultRularWidth;
+	$rulerWidth = $numOfRuler * $rulerUnit;
+}
+$taskBoxWidth      = $rulerWidth + 2;
+$leftColsWidth     = $rulerUnit * $paddingLeft;
+$midAndRightsWidth = $taskBoxWidth - $leftColsWidth ;
+$widthOfOne        = $numColOfOne * $rulerUnit;
+$numOfLargestCols  = $dateDiv;
+?>
+
+<div class="ui_box_s100">
+	<fieldset>
+		<legend>Công việc</legend>
+
+
+
+		<?php $oldViTri = '';?>
+		<table id="tasks_boxs_table" cellspacing="0" cellpadding="0"
+			border="0">
+			<?php foreach($this->tasks as $task):?>
+			<?php
+			$taskTitle = "Công việc: {$task->Ten} \n"
+			. "Thực hiện: {$task->NguoiThucHien}\n"
+			. "Ngày: ".Qss_Lib_Date::mysqltodisplay($task->Ngay)."\n"
+			. "Bắt đầu: {$task->GioBatDau}\n"
+			. "Kết thúc: {$task->GioKetThuc}\n";
+			?>
+
+			<?php if($task->Ref_ViTri  && $oldViTri != $task->Ref_ViTri):?>
+			<?php $levelRepeat = (int)$task->LEVEL?($task->LEVEL - 1):0;?>
+			<tr class="title">
+				<td class="bold italic"><?php echo str_repeat("&nbsp;", $levelRepeat);?>
+				<?php echo $task->ViTri;?> - <?php echo $task->BoPhan;?>
+				</td>
+				<td></td>
+			</tr>
+			<?php endif;?>
+			<?php $oldViTri = $task->Ref_ViTri;?>
+
+
+			<tr class="title">
+				<td class="break-word" width="35%">
+					<div class="break-word">
+					<?php echo $task->MoTa;?>
+						-
+						<?php echo $task->Ten;?>
+						<?php if($this->update):?>
+						<a href="#1" class="remove_task"
+							onclick="deleteObject(<?php echo $this->ifid;?>, 1, 264,[<?php echo $task->IOID;?>],function(){reloadTasks('<?php echo $this->module;?>',<?php echo $this->ifid;?>,1)})"
+							title="Xóa công việc!">[x]</a>
+							<?php endif;?>
+					</div>
+				</td>
+
+
+				<?php
+				$taskWidth = 0;
+				$taskStart = 0;
+				$start     = $task->GioBatDau?$task->GioBatDau:'00:00';
+				$end       = $task->GioKetThuc?$task->GioKetThuc:'23:59';
+				$s = date('Y-m-d ') . '00:00:00';
+				$s1 = date('Y-m-d ') . Qss_Lib_Date::formatTime($start);
+				$s2 = date('Y-m-d ') . Qss_Lib_Date::formatTime($end);
+				$intstart     = Qss_Lib_Date::diffTime($s1,$s,'M');
+				$intend       = Qss_Lib_Date::diffTime($s2,$s,'M');
+				$intend = $intend?$intend:1440;
+				?>
+				<td><span id="time-start_<?php echo $task->IOID?>"><?php echo $start?>
+				</span> - <span id="time-end_<?php echo $task->IOID?>"><?php echo $end?>
+				</span>
+					<div id="slider-range_<?php echo $task->IOID?>"></div> <input
+					type="hidden" name="event_from"
+					id="event_from_<?php echo $task->IOID?>"
+					value="<?php echo $start?>"> <input type="hidden" name="event_to"
+					id="event_to_<?php echo $task->IOID?>" value="<?php echo $end?>"> <script>setSlide(<?php echo $task->IOID?>,<?php echo $intstart?>,<?php echo $intend?>);</script>
+				</td>
+			</tr>
+			<?php endforeach;?>
+		</table>
+
+	</fieldset>
+</div>
+

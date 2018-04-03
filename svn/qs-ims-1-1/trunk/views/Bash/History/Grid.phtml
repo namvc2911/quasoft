@@ -1,0 +1,45 @@
+<div id="qss_attach">
+<table class="grid">
+      <tr>
+        <td align="center" style="border-right: 0pt none; width: 100px;"></td>
+        <td align="right">
+          Trang:
+          <select style="" onchange="rowHistorySearch(<?php echo $this->id?>);" id="bash_history_pageno">
+          <?php for($i = 1;$i <= ceil($this->recordcount/$this->limit);$i++):?>
+            <option <?php if($i == $this->currentpage) echo 'selected';?>><?php echo $i?></option>
+          <?php endfor;?>
+          </select>
+          / 1 Hiển thị:
+          <select onchange="rowHistorySearch(<?php echo $this->id?>);" style="" id="bash_history_perpage">
+            <option <?php if($this->limit == 10) echo 'selected'?>>10</option>
+            <option <?php if($this->limit == 20) echo 'selected'?>>20</option>
+            <option <?php if($this->limit == 50) echo 'selected'?>>50</option>
+            <option <?php if($this->limit == 100) echo 'selected'?>>100</option>
+          </select></td>
+      </tr>
+</table>
+<table cellspacing="0" class="grid">
+	<tr>
+		<th class="nocount">STT</th>
+		<th>Tên</th>
+		<th>Người cập nhật</th>
+		<th><a href="#!" onclick="rowHistorySort(<?php echo $this->id?>)">Lần kết chuyển cuối <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /></a></th>
+		<th>Kết chuyển từ mô đun</a></th>
+		<th>Kết chuyển đến mô đun</th>
+		<th width="60">Hành động</th>
+	</tr>
+	<?php foreach ($this->history as $item):?>
+	<tr rights="63" <?php if($item->Error):?>class="error"<?php endif;?> title="<?php echo $item->Message?>">
+		<td class="nocount"><?php echo $i?></td>
+		<td><?php echo $item->BashName?></td>
+		<td><?php echo $item->UserName?></td>
+		<td class="center"><?php echo  date('d-m-Y H:i:s',strtotime($item->LastRun))?></td>
+		<td><?php if($item->IFID):?> <a target="_blank" href="/user/form/detail?ifid=<?php echo $item->IFID?>&deptid=<?php echo $item->DepartmentID?>"><?php echo $item->FromName?></a><?php else:?> <?php echo $item->FromName?> <?php endif;?></td>
+		<td><?php if($item->ToIFID):?> <a target="_blank" href="/user/form/detail?ifid=<?php echo $item->ToIFID?>&deptid=<?php echo $item->deptid?>"><?php echo $item->ToName?></a> <?php else:?> <?php echo $item->ToName?> <?php endif;?></td>
+		<td><div class="start"><a <?php if(!$item->Active || !$item->IFID):?>class="disabled"<?php endif;?> title="Chạy lại" href="#!" onclick="bashRun(<?php echo $item->IFID?>,<?php echo $item->BID?>)">Bắt đầu</a></div></td>
+    </tr>
+	<?php $i++;?>
+	<?php endforeach;?>
+</table>
+</div>

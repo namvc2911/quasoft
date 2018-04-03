@@ -1,0 +1,78 @@
+<script src="/js/jquery.cookie.js"></script>
+
+<?php if(count($this->params)):?>
+    <input type="checkbox" id="ChonTatCaChiSo" class="checkbox" />
+    <label for="ChonTatCaChiSo">Check all</label>
+
+    <script>
+        $('#ChonTatCaChiSo').click(function () {
+            if($(this).is(':checked')) {
+                $('.checkbox').each(function() {
+                    $(this).attr('checked', true);
+                });
+            }
+            else {
+                $('.checkbox').each(function() {
+                    $(this).removeAttr('checked');
+                });
+            }
+        });
+    </script>
+
+    <?php if(Qss_Lib_System::fieldActive('ODanhSachDiemDo', 'BoPhanNhap')): ?>
+        <?php foreach($this->boPhanNhap as $key=>$display):?>
+            <?php if($key != 0):?>
+                <input type="checkbox" class="checkbox" value="<?php echo $key;?>" id="BoPhanNhap_<?php echo $key;?>"/>
+                <label for="BoPhanNhap_<?php echo $key;?>"><?php echo $display;?></label>
+
+                <script>
+                    $('#BoPhanNhap_<?php echo $key;?>').click(function () {
+                        if($(this).is(':checked')) {
+                            $('.checkbox[bophannhap="<?php echo $key;?>"]').each(function() {
+                                $(this).attr('checked', true);
+                            });
+
+                            $.cookie("M765_BoPhanNhap", <?php echo $key;?>, {path:'/'});
+                        }
+                        else {
+                            $('.checkbox[bophannhap="<?php echo $key;?>"]').each(function() {
+                                $(this).removeAttr('checked');
+                            });
+
+                        }
+                    });
+                </script>
+            <?php endif;?>
+        <?php endforeach;?>
+
+        <script>
+            if($.cookie("M765_BoPhanNhap")) {
+                $('BoPhanNhap_'+$.cookie("M765_BoPhanNhap")).attr('checked', true);
+            }
+        </script>
+    <?php endif;?>
+
+    <hr/>
+    <br>
+    <?php foreach ($this->params as $param):?>
+        <input type="checkbox" name="monitors[]" class="checkbox" value="<?php echo $param->IOID;?>" bophannhap="<?php echo @(int)$param->BoPhanNhap;?>" />
+        <?php echo $param->Ma;?>
+        <br>
+    <?php endforeach;?>
+
+    <?php if(Qss_Lib_System::fieldActive('ODanhSachDiemDo', 'BoPhanNhap')): ?>
+        <script>
+            var boPhanNhap = parseInt($.cookie("M765_BoPhanNhap"));
+
+            $('#BoPhanNhap_'+boPhanNhap).click();
+
+            if(boPhanNhap != 0) {
+                $('.checkbox[bophannhap="'+boPhanNhap+'"]').each(function() {
+                    $(this).attr('checked', true);
+                });
+            }
+
+        </script>
+    <?php endif;?>
+<?php endif;?>
+

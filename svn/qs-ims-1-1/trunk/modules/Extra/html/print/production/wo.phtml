@@ -1,0 +1,117 @@
+<?php
+/**
+ * IN PHIEU GIAO VIEC
+ * @author Thinh Tuan <thinh.tuan@quasoft.vn>
+ * @path /modules/Extra/html/print/production/wo.phtml
+ */
+//$common = new Qss_Model_Extra_Extra();
+//$common->showTableStucture('OPhieuGiaoViec');
+$excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bgcolor = "#EEEEEE";
+$row = 9;
+$totalColumn = 14;
+$date = date_create(Qss_Lib_Date::mysqltodisplay($this->print->Ngay));
+?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="portrait">
+	<excel orientation="portrait" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+	<div id="head_print">
+	<?php echo $this->views->Common->Portrait() ?>
+
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalColumn] ?>"
+					font-size="12" wrap-text="1" h-align="center" v-align="center">PHIẾU
+				GIAO VIỆC <?php echo $this->print->Barcode;?> </xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++ ?>
+	<hr />
+	<br />
+	<!--  -->
+
+	<div id="container">
+		<!--		<div class="fr"> Ngày <?php echo $date->format('d');?> Tháng <?php echo $date->format('m');?> Năm <?php echo $date->format('Y');?></div>-->
+		<div class="clear">&nbsp;</div>
+		<table cellspacing="0" cellpadding="0" border="0" id="" class="">
+			<tr style="border-bottom: 0px #000 solid; padding-bottom: 5px;">
+				<td class="bold">Mã Lệnh SX:</td>
+				<td><?php echo $this->print->MaLenhSX;?>
+				</td>
+				<td class="bold">Loại SX:</td>
+				<td><?php echo $this->print->LoaiSanXuat;?>
+				</td>
+				<td class="bold">Dây chuyền:</td>
+				<td><?php echo $this->print->DayChuyen;?>
+				</td>
+				<td class="bold">Ngày:</td>
+				<td><?php echo $this->print->Ngay;?>
+				</td>
+			</tr>
+
+			<tr style="border-bottom: 0px #000 solid; padding-bottom: 5px;">
+				<td class="bold">Ca:</td>
+				<td><?php echo $this->print->Ca;?>
+				</td>
+				<td class="bold">Giờ BĐ:</td>
+				<td>..................<?php //echo $this->print->GioBD;?>
+				</td>
+				<td class="bold">Giờ KT:</td>
+				<td>..................<?php //echo $this->print->GioKT;?>
+				</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+
+			<tr style="border-bottom: 0px #000 solid; padding-bottom: 5px;">
+				<td class="bold">Mã MH:</td>
+				<td><?php echo $this->print->MaSP;?>
+				</td>
+				<td class="bold">Tên MH:</td>
+				<td><?php echo $this->print->TenSP;?>
+				</td>
+				<td class="bold">Thuộc tính:</td>
+				<td><?php echo $this->print->ThuocTinh;?>
+				</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+
+			<tr style="border-bottom: 0px #000 solid; padding-bottom: 5px;">
+				<td class="bold">Đơn vị tính:</td>
+				<td><?php echo $this->print->DonViTinh;?>
+				</td>
+				<td class="bold">Số lượng yêu cầu:</td>
+				<td><?php echo @(int)$this->print->SoLuong;?>
+				</td>
+				<td class="bold">Số lượng hoàn thành:</td>
+				<td>..................<?php //echo @(int)$this->print->SoLuong;?>
+				</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+		</table>
+
+		<table width="100%">
+			<tr>
+				<th>&nbsp;&nbsp;</th>
+			</tr>
+			<tr>
+				<th width="60%">&nbsp;&nbsp;</th>
+				<th width="40%" class="center bold">Ngày .... Tháng ... Năm ...</th>
+			</tr>
+			<tr>
+				<th width="60%">&nbsp;&nbsp;</th>
+				<th width="40%" class="center bold">Quản Lý</th>
+			</tr>
+
+			<?php $row++;?>
+		</table>
+	</div>
+</div>

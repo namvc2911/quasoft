@@ -1,0 +1,51 @@
+<script>
+    
+function save_plan()
+{
+    var data = $('#duplicate_plan_form').serialize();
+    var url = sz_BaseUrl + '/maintenance/plan/duplicate/save'; 
+    qssAjax.call(url, data, function(jreturn) {
+        if(jreturn.message != '')
+        {
+            qssAjax.alert(jreturn.message);
+        }
+    }, function(jreturn) {
+        qssAjax.alert(jreturn.message);
+    });    
+}
+</script>
+
+<div id="duplicate_plan_wrap">
+	<form id="duplicate_plan_form">
+		<input type="hidden" name="ifid" value="<?php echo $this->ifid; ?>" />
+
+		<div id="select_equip_and_component">
+			Thiết bị:
+			<?php if(count($this->equips) == 0):?>
+			Không có thiết bị cùng loại hoặc không có bộ phận tương tự.
+			<?php else:?>
+
+			<select id="equip_code" name="equip_code" style="width: 300px;">
+			<?php foreach($this->equips as $eq):?>
+				<option value="<?php echo $eq->MaThietBi;?>">
+				<?php echo $eq->MaThietBi;?>
+					-
+					<?php echo $eq->TenThietBi;?>
+				</option>
+				<?php endforeach;?>
+
+			</select>
+
+			<!--        Bộ phận:
+            <select id="components" style="width:150px;">
+                <option> Bộ phận </option>
+            </select>
+            -->
+			<button class="btn-custom" type="button" onclick="save_plan()">Nhân
+				đôi kế hoạch</button>
+				<?php endif;?>
+		</div>
+		<!-- #select_equip_and_component -->
+	</form>
+</div>
+<!-- end #duplicate_plan_wrap -->

@@ -1,0 +1,218 @@
+<?php if($this->disabled):?>
+    <span class="red bold">Chưa gắn user vào danh sách nhân viên!</span>
+<?php else:?>
+    <script>
+        $(document).ready(function() {
+            $('.datepicker').each(function(){
+                $(this).datepicker({
+                    dateFormat: "dd-mm-yy" ,
+                    onClose: function(dateText, inst) {
+                        $(this).attr("readonly", false);
+                    },
+                    beforeShow: function(input, inst) {
+                        $(this).attr("readonly", true);
+                    }
+                });
+            });
+        });
+        var dialog_ODangKyNghi = {
+            	rowObjectEditRefresh: function(){
+                	return;
+            	}
+            };
+    </script>
+
+    <form id="form_dangkynghi" method="post" autocomplete="off">
+        <input type="hidden" name="fid" id="fid" value="M077">
+        <input type="hidden" name="ifid" id="ifid" value="0">
+        <input type="hidden" name="deptid" id="deptid" value="<?php echo $this->deptID?>">
+        <input type="hidden" name="uid" id="uid" value="<?php echo $this->user->user_id?>">
+        <input type="hidden" name="disabled" id="disabled" value="<?php echo $this->disabled?>">
+
+
+
+        <div id="qss_form" style="">
+
+
+            <?php if($this->mobile):?>
+                <table cellpadding="0" cellspacing="0" border="0" class="">
+
+                    <?php foreach($this->quyNghi as $item):?>
+                        <tr>
+                            <td class="bold left m043_register_form_title" >
+                                <?php echo $item['TenLoaiNghi'];?> <?php echo date('Y');?>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="padding: 3px">
+                                <div>
+                                    <span style="display: inline-block; width: 55px;">Đã duyệt:</span>
+                                    <?php echo Qss_Lib_Util::formatNumber($item['DuyetTheoNgay']);?>d
+                                    /<?php echo Qss_Lib_Util::formatNumber($item['DuyetTheoGio']);?>h
+                                </div>
+
+                                <div>
+                                    <span style="display: inline-block; width: 55px;">Tổng số:</span>
+                                    <?php echo Qss_Lib_Util::formatNumber($item['QuyNghiTheoNgay']);?>d
+                                    /<?php echo Qss_Lib_Util::formatNumber($item['QuyNghiTheoGio']);?>h
+                                </div>
+
+                                <div>
+                                    <span style="display: inline-block; width: 55px;">Còn lại:</span>
+                                    <?php echo Qss_Lib_Util::formatNumber($item['ConLaiTheoGio']);?>h
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach;?>
+
+                    <?php foreach($this->fields as $field): ?>
+                        <?php if($field->FieldCode == 'MaNhanVien' || $field->FieldCode == 'TenNhanVien' || $field->FieldCode == 'PhongBanHienTai'): // Các trường không in ra?>
+                            <?php continue;?>
+                        <?php endif;?>
+
+                        <?php if($field->FieldCode == 'LoaiNgayNghi' 
+                        		|| $field->FieldCode == 'MaNhanVien' 
+                        		|| $field->FieldCode == 'TenNhanVien'
+                        		|| $field->FieldCode == 'EMail'): // Đoàn này là muốn lấy các trường hiển thị khác?>
+                            <?php if($field->FieldCode == 'LoaiNgayNghi'): // Đoạn này dành cho các field muốn hiển thị khác, không phải viết thừa ?>
+                                <tr class="m043_register_form_title">
+                                    <td  class="bold left" style="width: 180px;"><?php echo $field->szFieldName;?></td>
+                                </tr>
+
+                                <tr class="<?php echo $field->bRequired?'required':'';?>">
+                                    <td>
+                                        <?php
+                                        $id            = 'ODangKyNghi_LoaiNgayNghi';
+                                        $getDataObject = array('OPhanLoaiNghi'=>array('MaLoaiNghi', 'TenLoaiNghi'));
+                                        //,'OKhuVuc'=>array('MaKhuVuc','Ten')
+                                        $getFields     = array('num'=>2,
+                                            'objects'=>array('OPhanLoaiNghi'=>array(
+                                                'id'=>'IOID'
+                                            ,'display1'=>'MaLoaiNghi'
+                                            ,'display2'=>'TenLoaiNghi'
+                                            ,'where'=>' AND DuocDangKy = 1 ')) );
+                                        ?> <?php echo $this->views->Report->ListBox($id, $getDataObject,$getFields);?>
+                                    </td>
+                                </tr>
+                            <?php endif;?>
+
+                            <?php if($field->FieldCode == 'MaNhanVien'): // Đoạn này dành cho các field muốn hiển thị khác, không phải viết thừa ?>
+                                <input type="hidden" name="ODangKyNghi_MaNhanVien"
+                                       id="ODangKyNghi_MaNhanVien" value="<?php echo @$this->empl->MaNhanVien;?>"/>
+                            <?php endif;?>
+
+                            <?php if($field->FieldCode == 'TenNhanVien'): // Đoạn này dành cho các field muốn hiển thị khác, không phải viết thừa ?>
+                                <input type="hidden" name="ODangKyNghi_TenNhanVien"
+                                       id="ODangKyNghi_TenNhanVien" value="<?php echo @$this->empl->TenNhanVien;?>"/>
+                            <?php endif;?>
+                            <?php if($field->FieldCode == 'EMail'): // Đoạn này dành cho các field muốn hiển thị khác, không phải viết thừa ?>
+                                <input type="hidden" name="ODangKyNghi_EMail"
+                                       id="ODangKyNghi_EMail" value="1"/>
+                            <?php endif;?>
+                        <?php else: ?>
+                            <tr class="m043_register_form_title">
+                                <td class="bold left" style="width: 180px;"><?php echo $field->szFieldName;?></td>
+                            </tr>
+
+                            <tr class="<?php echo $field->bRequired?'required':'';?> ">
+                                <td><?php echo $this->object->sz_fGetFormFieldElement($field->FieldCode,$this->user,true);?></td>
+                            </tr>
+                        <?php endif;?>
+                    <?php endforeach;?>
+                </table>
+            <?php else: ?>
+                <table cellpadding="0" cellspacing="0" border="0" class="">
+
+                    <?php foreach($this->quyNghi as $item):?>
+                        <tr>
+                            <td class="bold left" >
+                                <?php echo $item['TenLoaiNghi'];?> <?php echo date('Y');?>
+                            </td>
+
+                            <td style="padding: 3px">
+                                <span style="display: inline-block; width: 60px;">Đã duyệt:</span>
+                                <span style="display: inline-block; width: 45px; padding-right:5px; text-align: right;">
+                            <?php echo Qss_Lib_Util::formatNumber($item['DuyetTheoNgay']);?>d
+                            /<?php echo Qss_Lib_Util::formatNumber($item['DuyetTheoGio']);?>h
+                        </span>
+                                <span style="display: inline-block; width: 60px;">Tổng số:</span>
+                                <span style="display: inline-block; width: 45px; padding-right:5px; text-align: right;">
+                            <?php echo Qss_Lib_Util::formatNumber($item['QuyNghiTheoNgay']);?>d
+                            /<?php echo Qss_Lib_Util::formatNumber($item['QuyNghiTheoGio']);?>h
+                        </span>
+                                <span style="display: inline-block; width: 60px;">Còn lại:</span>
+                                <span style="display: inline-block; width: 45px; padding-right:5px; text-align: right;">
+                            <?php echo Qss_Lib_Util::formatNumber($item['ConLaiTheoGio']);?>h
+                        </span>
+                            </td>
+                        </tr>
+                    <?php endforeach;?>
+
+
+
+                    <?php foreach($this->fields as $field): ?>
+                        <?php if($field->FieldCode == 'PhongBanHienTai'): // Các trường không in ra?>
+                            <?php continue;?>
+                        <?php endif;?>
+
+                        <?php if($field->FieldCode == 'LoaiNgayNghi' 
+                        		|| $field->FieldCode == 'MaNhanVien' 
+                        		|| $field->FieldCode == 'TenNhanVien'
+                        		|| $field->FieldCode == 'EMail'): // Đoàn này là muốn lấy các trường hiển thị khác?>
+                            <?php if($field->FieldCode == 'LoaiNgayNghi'): // Đoạn này dành cho các field muốn hiển thị khác, không phải viết thừa ?>
+                                <tr class="<?php echo $field->bRequired?'required':'';?>">
+                                    <td  class="bold left" style="width: 180px;"><?php echo $field->szFieldName;?></td>
+                                    <td>
+                                        <?php
+                                        $id            = 'ODangKyNghi_LoaiNgayNghi';
+                                        $getDataObject = array('OPhanLoaiNghi'=>array('MaLoaiNghi', 'TenLoaiNghi'));
+                                        //,'OKhuVuc'=>array('MaKhuVuc','Ten')
+                                        $getFields     = array('num'=>2,
+                                            'objects'=>array('OPhanLoaiNghi'=>array(
+                                                'id'=>'IOID'
+                                            ,'display1'=>'MaLoaiNghi'
+                                            ,'display2'=>'TenLoaiNghi'
+                                            ,'where'=>' AND DuocDangKy = 1 ')) );
+                                        ?> <?php echo $this->views->Report->ListBox($id, $getDataObject,$getFields);?>
+                                    </td>
+                                </tr>
+                            <?php endif;?>
+
+                            <?php if($field->FieldCode == 'MaNhanVien'): // Đoạn này dành cho các field muốn hiển thị khác, không phải viết thừa ?>
+                                <input type="hidden" name="ODangKyNghi_MaNhanVien"
+                                       id="ODangKyNghi_MaNhanVien" value="<?php echo @$this->empl->MaNhanVien;?>"/>
+                            <?php endif;?>
+
+                            <?php if($field->FieldCode == 'TenNhanVien'): // Đoạn này dành cho các field muốn hiển thị khác, không phải viết thừa ?>
+                                <input type="hidden" name="ODangKyNghi_TenNhanVien"
+                                       id="ODangKyNghi_TenNhanVien" value="<?php echo @$this->empl->TenNhanVien;?>"/>
+                            <?php endif;?>
+                            <?php if($field->FieldCode == 'EMail'): // Đoạn này dành cho các field muốn hiển thị khác, không phải viết thừa ?>
+                                <input type="hidden" name="ODangKyNghi_EMail"
+                                       id="ODangKyNghi_EMail" value="1"/>
+                            <?php endif;?>
+                        <?php else: ?>
+                            <tr class="<?php echo $field->bRequired?'required':'';?>">
+                                <td class="bold left" style="width: 180px;"><?php echo $field->szFieldName;?></td>
+                                <td><?php echo $this->object->sz_fGetFormFieldElement($field->FieldCode,$this->user,true);?></td>
+                            </tr>
+                        <?php endif;?>
+                    <?php endforeach;?>
+                </table>
+            <?php endif;?>
+
+        </div>
+
+        <div class="clear">&nbsp;</div>
+
+        <div class="">
+            <button type="button" class="btn btn-custom" onclick="Static_M043.registerLeave()"> <?php echo $this->_translate(4);?> </button>
+        </div>
+    </form>
+<?php endif;?>
+
+
+
+
+

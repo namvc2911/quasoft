@@ -1,0 +1,174 @@
+<?php
+/* Sap xep lai mang */
+$old = '';
+$i = -1;
+$print = array();
+//echo '<pre>'; print_r($this->search); die;
+
+foreach ($this->search as $val)
+{
+	if($old != $val->BTTIOID)
+	{
+		$i++;
+		$j = 0; /* reset lại j*/
+		$print[$i]['Code']            =  $val->BTTMaThuocTinh;
+		$print[$i]['IOID']            =  $val->BTTIOID;
+		$print[$i]['RecordID']        =  $val->RecordID;
+		$print[$i]['Qty'] = $val->BTTQTY;
+		$print[$i]['Uom'] = $val->BTTUOM;
+		$print[$i]['Sub'][$j]['Code'] = $val->GTBTTMaThuocTinh;
+		$print[$i]['Sub'][$j]['Name'] = $val->GTBTTThuocTinh;
+		$print[$i]['Sub'][$j]['Val']  = $val->GTBTTGiaTri;
+		$print[$i]['Sub'][$j]['Checkbox']  = $val->Checkbox;
+
+		$j++;
+
+	}
+	else
+	{
+		$print[$i]['Sub'][$j]['Code'] = $val->GTBTTMaThuocTinh;
+		$print[$i]['Sub'][$j]['Name'] = $val->GTBTTThuocTinh;
+		$print[$i]['Sub'][$j]['Val']  = $val->GTBTTGiaTri;
+		$print[$i]['Sub'][$j]['Checkbox']  = $val->Checkbox;
+		$print[$i]['Sub'][$j]['Qty'] = $val->BTTQTY;
+		$print[$i]['Sub'][$j]['Uom'] = $val->BTTUOM;
+		$j++;
+	}
+	$old = $val->BTTIOID;
+
+
+}
+//echo '<pre>'; print_r($this->search); die;
+
+?>
+
+<table class="borderX" width="80%" cellpadding="0" cellspacing="0">
+	<tr class="bggrey">
+		<th width="25%"><?php echo $this->_translate(1);?> <!-- Mã thuộc tính -->
+		</th>
+		<th width="30%"><?php echo $this->_translate(2);?> <!-- Thuộc tính -->
+		</th>
+		<th width="10%"><?php echo $this->_translate(3);?> <!-- Giá trị -->
+		</th>
+		<th width="10%"><?php echo $this->_translate(6);?> <!-- Giá trị -->
+		</th>
+		<th width="10%"><?php echo $this->_translate(7);?> <!-- Giá trị -->
+		</th>
+		<th width="15%"><?php echo $this->_translate(4);?> <!-- Chọn -->
+		</th>
+	</tr>
+
+	<?php $old = '';?>
+	<?php $line = 0;?>
+	<?php foreach ($print as $val):?>
+
+	<input type="hidden" id="exAttrCode<?php echo $line?>"
+		value="<?php echo $val['Code']?>" />
+	<input type="hidden" id="exRefid<?php echo $line?>"
+		value="<?php echo $val['RecordID'];?>" />
+	<input type="hidden" id="exIOID<?php echo $line?>"
+		value="<?php echo $val['IOID'];?>" />
+
+	<tr>
+	<?php $rowspan = isset($val['Sub'])?count( $val['Sub'] ):1;?>
+	<?php
+	//$classFormat  = 'left';
+	$classFormat = 'right';
+	$showValue    = '';
+
+	if(isset($val['Sub'][0]))
+	{
+		$showValue = ($val['Sub'][0]['Val'] == '')?0:$val['Sub'][0]['Val']; /* lay gia tri dau tien */
+		/* Can le phai voi so */
+		if(is_numeric($showValue))
+		{
+			//$classFormat = 'right';
+			if($showValue)
+			{
+				$showValue   = rtrim(rtrim(number_format ( $showValue , 2 ,  '.' , ',' ), 0), '.');
+			}
+		}
+	}
+
+
+	?>
+		<td rowspan="<?php echo $rowspan?>"><?php echo $val['Code']?>
+		</td>
+		<td><?php echo isset($val['Sub'][0])?"{$val['Sub'][0]['Name']} ({$val['Sub'][0]['Code']})":'';?>
+		</td>
+		<td class="<?php echo $classFormat?>"><?php 
+		if($val['Sub'][0]['Checkbox'])
+		{
+			$temp = (int)$showValue;
+			$span = ($temp == 1)?
+				'<span class="col-checked" style="display: inline-block; min-height: 14px;  min-width: 14px;">&nbsp;</span>':
+				'<span class="col-unchecked" style="display: inline-block; min-height: 14px; min-width: 14px;">&nbsp;</span>';
+			$extClassCheckbox = 'center';
+		}
+		else
+		{
+			$span = $showValue;
+			$extClassCheckbox = '';
+		}
+		?> <?php echo $span; ?></td>
+		<td rowspan="<?php echo $rowspan?>"><?php echo $val['Uom'];?></td>
+		<td rowspan="<?php echo $rowspan?>" class="right"><?php echo $val['Qty'];?>
+		</td>
+		<td rowspan="<?php echo $rowspan?>"
+			class="center <?php echo $extClassCheckbox?>">
+			<button type="button" class="btn-custom"
+				onclick="selectAttributes(<?php echo $line?>)">
+				<?php echo $this->_translate(5);?>
+				<!-- Chọn -->
+			</button>
+		</td>
+	</tr>
+	<?php $i = 0;?>
+	<?php if(isset($val['Sub'])):?>
+	<?php foreach ($val['Sub'] as $valin):?>
+	<?php
+	$showValue   = $val['Sub'][$i]['Val'];
+	//$classFormat = 'left';
+
+	if($val['Sub'][$i]['Checkbox'])
+	{
+		$span = ($showValue == 1)?
+			'<span class="col-checked" style="display: inline-block; min-height: 14px;  min-width: 14px;">&nbsp;</span>':
+			'<span class="col-unchecked" style="display: inline-block; min-height: 14px; min-width: 14px;">&nbsp;</span>';
+		$extClassCheckbox = 'center';
+	}
+	else
+	{
+		if(is_numeric($val['Sub'][$i]['Val']))
+		{
+			if($showValue)
+			{
+				$showValue   = rtrim(rtrim(number_format ( $val['Sub'][$i]['Val'] , 2 ,  '.' , ',' ), 0), '.');
+			}
+			//$classFormat = 'right';
+		}
+		$span = $showValue;
+		$extClassCheckbox = '';
+	}
+
+	?>
+
+	<input type="hidden" class="ex<?php echo $line;?> "
+		value="<?php echo $valin['Val'] ?>" key="<?php echo $valin['Code'];?>"
+		attr="<?php echo $valin['Name'];?>"
+		checkbox="<?php echo $val['Sub'][$i]['Checkbox'];?>"
+		uom="<?php echo $val['Uom'];?>" qty="<?php echo $val['Qty'];?>" />
+		<?php if($i==0) {$i++; continue;} ?>
+	<tr>
+		<td><?php echo $valin['Name']?> (<?php echo $valin['Code']?>)</td>
+		<td class="<?php echo $classFormat?> <?php echo $extClassCheckbox?>">
+		<?php echo $span ?>
+		</td>
+	</tr>
+	<?php $i++;?>
+	<?php endforeach;?>
+	<?php endif;?>
+
+	<?php $line++;?>
+	<?php endforeach;?>
+</table>

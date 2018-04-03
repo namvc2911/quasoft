@@ -1,0 +1,102 @@
+<form id="qss_form" method="post">
+	<input type="hidden" name="id"
+		value="<?php echo (int)@$this->account->MAID?>" />
+	<div id="horizontal-toolbar" class="horizontal-toolbar">
+		<div id="btnSAVE" onclick="mailAccountSave()" class="btn_main_top"
+			title="<?php echo $this->_translate(34)?>">
+			<a class="icon-32-save" href="#"></a>
+		</div>
+		<div onclick="mailAccountBack()" class="btn_main_top"
+			title="<?php echo $this->_translate(32)?>">
+			<a class="icon-32-back" href="#"></a>
+		</div>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<div id="item-actions">
+			<ul>
+				<li class="item-action active"><a href="#"><span><?php echo $this->_translate(35)?>
+					</span>
+				</a>
+				</li>
+			</ul>
+		</div>
+		<table class="detail">
+			<tr>
+				<th width="150"><?php echo $this->_translate(36)?>
+				</th>
+				<td><select style="width: 200px;" name="type">
+						<option value=""></option>
+						<option <?php if(@$this->account->Type == 1) echo 'selected'?>
+							value="1">GMail</option>
+						<option <?php if(@$this->account->Type == 2) echo 'selected'?>
+							value="2">Yahoo Mail</option>
+						<option <?php if(@$this->account->Type == 3) echo 'selected'?>
+							value="3">
+							<?php echo $this->_translate(37)?>
+						</option>
+				</select></td>
+			</tr>
+			<tr>
+				<th width="150">Server</th>
+				<td><input value="<?php echo @$this->account->Server?>"
+					style="width: 200px;" name="server" />
+				</td>
+			</tr>
+			<tr>
+				<th width="150">Port</th>
+				<td><input value="<?php echo @$this->account->Port?>"
+					style="width: 200px;" name="port" />
+				</td>
+			</tr>
+			<tr>
+				<th width="150"><?php echo $this->_translate(38)?>
+				</th>
+				<td><input value="<?php echo @$this->account->Name?>"
+					style="width: 200px;" name="name" />
+				</td>
+			</tr>
+			<tr>
+				<th><?php echo $this->_translate(39)?>
+				</th>
+				<td><input value="<?php echo @$this->account->Account?>"
+					style="width: 200px;" name="account" />
+				</td>
+			</tr>
+			<tr>
+				<th><?php echo $this->_translate(40)?>
+				</th>
+				<td><input type="password"
+					value="<?php echo @$this->account->Password?base64_decode($this->account->Password):''?>"
+					style="width: 200px;" name="password" />
+				</td>
+			</tr>
+			<tr>
+				<th><?php echo $this->_translate(41)?>
+				</th>
+				<td><input type="password"
+					value="<?php echo @$this->account->Password?base64_decode($this->account->Password):''?>"
+					style="width: 200px;" name="repassword" />
+				</td>
+			</tr>
+			<tr>
+				<th>SSL</th>
+				<td><?php echo $this->_translate(42)?><input
+				<?php if(@$this->account->SSLOption === 0) echo 'checked'?>
+					type="radio" value="0" name="ssl"> <?php echo $this->_translate(43)?><input
+					<?php if(@$this->account->SSLOption == 1) echo 'checked'?>
+					type="radio" value="1" name="ssl"> <?php echo $this->_translate(44)?><input
+					<?php if(@$this->account->SSLOption == 2 || @$this->account->SSLOption == null) echo 'checked'?>
+					type="radio" value="2" name="ssl"></td>
+			</tr>
+			<tr>
+				<th><?php echo $this->_translate(45)?>
+				</th>
+				<td><textarea rows="12" name="signature">
+						<?php echo @$this->account->Signature?>
+					</textarea>
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>

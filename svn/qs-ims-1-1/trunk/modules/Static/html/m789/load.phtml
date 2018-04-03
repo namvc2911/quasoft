@@ -1,0 +1,47 @@
+<?php
+switch ($this->selected)
+{
+    case 1: // Khu vực
+        $getFields     = array('num'=>2,
+            'objects'=>array('OKhuVuc'=>array(
+                'id'=>'IOID'
+            , 'display1' => 'MaKhuVuc'
+            ,'display2'=>'Ten'
+            )) );
+        ?> <?php echo $this->views->Report->ComboBox('location',$getFields);
+    break;
+
+    case 2: // Đơn vị
+        $getFields     = array('num'=>2,
+            'objects'=>array('ODonViSanXuat'=>array(
+                'id'=>'IOID'
+            , 'display1' => 'Ma'
+            ,'display2'=>'Ten'
+            )) );
+        ?> <?php echo $this->views->Report->ComboBox('workcenter',$getFields);
+    break;
+
+    case 3: // Thiết bị
+        $getDataObject = array('ODanhSachThietBi' => array('MaThietBi', 'TenThietBi'));
+        $getFields     = array('num' => 2,
+            'objects' => array('ODanhSachThietBi' => array(
+                'id' => 'IOID'
+            , 'display1' => 'MaThietBi'
+            , 'display2' => 'TenThietBi')
+            )
+        );
+
+        echo $this->views->Report->ListBox('equipment', $getDataObject, $getFields);
+    break;
+
+    case 4: // Trung tâm chi phí
+        $getFields     = array('num'=>2,
+            'objects'=>array('OTrungTamChiPhi'=>array(
+                'id'=>'IOID'
+            , 'display1' => 'Ma'
+            ,'display2'=>'Ten'
+            )) );
+        ?> <?php echo $this->views->Report->ComboBox('costcenter',$getFields);
+    break;
+}
+?>

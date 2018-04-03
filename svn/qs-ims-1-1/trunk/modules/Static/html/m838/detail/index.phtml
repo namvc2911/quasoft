@@ -1,0 +1,103 @@
+<div class="clear"></div>
+
+<!-- Menu Dieu Khien -->
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+    <button type="button" class="btn btn-custom" onclick="m838.saveGeneral();"> Cập nhật </button>
+
+    <button type="button"
+        class="btn btn-custom <?php echo ($this->generalPlan->StepNo != 1)?'btn-disabled':'';?>"
+        <?php echo ($this->generalPlan->StepNo != 1)?'disabled':'';?>>
+        Xóa
+    </button>
+
+    <?php if($this->generalPlan->StepNo == 1): // Dang lap ke hoach thi yeu cau duyet ?>
+        <button type="button" class="btn btn-custom" onclick="m838.changeGeneralStatus('<?php echo $this->ifid;?>', '<?php echo $this->deptid;?>', '2', <?php echo $this->userid;?>, '');"> Yêu cầu duyệt </button>
+    <?php endif;?>
+
+    <?php if($this->generalPlan->StepNo == 2): // Dang yeu cau duyet thi duyet ?>
+        <button type="button" class="btn btn-custom" onclick="m838.changeGeneralStatus('<?php echo $this->ifid;?>', '<?php echo $this->deptid;?>', '3', <?php echo $this->userid;?>, '');"> Duyệt </button>
+    <?php endif;?>
+
+    <?php if($this->generalPlan->StepNo == 3): // Dang yeu cau duyet thi duyet ?>
+        <button type="button" class="btn btn-custom" onclick="m838.changeGeneralStatus('<?php echo $this->ifid;?>', '<?php echo $this->deptid;?>', '1', <?php echo $this->userid;?>, '');"> Quay lại lập kế hoạch </button>
+    <?php endif;?>
+
+    <div class="fr">
+        <button type="button" class="btn btn-custom" onclick="m838.back()"> Trở lại </button>
+    </div>
+</div>
+
+<div class="clear"></div>
+
+<div id="view">
+    <!-- Kế hoạch tổng thể -->
+    <div class="line-hr">
+        <span>Kế hoạch tổng thể</span>
+    </div>
+
+    <form id="m838_general_form">
+        <div id="m838_general_edit">
+
+        </div>
+    </form>
+
+
+    <div class="clear"></div>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+
+    <!-- Kế hoạch chi tiết -->
+    <div class="line-hr">
+        <span>Kế hoạch chi tiết</span>
+    </div>
+    <br/>
+
+    <div class="clear"></div>
+
+    <div class="clearfix">
+        <button type="button"
+            onclick="m838.changeDetailStatus(<?php echo $this->ifid;?>, 2, '<?php echo $this->userid;?>')"
+            class="btn btn-custom <?php echo ($this->generalPlan->StepNo != 2)?'btn-disabled':'';?>"
+            <?php echo ($this->generalPlan->StepNo != 2)?'disabled':'';?> >
+            Duyệt
+        </button>
+
+        <button type="button"
+                onclick="m838.changeDetailStatus(<?php echo $this->ifid;?>, 1, '<?php echo $this->userid;?>')"
+                class="btn btn-custom <?php echo ($this->generalPlan->StepNo != 2)?'btn-disabled':'';?>"
+            <?php echo ($this->generalPlan->StepNo != 2)?'disabled':'';?> >
+            Hủy duyệt
+        </button>
+
+        <button type="button"
+            class="btn btn-custom <?php echo ($this->generalPlan->StepNo != 1)?'btn-disabled':'';?>"
+            <?php echo ($this->generalPlan->StepNo != 1)?'disabled':'';?>
+            onclick="m838.deleteDetail(<?php echo $this->ifid;?>);">
+            Xóa
+        </button>
+
+        <button class="btn btn-custom <?php echo ($this->generalPlan->StepNo != 1)?'btn-disabled':'';?>"
+            <?php echo ($this->generalPlan->StepNo != 1)?'disabled':'';?>
+            type="button"
+            onclick="popupWindowFormInsert('M837', <?php echo $this->deptid;?>, {OKeHoachBaoTri_KeHoachTongThe:<?php echo $this->generalPlan->IOID;?>}, function(){ m838.listDetail(<?php echo $this->ifid;?>) })">
+            Tạo kế hoạch đột xuất
+        </button>
+
+        <button class="btn btn-custom <?php echo ($this->generalPlan->StepNo != 1)?'btn-disabled':'';?>"
+            type="button"
+            onclick="m838.plan(<?php echo $this->ifid;?>, <?php echo $this->generalPlan->IOID;?>)"
+            <?php echo ($this->generalPlan->StepNo != 1)?'disabled':'';?>>
+            Tạo từ kế hoạch định kỳ
+        </button>
+    </div>
+
+    <div class="clear"></div>
+
+    <br/>
+
+    <form class="m838_detail_form">
+        <div id="m838_detail_list">
+
+        </div>
+    </form>
+</div>

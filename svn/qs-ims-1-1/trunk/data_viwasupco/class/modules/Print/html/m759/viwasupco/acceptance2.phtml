@@ -1,0 +1,300 @@
+<?php $row= 0; $lastCol = 'F';?>
+
+<script>
+    function excelRender() {
+        $('#report').submit();
+    }
+</script>
+
+<form id="report" method="post" action="/print/m759/viwasupco/acceptanceexcel">
+    <input type="hidden" name="popup" value="1" />
+    <input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" />
+
+    <div class="portrait">
+        <excel
+                orientation="<?php echo Qss_Lib_Extra_Const::REPORT_ORIENTATION_PORTRAIT; ?>"
+                font-name="Times New Roman"
+                font-size="11"
+                margin-left="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_LEFT; ?>"
+                margin-right="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_RIGHT; ?>"
+                margin-top="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_TOP; ?>"
+                margin-bottom="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_BOTTOM; ?>" />
+
+        <!-- REPORT TITLE -->
+        <div id="head_print">
+            <div>
+                <!-- Số biểu mẫu -->
+                <div id="portrait-company-header">
+                    <div style="width:100%">
+                        <p class="right">
+                            <xls row="<?php echo $row?>" column="A" column-merge="<?php echo $lastCol;?>" font-size="11" h-align="right" v-align="center">B05.QT03.BTSC</xls>
+                        </p>
+                    </div>
+                    <br/>
+                </div>
+                <div class="clear">&nbsp;</div>
+                <?php $row++;?>
+
+                <div class="overflow" style="font-size: 16px; line-height: 28px; overflow: hidden; width: 100%">
+                    <div class="fl center" style="width: 50%">
+                        <b>
+                            <xls row="<?php echo $row?>" column="A" column-merge="B" font-size="11" h-align="center" v-align="center" bold="1">CÔNG TY CỔ PHẦN ĐẦU TƯ NƯỚC SẠCH SÔNG ĐÀ</xls>
+                        </b>
+                        <br/>
+
+                        <b>
+                            <u>
+
+                                <xls row="<?php echo ($row + 1)?>" column="A" column-merge="B" font-size="11" h-align="center" v-align="center" bold="1" underline="1">BỘ PHẬN…………………</xls>
+                            </u>
+                        </b>
+                        <br/>
+
+                        <xls row="<?php echo ($row + 2)?>" column="A" column-merge="B" font-size="11" h-align="center" v-align="center">Số:……./…../20…./BBNT</xls>
+                    </div>
+
+                    <div class="fr center" style="width: 40%">
+                        <b>
+                            <xls row="<?php echo $row?>" column="C" column-merge="<?php echo $lastCol;?>" font-size="11" h-align="center" v-align="center" bold="1">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</xls>
+                        </b>
+                        <br/>
+
+                        <b>
+                            <u>
+                                <xls row="<?php echo ($row + 1)?>" column="C" column-merge="<?php echo $lastCol;?>" font-size="11" h-align="center" v-align="center" underline="1" >Độc Lập – Tự Do – Hạnh Phúc</xls>
+                            </u>
+                        </b>
+                        <br/>
+                    </div>
+
+                    <?php $row = $row + 2;?>
+                </div>
+            </div>
+        </div>
+
+        <div id="container">
+            <div>
+
+                <br/>
+
+                <h2 class="bold center">
+                    BIÊN BẢN NGHIỆM THU
+                </h2>
+
+                <p class="bold center">
+                    Số phiếu : <?php echo @$this->OPhieuBaoTri->SoPhieu;?>
+                </p>
+
+                <p class="bold center">
+                    Lần nghiệm thu số:…….
+                </p>
+                <br/>
+
+                <div class="bold">
+                    I. Đối tượng nghiệm thu:
+                </div>
+
+
+                <div class="line">
+                    &nbsp;<?php echo @$this->OPhieuBaoTri->TenThietBi;?> <?php  echo (@$this->OKhuVuc->Ten)?"(".$this->OKhuVuc->Ten.")":'';?>
+                </div>
+                <br/>
+
+                <div class="bold">
+                    II. Thành phần trực tiếp nghiệm thu:
+                </div>
+
+                <div class="bold">
+                    1. Đại diện Ban chức năng:
+                </div>
+
+                <br/>
+                <div class="overflow">
+                    <div class="fl">- Ông(bà): ......................................... </div>
+                    <div class="fr">Chức vụ: ...............................</div>
+                </div>
+                <br/>
+
+                <div class="bold">
+                    2. Đại diện Đội BT-SC:
+                </div>
+
+                <br/>
+                <div class="overflow">
+                    <div class="fl">- Ông(bà): ......................................... </div>
+                    <div class="fr">Chức vụ: ...............................</div>
+                </div>
+                <br/>
+
+                <div class="bold">
+                    3.	Đại diện Đơn vị sản xuất:
+                </div>
+
+                <br/>
+                <div class="overflow">
+                    <div class="fl">- Ông(bà): ......................................... </div>
+                    <div class="fr">Chức vụ: ...............................</div>
+                </div>
+                <br/>
+
+                <div class="bold">
+                    III. Thời gian nghiệm thu:
+                </div>
+
+
+                <div class="center">
+                    Bắt đầu từ:
+                    <span style="width: 30px; display: inline-block; border-bottom: 1px dotted #000;"><?php echo $this->StartTime?$this->StartDate->format('H'):'&nbsp;';?></span>
+                    giờ <span style="width: 30px; display: inline-block; border-bottom: 1px dotted #000;"><?php echo $this->StartTime?$this->StartDate->format('i'):'&nbsp;';?></span>
+                    ngày <span style="width: 30px; display: inline-block; border-bottom: 1px dotted #000;"><?php echo $this->StartDate?$this->StartDate->format('d'):'&nbsp;';?></span>
+                    tháng <span style="width: 30px; display: inline-block; border-bottom: 1px dotted #000;"><?php echo $this->StartDate?$this->StartDate->format('m'):'&nbsp;';?></span>
+                    năm <span style="width: 30px; display: inline-block; border-bottom: 1px dotted #000; text-align: left;"><?php echo $this->StartDate?$this->StartDate->format('Y'):'20';?></span>
+                </div>
+
+                <div class="center">
+                    Kết thúc từ:
+                    <span style="width: 30px; display: inline-block; border-bottom: 1px dotted #000;"><?php echo $this->EndTime?$this->EndDate->format('H'):'&nbsp;';?></span>
+                    giờ <span style="width: 30px; display: inline-block; border-bottom: 1px dotted #000;"><?php echo $this->EndTime?$this->EndDate->format('i'):'&nbsp;';?></span>
+                    ngày <span style="width: 30px; display: inline-block; border-bottom: 1px dotted #000;"><?php echo $this->EndDate?$this->EndDate->format('d'):'&nbsp;';?></span>
+                    tháng <span style="width: 30px; display: inline-block; border-bottom: 1px dotted #000;"><?php echo $this->EndDate?$this->EndDate->format('m'):'&nbsp;';?></span>
+                    năm <span style="width: 30px; display: inline-block; border-bottom: 1px dotted #000; text-align: left;"><?php echo $this->EndDate?$this->EndDate->format('Y'):'20';?></span>
+                </div>
+                <br/>
+
+                <div class="overflow">
+                    <span style="float: left; width: 5%;">Tại:</span>
+                    <span style="float: left; width: 95%; border-bottom: 1px dashed #000;">&nbsp;<?php echo @$this->OKhuVuc->Ten;?> </span>
+                </div>
+                <br/>
+                <br/>
+
+
+                <div class="bold">
+                    IV. Đánh giá chất lượng công việc đã thực hiện:
+                </div>
+
+
+                <div class="bold">
+                    a. Tài liệu làm căn cứ nghiệm thu:
+                </div>
+
+                <div class="line">
+                    &nbsp;
+                </div>
+
+                <div class="line">
+                    &nbsp;
+                </div>
+                <br/>
+
+                <div class="bold">
+                    b. Chất lượng công việc
+                </div>
+
+                <div class="line">
+                    &nbsp;
+                </div>
+
+                <div class="line">
+                    &nbsp;
+                </div>
+
+                <div class="line">
+                    &nbsp;
+                </div>
+
+                <div class="line">
+                    &nbsp;
+                </div>
+                <br/>
+
+                <div class="bold">
+                    c. Khối lượng vật tư sử dụng:
+                </div>
+
+                <div class="">
+                    <table cellpadding="0" cellspacing="0" class="border" border="0">
+                        <tr>
+                            <th style="width: 10%;">STT</th>
+                            <th style="width: 50%;">Tên vật tư</th>
+                            <th style="width: 10%;">Đơn vị</th>
+                            <th style="width: 15%;">Khối lượng</th>
+                            <th style="width: 15%;">Ghi chú</th>
+                        </tr>
+
+                        <?php if($this->IForm && !in_array($this->IForm->Status, array(1,2))):?>
+                            <?php $i=0;?>
+                            <?php foreach($this->OVatTu AS $item):?>
+                                <tr>
+                                    <td class="center"><?php echo ++$i;?></td>
+                                    <td class="left"><?php echo $item->TenVatTu;?></td>
+                                    <td class="left"><?php echo $item->DonViTinh;?></td>
+                                    <td class="right"><?php echo Qss_Lib_Util::formatNumber($item->SoLuong);?></td>
+                                    <td class="left"><?php echo @$item->GhiChu;?></td>
+                                </tr>
+                            <?php endforeach;?>
+                        <?php else:?>
+                            <?php for($i = 1; $i <= 5; $i++):?>
+                                <tr>
+                                    <td class="center"><?php echo $i;?></td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                            <?php endfor;?>
+                        <?php endif;?>
+                    </table>
+                </div>
+                <br/>
+
+                <div class="overflow bold">
+                    <span style="float: left; width: 25%">d. Các ý kiến khác nếu có:</span>
+                    <span style="float: left; width: 75%; border-bottom: 1px dashed #000;">&nbsp;</span>
+                </div>
+                <div class="clear">&nbsp;</div>
+
+                <div class="bold">
+                    V. Kết luận:
+                </div>
+
+                <div class="line">
+                    <?php if($this->IForm && !in_array($this->IForm->Status, array(1,2))):?>
+                    &nbsp;<?php echo @$this->OPhieuBaoTri->TinhTrangSauBaoTri;?>
+                    <?php endif;?>
+                </div>
+
+                <div class="line">
+                    &nbsp;
+                </div>
+                <br/>
+
+                <div style="text-indent: 10px;">
+                    Biên bản được lập thành 3 bản có giá trị như nhau, mỗi bên giữ một bản thống nhất các nội dung trên và làm cở sở để thực hiện các công việc tiếp theo.
+                </div>
+                <br/>
+
+                <table cellpadding="0" cellspacing="0" border="0">
+
+
+                    <tr>
+                        <td style="width:33%;" class="center bold">BAN CHỨC NĂNG </td>
+                        <td style="width:33%;" class="center bold">ĐƠN VỊ SẢN XUẤT</td>
+                        <td style="width:33%;" class="center bold">ĐỘI BTSC&XD</td>
+                    </tr>
+                </table>
+
+
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+
+

@@ -1,0 +1,28 @@
+<form id="qss_form" method="get" onSubmit="rowSearch(); return false;">
+	<input name="Action" type="hidden" value="insert"> <input name="type"
+		type="hidden" value="<?php echo $this->type?>">
+	<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+		<button id="Insert" type="button" class="btn btn_main_top" onClick="rowCalendarInsert()">
+			<?php echo $this->_translate(12)?>
+		</button>
+		<button id="Update" type="button" class="btn btn_main_top" disabled onClick="rowCalendarEdit()">
+			<?php echo $this->_translate(13)?>
+		</button>
+		<button id="Delete" type="button" class="btn btn_main_top" disabled onClick="rowCalendarDelete()">
+			<?php echo $this->_translate(14)?>
+		</button>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<div id="item-actions">
+			<ul>
+				<li class="item-action active"><a href="#1"><span>Cấu hình lịch</span>
+				</a>
+				</li>
+			</ul>
+		</div>
+		<div id="qss_form_list">
+		<?php echo $this->views->Common->List($this->list,'FormCode','Name') ;?>
+		</div>
+	</div>
+</form>

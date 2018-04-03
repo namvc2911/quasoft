@@ -1,0 +1,365 @@
+<link rel="stylesheet" href="/css/button.css" type="text/css" />
+
+<script type="text/javascript">
+<!--
+
+var timer;
+var typeDelay = 2000;
+var focusDelay = 3000;
+
+// @Function: getLineByBarcode()
+// @Parameter: 
+//		- ele: element
+// @Return: mot dong san pham theo barcode
+function getLineByBarcode(ele)
+{	
+	var html, url, data, barcodeVal, newQty, amount;
+	var barcodeExists = false;
+        var selected  = '';
+
+	// Remove warnint text
+	$('#warning').text('');
+	
+	clearInterval(timer);
+	timer = setTimeout(function(){
+		// load line
+		barcodeVal = $(ele).val();
+		url = sz_BaseUrl + '/extra/warehouse/input/create/barcode/get';
+		data = {barcode:barcodeVal};
+
+		$('#warning').text('Loading...');
+		qssAjax.call(url, data, function(jreturn) {
+			html = '';
+
+			// check barcode exists
+			$('.barcode').each(function(){
+				if($(this).val() == barcodeVal)
+				{
+					barcodeExists = true;
+				}
+			});
+
+			//qssAjax.alert($(ele).val());
+
+			// If barcode exist increase qty else add new line
+			if(barcodeExists)
+			{
+				newQty =  (parseInt($('#barcode_'+barcodeVal).val()) + 1);
+				amount = $('#unit_price_'+barcodeVal).val() * newQty;
+				$('#barcode_'+barcodeVal).val(newQty);
+				$('#amount_'+barcodeVal).text(amount);
+			}
+			else
+			{
+				for(i in jreturn.data.info)
+				{
+					html += '<tr id="line_'+jreturn.data.info[i].Barcode+'">';
+					html += '<td class="left" width=""> <!--  -->'+jreturn.data.info[i].Barcode
+					html += '<input type="hidden" class="barcode" value="'+jreturn.data.info[i].Barcode+'" />';
+					html += '<input type="hidden" name="ItemCode[]" value="'+jreturn.data.info[i].MaSanPham+'" />';
+					html += '</td>';
+					html += '<td class="left" width=""> <!--  -->'+jreturn.data.info[i].MaSanPham+'</td>';
+					html += '<td class="left" width=""> <!--  -->'+jreturn.data.info[i].TenSanPham+'</td>';
+					html += '<td class="left" width=""> <!-- Thuoc tinh --></td>';
+                                        html += '<td class="left" width=""> <!--  -->';
+                                        html += '<select  width="" name="ItemUOM"> <!--  -->';
+                                        for(j in jreturn.data.info[i].DonViTinh)
+                                        {
+                                            if(jreturn.data.info[i].DonViTinh[j].MacDinh == 1)
+                                            {
+                                                selected = 'selected'
+                                            }
+                                            html += '<option value="'+ jreturn.data.info[i].DonViTinh[j].Ten+'" '+selected+'>' 
+                                                    + jreturn.data.info[i].DonViTinh[j].Ten 
+                                                    +  '</option>';
+                                        }
+                                        html += '</select>';
+                                        html += '</td>';
+					html += '<td class="center" width=""> <!-- So luong -->';
+					html += '<input type="text" name="ItemQty[]" onkeyup="changeAmount('+jreturn.data.info[i].Barcode+')"  class="width_50" id="barcode_'+jreturn.data.info[i].Barcode+'" value="1" />';
+					html += '</td>';
+					html += '<td class="right"  width=""> <!-- Gia tien -->'; 
+					html += '<input type="center" name="ItemPrice[]" onkeyup="changeAmount('+jreturn.data.info[i].Barcode+')" class="width_50" id="unit_price_'+jreturn.data.info[i].Barcode+'" value="'+jreturn.data.info[i].GiaVon+'" />';
+					html += '</td>';
+					html += '<td class="right" width="" id="amount_'+jreturn.data.info[i].Barcode+'"> <!-- Thanh tien -->'+jreturn.data.info[i].GiaVon+'</td>';
+					html += '<td class="center" width=""> <!-- Tham chieu  -->';
+					html += '<input type="text" name="ItemRef[]"  class="width_100"  value="" />';
+					html += '</td>';
+					html += '<td class="center" width=""> <!-- Mo ta -->';
+					html += '<input type="text" name="ItemDes[]" class="width_100"  value="" />';
+					html += '</td>';
+					html += '<td class="center" width=""> <!-- Xoa -->';
+					html += '<button type="button" onclick="removeLine('+jreturn.data.info[i].Barcode+')" class="button_like_anchor red"><?php  echo $this->_translate(30);?></button>';	 
+					html += '</td>';
+					html += '</tr>';
+				}
+
+				$('#barcode_showroom').after(html);
+			}
+			
+
+			$('#barcode').val('');
+			$('#warning').text('');
+		}, function(jreturn) {
+			qssAjax.alert(jreturn.message);
+		});
+	}, typeDelay);
+}
+//End getLineByBarcode()
+
+// @Function: checkFocus(), kiem tra xem barcode co duoc focus hay khong
+// chay bang cach interval ham nay
+// @Parameter: 
+// @Return: text warning
+function checkFocus()
+{
+	var out = true;
+	$('input:focus').each(function(){
+		if($(this).attr('name') == 'barcode'){
+			out = false;
+		}
+	});
+	if(out){
+		$('#warning').text('<?php echo $this->_translate(29);?>');
+	}
+	else
+	{
+		$('#warning').text('');
+	}
+}
+// End checkFocus()
+
+// @Function: removeLine()
+// @Parameter: 
+//		- lineID: barcode, key cua dong
+// @Return: xoa dong khoi danh sach
+function removeLine(lineID)
+{
+	$('#line_'+lineID).remove();
+}
+// End removeLine()
+
+// @Function: changeAmount()
+// @Parameter: 
+//		- lineID: barcode, key cua dong
+// @Return: tra ve thanh tien
+function changeAmount(lineID)
+{
+	var amount = 0;
+	amount = parseInt($('#barcode_'+lineID).val()) * $('#unit_price_'+lineID).val();
+	$('#amount_'+lineID).text(amount);
+}
+// End changeAmount()
+
+// @Function: saveOrder()
+// @Parameter: 
+// @Return: luu lai don nhan hang
+function saveOrder()
+{
+	var data = $('#filter, #showroom').serialize();
+	var url = sz_BaseUrl + '/extra/warehouse/input/create/barcode/save';
+
+	// Check required
+	var errMsg    = '';
+	var warehouse = $('#warehouse').val();
+	var partner   = $('#partner').val();
+	var docType   = $('#docType').val();
+	var docNo     = $('#docNo').val();
+	var docDate   = $('#docDate').val();
+	var deliveryDate = $('#deliveryDate').val();
+
+	errMsg += (warehouse == '')?'<?php echo $this->_translate(33)?>':'';
+	errMsg += (partner == '')?'<?php echo $this->_translate(34)?>':'';
+	errMsg += (docType == '')?'<?php echo $this->_translate(35)?>':'';
+	errMsg += (docNo == '')?'<?php echo $this->_translate(36)?>':'';
+	errMsg += (docDate == '')?'<?php echo $this->_translate(37)?>':'';
+	errMsg += (deliveryDate == '')?'<?php echo $this->_translate(38)?>':'';
+	errMsg += ($('.barcode').length == 0)?'<?php echo $this->_translate(39)?>':'';
+
+		
+	if(errMsg == '')
+	{
+		qssAjax.call(url, data, function(jreturn) {
+			if (jreturn.message != '') {
+				qssAjax.alert(jreturn.message);
+			}
+			rowSearch(109);
+			$('#qss_trace').dialog('close');
+		}, function(jreturn) {
+			qssAjax.alert(jreturn.message);
+		});
+	}
+	else
+	{
+		qssAjax.alert(errMsg);
+	}
+}
+// End saveOrder()
+
+$(document).ready(function() {
+	setInterval(checkFocus, focusDelay);
+});
+
+//-->
+</script>
+<div id="test"></div>
+<div
+	id="wrap">
+	<div class="group" id="group_2">
+		<form id="filter">
+			<fieldset>
+				<legend>
+					<!-- -->
+				<?php echo $this->_translate(9);?>
+				</legend>
+
+				<!-- Filter form -->
+				<table cellpadding="0" cellspacing="0" border="0" width="100%">
+					<tr>
+						<td>
+							<!-- Label --> <?php echo $this->_translate(1);?>
+						</td>
+						<td>
+							<!-- Content --> <?php echo $this->views->Report->ComboBox('warehouse','M601','ODanhSachKho','MaKho',array('MaKho','TenKho'))?><span
+							class="red bold">(*)</span>
+						</td>
+						<td>
+							<!-- Label --> <?php echo $this->_translate(2);?></td>
+						<td>
+							<!-- Content --> <?php echo $this->views->Report->ComboBox('partner','M118','ODoiTac','MaDoiTac',array('MaDoiTac','TenDoiTac'))?><span
+							class="red bold">(*)</span>
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							<!-- Label --> <?php echo $this->_translate(3);?>
+						</td>
+						<td>
+							<!-- Content --> <?php echo $this->views->Report->ComboBox('docType','m205','OLoaiChungTu','MaLoai',array('MaLoai','TenLoaiChungTu'))?><span
+							class="red bold">(*)</span></td>
+						<td>
+							<!-- Label --> <?php echo $this->_translate(4);?></td>
+						<td>
+							<!-- Content --> <input type="text" name="docNo" id="docNo"
+							value="" /><span class="red bold">(*)</span>
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							<!-- Label --> <?php echo $this->_translate(5);?>
+						</td>
+						<td>
+							<!-- Content --> <?php echo $this->views->Report->Datepicker('docDate', date('d-m-Y'));?><span
+							class="red bold">(*)</span>
+						</td>
+						<td>
+							<!-- Label --> <?php echo $this->_translate(6);?></td>
+						<td>
+							<!-- Content --> <?php echo $this->views->Report->Datepicker('deliveryDate', date('d-m-Y'));?><span
+							class="red bold">(*)</span></td>
+					</tr>
+
+					<tr>
+						<td>
+							<!-- Label --> <?php echo $this->_translate(7);?>
+						</td>
+						<td>
+							<!-- Content --> <input type="text" name="ref" id="ref" value="" />
+						</td>
+						<td>
+							<!-- Label --> <?php echo $this->_translate(8);?></td>
+						<td>
+							<!-- Content --> <input type="text" name="des" id="des" value="" />
+							<button type="button" class="btn-custom fr" onclick="saveOrder()">
+							<?php echo $this->_translate(32);?>
+							</button>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</form>
+		<!-- end form #filter -->
+	</div>
+	<!-- end .group, #group_2 -->
+
+	<div class="group">
+		Barcode: <input type="text" name="barcode" id="barcode" value=""
+			onkeyup="getLineByBarcode(this)" /> <span id="warning" class="red"></span>
+	</div>
+	<!-- end .group -->
+
+	<div class="group" id="group_3">
+		<form id="showroom">
+			<fieldset>
+				<legend>
+					<!-- -->
+				<?php echo $this->_translate(11);?>
+				</legend>
+
+				<!-- Show table -->
+				<table cellspacing="0" cellpadding="0" border="1" id=""
+					class="borderX">
+					<tr class="bggrey center" id="barcode_showroom">
+						<th class="" width="">
+							<!--  --> <?php  echo $this->_translate(31);?>
+						
+						</td>
+						<th class="" width="">
+							<!--  --> <?php  echo $this->_translate(20);?>
+						
+						</td>
+						<th class="" width="">
+							<!--  --> <?php  echo $this->_translate(21);?>
+						
+						</td>
+						<th class="" width="">
+							<!--  --> <?php  echo $this->_translate(22);?>
+						
+						</td>
+						<th class="" width="">
+							<!--  --> <?php  echo $this->_translate(23);?>
+						
+						</td>
+						<th class="" width="">
+							<!--  --> <?php  echo $this->_translate(24);?>
+						
+						</td>
+						<th class="" width="">
+							<!--  --> <?php  echo $this->_translate(25);?>
+						
+						</td>
+						<th class="" width="">
+							<!--  --> <?php  echo $this->_translate(26);?>
+						
+						</td>
+						<th class="" width="">
+							<!--  --> <?php  echo $this->_translate(27);?>
+						
+						</td>
+						<th class="" width="">
+							<!--  --> <?php  echo $this->_translate(28);?>
+						
+						</td>
+						<th class="" width="">
+							<!--  --> <?php  echo $this->_translate(30);?>
+						
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</form>
+		<!-- end form #showroom -->
+	</div>
+	<!-- end .group, #group_3 -->
+</div>
+<!-- end #wrap -->
+<script>
+$(document).ready(function() {
+    setTimeout(function(){
+        $('#barcode').focus();
+        $('#warning').text('');
+    },5000);
+});
+</script>

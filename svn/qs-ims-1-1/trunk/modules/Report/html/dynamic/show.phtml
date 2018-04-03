@@ -1,0 +1,92 @@
+<?php
+$widthArr = array();
+
+foreach ($this->columns as $val)
+{
+	$widthArr[] = $this->width[$val->Code];
+}
+$totalCols          = count((array)$this->columns);
+$excelWidth         = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($widthArr, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE, $this->tableWidth);
+$widthArr           = Qss_Lib_Report::changeWidthToFitScreen2($widthArr, $this->tableWidth);
+?>
+
+<?php $excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);?>
+<?php ?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="landscape">
+	<excel orientation="landscape" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+	<div id="head_print">
+	<?php echo $this->views->Common->Landscape()?>
+	<?php $row = 2;?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCols]?>" font-size="14"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->report->Name?>
+				</xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++?>
+
+	<div id="container">
+		<table style="width:<?php echo $this->tableWidth;?>px;" cellpadding="0" cellspacing="0" class="border"
+			border="0">
+			<tr class="bggrey">
+			<?php $begin = 0;?>
+			<?php foreach ($this->columns as $val):?>
+				<th style="width:<?php echo $widthArr[$begin];?>px"
+					class="report_title_marker" id="col<?php echo $begin; ?>"
+					col="<?php echo $begin; ?>"><xls row="<?php echo $row?>"
+						width="<?php echo $excelWidth[$begin];?>"
+						column="<?php echo $excel_col[++$begin]?>" font-size="11"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1"> <?php echo $val->Name?></xls>
+				</th>
+				<?php endforeach;?>
+			</tr>
+			<?php $row++;?>
+			<?php $i = 0;?>
+			<?php $group = ''?>
+			<?php foreach ($this->datasource as $item):?>
+			<?php $i++;?>
+			<?php if($this->groupby):?>
+			<?php if($group !== $item->{$this->groupby}):?>
+			<tr>
+				<td colspan="<?php echo count($this->columns)?>"
+					class="bold report_title_marker_all"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[1]?>"
+						column-merge="<?php echo $excel_col[count($this->columns)]?>"
+						font-size="11" wrap-text="1" h-align="left" v-align="center"
+						border="1" bold="1"> <?php echo $item->{$this->groupby};?> </xls>
+				</td>
+			</tr>
+			<?php $row++;?>
+			<?php endif;?>
+			<?php endif;?>
+			<tr>
+			<?php $begin = 0;?>
+			<?php foreach ($this->columns as $val):?>
+			<?php
+			$fieldVal = Qss_Lib_Extra::getFieldDisplay($item->{$val->Code}, $this->fieldtypes[$val->Code]);
+			?>
+
+				<td class="<?php echo $val->Class?> " col="<?php echo $begin; ?>"><xls
+						row="<?php echo $row?>" column="<?php echo $excel_col[++$begin]?>"
+						font-size="11" wrap-text="1" h-align="center" v-align="center"
+						border="1"> <?php echo $fieldVal;?> </xls>
+				</td>
+				<?php endforeach;?>
+			</tr>
+			<?php $row++;?>
+			<?php if($this->groupby):?>
+			<?php $group = $item->{$this->groupby}?>
+			<?php endif;?>
+			<?php endforeach;?>
+		</table>
+	</div>
+</div>

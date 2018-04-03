@@ -1,0 +1,105 @@
+<form method="post" id="qss_form">
+	<input type="hidden" value="<?php echo (int)@$this->data->UIBID?>" name="uibid" />
+	<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+		<button id="btnSAVE" type="button" class="btn btn_main_top" onclick="UIBoxSave('<?php echo $this->objid?>',<?php echo $this->gid?>)">
+			<?php echo $this->_translate(34)?>
+		</button>
+		<button type="button" class="btn btn_main_top" onclick="UIBoxBack('<?php echo $this->objid?>',<?php echo $this->gid?>)">
+			<?php echo $this->_translate(32)?>
+		</button>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<div id="item-actions">
+			<ul>
+				<li class="item-action active"><a href="#1"><span><?php echo $this->_translate(124)?>
+					</span>
+				</a>
+				</li>
+			</ul>
+		</div>
+		<table border="0" width="450" cellpadding="0" cellspacing="0" class="border_table">
+			<tr>
+				<td>Nhóm
+				</td>
+				<td>
+					<select name="gid" style="width: 200px">
+						<?php foreach ($this->uigroups as $item):?>
+							<option value="<?php echo $item->UIGID?>" <?php if($this->gid == $item->UIGID):?>selected<?php endif;?>><?php echo $item->Name?></option>
+						<?php endforeach;?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(44)?>
+				</td>
+				<td><input type="text" value="<?php echo @$this->data->BoxNo?>"
+					style="width: 100px;" name="intBoxNo" />
+				</td>
+			</tr>
+			<?php foreach ($this->languages as $lang):?>
+			<tr>
+				<td><?php echo $this->_translate(64)?> - <?php echo $lang->Name?>:</td>
+				<?php if($lang->Code == 'vn'):?>
+				<td><input type="text" value="<?php echo @$this->data->Title?>"
+					style="width: 200px;" name="szTitle" />
+				</td>
+				<?php else:?>
+				<td><input type="text" name="szTitle_<?php echo $lang->Code?>"
+					style="width: 200px;"
+					value="<?php echo @$this->data->{"Title_$lang->Code"}?>" />
+				</td>
+				<?php endif;?>
+			</tr>
+			<?php endforeach;?>
+			<tr>
+				<td>Kiểu hiển thị</td>
+				<td><select name="intBoxType">
+						<option value="0"
+						<?php if(@$this->data->BoxType == 0) echo 'selected';?>>100% độ
+							rộng</option>
+						<option value="1"
+						<?php if(@$this->data->BoxType == 1) echo 'selected';?>>Căn bên
+							trái</option>
+						<option value="2"
+						<?php if(@$this->data->BoxType == 2) echo 'selected';?>>Căn bên
+							phải</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td>Hiển thị tiêu đề</td>
+				<td><input type="checkbox" value="1" name="bTitle"
+				<?php if(@$this->data->DisplayTitle) echo 'checked';?> />
+				</td>
+			</tr>
+			<tr>
+				<td>Hiển thị đường bao</td>
+				<td><input type="checkbox" value="1" name="bBorder"
+				<?php if(@$this->data->DisplayBorder) echo 'checked';?> />
+				</td>
+			</tr>
+			<tr>
+				<td>Ẩn</td>
+				<td><input type="checkbox" value="1" name="bHidden"
+				<?php if(@$this->data->Hidden) echo 'checked';?> />
+				</td>
+			</tr>
+			<tr>
+				<td>Trường dữ liệu</td>
+				<td>
+					<table border="0" cellpadding="0" cellspacing="0" class="border_table">
+					<?php foreach ($this->fields as $item):?>
+						<tr>
+							<td width="200px"><?php echo $item->FieldName?>
+							</td>
+							<td><input type="checkbox" name="aFields[]"
+								value="<?php echo $item->FieldCode?>" <?php if($item->UIBID):?>
+								checked <?php endif;?>>
+							</td>
+						</tr>
+						<?php endforeach;?>
+					</table></td>
+			</tr>
+		</table>
+	</div>
+</form>

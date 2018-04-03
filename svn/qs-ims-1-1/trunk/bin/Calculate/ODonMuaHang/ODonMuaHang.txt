@@ -1,0 +1,5 @@
+Đơn hàng 
+GiaTriDonHang = Tổng giá trị từ danh sách đơn hàng.
+Thue = Nhập vào hoặc tổng hợp từ danh sách thuế <hiện tại không có trường hợp này>
+TongTien = (GiaTriDonHang - GiamTru) + Thue
+TongTienDH = TongTien + ChiPhiVanChuyen

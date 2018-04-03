@@ -1,0 +1,250 @@
+<style>
+.process {
+	position: relative;
+	background: none repeat scroll 0 0 #ccc;
+	font-size: 10px;
+	line-height: 14px;
+	width: 138px;
+	font-weight: bold;
+}
+
+.process_bar { /*background:#6DB03C;*/
+	width: 0px;
+}
+
+.process_percent {
+	position: absolute;
+	top: 0px;
+	left: 90px;
+}
+
+.process-element {
+	margin-left: -5px;
+	margin-right: -5px;
+	padding: 1px 0px;
+	min-width: 60px;
+	text-align: center;
+}
+</style>
+
+<?php
+function getColorClass($percent)
+{
+	if($percent < 60)
+	{
+		return 'bgred';
+	}
+	elseif (60 <= $percent && $percent <= 90)
+	{
+		return 'bgyellow';
+	}
+	elseif(90 <= $percent && $percent <= 100)
+	{
+		return 'bggreen';
+	}
+}
+
+// INIT
+$excel_col   = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg          = "#EEEEEE";
+$row         = 2;
+$totalColumn = 8;
+
+// TITLE
+$title          = 'HIỆU SUẤT THIẾT BỊ';//$this->_translate(1);
+$titleMaTB      = 'Mã TB';//$this->_translate(4);// cot 1
+$titleTenTB     = 'Tên TB';
+$titleLoaiTB    = 'Loại TB';//$this->_translate(5);// cot 2
+$titleNhomTB    = 'Nhóm TB';//$this->_translate(6);// cot 3
+$titleChiSo   = 'Chỉ số';//$this->_translate(6);// cot 3
+$titleCongSuat  = 'Công Suất';//$this->_translate(7);// cot 4
+$titleHieuSuat  = 'Hiệu Suất';//$this->_translate(8);// cot 5
+
+
+// COL WIDTH
+$pxWidthArr['EqCode']        = 20;// px, cot 1
+$pxWidthArr['EqName']        = 20;// px, cot 2
+$pxWidthArr['EqType']        = 20;// px, cot 2
+$pxWidthArr['EqGroup']       = 20;// px, cot 3
+$pxWidthArr['Param']         = 20;// px, cot 3
+$pxWidthArr['Capacity']      = 20;// px, cot 4
+$pxWidthArr['Performance']   = 20;// px, cot 5
+
+// px html to excel width
+$excelWidthArr = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($pxWidthArr);
+
+// auto fit (px html)
+$pxWidthArr    = Qss_Lib_Report::changeWidthToFitScreen($pxWidthArr);
+
+?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="portrait">
+	<excel orientation="portrait" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+
+	<div id="head_print">
+	<?php echo $this->views->Common->Portrait() ?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row?>" column="A"
+					column-merge="<?php echo $excel_col[$totalColumn]?>" font-size="12"
+					wrap-text="1" bold="1" h-align="center" v-align="center"> <?php echo $title;?></xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++ ?>
+
+
+	<div id="container">
+		<table cellspacing="0" cellpadding="0" border="1" id="" class="border">
+
+		<?php $begin = 0; ?>
+			<tr class="bggrey">
+				<th style="width:<?php echo $pxWidthArr['EqCode'];?>px;" 
+					class="<?php echo 'col'.$begin;?>"
+					
+					>
+					<!-- Ma TB --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>"
+						bgcolor="<?php echo $bg;?>"
+						width="<?php echo $excelWidthArr['EqCode'];?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $titleMaTB;?></xls>
+				</th>
+
+				<th style="width:<?php echo $pxWidthArr['EqName'];?>px;" 
+					class="<?php echo 'col'.$begin;?>"
+					
+					>
+					<!-- Ma TB --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>"
+						bgcolor="<?php echo $bg;?>"
+						width="<?php echo $excelWidthArr['EqName'];?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $titleTenTB;?></xls>
+				</th>
+
+				<th style="width:<?php echo $pxWidthArr['EqType'];?>px;" 
+					class="<?php echo 'col'.$begin;?>"
+					>
+					<!-- Loai TB--> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>"
+						bgcolor="<?php echo $bg;?>"
+						width="<?php echo $excelWidthArr['EqType'];?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $titleLoaiTB;?></xls>
+				</th>
+
+				<th style="width:<?php echo $pxWidthArr['EqGroup'];?>px;" 
+					class="<?php echo 'col'.$begin;?>"
+					>
+					<!-- Nhom TB --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>"
+						bgcolor="<?php echo $bg;?>"
+						width="<?php echo $excelWidthArr['EqGroup'];?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $titleNhomTB;?></xls>
+				</th>
+
+				<th style="width:<?php echo $pxWidthArr['Param'];?>px;" 
+					class="<?php echo 'col'.$begin;?>"
+					>
+					<!-- Nhom TB --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>"
+						bgcolor="<?php echo $bg;?>"
+						width="<?php echo $excelWidthArr['Param'];?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $titleChiSo;?></xls>
+				</th>
+
+				<?php $beginRow2 = $begin;?>
+				<th style="width:<?php echo $pxWidthArr['Capacity'];?>px;" 
+					class="<?php echo 'col'.$begin;?>" 
+					>
+					<!-- Cong suat --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>"
+						bgcolor="<?php echo $bg;?>"
+						width="<?php echo $excelWidthArr['Capacity'];?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $titleCongSuat;?></xls>
+				</th>
+
+	
+
+
+			</tr>
+			<?php $row++?>
+			<?php $type = '';?>
+			<?php foreach ($this->print as $item): // in report?>
+			<?php
+			$capacity = ((double)$item->PlanTotalQty)?((double)$item->TotalQty/((double)$item->PlanTotalQty)*100):0;
+			$capacityColor    = getColorClass($capacity);
+			?>
+			<?php $begin = 0; ?>
+			<?php if($type != $item->LoaiThietBi):?>
+			<tr>
+				<td class="left bold italic <?php echo 'col'.$begin;?>" colspan="6">
+					<!-- Ma TB --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $item->LoaiThietBi;?></xls>
+				</td>
+			</tr>
+			<?php $row++;?>
+			<?php endif;?>
+			<tr>
+				<td class="left <?php echo 'col'.$begin;?>">
+					<!-- Ma TB --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $item->MaThietBi;?></xls>
+				</td>
+
+				<td class="left <?php echo 'col'.$begin;?>">
+					<!-- Tên TB --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $item->TenThietBi;?></xls>
+				</td>
+
+
+				<td class="left <?php echo 'col'.$begin;?>">
+					<!-- Loai TB --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $item->LoaiThietBi;?></xls>
+				</td>
+
+				<td class="left <?php echo 'col'.$begin;?>">
+					<!-- Nhom TB --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $item->NhomThietBi;?></xls>
+				</td>
+
+				<td class="left <?php echo 'col'.$begin;?>">
+					<!-- Chi so --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $item->ChiSo;?></xls>
+				</td>
+
+
+				<td class="right <?php echo 'col'.$begin;?>"
+					style="position: relative;">
+					<!-- Cong Suat -->
+					<div class="process process-element fl" style="position: relative;">
+						<div class="process_bar <?php echo $capacityColor;?>" style="width:<?php echo $capacity*2;?>px;">&nbsp;</div>
+						<div class="process_percent">
+							<xls row="<?php echo $row?>"
+								column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+								h-align="right" v-align="center" border="1"> <?php echo $capacity;?>%</xls>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<?php $row++ ?>
+			<?php $type = $item->LoaiThietBi;?>
+			<?php endforeach;// in report?>
+
+		</table>
+	</div>
+	<?php $row++ ?>
+</div>

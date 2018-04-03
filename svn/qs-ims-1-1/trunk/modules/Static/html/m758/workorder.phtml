@@ -1,0 +1,238 @@
+<?php
+$stepChart = array();
+?>
+<br />
+<table cellspacing="0" cellpadding="0" border="1" id=""
+	style="width: 100%;" class="border_table">
+	<tbody>
+		<tr class=" center">
+			<th>STT</th>
+			<th>Lệnh SX</th>
+			<th>Dây chuyền</th>
+			<th>Công đoạn</th>
+			<th>Đơn vị</th>
+			<th>Mã SP</th>
+			<th>Tên SP</th>
+			<th>ĐVT</th>
+			<th>Thuộc tính</th>
+			<th>SLYC</th>
+			<th>SLHT</th>
+			<th>SLTK</th>
+			<th>SLL/SLTK</th>
+			<th>Chi tiết</th>
+			<th>Comment</th>
+		</tr>
+		<?php $i = 0;?>
+		<?php foreach($this->wo as $w):?>
+		<?php
+		$stepChart[$w->StepNo]['Name'] = $w->Step;
+		if(isset($stepChart[$w->StepNo]['Count']))
+		{
+			$stepChart[$w->StepNo]['Count']++;
+		}
+		else
+		{
+			$stepChart[$w->StepNo]['Count'] = 1;
+		}
+		?>
+
+		<tr class="" title="<?php echo $w->Step;?>">
+			<td class="center <?php echo $w->Class;?>"><?php echo ++$i;?></td>
+			<td><?php echo $w->MaLenhSX;?></td>
+			<td><?php echo $w->DayChuyen;?></td>
+			<td><?php echo $w->CongDoan;?></td>
+			<td><?php echo $w->DonViThucHien;?></td>
+			<td><?php echo $w->MaSP;?></td>
+			<td><?php echo $w->TenSP;?></td>
+			<td><?php echo $w->DonViTinh;?></td>
+			<td><?php echo $w->ThuocTinh;?></td>
+			<td class="right"><?php echo $w->SoLuongYeuCau;?></td>
+			<td class="right"><?php echo $w->SoLuongHoanThanh;?></td>
+			<td class="right"><?php echo $w->SoLuongThongKe;?></td>
+			<td class="right"><?php echo $w->SoLuongLoi.'/'.$w->SoLuongThongKe;?>
+			</td>
+			<td class="center">
+				<button type="button" class="btn-custom"
+					onclick="pinfo_detail(<?php echo $w->IFID_M712;?>, <?php echo $this->deptid;?>)"
+					ifid="<?php echo $w->IFID_M712;?>">
+					Xem
+					<!-- trans -->
+				</button>
+			</td>
+			<td class="center">
+				<button type="button" class="btn-custom"
+					onclick="pinfo_comment(<?php echo $w->IFID_M712;?>, <?php echo $this->deptid;?>, <?php echo $this->uid;?>)"
+					ifid="<?php echo $w->IFID_M712;?>">
+					<?php echo (isset($this->comments[$w->IFID_M712]))?$this->comments[$w->IFID_M712]:0?>
+					<!-- trans -->
+				</button>
+			</td>
+		</tr>
+		<?php endforeach;?>
+	</tbody>
+</table>
+
+
+<script>
+        // Dien lai so trang 
+        var html = '';
+        var select; 
+        
+        for(var i =1; i <= <?php echo $this->total;?>; i++)
+        {
+              if(<?php echo $this->page;?> == i) select = 'selected'; else select = '';
+              html += '<option value="'+i+'" '+select+'>'+i+'</option>';  
+        }
+        
+        if(html == '')
+        {
+                html = '<option value="1" >1</option>';
+        }
+        $('#pinfo_page').attr('total',<?php echo $this->total;?>);
+        $('#pinfo_page').html(html);
+</script>
+
+<script>
+$(function () {
+
+    $(document).ready(function () {
+
+        // Build the chart
+        $('#count_wo_by_step').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+                text: 'Tình trạng phiếu giao việc'
+            },
+            tooltip: {
+                pointFormat: '<b>{point.percentage:.1f} %</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                type: 'pie',
+                data: [
+                     
+                    <?php 
+                    $start = 1;
+                    $series = '';
+                    foreach($this->wosteps as $step)
+                    {
+                    	$series .= !$start?',':'';
+                    	if(isset($stepChart[$step->StepNo]))
+                    	{
+	                    	$series .= "['{$stepChart[$step->StepNo]['Name']}', {$stepChart[$step->StepNo]['Count']}]";
+                    	}
+                    	else 
+                    	{
+                    		$series .= "['{$step->Name}', 0]";
+                    	}
+                    	
+                        if($start)
+	                    {
+	                    	$start = 0;
+	                    }
+                    }
+                    echo $series;
+                    ?>
+                ]
+            }]
+        });
+    });
+
+});
+
+
+$(function () {
+    $('#item_statistic').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Thống kê sản phẩm'
+        },
+        xAxis: {
+            categories: [
+                         
+                <?php 
+                $start = 1;
+                $xAxis = '';
+                foreach ($this->statiticschart as $s)
+                {
+                	$xAxis .= !$start?',':'';
+                	$xAxis .= "'{$s->MaSP}'";
+                	
+                	if($start)
+                	{
+                		$start = 0;
+                	}
+                }
+                echo $xAxis;
+				?>
+            ]
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'UOM'
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [
+                 <?php 
+				$start = 1;
+				$series = '';
+				$hang1 = '';
+				$hang2 = '';
+				$hang3 = '';
+				foreach ($this->statiticschart as $s)
+				{
+					$hang1 .= ($hang1 != '')?',':'';
+					$hang1 .= $s->SoLuongYeuCau;
+					$hang2 .= ($hang2 != '')?',':'';
+					$hang2 .= $s->SoLuongHoanThanh;
+					$hang3 .= ($hang3 != '')?',':'';
+					$hang3 .= $s->SoLuongLoi;
+				}
+				
+				$series .= "{ name: 'Số lượng yêu cầu', data: [";
+				$series .= $hang1;
+				$series .= "]},";
+				
+				$series .= "{ name: 'Số lượng hoàn thành', data: [";
+				$series .= $hang2;
+				$series .= "]},";
+				
+				$series .= "{ name: 'Số lượng lỗi', data: [";
+				$series .= $hang3;
+				$series .= "]}";
+				echo $series;
+				?>
+	             ]
+    });
+});
+</script>

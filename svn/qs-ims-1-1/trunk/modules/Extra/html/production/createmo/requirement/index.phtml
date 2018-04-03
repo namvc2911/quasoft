@@ -1,0 +1,352 @@
+<link rel="stylesheet" href="/css/button.css" type="text/css" />
+<style>
+#coming {
+	overflow: auto;
+	min-height: 10px;
+	max-height: 100px;
+}
+
+#order {
+	overflow: auto;
+	min-height: 10px;
+	max-height: 210px;
+}
+
+#capacity {
+	overflow: auto;
+	min-height: 10px;
+	max-height: 100px;
+}
+
+#material {
+	overflow: auto;
+	min-height: 10px;
+	max-height: 100px;
+}
+</style>
+
+<script>
+<!--
+// js function
+
+jQuery(document).ready(function($){
+  	$('.datepicker').each(function(){ $(this).datepicker({ dateFormat: "dd-mm-yy" }); });/* Datepicker*/
+});
+
+function fillBomInfo(ele)
+{
+	var finder = $(ele).parent().parent();
+	var assembly = $(ele).find('option:selected').attr('assembly');
+	var bom    = $(ele).find('option:selected').attr('bom');
+
+	finder.find('.bom_name').val(bom);
+	finder.find('.assembly').val(assembly);
+}
+
+// Loc san pham theo dieu kien
+function filterItem()
+{
+	$('#coming_content').html('Loading...')
+	var data = $('.search_filter').serialize();
+	var url = sz_BaseUrl + '/extra/production/createmo/requirement/search'; 
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#coming_content').html(jreturn);
+		updatePageNumber();
+		$('#checker_content').html('');
+		$('#save-button-box').attr('status',0);// Xoa nut luu lai
+		$('#save-button-box').html(''); // Xoa nut luu lai
+		
+		if($('#button-box').attr('status') == 0)
+		{
+			$('#button-box').append('<button type="button" class="btn-custom" onclick="checkOrder()"> <?php echo $this->_translate(49);?></button>');
+			$('#button-box').attr('status', 1)
+		}
+	});
+}
+
+// Them 
+function fillManuLine(ele)
+{
+	$('input[name*="lineName"]').val($(ele).find('option:selected').text().trim());
+}
+
+// Luu lenh san xuat
+function saveOrder()
+{
+	var data = $('#show_form, .save_condition, .search_filter').serialize();
+	var url = sz_BaseUrl + '/extra/production/createmo/requirement/save'; 
+	qssAjax.call(url, data, function(jreturn){
+		if(jreturn.message != ''){
+			qssAjax.alert(jreturn.message);
+		}
+	}, function(jreturn){
+		qssAjax.alert(jreturn.message);		
+	});
+}
+
+// Cap nhat so trang
+function updatePageNumber()
+{
+	var html = '';
+	var url = sz_BaseUrl + '/extra/production/createmo/requirement/page';
+	var data = $('.search_filter').serialize();
+	$('#page_filter').val('Loading...');
+	
+	qssAjax.call(url, data, function(jreturn) {
+		jreturn.data.total = (jreturn.data.total > 0)?jreturn.data.total:1;
+		for(var i = 1; i <= jreturn.data.total; i++)
+		{
+			html += '<option value="'+i+'" ';
+			if(jreturn.data.page == i) html += 'selected';
+			html += ' >'+i+'</option>'
+		}
+		$('#page_filter').html(html);
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+}
+
+// check one line
+function checkLine(ele)
+{
+	var finder = $(ele).parent().parent();
+
+	if($(ele).is(':checked'))
+	{
+		finder.find('.disabled_input').each(function(){
+			$(this).removeAttr('disabled');
+		});
+		finder.addClass('bgyellow');
+	}
+	else
+	{
+		finder.find('.disabled_input').each(function(){
+			$(this).attr('disabled', true);
+		});
+		finder.removeClass('bgyellow');	
+	}
+}
+
+// check all line
+function checkAllLine(ele)
+{
+	var key = $(ele).val();
+	
+	if($(ele).is(':checked'))
+	{
+		$('.disabled_input_'+key).each(function(){
+			if($(this).parent().parent().attr('permission') == 1)
+			{
+				$(this).removeAttr('disabled');
+			}
+		});
+
+		$('.checkbox_'+key).each(function(){
+			if($(this).parent().parent().attr('permission') == 1)
+			{
+				$(this).attr('checked', true);
+			}
+			
+		});
+
+		$('.line_'+key).each(function(){
+			if($(this).attr('permission') == 1)
+			{
+				$(this).addClass('bgyellow');
+			}
+		});
+	}
+	else
+	{
+		$('.disabled_input_'+key).each(function(){
+			if($(this).parent().parent().attr('permission') == 1)
+			{
+				$(this).attr('disabled', true);
+			}
+		});
+
+		$('.checkbox_'+key).each(function(){
+			
+			if($(this).parent().parent().attr('permission') == 1)
+			{
+				$(this).removeAttr('checked');
+			}
+		});
+
+		$('.line_'+key).each(function(){
+			if($(this).attr('permission') == 1)
+			{
+				$(this).removeClass('bgyellow');
+			}
+			
+		});		
+	}
+}
+
+// Kiem tra 
+function checkOrder()
+{
+	var msg = '';
+	var hasNoTick = true;
+	// @todo: Bom yeu cau bat buoc
+	$('.bom:not(:disabled)').each(function(){
+		if($(this).val() == '')
+		{
+			msg = '<?php echo $this->_translate(43)?>';
+		}
+		hasNoTick = false;
+	});
+
+	if(hasNoTick)
+	{
+		msg += '<?php echo $this->_translate(44)?>';
+	}
+
+	if(msg != '')
+	{
+		qssAjax.alert(msg);
+		return;
+	}
+	else
+	{
+		var data = $('.search_filter, #show_form').serialize();
+		var url = sz_BaseUrl + '/extra/production/createmo/requirement/check'; 
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#checker_content').html(jreturn);
+	
+			errSave = $('#err_save').attr('val');
+	
+			if(errSave == 0)
+			{
+				if($('#save-button-box').attr('status') == 0)
+				{
+					$('#save-button-box').append('<button type="button" class="btn-custom" onclick="saveOrder()"> <?php echo $this->_translate(50);?></button>');
+					$('#save-button-box').attr('status',1);
+				}
+			}
+			else
+			{
+				$('#save-button-box').html('');
+				$('#save-button-box').attr('status',0);
+			}	
+		});
+	}
+}
+//-->
+</script>
+
+<div
+	id="wrapper">
+	<div id="create_order">
+		<form id="create_form">
+			<fieldset>
+				<legend>
+				<?php echo $this->_translate(27);?>
+				</legend>
+				<table cellspacing="0" cellpadding="0" width="100%" class="left"
+					id="">
+					<tr>
+						<th>
+							<!-- Day chuyen --> <?php echo $this->_translate(39)?>:</th>
+						<td>
+							<!-- Day chuyen --> <select name="lineFilter"
+							class="width_200 search_filter" onchange="fillManuLine(this)">
+								<!-- <option value=""><?php echo $this->_translate(41)?></option> -->
+							<?php foreach ($this->lines as $item):?>
+								<option value="<?php echo  $item->IOID?>">
+
+								<?php echo $item->MaDayChuyen;?>
+								</option>
+								<?php endforeach;?>
+						</select> <input type="hidden" name="lineName" id=""
+							class="search_filter" value="" />
+						</td>
+
+						<th>&nbsp;</th>
+						<td>&nbsp;</td>
+					</tr>
+
+					<tr>
+						<th>
+							<!-- Từ ngày --> <?php echo $this->_translate(23)?>:</th>
+						<td>
+							<!-- Từ ngày --> <input type="text" name="fromDateFilter"
+							id="start" class="datepicker width_200 search_filter"
+							value="<?php echo date('d-m-Y');?>" />
+						</td>
+
+						<th>
+							<!-- Đến ngày --> <?php echo $this->_translate(20)?>:</th>
+						<td>
+							<!-- Đến ngày --> <input type="text" name="toDateFilter" id="end"
+							class="datepicker width_200 search_filter"
+							value="<?php echo date('d-m-Y');?>" />
+						</td>
+					</tr>
+
+				</table>
+				<button type="button" class="btn-custom" onclick="filterItem()">
+				<?php echo $this->_translate(29);?>
+				</button>
+
+			</fieldset>
+		</form>
+		<!-- end #create_form -->
+	</div>
+	<!-- end #create_order -->
+
+	<div>
+		<form id="pagination_form">
+			<!-- Trang -->
+		<?php echo $this->_translate(3)?>
+			: <select name="pageFilter" id="page_filter"
+				class="width_50 search_filter" onchange="filterItem()">
+				<option value="1">1</option>
+			</select>
+
+			<!-- Hiển thị -->
+			<?php echo $this->_translate(4)?>
+			: <select name="perpageFilter" id="perpage_filter"
+				class="width_50 search_filter" onchange="filterItem()">
+				<option value="5">5</option>
+				<option value="10" selected>10</option>
+				<option value="20">20</option>
+				<option value="50">50</option>
+				<option value="100">100</option>
+			</select>
+
+			<?php //if($this->unlock):?>
+
+			<?php //endif;?>
+		</form>
+		<!-- end form#pagination_form -->
+	</div>
+	<!-- noname -->
+
+	<div id="coming" class="margin_top_5">
+		<div class="margin_top_5">
+			<form id="show_form">
+				<fieldset>
+					<legend>
+					<?php echo $this->_translate(28);?>
+					</legend>
+					<div id="coming_content"></div>
+					<!-- end #coming_content -->
+					<script>filterItem();</script>
+				</fieldset>
+			</form>
+			<!-- end form#show_form -->
+		</div>
+		<!-- noname -->
+	</div>
+	<!-- end #coming -->
+
+	<div id="button-box" class="margin_top_5" status="0"></div>
+	<div id="checker_content" class="margin_top_5"></div>
+	<!-- end #checker_content -->
+	<div id="save-button-box" class="margin_top_5" status="0"></div>
+
+
+
+</div>
+<!-- end #wrapper -->

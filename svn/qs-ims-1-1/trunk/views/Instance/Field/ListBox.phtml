@@ -1,0 +1,63 @@
+<?php if($this->field->bReadOnly):?>
+<input value="<?php echo $this->field->sz_fGetDisplay()?>" type="text" name="<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_textbox" id="<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_textbox" class="readonly" readonly style="width: <?php echo $this->field->intFieldWidth?>px;">
+<input value="<?php if($this->field->intFieldType != 14 && $this->field->intFieldType != 15 && $this->field->intFieldType != 16):?><?php echo $this->field->intRefIOID;?><?php else:?><?php echo $this->field->getValue();?><?php endif;?>" type="hidden" name="<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>" id="<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>">
+<?php else:?>
+<div style="position: relative !important;">
+<input value="<?php echo $this->field->sz_fGetDisplay()?>" type="text" name="<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_textbox" id="<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_textbox" style="width: <?php echo $this->field->intFieldWidth?>px;" onchange="if($(this).val() != '') $(this).addClass('bgpink'); else $(this).removeClass('bgpink');">
+<?php $refresh = (int)$this->field->isRefresh?>
+<?php $namespace = $this->dialog?('dialog_'.($this->bMain?$this->bMain:$this->field->ObjectCode).'.'):'';?>
+<?php if($this->bMain):?>
+	<?php $onchange = "{$namespace}rowEditRefresh('#{$this->field->ObjectCode}_{$this->field->FieldCode}_textbox',{$refresh})"?>
+<?php else:?>
+	<?php $onchange = "{$namespace}rowObjectEditRefresh('#{$this->field->ObjectCode}_{$this->field->FieldCode}_textbox',{$refresh})"?>
+<?php endif;?>
+<input value="<?php if($this->field->intFieldType != 14 && $this->field->intFieldType != 15)://&& $this->field->intFieldType != 16?><?php echo $this->field->getRefIOID();?><?php else:?><?php echo $this->field->getValue();?><?php endif;?>" type="hidden" name="<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>" id="<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>" onchange="<?php echo $onchange;?>">
+</div> 
+<script>
+$(function () {
+	var url = sz_BaseUrl + '/user/field/tag?fieldid=<?php echo $this->field->FieldCode?>';
+	<?php if($this->bMain):?>
+		var data = $('#form_<?php echo $this->bMain?>_edit').serialize();
+		 $('#form_<?php echo $this->bMain?>_edit').find('input[type=checkbox]').each(function(){
+			if(!$(this).is(':checked')){
+				data += '&' + $(this).attr('name') +'=';
+			}
+		});
+	<?php else:?>
+		var data = $('#object_<?php echo $this->field->ObjectCode?>_edit').serialize();
+		$('#object_<?php echo $this->field->ObjectCode?>_edit').find('input[type=checkbox]').each(function(){
+			if(!$(this).is(':checked')){
+				data += '&' + $(this).attr('name') +'=';
+			}
+		});
+	<?php endif;?>
+    $('#<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_textbox').tagSuggest({
+        url: url,
+        data: data,
+        delay: 500,
+        separator : '*',
+        tagContainer: 'div',
+        callback: function(workingTags,id){
+            workingTags = workingTags.toString().replace(/&nbsp;/g,'');
+        	$('#<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_textbox').val(workingTags);
+        	var newid = $('#<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>').val();
+        	if(newid == '0'){
+				newid = 0;
+            } 
+            if(id != newid){
+	        	if(id){
+	        		$('#<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>').val(id);
+	        	}
+	        	else{
+		        	$('#<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>').val(0);
+	        	}
+	        	$('#<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>').change();
+	        	$('#<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_textbox').blur();
+	        	$('#<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_textbox').removeClass('bgpink');
+	        	$('#<?php echo $this->field->ObjectCode?>_<?php echo $this->field->FieldCode?>_textbox').focus();
+        	}
+        }
+    });
+});
+</script>
+<?php endif;?>

@@ -1,0 +1,75 @@
+<?php foreach ($this->quickmenu as $item):?>
+	<?php
+	if(!$item->classMobile && $item->class)
+	{
+		continue;
+	}
+	if($item->classMobile && $item->Type != Qss_Lib_Const::FORM_TYPE_PROCESS)
+	{
+		$url =  Qss_Params::getInstance()->requests->getBaseUrl() .$item->classMobile;
+	}
+	else
+	{
+		$url =  Qss_Params::getInstance()->requests->getBaseUrl() . "/user/form?fid=" . $item->FormCode;
+	}
+	?>
+	<input type="hidden" id="<?php echo $item->FormCode?>" value="<?php echo $url?>">
+<?php endforeach;?>
+<?php if($this->o_User->user_id == -1):?>
+	<input type="hidden" id="param" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/param'?>">
+	<input type="hidden" id="object" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/object'?>">
+	<input type="hidden" id="list1" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/form?type=1'?>">
+	<input type="hidden" id="list2" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/form?type=2'?>">
+	<input type="hidden" id="module" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/form?type=3'?>">
+	<input type="hidden" id="report" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/form?type=4'?>">
+	<input type="hidden" id="process" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/form?type=5'?>">
+	<input type="hidden" id="transfer" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/form/transfer'?>">
+	<input type="hidden" id="bash" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/bash'?>">
+	<input type="hidden" id="inherit" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/form/inherit'?>">
+	<input type="hidden" id="menu" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/menu'?>">
+	<input type="hidden" id="calendar" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/calendar'?>">
+	<input type="hidden" id="database" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/database'?>">
+	<input type="hidden" id="language" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/language'?>">
+	<input type="hidden" id="translate" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/translate'?>">
+<?php endif;?>
+<div id="header">
+	<div id="left-header">
+		<div id="header-menu" class="ddsmoothmenu">
+			<ul>
+				<li>
+					<a id="menu" class="default level1 dropdown">Menu</a>
+					<ul>
+					<?php echo $this->views->Mobile->Menu(Qss_Register::get('userinfo',1));?>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<div id="center-header">
+		<div style="float: right">
+			<div class="notify" onclick="openModule('M000');">
+				<span class="notify-home"></span>
+			</div>
+			
+			<div class="notify notify1" onclick="showNotify(event);">
+				<span class="notify-bell"></span>
+				<span class="badge-default <?php if($this->notifycount):?>badge<?php endif;?>"><?php if($this->notifycount):?><?php echo $this->notifycount?><?php endif;?></span>
+			</div>
+			
+			<div class="notify notify2" onclick="showMessage(event);">
+				<span class="notify-envelope-open"></span>
+				<span class="badge-default <?php if($this->messagecount):?>badge<?php endif;?>"><?php if($this->messagecount):?><?php echo $this->messagecount?><?php endif;?></span>
+			</div>
+			
+			<div class="notify notify3" onclick="showEvent(event);">
+				<span class="notify-calendar"></span>
+				<span class="badge-default <?php if($this->eventcount):?>badge<?php endif;?>"><?php if($this->eventcount):?><?php echo $this->eventcount?><?php endif;?></span>
+			</div>	
+		</div>
+	</div>
+<div id="qss_notify"></div>
+	<div id="right-header">
+		<a onclick="logout()" href="#1">Thoát</a>
+	</div>
+</div>

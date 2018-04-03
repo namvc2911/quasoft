@@ -1,0 +1,106 @@
+<div class="cal_content_title">
+    <p class="cal_content_title_arrow"><a href="#1" onclick="showWeek('<?php echo $this->prev[0]?>',<?php echo $this->prev[1]?>,<?php echo $this->prev[2]?>);"><img src="/images/calendar/left_arrow_32.png"/></a></p>
+	<p class="cal_content_title_info"><?php echo $this->startdate1->format('d-m-Y')?> - <?php echo Qss_Lib_Date::add_date($this->startdate1,6)->format('d-m-Y')?></p>
+    <p class="cal_content_title_arrow"><a href="#1" onclick="showWeek('<?php echo $this->next[0]?>',<?php echo $this->next[1]?>,<?php echo $this->next[2]?>);"><img src="/images/calendar/right_arrow_32.png"/></a></p>
+</div><!-- end .cal_title -->
+
+<div class="cal_content_grid cal_content_week">
+	<div class="rows ">
+		<?php for($i=0;$i<7;$i++):?>
+		<?php $date = Qss_Lib_Date::add_date($this->startdate1,$i);?>
+        <div class="cols cols_7 <?php if($i==5 || $i==6):?>cal_cols_holiday<?php endif;?>">
+        	<?php echo Qss_Lib_Const::$TUAN[$i].' '.$date->format('d-m-Y');?>
+        </div><!-- end .cols -->
+        <?php endfor;?>
+    </div><!-- end .rows -->
+    
+	<?php $j=1;?>
+	<?php $starttime=strtotime($this->startdate);?>
+	<?php $endtime=strtotime($this->enddate);?>
+	<?php $eventid = 0?>
+	<?php foreach($this->data as $item):?>
+		
+		<?php $start=strtotime($item->SDate);?>
+		<?php $end= strtotime($item->EDate);?>
+		<?php if($eventid != $item->EventID):?>
+			<?php if($eventid):?>	
+				<?php $j++;?>
+				<?php for($i=0;$i<7;$i++):?>
+				<div class="cols cols_7 <?php if($i==5 || $i==6):?>cal_cols_holiday<?php endif;?>">
+					&nbsp;
+				</div><!-- end .cols -->
+				<?php endfor;?>
+				</div>
+			<?php endif;?>
+			<div class="rows">
+		<?php endif;?>
+			<?php $mleft=1;?>
+			<?php $mright=7;?>
+			<?php switch ($item->Type){
+				case 0:
+				case 1:?>
+					<?php if($start > $starttime):?>
+							<?php $mleft=date('w',$start);?>
+							<?php $mleft=$mleft?$mleft:7;?>
+					<?php endif;?>
+					<?php if(!$end):?>
+						<?php $mright=7;?>
+					<?php elseif($end < $endtime):?>
+							<?php $mright= date('w',$end);?>
+							<?php $mright=$mright?$mright:7;?>
+					<?php endif;?>
+				<?php break;?>
+				<?php case 2:?>
+					<?php $mleft=$item->WDay;?>
+					<?php $mright=$item->WDay;?>
+				<?php break;?>
+				<?php case 3:?>
+					<?php $tmptime = strtotime($this->y.'-'.$this->m.'-'.$item->Day);?>
+					<?php if($tmptime < $starttime || $tmptime > $endtime) continue 2;?>
+					<?php $mleft=date('w',$tmptime);?>
+					<?php $mright=date('w',$tmptime);?>
+				<?php break;?>
+				<?php case 4:?>
+					<?php $tmptime = strtotime($this->y.'-'.$item->Month.'-'.$item->Day);?>
+					<?php if($tmptime < $starttime || $tmptime > $endtime) continue 2;?>
+					<?php $mleft=date('w',$tmptime);?>
+					<?php $mright=date('w',$tmptime);?>
+				<?php break;?>
+			<?php };?>
+				<!-- su kien -->
+				<div class="event_parent"> 
+					<?php if($start < $starttime):?>
+						<div  class = "leftArrow"></div>
+					<?php endif;?>
+					<div class="event bgyellow" style="margin-left:<?php echo (100/7)*($mleft-1);?>%; width:<?php echo (100/7)*($mright-$mleft+1);?>%;  border:1px #ccc solid;" title="<?php echo $item->Title?><?php echo $item->Description?>" onclick="rowEventEdit(<?php echo $item->EventID?>)"><?php echo $item->Title?></div>
+					<?php if($end > $endtime && !$end):?>
+						<div  class = "rightArrow"></div>
+					<?php endif;?>
+				</div>
+			<!-- ket thuc su kien -->
+	<?php $eventid = $item->EventID?>
+	<?php endforeach;?>
+	<?php if($eventid):?>
+		<?php $j++;?>
+		<?php for($i=0;$i<7;$i++):?>
+			<div class="cols cols_7 <?php if($i==5 || $i==6):?>cal_cols_holiday<?php endif;?>">
+				&nbsp;
+			</div><!-- end .cols -->
+		<?php endfor;?>
+		</div>
+	<?php endif;?>
+	
+    <?php while($j<30):?>
+		<div class="rows">
+			<?php for($i=0;$i<7;$i++):?>
+			<div class="cols cols_7 <?php if($i==5 || $i==6):?>cal_cols_holiday<?php endif;?>">
+				&nbsp;
+			</div><!-- end .cols -->
+			<?php endfor;?>
+		</div>
+		<?php $j++;?>
+    <?php endwhile;?>
+</div><!-- end .cal_content_grid -->
+
+
+

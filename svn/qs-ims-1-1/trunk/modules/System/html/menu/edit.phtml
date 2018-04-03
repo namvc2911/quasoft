@@ -1,0 +1,146 @@
+<form method="post" id="qss_form">
+	<input type="hidden" value="<?php echo $this->id?>" name="id" />
+	<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+		<button id="btnSAVE" type="button" class="btn btn_main_top" onclick="formMenuSave(<?php echo $this->mid?>)">
+			<?php echo $this->_translate(34)?>
+		</button>
+		<button type="button" class="btn btn_main_top" onclick="formMenuBack(<?php echo $this->mid?>)">
+			<?php echo $this->_translate(32)?>
+		</button>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<div id="item-actions">
+			<ul>
+				<li class="item-action active"><a href="#1"><span><?php echo $this->_translate(119)?>
+					</span>
+				</a>
+				</li>
+			</ul>
+		</div>
+		<table border="0">
+			<tr>
+				<td>Thứ tự</td>
+				<td><input type="text" value="<?php echo @$this->menu->MenuOrder?>"
+					style="width: 200px;" name="intMenuOrder" />
+				</td>
+			</tr>
+			<?php foreach ($this->languages as $language):?>
+			<tr>
+				<td><?php echo $this->_translate(44)?> - <?php echo $language->Name?>
+				</td>
+				<?php if($language->Code == 'vn'):?>
+				<td width="338">
+                    <input style="width: 250" type="text" name="szName"
+					value="<?php echo @$this->menu->MenuName?>" />
+				</td>
+				<?php else:?>
+				<td><input type="text"
+					value="<?php echo @$this->menu->{"MenuName_$language->Code"}?>"
+					style="width: 200px;" name="szName_<?php echo $language->Code?>" />
+				</td>
+				<?php endif;?>
+			</tr>
+			<?php endforeach;?>
+			<tr>
+				<td>Menu</td>
+				<td>
+					<select style="width: 200px;" name="mid">
+						<?php foreach($this->mains as $item):?>
+							<option value="<?php echo $item->ID?>" <?php if($this->mid == $item->ID):?>selected<?php endif;?>><?php echo $item->Name?></option>
+						<?php endforeach;?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>Icon</td>
+				<td><input type="text" value="<?php echo @$this->menu->Icon?>"
+					style="width: 200px;" name="szIcon" />
+				</td>
+			</tr>
+			<tr>
+				<td width="110"><?php echo $this->_translate(135)?>
+				</td>
+				<td width="338"><?php //echo $this->views->Common->ComboBox($this->mainmenu,'parentid',$this->parentid);?>
+					<p>
+					<?php
+					global $dyn_menu;
+					global $parentid;
+					$parentid = $this->parentid;
+					$dyn_menu = '<select id="parentid" name="parentid" style="width:200px;">';
+					$dyn_menu .= "<option selected value=\"0\">".$this->_translate(38)."</option>\n";
+					foreach($this->mainmenu as $item)
+					{
+						$names[$item->MenuID] = $item->MenuName;
+						$cats[$item->MenuID] = $item->ParentID;
+					}
+					$hierarchize = hierarchize($cats, 0);
+					display_options($hierarchize, $names);
+					$dyn_menu .="</select>";
+					echo $dyn_menu;
+
+					function hierarchize(&$cats, $parent) {
+						if($cats)
+						{
+							$subs = array_keys($cats, $parent);
+							$tree = array();
+							foreach ($subs as $sub)
+							{
+								$tree[$sub] = hierarchize($cats, $sub);
+							}
+							return count($tree) ? $tree : $parent;
+						}
+					}
+					 
+					function display_options(&$tree, &$names, $nest = 0) {
+						global $dyn_menu;
+						global $parentid;
+						if($tree)
+						{
+							foreach ($tree as $key => $branch)
+							{
+								$indent = $nest ? str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $nest) : '';
+								if($key == $parentid)
+								{
+									$dyn_menu .="<option selected value=\"$key\">$indent{$names[$key]}</option>\n";
+								}
+								else
+								{
+									$dyn_menu .="<option value=\"$key\">$indent{$names[$key]}</option>\n";
+								}
+								if (is_array($branch))
+								{
+									display_options($branch, $names, $nest + 1);
+								}
+							}
+						}
+					}
+					?>
+				
+				</td>
+			</tr>
+		</table>
+		<table border="1">
+		<?php $count = 0;?>
+		<?php foreach ($this->configs as $config):?>
+		<?php if(!$count):?>
+			<tr>
+			<?php endif;?>
+				<td style="color: <?php echo ($config->actived?($config->Type==3?'green':($config->Type==4?'orange':'black')):($config->Type==4?'orange':'red'));?>">
+					<input type="checkbox" name="FID[]"
+					value="<?php echo $config->FormCode?>"
+					<?php if($config->MenuID) echo 'checked';?>> <input
+					style="width: 30px" type="textbox"
+					name="MenuLinkOrder_<?php echo $config->FormCode?>"
+					value="<?php echo $config->MenuLinkOrder?>"> <?php echo $config->FormCode?>:
+					<?php echo $config->Name?>
+				</td>
+				<?php if($count):?>
+			</tr>
+			<?php endif;?>
+			<?php if($count) $count=0; else $count++;?>
+			<?php endforeach;?>
+
+		</table>
+	</div>
+</form>

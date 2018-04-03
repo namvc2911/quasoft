@@ -1,0 +1,229 @@
+<?php
+$lang = (@$this->lang != 'vn')?'_'.$this->lang:'';
+?>
+
+<table id="woinfo_location"class="border_table " cellpadding="0" cellspacing="0">
+	<tr class="center ">
+		<th><?php echo $this->_translate(1);?> <!-- Khu vực --> <!-- trans -->
+		</th>
+		<?php foreach ($this->steps as $step):?>
+		<th style="width: 10%"><?php echo $step->{'Name'.$lang};?></th>
+		<?php endforeach;?>
+		<?php /*<th style="width: 8%"><?php echo $this->_translate(2);?> <!-- Sự cố --><!-- trans --></th>*/?>
+		<th style="width: 10%"><?php echo $this->_translate(5);?> <!-- Quá hạn--><!-- trans --></th>
+	</tr>
+
+	<?php $this->locations = (is_array($this->locations) && count($this->locations))?$this->locations:array();?>
+	<?php foreach($this->locations as $l):?>
+	<tr
+		class="woinfo-filter-line pointer"
+		<?php /*onclick="woinfo_location(this)" */?>
+		type="2"
+		ioid="<?php echo $l->LocIOID;?>"
+		left="<?php echo $l->lft;?>"
+		right="<?php echo $l->rgt;?>">
+
+		<td
+			class="left  tree_level_<?php echo $l->Level;?> tree_open font-size-16"
+			code="<?php echo $l->LocCode;?>"
+			name="<?php echo $l->LocName;?>">
+			<?php echo $l->LocCode;?> - <?php echo $l->LocName;?>
+		</td>
+
+		<?php foreach ($this->steps as $step):?>
+		<?php $name=  'CountStep'.$step->StepNo;?>
+			<td class="center font-size-18">
+				<?php echo  $l->$name?$l->$name:'';?>
+			</td>
+		<?php endforeach;?>
+
+		<?php /*<td class="right <?php echo ($l->Breakdown > 0)?'bgpink':'';?>""><?php echo $l->Breakdown;?></td> */?>
+
+		<td class="center  font-size-18 <?php echo ($l->Over > 0)?' bgpink red ':'';?>""><?php echo $l->Over?$l->Over:'';?></td>
+	</tr>
+	<?php endforeach;?>
+</table>
+
+<h3> Sự cố </h3>
+
+<table id="woinfo_breakdown" class="border_table " cellpadding="0" cellspacing="0">
+	<tr class="">
+<!--		<th style="width: 10%;"> Số phiếu </th>-->
+        <th style="width: 20%;"> Mã thiết bị </th>
+		<th style="width: 20%;"> Tên thiết bị </th>
+        <th style="width: 20%;"> Khu vực </th>
+<!--		<th style="width: 10%;"> Bộ phận </th>-->
+		<th style="width: 10%;"> Ngày sự cố </th>
+<!--		<th style="width: 10%;"> Ngày bắt đầu </th>-->
+<!--		<th style="width: 10%;"> Ngày hoàn thành </th>-->
+
+		<th style="width: 10%;"> Loại </th>
+<!--		<th style="width: 10%;"> Nguyên nhân </th>-->
+<!--		<th style="width: 10%;"> Chi tiết </th>-->
+	</tr>
+
+	<?php foreach ($this->suco as $item):?>
+	<tr class="<?php echo ($item->Status == 1)?'bgpink red':'bggreen';?>  font-size-16" >
+<!--		<td> --><?php //echo $item->SoPhieu;?><!-- </td>-->
+		<td class="font-size-16"> <?php if($item->Status == 1):?>&nbsp;<img src="/images/warning.gif" style="padding-top: 3px;"/>&nbsp;<?php endif;?> <?php echo $item->MaThietBi;?> </td>
+        <td class="font-size-16"><?php echo $item->TenThietBi;?> </td>
+        <td class="font-size-16"> <?php echo $item->MaKhuVucThietBi;?></td>
+<!--		<td> --><?php //echo $item->BoPhan;?><!-- </td>-->
+		<td class="center font-size-16"> <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayYeuCau);?> </td>
+<!--		<td class="center font-size-16"> --><?php //echo Qss_Lib_Date::mysqltodisplay($item->NgayBatDau);?><!--  </td>-->
+<!--		<td class="center font-size-16"> --><?php //echo Qss_Lib_Date::mysqltodisplay($item->Ngay);?><!--  </td>-->
+		<td class="font-size-16"> <?php echo $item->LoaiSuCo;?> </td>
+<!--		<td class="font-size-16"> --><?php //echo $item->MaNguyenNhanSuCo;?><!-- </td>-->
+<!--		<td class="center"> <a href="#1" onclick="popupFormDetail(<?php //echo $item->IFID_M707;?>//, <?php //echo $this->deptid;?>//)">Chi tiết</a> </td>-->
+	</tr>
+	<?php endforeach;?>
+</table>
+
+
+<?php if(Qss_Lib_System::formActive('M753') && Qss_Lib_System::objectInForm('M753', 'OHieuChuanKiemDinh')):?>
+<h3> Hiệu chuẩn/Kiểm định </h3>
+
+<table id="woinfo_calibration"class="border_table" cellpadding="0" cellspacing="0">
+    <tr class="">
+        <th style="width: 20%;"> Mã thiết bị </th>
+        <th style="width: 20%;"> Tên thiết bị </th>
+        <th style="width: 10%;"> Khu vực </th>
+        <th style="width: 20%;"> Ngày </th>
+        <th style="width: 20%;"> Ngày kiểm định tiếp theo </th>
+<!--        <th style="width: 20%;"> Chi tiết </th>-->
+    </tr>
+
+    <?php foreach ($this->hieuchuan as $item):?>
+        <tr >
+            <td class="font-size-16"> <?php echo $item->MaThietBi;?> </td>
+            <td class="font-size-16"> <?php echo $item->TenThietBi;?></td>
+            <td class="font-size-16"> <?php echo $item->MaKhuVucThietBi;?></td>
+            <td class="center font-size-16"> <?php echo Qss_Lib_Date::mysqltodisplay($item->Ngay);?> </td>
+            <td class="center font-size-16"> <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayKiemDinhTiepTheo);?>  </td>
+<!--            <td class="center"> <a href="#1" onclick="popupFormDetail(<?php //echo $item->IFID_M753;?>//, <?php //echo $this->deptid;?>//)">Chi tiết</a> </td>-->
+        </tr>
+    <?php endforeach;?>
+</table>
+<?php endif;?>
+
+<?php /*
+<script>
+	$(".woinfo-filter-line").hover(function(){ $(this).addClass("marker");}, function(){ $(this).removeClass("marker");});
+</script>
+ */?>
+
+<script>
+$(document).ready(function() {
+	$('#woinfo_location tr:odd').css({'background':'#eee'});
+    $('#woinfo_calibration tr:odd').css({'background':'#eee'});
+
+
+
+
+        var chart;
+        chart = new Highcharts.Chart({
+        chart: {
+			 renderTo: 'woinfo-number-of-wo-by-step-chart',
+			 type: 'column',
+			 plotBackgroundColor: null,
+			 plotBorderWidth: null,
+			 plotShadow: false
+				 
+        },
+        title: {
+            text: '<?php echo $this->_translate(3);?>'//Tình trạng phiếu bảo trì
+        },
+        tooltip: {
+                formatter: function() {
+                return '<b>'+ this.point.name +'</b><br/>'+ this.y +'<br/>';
+            }
+        },
+        series: [{
+            type: 'pie',
+            data: [
+                <?php
+                $series = '';
+				$getColor = array(1=>'orange', 2=>'yellow', 3=>'aqua', 4=>'green', 5=>'red');
+                foreach ($this->steps as $step)
+                {
+					$series .= ($series != '') ? ',' : '';
+					$series .= 
+						'{'.
+							'name: \''.$step->{'Name'.$lang}.'\', ' .
+							'y: '.@(int) $this->numOfWO[$step->StepNo].', '.
+							'color: \''. $getColor[$step->StepNo] .'\' '.
+						'}';
+                }
+                echo $series; 
+                ?>
+            ]
+        }]
+    });
+    
+
+	var chart2;
+	chart2 = new Highcharts.Chart({
+		chart: {
+			renderTo: 'woinfo-number-of-wo-by-mtype-chart',
+			type: 'column',
+			plotBackgroundColor: null,
+			plotBorderWidth: null,
+			plotShadow: false
+		},
+		title: {
+			text: '<?php echo $this->_translate(4);?>'
+		},
+		xAxis: {
+			labels: {
+					rotation: -45,
+					align: 'right'
+			},
+			categories: [
+					<?php
+					$xAxis = '';
+
+					foreach ($this->mtypes as $index => $type)
+					{
+							$xAxis .= ($xAxis != '') ? ',' : '';
+							$xAxis .= "'{$type->Loai}'";
+					}
+					echo $xAxis;
+					?>
+			]
+		},
+		yAxis: {
+			min: 0,
+			title: {
+					text: 'Total'
+			}
+		},
+		tooltip: {
+			formatter: function() {
+					return '<b>' + this.x + '</b><br/>' +
+						this.x + ': ' + this.y + '<br/>';
+			}
+		},
+		series: [{
+			type: 'column',
+			showInLegend: false,
+			data: [
+			<?php
+			$series = '';
+			$comma = 0;
+			foreach ($this->mtypes as $type)
+			{
+				$series .= ($comma) ? ',' : '';
+				if ($comma == 0)
+				{
+						$comma = 1;
+				}
+				$series .= @(int) $this->numOfWOByMtype[$type->IOID];
+			}
+			echo $series;
+			?>
+			]
+		}]
+	});
+
+});
+</script>

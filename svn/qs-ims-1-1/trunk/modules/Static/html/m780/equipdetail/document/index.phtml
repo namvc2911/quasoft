@@ -1,0 +1,173 @@
+<?php
+/**
+ * *****************************************************************************
+ * Tai Lieu
+ * *****************************************************************************
+ */
+
+$common = new Qss_Model_Extra_Extra();
+
+function einfo_get_child_of_doc_type($dtid = 0, $lv = 0)
+{
+	return;
+	$common = new Qss_Model_Extra_Extra();
+	$doctype = $common->getTable(array('*'), 'qsdocumenttype'
+	, array('ifnull(ParentID,0)' => $dtid), array(), 1000);
+	$lv = $lv + 1;
+
+	if ($doctype)
+	{
+		foreach ($doctype as $dt)
+		{
+			echo '<tr>';
+			echo '<td class="pointer einfo-doctab-select-doctype tree_level_' . $lv . ' tree_open"'
+			. ' onclick="einfo_show_document(' . $dt->DTID . ', 2)"'
+			. ' id="' . $dt->DTID . '"'
+			. ' type="2" '
+			. '>';
+			echo $dt->Type;
+			echo '</td>';
+			echo '</tr>';
+			einfo_get_child_of_doc_type($dt->DTID, $lv);
+		}
+	}
+	else
+	{
+		return;
+	}
+
+}
+?>
+
+<!-- <div class="einfo-tab-select-column">
+	<table>
+		<tr>
+			<td
+				class="left einfo-doctab-select-doctype pointer  einfo-first-click"
+				onclick="einfo_show_document(0, 0)" id="0" type="0"><?php echo $this->_translate(45); //Tất cả tài liệu    ?>
+			</td>
+		</tr>
+
+		<tr>
+			<td class="left einfo-doctab-select-doctype pointer"
+				onclick="einfo_show_document(0, 1)" id="0" type="1"><?php echo $this->_translate(44); //Chưa phân loại    ?>
+			</td>
+		</tr>
+		<?php einfo_get_child_of_doc_type(); ?>
+	</table>
+</div>
+ -->
+<div id="document_table"
+	class="einfo-tab-show-column">
+	<div style="float: left; width: 100%;position: relative;">
+		<table cellpadding="0" cellspacing="0" class="border_table" border="0"
+			style="width: 100%;" id='einfo-doc-attach'>
+			<tr class="bggrey center">
+				<th class="w05" style="width: 10%"><?php echo $this->_translate(1);?>
+					<!-- Kiểu --></th>
+				<!-- end .cell 5-->
+				<th class="w2" style="width: 22.5%"><?php echo $this->_translate(3);?>
+					<!-- Bản mềm --></th>
+				<!-- end .cell 3-->
+				<th class="w2" style="width: 22.5%"><?php echo $this->_translate(4);?>
+					<!-- Bản cứng --></th>
+				<!-- end .cell 4-->
+				<th class="w15" style="width: 22.5%"><?php echo $this->_translate(5);?>
+					<!-- Ngày cập nhật --></th>
+				<!-- end .cell 6-->
+                <th class="w15" style="width: 10%"><?php echo $this->_translate(7);?>
+                    <!-- Ngày cập nhật --></th>
+			</tr>
+			<?php $j = 0;?>
+			<?php $type = '';?>
+			<?php foreach ($this->data as $dat):?>
+			
+			<?php
+			$j++;
+			// Hien thi phan mo rong
+			if ($dat->Ext)
+			{
+				$ext = '<span class="' . $dat->Ext . ' unknown">&nbsp;</span>';
+			}
+			else
+			{
+				$ext = '<span class="unknown">&nbsp;</span>';
+			}
+			
+			// Hien thi ten tai lieu
+			if ($dat->docname)
+			{
+				$docname = '<a href="#!" onclick="downloadDoc(' . $dat->DID . ')">' . $dat->docname . '</a>';
+			}
+			else
+			{
+				$docname =  '&nbsp';
+			}
+			
+			// Hien thi thoi gian
+			if ($dat->DDate)
+			{
+				$micro      = strtotime($dat->DDate);
+				$timeString = date('h:i:s', $micro);
+				$dateString = date('d-m-Y', $micro);
+				$time       = $dateString .' ( <span class="notify_time">' . $timeString . '</span> )';
+			
+			}
+			else
+			{
+				$time       = '';
+			}
+			
+			
+			?>
+			<?php if($type != $dat->Type):?>
+				<tr>
+					<td class="bold italic" colspan="4"><?php echo $dat->Type;?>
+					</td>
+				</tr>
+			<?php endif;?>
+			<tr>
+				<td><?php echo $ext;?>
+				</td>
+				<td><?php echo $docname;?>
+				</td>
+			
+				<td><?php echo $dat->Reference;?>
+				</td>
+			
+				<td><?php echo $time;?>
+				</td>
+
+                <td class="center">
+                    <a href="#!" onclick="deleteDocument(<?php echo $dat->IFID?>, <?php echo $dat->FDID?>)">Xóa</a>
+                </td>
+			</tr>
+			<?php $type = $dat->Type;?>
+			<?php endforeach;?>
+			
+			
+			
+			<?php if ($j < 20):?>
+			<?php for ($k = $j; $k < 20; $k++):?>
+			<tr>
+				<td class="center">&nbsp;</td>
+				<td class="center">&nbsp;</td>
+				<td class="center">&nbsp;</td>
+				<td class="center">&nbsp;</td>
+                <td class="center">&nbsp;</td>
+			</tr>
+			<?php endfor;?>
+			<?php endif;?>
+		</table>
+	<div class="round-button">
+	    <a class="round-button-circle" href="#" onclick="rowRecord();">+</a>
+	</div>
+	</div>
+	<!-- end .document_table -->
+</div>
+
+<script>
+	$('#einfo-tab-select-column').css({'height': $('#view').height() * 0.72 + 'px', 'overflow-y': 'auto', 'overflow-x': 'hidden'});
+	
+	$('.einfo-first-click').click();
+</script>

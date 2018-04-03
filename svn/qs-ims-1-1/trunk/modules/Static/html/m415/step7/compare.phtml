@@ -1,0 +1,352 @@
+<?php 
+    $line              = 0; // dong
+    $stt               = 0; // số thứ tự
+    $mathang           = $this->items;
+
+    $partnerCol        = 5;
+
+    $totalByPartner    = array();
+    $excludePartner    = array(); // Giup khong hien lai input hidden ve nha cung cap o dong san pham thu 2
+    $rome              = 0;
+    $nhacungcap        = array();
+    // echo '<pre>'; print_r($this->partners); die;
+
+    foreach($this->partners as $key=>$partner)
+    {
+        if(!$partner->NhaCungCapKhongHopLe)
+        {
+            $nhacungcap[] = $partner;
+        }
+    }
+
+    $soluongnhacungcap = count($nhacungcap);
+    $tongsocot         = 5 + ($soluongnhacungcap * $partnerCol);
+?>
+
+<div>
+    <form id="M415_compare_list">
+
+        <input type="hidden" name="planioid" value="<?php echo $this->planioid;?>"  />
+        <?php foreach ($this->plan as $dat):?>
+            <input type="hidden" name="itemioid[]" value="<?php echo $dat->Ref_MaSP;?>"  />
+            <input type="hidden" name="uomioid[]" value="<?php echo $dat->Ref_DonViTinh;?>" />
+            <input type="hidden" name="qty[]" value="<?php echo $dat->SoLuongYeuCau;?>" />
+            <input type="hidden" name="requestioid[]" value="<?php echo $dat->Ref_SoYeuCau;?>" />
+        <?php endforeach;?>
+
+        <table class="border_table" cellpadding="0" cellspacing="0" border="0" style="table-layout: fixed; width:auto;">
+
+            <!-- Begin: Dòng 1 tiêu đề so sánh báo giá  -->
+            <tr class="bggrey">
+                <th rowspan="2" style="width: 30px;"><div style="width: 30px;">STT</div></th>
+                <th rowspan="2" style="width: 80px;"><div style="width: 80px;">Mã mặt hàng</div></th>
+                <th rowspan="2" style="width: 100px;"><div style="width: 100px;">Tên mặt hàng</div></th>
+                <th rowspan="2" style="width: 50px;"><div style="width: 50px;">ĐVT</div></th>
+                <th rowspan="2" style="width: 50px;"><div style="width: 50px;">SL yêu cầu</div></th>
+
+                <?php foreach($nhacungcap as $partner):?>
+                    <th colspan="<?php echo $partnerCol;?>">
+                        <input type="hidden" id="partner_name_<?php echo $partner->Ref_MaNCC;?>"
+                               value="<?php echo $partner->TenNCC;?>"/>
+                        <?php echo $partner->TenNCC;;?>
+                    </th>
+                <?php endforeach;?>
+            </tr>
+            <!-- End: Dòng 1 tiêu đề so sánh báo giá -->
+
+            <!-- Begin: Dòng 2 tiêu đề so sánh báo giá  -->
+            <tr class="bggrey">
+                <?php foreach($nhacungcap as $partner):?>
+                    <th style="width: 20px;">
+                        <div style="width: 20px;">
+                            <input type="checkbox"
+                                onchange="M415.step7.checkAllOnePartner(this, '<?php echo $partner->Ref_MaNCC;?>');"
+                                id="M415_partner_<?php echo $partner->Ref_MaNCC;?>"
+                                class="M415_partner_check_all"
+                                value="<?php echo $partner->Ref_MaNCC;?>"/>
+                        </div>
+                    </th>
+                    <th style="width: 80px;"><div style="width: 80px;">Đơn giá</div></th>
+                    <th style="width: 80px;"><div style="width: 80px;">Giá thương lượng</div></th>
+                    <th style="width: 50px;"><div style="width: 50px;">SL báo giá</div></th>
+                    <th style="width: 100px;"><div style="width: 100px;">Thành tiền</div></th>
+                <?php endforeach;?>
+            </tr>
+            <!-- End: Dòng 2 tiêu đề so sánh báo giá  -->
+
+            <!-- Begin: Tiêu đề I. Giá chào <Colspan = total cols> -->
+            <tr>
+                <td class="center bold"> <?php echo Qss_Lib_Util::numberToRome(++$rome);?></td>
+                <td colspan="<?php echo ($tongsocot - 1);?>" class="left bold">Giá chào (chưa bao gồm thuế VAT).</td>
+            </tr>
+            <!-- End: Tiêu đề I. Giá chào <Colspan = total cols> -->
+
+
+
+            <?php foreach($mathang as $item):?>
+                <?php $monkey      = 0; // Kiem tra xem co phai la nho nhat dau tien ko, co the nhieu nha cc co cung mot don gia?>
+
+                <?php $itemKey = $item->Ref_MaSP; ?>
+                <?php $line++;?>
+                <tr >
+                    <td class="center"><?php echo ++$stt?></td>
+                    <td class="left"><?php echo $item->MaSP;;?></td>
+                    <td class="left"><?php echo $item->TenSP;?></td>
+                    <td class="left"><?php echo $item->DonViTinh;?></td>
+                    <td class="right"><?php echo $item->SoLuongYeuCau;?></td>
+
+                    <?php foreach($nhacungcap as $partner):?>
+                        <?php $partnerIOID = $partner->Ref_MaNCC?>
+                        <?php $aliasDonGia = 'DonGia_'.$partner->Ref_MaNCC;?>
+                        <?php $aliasDonGia2 = 'DonGia2_'.$partner->Ref_MaNCC;?>
+                        <?php $aliasGiaThuongLuong = 'GiaThuongLuong_'.$partner->Ref_MaNCC;?>
+                        <?php $donGia      = (isset($item->$aliasDonGia) && $item->$aliasDonGia)?$item->$aliasDonGia:0;?>
+                        <?php $donGia2     = (isset($item->$aliasDonGia2) && $item->$aliasDonGia2)?$item->$aliasDonGia2:0;?>
+
+                        <?php $cat = false; // Co check o tren mot dong hay khong?>
+                       <?php
+                            if($item->selectPartner == $partner->Ref_MaNCC)
+                            {
+                                $monkey = 1;
+                                $cat    = true;
+                            }
+                        ?>
+
+                        <?php
+                            if(!isset($totalByPartner[$partnerIOID]))
+                            {
+                                $totalByPartner[$partnerIOID] = 0; // reset & init
+                            }
+                        ?>
+
+                        <?php $temp2 = 'CoBaoGiaCho_'.$partnerIOID;?>
+
+                        <?php $khongHopLe = $item->{'KhongHopLe_'.$partner->Ref_MaNCC};?>
+                        <?php $kyThuat = (int)$item->{'KyThuat_'.$partner->Ref_MaNCC};?>
+                        <?php $classHopLe = (!$khongHopLe && $kyThuat)?'marker_'.$partnerIOID.' marker_'. $partnerIOID.'_'.$line:'bgpink';?>
+
+                        <!-- Chon -->
+                        <td class="center <?php echo $classHopLe;?>" <?php //echo $noCheck;?>>
+                            <?php if($this->type == 2): // Don le?>
+
+
+                            <?php if(!$khongHopLe && $kyThuat):?>
+                            <input
+                                type="checkbox"
+                                id="M415_step7_checkbox_<?php echo $partnerIOID;?>_<?php echo $line;?>"
+                                class="M415_step7_compare_line checkbox_<?php echo $partnerIOID;?>"
+                                onchange="M415.step7.checkCompareQuotationLine(this, '<?php echo $partnerIOID;?>', '<?php echo $line;?>');"
+                                partner="<?php echo $partnerIOID;?>"
+                                line="<?php echo $line;?>"
+
+                            />
+                                <?php endif;?>
+                            <?php endif;?>
+
+                            <?php if(!$khongHopLe && $kyThuat):?>
+                            <input type="hidden" class="M415_step7_quotation3_form_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?>_<?php echo $line;?>" name="partnerioid2[]" value="<?php echo $partnerIOID;?>" disabled/>
+                            <input type="hidden" class="M415_step7_quotation3_form_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?>_<?php echo $line;?>" name="itemioid2[]" value="<?php echo $item->Ref_MaSP;?>" disabled/>
+                            <input type="hidden" class="M415_step7_quotation3_form_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?>_<?php echo $line;?>" name="uomioid2[]" value="<?php echo $item->Ref_DonViTinh;?>" disabled/>
+                            <input type="hidden" class="M415_step7_quotation3_form_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?>_<?php echo $line;?>" name="unitprice2[]" value="<?php echo $donGia/1000;?>" disabled/>
+                            <input type="hidden" class="M415_step7_quotation3_form_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?>_<?php echo $line;?>" name="currency2[]" value="<?php echo $item->LoaiTien;?>" disabled/>
+                            <input type="hidden" class="M415_step7_quotation3_form_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?>_<?php echo $line;?>" name="qioid2[]" value="<?php echo $item->{'BaoGiaIOID_'.$partner->Ref_MaNCC};?>" disabled/>
+                            <input type="hidden" class="M415_step7_quotation3_form_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?>_<?php echo $line;?>" name="qifid2[]" value="<?php echo $item->{'BaoGiaIFID_'.$partner->Ref_MaNCC};?>" disabled/>
+                            <input type="hidden" class="M415_step7_quotation3_form_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?>_<?php echo $line;?>" name="select2[]" value="1" disabled/>
+                            <input type="hidden" class="M415_step7_quotation3_form_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?>_<?php echo $line;?>" name="delivery2[]" value="<?php echo $item->{'SoNgayGiaoHang_'.$partner->Ref_MaNCC};?>" disabled/>
+                            <?php endif;?>
+                        </td>
+
+                        <!-- Don gia -->
+                        <td class="
+                            right <?php echo $classHopLe;?>
+                            unit_price_<?php echo $partnerIOID?>_<?php echo $line;?>">
+
+                            <?php if($this->type == 1): // Tron goi?>
+                                <?php if((isset($item->$temp2) && $item->$temp2) || $donGia2 == 0):?>
+                                    <?php echo Qss_Lib_Util::formatMoney($donGia2);?>
+                                <?php else:?>
+                                    <?php echo Qss_Lib_Util::formatMoney($item->max);?>
+                                <?php endif;?>
+                            <?php else:?>
+                                <?php if(isset($item->$temp2) && $item->$temp2):?>
+                                    <?php echo Qss_Lib_Util::formatMoney($donGia2);?>
+                                <?php endif;?>
+                            <?php endif;?>
+                        </td>
+
+                        <!-- Gia thương lượng -->
+                        <td class="
+                            <?php echo (!$khongHopLe && $kyThuat)?'center':'right'?> <?php echo $classHopLe;?>
+                            negotiate_price_<?php echo $partnerIOID?>_<?php echo $line;?>">
+
+
+                            <?php if(!$khongHopLe && $kyThuat):?>
+                            <input type="text" style="width: 70px; " class="right M415_step7_quotation3_form_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?>_<?php echo $line;?>" name="negotiate2[]" value="<?php echo Qss_Lib_Util::formatMoney($item->$aliasGiaThuongLuong);?>" disabled/>
+                            <?php else:?>
+                                <?php echo Qss_Lib_Util::formatMoney($item->$aliasGiaThuongLuong);?>
+                            <?php endif;?>
+                        </td>
+
+                        <!-- SL bao gia -->
+                        <td class="right <?php echo $classHopLe;?>" <?php //echo $noCheck;?>>
+                            <?php if(isset($item->$temp2) && $item->$temp2):?>
+                                <?php echo $item->SoLuongBaoGia;?>
+                            <?php endif;?>
+                        </td>
+
+
+                        <?php /*
+                        <!-- SL dat hang -->
+                        <td class="right <?php echo $classHopLe;?>" <?php //echo $noCheck;?>>
+                            <?php echo $item->SoLuongYeuCau;?>
+                        </td>
+                        */?>
+
+                        <td class="right <?php echo $classHopLe;?> M415_step7_compare_quotation_totalamount_<?php echo $partnerIOID?>_<?php echo $line;?>" <?php //echo $noCheck;?>>
+                            <?php echo Qss_Lib_Util::formatMoney($item->SoLuongYeuCau* $donGia);?>
+                        </td>
+
+                        <?php if(!$khongHopLe):?>
+                        <?php $totalByPartner[$partnerIOID] += $item->SoLuongYeuCau* $donGia;?>
+                        <?php endif;?>
+
+                        <script>
+                            <?php if($cat):?>
+                            $('#M415_step7_checkbox_<?php echo $partnerIOID;?>_<?php echo $line;?>').click();
+                            <?php endif;?>
+                        </script>
+                    <?php endforeach;?>
+                </tr>
+            <?php endforeach;?>
+
+
+            <!-- Begin: Tiêu đề II. Thuế <Colspan = total cols> -->
+            <tr>
+                <td class="center bold"> <?php echo Qss_Lib_Util::numberToRome(++$rome);?> </td>
+                <td class="left bold" colspan="4"> Thuế </td>
+                <?php foreach($nhacungcap as $partner):?>
+                    <?php $totalByPartner[$partner->Ref_MaNCC] += $partner->Thue; ?>
+                    <td class="right" colspan="<?php echo $partnerCol;?>"> <?php echo Qss_Lib_Util::formatMoney($partner->Thue);?></td>
+                <?php endforeach;?>
+            </tr>
+            <!-- End: Tiêu đề II. Thuế <Colspan = total cols> -->
+
+            <tr>
+
+                <td class="center bold"> <?php echo Qss_Lib_Util::numberToRome(++$rome);?> </td>
+                <td class="left bold" colspan="4"> Chi phí vận chuyển </td>
+                <?php foreach($nhacungcap as $partner):?>
+                    <?php $totalByPartner[$partner->Ref_MaNCC] += $partner->ChiPhiVanChuyen; ?>
+                    <td class="right" colspan="<?php echo $partnerCol;?>"> <?php echo Qss_Lib_Util::formatMoney($partner->ChiPhiVanChuyen);?></td>
+                <?php endforeach;?>
+            </tr>
+
+            <tr>
+
+                <td class="center bold"> <?php echo Qss_Lib_Util::numberToRome(++$rome);?> </td>
+                <td class="left bold" colspan="4"> Phát sinh giảm </td>
+                <?php foreach($nhacungcap as $partner):?>
+                    <?php $totalByPartner[$partner->Ref_MaNCC] -= $partner->GiamTru; ?>
+                    <td class="right" colspan="<?php echo $partnerCol;?>"> <?php echo Qss_Lib_Util::formatMoney($partner->GiamTru);?></td>
+                <?php endforeach;?>
+            </tr>
+
+            <tr>
+
+                <td class="center bold"> <?php echo Qss_Lib_Util::numberToRome(++$rome);?> </td>
+                <td class="left bold" colspan="4"> Phát sinh tăng </td>
+                <?php foreach($nhacungcap as $partner):?>
+                    <?php $totalByPartner[$partner->Ref_MaNCC] += $partner->PhatSinhTang; ?>
+                    <td class="right" colspan="<?php echo $partnerCol;?>"> <?php echo Qss_Lib_Util::formatMoney($partner->PhatSinhTang);?></td>
+                <?php endforeach;?>
+            </tr>
+
+            <tr>
+
+                <td class="center bold"> <?php echo Qss_Lib_Util::numberToRome(++$rome);?> </td>
+                <td class="left bold" colspan="4"> Chứng chỉ </td>
+                <?php foreach($nhacungcap as $partner):?>
+                    <?php $totalByPartner[$partner->Ref_MaNCC] += $partner->ChungChi; ?>
+                    <td class="right" colspan="<?php echo $partnerCol;?>"> <?php echo Qss_Lib_Util::formatMoney($partner->ChungChi);?></td>
+                <?php endforeach;?>
+            </tr>
+
+
+            <tr>
+                <td class="center bold"><?php echo Qss_Lib_Util::numberToRome(++$rome);?></td>
+                <td colspan="4" class="left bold">Tổng cộng</td>
+
+                <?php foreach($nhacungcap as $partner):?>
+                    <td class="right bold  marker_total_of_<?php echo $partner->Ref_MaNCC?>"  colspan="<?php echo $partnerCol;?>">
+                        <?php if(isset($totalByPartner[$partner->Ref_MaNCC])) echo Qss_Lib_Util::formatMoney($totalByPartner[$partner->Ref_MaNCC]);?>
+                    </td>
+                <?php endforeach;?>
+
+
+            </tr>
+
+            <tr>
+                <td class="center bold"><?php echo Qss_Lib_Util::numberToRome(++$rome);?></td>
+                <td colspan="4" class="left bold">Địa điểm giao hàng</td>
+                <?php foreach($nhacungcap as $partner):?>
+                    <td class="left" colspan="<?php echo $partnerCol;?>"><?php echo $partner->DiaDiemGiaoHang;?></td>
+                <?php endforeach;?>
+            </tr>
+
+            <tr>
+                <td class="center bold"><?php echo Qss_Lib_Util::numberToRome(++$rome);?></td>
+                <td colspan="4" class="left bold">Thời gian giao hàng</td>
+                <?php foreach($nhacungcap as $partner):?>
+                    <td class="left" colspan="<?php echo $partnerCol;?>"><?php echo $partner->ThoiGianGiaoHang;?></td>
+                <?php endforeach;?>
+            </tr>
+
+            <tr>
+                <td class="center bold"><?php echo Qss_Lib_Util::numberToRome(++$rome);?></td>
+                <td colspan="4" class="left bold">Hình thức thanh toán</td>
+                <?php foreach($nhacungcap as $partner):?>
+                    <td class="left" colspan="<?php echo $partnerCol;?>"><?php echo $partner->HinhThucThanhToan;?></td>
+                <?php endforeach;?>
+            </tr>
+
+            <tr>
+                <td class="center bold"><?php echo Qss_Lib_Util::numberToRome(++$rome);?></td>
+                <td colspan="4" class="left bold">Thời gian bảo hành</td>
+                <?php foreach($nhacungcap as $partner):?>
+                    <td class="left" colspan="<?php echo $partnerCol;?>"><?php echo $partner->ThoiGianBaoHanh;?></td>
+                <?php endforeach;?>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<br/>
+
+<div>
+
+</div>
+
+<script>
+<?php if($this->type == 1): // Tron goi?>
+	<?php $min   = '';?>
+	<?php $minIs = 0;?>
+    <?php foreach($nhacungcap as $partner):?>
+    <?php
+        if($min === '' || (isset($totalByPartner[$partner->Ref_MaNCC]) && $min > $totalByPartner[$partner->Ref_MaNCC]))
+        {
+            $min   = $totalByPartner[$partner->Ref_MaNCC];
+            $minIs = $partner->Ref_MaNCC;
+        }
+    ?>
+    <?php endforeach;?> 
+
+    //$('#M415_partner_<?php echo $minIs;?>').attr('checked', true);
+
+    //alert('#M415_partner_<?php echo $minIs;?>');
+    $(document).ready(function(){ 
+        $('#M415_partner_<?php echo $minIs;?>').click();
+    });
+    
+   // M415.step7.checkAllOnePartner($('#M415_partner_<?php echo $minIs;?>')[0], 'M415_step7_quotation3_form_<?php echo $minIs;?>');
+<?php endif;?>
+</script>

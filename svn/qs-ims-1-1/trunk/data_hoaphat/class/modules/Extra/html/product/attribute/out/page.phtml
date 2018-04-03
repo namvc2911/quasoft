@@ -1,0 +1,18 @@
+<?php $page = $this->page;?>
+
+<?php if($page <= $this->totalPage):?>
+	<?php for ($i = 0; $i < $this->totalPage; $i++) {
+		
+		if($page == ($i+1)) {
+			$selected = 'selected="selected"';
+		}
+		else 
+		{
+			$selected = '';
+		}
+		echo "<option value='".($i+1)."' ".$selected.">".($i+1)."</option>";
+	}
+	?>
+<?php else:?>
+	<option value="1">1</option>
+<?php endif;?>

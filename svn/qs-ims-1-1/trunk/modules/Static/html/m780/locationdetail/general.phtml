@@ -1,0 +1,89 @@
+<div id="einfo-info-table" style="margin-top: 0px;">
+	<div class="ui_box_s50_left">
+		<fieldset>
+			<legend>
+			<?php echo $this->_translate(1);?>
+			</legend>
+			<div class="ui_box_line">
+				<div class="label">
+					<label><?php echo $this->_translate(2);?>
+					</label>
+				</div>
+				<div class="element">
+				<?php echo $this->data->MaKhuVuc; ?>
+				</div>
+			</div>
+
+			<div class="ui_box_line">
+				<div class="label">
+					<label><?php echo $this->_translate(3);?>
+					</label>
+				</div>
+				<div class="element">
+				<?php echo $this->data->Ten; ?>
+				</div>
+			</div>
+
+			<div class="ui_box_line">
+				<div class="label">
+					<label><?php echo $this->_translate(4);?>
+					</label>
+				</div>
+				<div class="element">
+				<?php echo $this->data->TrucThuoc; ?>
+				</div>
+			</div>
+
+			<div class="ui_box_line">
+				<div class="label">
+					<label><?php echo $this->_translate(5);?>
+					</label>
+				</div>
+				<div class="element">
+				<?php echo $this->data->MoTa; ?>
+				</div>
+			</div>
+
+			<?php /*
+			<div class="ui_box_line">
+			<div class="label">
+			<label><?php echo $this->_translate(6);?></label>
+			</div>
+			<div class="element"> <?php echo $this->data->MaTTCP; ?> </div>
+			</div>
+
+			<div class="ui_box_line">
+			<div class="label">
+			<label><?php echo $this->_translate(7);?></label>
+			</div>
+			<div class="element"> <?php echo $this->data->TenTTCP; ?> </div>
+			</div>
+			*
+			*/?>
+		</fieldset>
+	</div>
+
+	<div class="ui_box_s50_right">
+		<br />
+		<button class="btn-custom"
+			onclick="popupFormInsert('M720', {OKhuVuc_TrucThuoc: '<?php echo trim($this->loccode); ?>'}, function() {$('#einfo-search-eq-table').jstree('load_node', $('#LOCATION<?php echo $this->nodeioid ?>'));});"
+			type="button" style="width: 100px;">
+			<?php echo $this->_translate(8);?>
+		</button>
+		<br />
+
+		<button class="btn-custom"
+			onclick="popupFormEdit('M720',<?php echo $this->nodeifid ?>, 1, null, function() {$('#LOCATION<?php echo $this->nodeioid ?>_anchor').click();});"
+			type="button" style="width: 100px;">
+			<?php echo $this->_translate(9);?>
+		</button>
+		<br />
+
+		<button class="btn-custom"
+			onclick="popupFormInsert('M705', {ODanhSachThietBi_MaKhuVuc: '<?php echo trim($this->loccode); ?>'}, function() {$('#einfo-search-eq-table').jstree('load_node', $('#LOCATION<?php echo $this->nodeioid ?>'));});"
+			type="button" style="width: 100px;">
+			<?php echo $this->_translate(10);?>
+		</button>
+		<br />
+	</div>
+</div>

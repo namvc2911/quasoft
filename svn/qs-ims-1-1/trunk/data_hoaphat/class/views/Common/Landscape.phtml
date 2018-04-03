@@ -1,0 +1,57 @@
+<style>
+    #portrait-company-header
+    {
+        min-height: 100px;
+    }
+    #portrait-company
+    {
+        width:42%;
+        margin-left: 4%;
+    }
+    #portrait-doc-title
+    {
+       font-size: 14px;
+       font-weight: bold;
+       line-height: 20px;
+       margin-right: 4%;
+       width: 50%;
+    }
+    #portrait-company-logo img
+    {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    #portrait-company-name
+    {
+        font-size: 14px;
+        font-weight: bold;
+        line-height: 22px;
+        margin-top: 8px;
+        text-align: center;
+    }
+</style>
+
+<xmg path="/data_hoaphat/images/logo.jpg" coordinates="A1" x="0" y="0" width="90" height="70"/>
+<!-- xmg width = 1200 -->
+<!--<img src="/data_hoaphat/images/logo.jpg" width="1200px" height="100px">-->
+
+<div id="portrait-company-header">
+    <div id = "portrait-company" class="fl">
+        <div id="portrait-company-logo">
+            <!-- xmg width = 630-->
+            <img width="90px" height="70px" src="/data_hoaphat/images/logo.jpg">
+        </div>
+        <div id="portrait-company-name">
+            <xls v-align="center" h-align="center" wrap-text="1" font-size="12" column-merge="C" column="A" row="6">CÔNG TY CỔ PHẦN THÉP HÒA PHÁT</xls>
+        </div>
+    </div>
+    <div id="portrait-doc-title" class="fr">
+        <p class="right">
+            <xls h-align="right" wrap-text="1" column="E" row="2"><?php echo @$this->ini['code']?></xls>
+        </p>
+        <p class="right">
+            <xls h-align="right" wrap-text="1" column="E" row="3"><?php if(isset($this->ini['date'])):?>Ngày hiệu lực: <?php echo $this->ini['date'];?><?php endif;?></xls>
+        </p>
+    </div>
+</div>

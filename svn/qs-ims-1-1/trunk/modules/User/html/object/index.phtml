@@ -1,0 +1,126 @@
+<div id="horizontal-toolbar" class="horizontal-toolbar">
+	<div
+		onclick="rowInsert('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->object->ObjectCode?>');"
+		title="<?php echo $this->_translate(12)?>" id="btnINSERT"
+		class="btn_main_top <?php if( !$this->object->bInsert || !($this->Rights & 1)):?>btn_disabled<?php endif;?>">
+		<a class="icon-32-new" href="#1"></a>
+	</div>
+	<div title="<?php echo $this->_translate(13)?>" id="btnEDIT"
+		class="btn_main_top btn_disabled"
+		onclick="rowEdit('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->object->ObjectCode?>');">
+		<a class="icon-32-edit" href="#1"></a>
+	</div>
+	<div title="<?php echo $this->_translate(17)?>" id="btnDETAIL"
+		class="btn_main_top btn_disabled"
+		onclick="rowTrace('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->object->ObjectCode?>');">
+		<a class="icon-32-preview" href="#1"></a>
+	</div>
+	<div title="<?php echo $this->_translate(14,'Xóa')?>" id="btnDELETE"
+		class="btn_main_top btn_disabled"
+		onclick="rowDelete('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->object->ObjectCode?>');">
+		<a class="icon-32-delete" href="#1"></a>
+	</div>
+	<div onclick="formBack('<?php echo $this->form->FormCode?>')"
+		title="<?php echo $this->_translate(32,'Trở lại')?>" id="btnBack"
+		class="btn_main_top">
+		<a class="icon-32-back" href="#1"></a>
+	</div>
+	<div class="icon-32_separator"></div>
+	<?php if($this->form->getCalendar()):?>
+	<div class="btn_main_top"
+		onclick="rowEvent('<?php echo $this->form->FormCode;?>')"
+		title="Xem dạng lịch" id="btnEVENT">
+		<a href="#1" class="icon-32-event"></a>
+	</div>
+	<?php endif;?>
+	<div
+		onclick="rowObjectSearch('<?php echo $this->object->i_IFID;?>','<?php echo $this->object->intDepartmentID;?>','<?php echo $this->object->ObjectCode;?>');"
+		title="<?php echo $this->_translate(23,'Làm mới dữ liệu')?>"
+		id="btnREFRESH" class="btn_main_top">
+		<a class="icon-32-refresh" href="#1"></a>
+	</div>
+	<div onclick="showSearch();" title="<?php echo $this->_translate(24)?>"
+		id="btnSEARCH" class="btn_main_top">
+		<a class="icon-32-search" href="#1"></a>
+	</div>
+	<div class="icon-32_separator"></div>
+	<?php foreach($this->bashes as $item):?>
+	<?php $arr = explode(',',$item->Step)?>
+	<?php if(in_array($this->form->i_Status,$arr)):?>
+	<?php switch($item->Type):
+case 2:?>
+<?php case 3:?>
+	<div
+		class="extra-button <?php if($item->Record):?>extra-button-record extra-disabled<?php endif;?>"
+		onclick="bashRun(<?php echo $this->form->i_IFID?>,<?php echo $item->BID?>,'<?php echo $item->BashName?>',this)">
+		<a href="#1"><?php echo $item->BashName?>
+		</a>
+	</div>
+	<?php break;?>
+	<?php case 4:?>
+	<div
+		class="extra-button <?php if($item->Record):?>extra-button-record extra-disabled<?php endif;?>"
+		onclick="popupOther(<?php echo $this->form->i_IFID?>,<?php echo $this->object->ObjectCode?>,'<?php echo $item->Class?>',this)">
+		<a href="#1"><?php echo $item->BashName?>
+		</a>
+	</div>
+	<?php break;?>
+	<?php case 5:?>
+	<div
+		class="extra-button <?php if($item->Record):?>extra-button-record extra-disabled<?php endif;?>"
+		onclick="openOther(<?php echo $this->form->i_IFID?>,<?php echo $this->object->ObjectCode?>,'<?php echo $item->Class?>',this)">
+		<a href="#1"><?php echo $item->BashName?>
+		</a>
+	</div>
+	<?php break;?>
+	<?php endswitch;?>
+	<?php endif;?>
+	<?php endforeach;?>
+
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="div-search" class="clearfix" style="display: none;">
+	<?php
+	echo $this->searchform;
+	?>
+	</div>
+	<div id="item-actions">
+		<ul>
+			<li class="item-action"><a href="#1"
+				onclick="formEdit('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>')">
+					<span><?php echo $this->form->o_fGetMainObject()->sz_Name;?> </span>
+			</a>
+			</li>
+			<?php $i = 1;?>
+			<?php foreach ($this->form->a_fGetSubObjects() as $object):?>
+			<?php if(!$object->bPublic):?>
+			<li
+				class="item-action <?php if($this->object->ObjectCode==$object->ObjectCode):?>active<?php endif;?>">
+				<a id="object_<?php	echo $i?>" href="#"
+				onclick="rowObject('<?php echo $object->ObjectCode?>','<?php echo $object->i_IFID?>','<?php echo $object->intDepartmentID?>')">
+					<span><?php echo $object->sz_Name;?> (<?php echo $object->countAll()?>)</span>
+			</a>
+			</li>
+			<?php $i ++;?>
+			<?php endif;?>
+			<?php endforeach;?>
+			<?php if ( $this->form->i_Type == Qss_Lib_Const::FORM_TYPE_PROCESS):?>
+			<li class="item-action"><a id="process_log" href="#"
+				onclick="rowProcessLog('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>')"><span
+					id="action_process_log"> <?php echo $this->_translate(34);?> </span>
+			</a></li>
+			<?php endif;?>
+		</ul>
+	</div>
+	<div id="qss_object">
+	<?php
+	echo $this->pager;
+	echo $this->listview;
+?>
+	</div>
+</div>
+<div
+	id="qss_trace" title="<?php echo $this->object->sz_Name?>"></div>
+<div
+	id="qss_combo" title="<?php echo $this->_translate(13)?>"></div>

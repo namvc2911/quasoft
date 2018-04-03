@@ -1,0 +1,38 @@
+<!-- @translate -->
+<div class="box_das2">
+	<div class="inside_das2">
+		<div class="bold" style="border-bottom: 1pt solid #ccc;">Tin tức hoạt
+			động</div>
+
+		<div>
+			<table class="grid">
+				<tr>
+					<th>Tiêu đề</th>
+					<th>Ngày</th>
+					<th>Thời gian</th>
+					<th>Địa điểm</th>
+					<th>Chi tiết</th>
+				</tr>
+
+				<?php foreach($this->news as $item):?>
+				<tr>
+					<td><?php echo $item->TieuDe;?></td>
+					<td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item->Ngay);?>
+					</td>
+					<td><?php echo $item->ThoiGian;?>
+					</td>
+					<td><?php echo $item->DiaDiem;?>
+					</td>
+					<td class="center">
+						<button type="button" class="btn-custom"
+							onclick="popupFormDetail(<?php echo $item->IFID_M147;?>, <?php echo $this->deptid;?>)">
+							Chi tiết</button>
+					
+					</td>
+				</tr>
+				<?php endforeach; ?>
+
+			</table>
+		</div>
+	</div>
+</div>

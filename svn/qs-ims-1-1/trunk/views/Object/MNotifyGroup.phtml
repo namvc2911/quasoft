@@ -1,0 +1,28 @@
+<script>
+    function save() {
+        var sz_BaseUrl = 'http://' + location.host;
+        var url        = sz_BaseUrl + '/static/c005/savegroup';
+        var data       = $('form#MNotifyGroup').serialize();
+
+        return qssAjax.call(url, data, function(jreturn) {
+            if(jreturn.message != '')
+            {
+                qssAjax.alert(jreturn.message);
+            }
+        }, function(jreturn) {
+            qssAjax.alert(jreturn.message);
+        });
+    }
+</script>
+
+<form id="MNotifyGroup">
+    <input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" />
+    <table id="grid" cellspacing="0" class="grid grid_edit tablescroll_body">
+        <?php foreach ($this->data as $item):?>
+            <tr>
+                <td><?php echo $item->GroupName;?></td>
+                <td><input type="checkbox" name="MNotifyGroup_ID[]" value="<?php echo $item->GroupID;?>" <?php echo $item->SelectedID?'checked':'';?> /></td>
+            </tr>
+        <?php endforeach;?>
+    </table>
+</form>

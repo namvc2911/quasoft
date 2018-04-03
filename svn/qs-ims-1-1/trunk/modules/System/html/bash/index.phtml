@@ -1,0 +1,88 @@
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+
+	<div class="fl">
+		<button id="btnINSERT" type="button" class="btn btn_main_top" onClick="rowInsert()">
+			<?php echo $this->_translate(12)?>
+		</button>
+		<button id="btnEDIT" type="button" class="btn btn_main_top" disabled onClick="rowEdit()">
+			<?php echo $this->_translate(13)?>
+		</button>
+		<button id="btnDELETE" type="button" class="btn btn_main_top" disabled onClick="rowDelete()">
+			<?php echo $this->_translate(14)?>
+		</button>
+		<div class="icon-32_separator"></div>
+		<button id="btnREFRESH" type="button" class="btn btn_main_top" onclick="rowSearch();">
+			<?php echo $this->_translate(23)?>
+		</button>
+	</div>
+
+	<div class="fr">
+		<button id="btnSEARCH" type="button" class="btn btn_main_top" onclick="showSearch();">
+			<?php echo $this->_translate(24)?>
+		</button>
+	</div>
+
+
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div style="display: none; right: 12px; top: 180px;" class="clearfix" id="div-search">
+		<form onsubmit="rowSearch(); return false;" method="post"
+			name="filter_form" id="form_bash_filter">
+			<div class="clearfix">
+				<div class="label">
+					<span>Tên</span> <span>Kết chuyển từ mô đun</span> <span>Kết chuyển
+						tới mô đun</span>
+				</div>
+				<div class="element">
+					<span><input type="text" value="<?php echo @$this->filters[1]?>"
+						name="filter_1" /> </span> <span> <select style="width: 150px;"
+						name="filter_4">
+							<option value=""></option>
+							<?php foreach ($this->forms as $item):?>
+							<?php if($item->Effected):?>
+							<option
+							<?php if(@$this->filters[4] == $item->FormCode) echo 'selected'?>
+								value="<?php echo $item->FormCode?>">
+								<?php echo $item->FormCode?> - <?php echo $item->Name?>
+							</option>
+							<?php endif;?>
+							<?php endforeach;?>
+					</select> </span> <span> <select style="width: 150px;"
+						name="filter_5">
+							<option value=""></option>
+							<?php foreach ($this->forms as $item):?>
+							<?php if($item->Effected):?>
+							<option
+							<?php if(@$this->filters[5] == $item->FormCode) echo 'selected'?>
+								value="<?php echo $item->FormCode?>">
+								<?php echo $item->FormCode?> - <?php echo $item->Name?>
+							</option>
+							<?php endif;?>
+							<?php endforeach;?>
+					</select> </span>
+				</div>
+			</div>
+		</form>
+		<div class="fl">
+			<div onclick="rowSearch(50);" class="btn-custom center " style="width:70px">Tìm kiếm</div>
+			<div class="clear"></div><br>
+			<div onclick="rowCleanSearch();" class="btn-custom center " style="width:70px">Xóa điều kiện</div>
+			<div class="clear"></div><br>
+			<div onclick="showSearch();" class="btn-custom center " style="width:70px">Đóng</div>
+		</div>
+	</div>
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#1"><span>Kết chuyển tự động</span>
+			</a></li>
+			<li class="item-action"><a onclick="rowBashFields()" href="#!"><span>Thuộc
+						tính kết chuyển</span> </a></li>
+			<li class="item-action"><a onclick="rowBashHistory()" href="#!"><span>Lịch
+						sử</span> </a></li>
+		</ul>
+	</div>
+	<div id="qss_form">
+		<?php echo $this->listview?>
+	</div>
+</div>

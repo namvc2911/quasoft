@@ -1,0 +1,79 @@
+<?php $oldRequestIOID = '';?>
+
+<script>
+    $(document).ready(function(){
+        // Tim kiem khi an enter
+        $('#m401_material_filter_dialbox').keypress(function (e) {
+            if (e.which == 13) {
+                m401_material_button.search();
+                return false;    //<---- Add this line
+            }
+        });
+
+        // Tim kiem khi go xong phim
+        $('#m401_material_filter_dialbox').keyup(function ()
+        {
+            m401_material_button.search();
+        });
+
+        // Xoa cac mat hang da duoc chon vao trong danh sach
+        $('.selected_line').each(function(){
+            var refItem = $(this).find('.RefItem').val();
+            $('#select_m401_material_box select option[value="'+refItem+'"]').remove();
+        });
+    });
+</script>
+
+<div id="select_m401_material_box">
+    <input type="text" id="m401_material_filter_dialbox"
+           placeholder="Search" style="width: 94%" />
+    <select class="select" size="16" multiple="multiple">
+        <?php if($this->filter == 1): // truong hop chon tu don hang, phieu xuat kho?>
+
+            <?php foreach($this->requests as $item):?>
+                <?php if($item->RequestIOID != $oldRequestIOID):?>
+                    <optgroup label="<?php echo $item->SoPhieu;?>" groupmarker="<?php echo $item->RequestIOID;?>">
+                <?php endif;?>
+
+                <option value="<?php echo $item->ItemIOID;?>"
+                        itemioid="<?php echo $item->ItemIOID;?>"
+                        uomioid="<?php echo $item->UomIOID;?>"
+                        itemcode="<?php echo $item->MaMatHang;?>"
+                        itemname="<?php echo $item->TenMatHang;?>"
+                        uom="<?php echo $item->DonViTinh;?>"
+                        qty="<?php  echo $item->Requested;?>"
+                        request="<?php  echo $item->SoPhieu;?>"
+                        requestioid="<?php  echo $item->RequestIOID;?>"
+                        groupmarker="<?php  echo $item->RequestIOID;?>"
+                        ordered="<?php echo $item->Ordered;?>">
+                    <?php echo $item->MaMatHang;?> - <?php echo $item->TenMatHang;?> (<?php echo $item->DonViTinh;?>)
+                </option>
+
+                <?php if($item->RequestIOID != $oldRequestIOID):?>
+                    </optgroup>
+                <?php endif;?>
+
+                <?php $oldRequestIOID = $item->RequestIOID;?>
+            <?php endforeach;?>
+
+        <?php elseif($this->filter == 2): // Truong hop chon tu danh sach mat hang?>
+
+            <!-- Truong hop chon tu don hang, phieu xuat kho -->
+            <?php foreach($this->items as $item):?>
+                <option value="<?php echo $item->IOID;?>"
+                        itemioid="<?php echo $item->IOID;?>"
+                        uomioid="<?php echo $item->Ref_DonViTinh;?>"
+                        itemcode="<?php echo $item->MaSanPham;?>"
+                        itemname="<?php echo $item->TenSanPham;?>"
+                        uom="<?php echo $item->DonViTinh;?>"
+                        request="0"
+                        requestioid=""
+                        qty="1"
+                        groupmarker="0"
+                        ordered="0">
+                    <?php echo $item->MaSanPham;?> - <?php echo $item->TenSanPham;?> (<?php echo $item->DonViTinh;?>)
+                </option>
+            <?php endforeach;?>
+        <?php endif;?>
+    </select>
+</div>

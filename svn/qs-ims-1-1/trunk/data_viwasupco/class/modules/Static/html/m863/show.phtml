@@ -1,0 +1,150 @@
+<?php $excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);?>
+<?php
+// $widthArr   = array(1, 4, 5, 3, 2.5, 2.5, 2.5, 2.5, 2.5, 2, 2, 2, 2, 2, 3, 4);
+$htmlWidth  = array(1.5, 3, 5, 1.5, 2, 2, 2, 2, 2);
+$totalCol   = count($htmlWidth);
+$htmlWidth  = Qss_Lib_Report::changeWidthToFitScreen($htmlWidth);
+$excelWidth = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($htmlWidth);
+$row        = 1;
+$bg         = "#EEEEEE"; // Mau nen cua cot tieu de
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+    <input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="portrait" style="font-size: 13px !important;">
+    <excel orientation="portrait" font-name="Times New Roman" font-size="12"
+           margin-left="0.5" margin-right="0.5" margin-top="0.75"
+           margin-bottom="0.75" />
+
+    <div id="head_print">
+        <div>
+            <div class="overflow" style=" overflow: hidden; width: 100%">
+                <div class="fl center" style="width: 40%">
+                    <xls row="<?php echo $row?>" column="A" column-merge="B" font-size="11" h-align="center" v-align="center" >ĐỘI BẢO TRÌ SỮA CHỮA & XÂY DỰNG</xls>
+                </div>
+
+                <div class="fr center" style="width: 50%">
+                    <p style="font-size: 16px; line-height: 18px;">
+                        <b>
+                            <xls row="<?php echo $row?>" column="C" column-merge="E" font-size="16" h-align="center" v-align="center" bold="1">CÔNG TY CỔ PHẦN ĐẦU TƯ NƯỚC SẠCH SÔNG ĐÀ</xls>
+                        </b>
+                    </p>
+                    <xls row="<?php echo ($row + 1)?>" column="C" column-merge="E" font-size="11" h-align="center" v-align="center"  >Xóm Vật Lại, xã Phú Minh, huyện Kỳ Sơn, tỉnh Hòa Bình; </xls>
+                    <br/>
+                    <xls row="<?php echo ($row + 2)?>" column="C" column-merge="E" font-size="11" h-align="center" v-align="center"  >Điện thoại: 0218.3.840.152-0218.3.840.148; Fax 0218.3.840.148; </xls>
+                    <br/>
+                </div>
+
+                <?php $row = $row + 2;?>
+            </div>
+        </div>
+        <?php $row++;?>
+        <?php $row++;?>
+        <br/>
+
+        <h1 style="text-align: center; font-size: 18px">
+            <xls row="<?php echo $row?>" column="A" column-merge="G" font-size="28" h-align="center" v-align="center" bold="1">
+                Theo dõi sử dụng vật tư (<?php echo $this->start;?> - <?php echo $this->end;?>)
+            </xls>
+        </h1>
+        <?php $row++;?>
+    </div>
+
+    <div id="container">
+        <table cellspacing="0" cellpadding="0" border="0" class="border" style="table-layout: fixed !important;">
+            <?php $beginHtml = 0;?>
+            <tr class="bggrey">
+                <th class="center" style="width: <?php echo $htmlWidth[$beginHtml];?>px !important;"> <div class="center" style="<?php echo $htmlWidth[$beginHtml++];?>px !important;">STT</div></th>
+                <th class="center" style="width: <?php echo $htmlWidth[$beginHtml];?>px !important;"> <div class="center" style="<?php echo $htmlWidth[$beginHtml++];?>px !important;;">Mã vật tư</div></th>
+                <th class="center" style="width: <?php echo $htmlWidth[$beginHtml];?>px !important;"> <div class="center" style="<?php echo $htmlWidth[$beginHtml++];?>px !important;;">Tên vật tư</div></th>
+                <th class="center" style="width: <?php echo $htmlWidth[$beginHtml];?>px !important;"> <div class="center" style="<?php echo $htmlWidth[$beginHtml++];?>px !important;;">ĐVT</div></th>
+                <th class="center" style="width: <?php echo $htmlWidth[$beginHtml];?>px !important;"> <div class="center" style="<?php echo $htmlWidth[$beginHtml++];?>px !important;;">SL định kỳ</div></th>
+                <th class="center" style="width: <?php echo $htmlWidth[$beginHtml];?>px !important;"> <div class="center" style="<?php echo $htmlWidth[$beginHtml++];?>px !important;;">SL tổng thể</div></th>
+                <th class="center" style="width: <?php echo $htmlWidth[$beginHtml];?>px !important;"> <div class="center" style="<?php echo $htmlWidth[$beginHtml++];?>px !important;;">SL thực tế</div></th>
+                <th class="center" style="width: <?php echo $htmlWidth[$beginHtml];?>px !important;"> <div class="center" style="<?php echo $htmlWidth[$beginHtml++];?>px !important;;">Chênh lệch định kỳ</div></th>
+                <th class="center" style="width: <?php echo $htmlWidth[$beginHtml];?>px !important;"> <div class="center" style="<?php echo $htmlWidth[$beginHtml++];?>px !important;;">Chênh lệch tổng thể</div></th>
+            </tr>
+
+            <?php $stt = 0;?>
+            <?php foreach($this->report as $item):?>
+                <?php
+                    $soLuongDinhKy  = @$item['SoLuongDinhKy']?$item['SoLuongDinhKy']:0;
+                    $soLuongTongThe = @$item['SoLuongTongThe']?$item['SoLuongTongThe']:0;
+                    $soLuongBaoTri  = @$item['SoLuongBaoTri']?$item['SoLuongBaoTri']:0;
+                    $chenhDinhKy    = $soLuongBaoTri - $soLuongDinhKy;
+                    $chenhTongThe   = $soLuongBaoTri - $soLuongTongThe;
+                ?>
+
+                <?php $beginHtml = 0;?>
+                <tr>
+                    <!-- STT -->
+                    <td class="center">
+                        <div >
+                            <?php echo ++$stt;?>
+                        </div>
+                    </td>
+
+                    <!-- HẠNG MỤC TỒN TẠI VÀ CÁC SỰ CỐ - Tên thiết bị -->
+                    <td class="left">
+                        <div >
+                            <?php echo @$item['MaVatTu'];?>
+                        </div>
+                    </td>
+
+                    <!-- TÌNH TRẠNG TỒN TẠI VÀ CÁC SỰ CỐ -->
+                    <td class="left">
+                        <div >
+                            <?php echo @$item['TenVatTu'];?>
+                        </div>
+                    </td>
+
+                    <!-- HỆ THỐNG -->
+                    <td class="left">
+                        <div >
+                            <?php echo @$item['DonViTinh'];?>
+                        </div>
+                    </td>
+
+                    <!-- NGƯỜI PHÁT HIỆN -->
+                    <td class="right">
+                        <div >
+                            <?php echo Qss_Lib_Util::formatNumber($soLuongDinhKy);?>
+                        </div>
+                    </td>
+
+                    <!-- NHÓM N.NHÂN -->
+                    <td class="right">
+                        <div >
+                            <?php echo Qss_Lib_Util::formatNumber($soLuongTongThe);?>
+                        </div>
+                    </td>
+
+                    <!-- NHÓM GIẢI PHÁP -->
+                    <td class="right">
+                        <div >
+                            <?php echo Qss_Lib_Util::formatNumber($soLuongBaoTri);?>
+                        </div>
+                    </td>
+
+                    <!-- NHÓM GIẢI PHÁP -->
+                    <td class="right">
+                        <div >
+                            <?php echo Qss_Lib_Util::formatNumber($chenhDinhKy);?>
+                        </div>
+                    </td>
+
+                    <!-- NHÓM GIẢI PHÁP -->
+                    <td class="right">
+                        <div >
+                            <?php echo Qss_Lib_Util::formatNumber($chenhTongThe);?>
+                        </div>
+                    </td>
+
+
+                </tr>
+            <?php endforeach;?>
+        </table>
+    </div>
+</div>

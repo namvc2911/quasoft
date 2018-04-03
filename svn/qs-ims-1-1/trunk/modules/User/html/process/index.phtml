@@ -1,0 +1,106 @@
+<div id="horizontal-toolbar" class="horizontal-toolbar">
+	<div onclick="formBack('<?php echo $this->form->FormCode?>')"
+		title="<?php echo $this->_translate(32)?>" id="btnBack"
+		class="btn_main_top">
+		<a class="icon-32-back" href="#1"></a>
+	</div>
+
+	<div onclick="rowSearch('<?php echo $this->form->i_IFID;?>');"
+		title="<?php echo $this->_translate(23)?>" id="btnREFRESH"
+		class="btn_main_top">
+		<a class="icon-32-refresh" href="#1"></a>
+	</div>
+	<div onclick="showSearch();" title="<?php echo $this->_translate(24)?>"
+		id="btnSEARCH" class="btn_main_top">
+		<a class="icon-32-search" href="#1"></a>
+	</div>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div style="display: none" class="clearfix" id="div-search">
+		<form onsubmit="rowSearch(); return false;" method="post"
+			name="filter_form" id="form_process_filter">
+			<div class="clearfix">
+				<div class="label">
+					<span><?php echo $this->_translate(35)?> </span> <span><?php echo $this->_translate(33)?>
+					</span> <span><?php echo $this->_translate(34)?> </span>
+				</div>
+				<div class="element">
+					<span><input type="text" value="" name="filter_1" id="filter_1" />
+					</span> <span> <select style="width: 150px;" name="filter_4">
+							<option value=""></option>
+							<?php foreach ($this->users as $item):?>
+							<option
+							<?php if(@$this->filters[2] == $item->UID) echo 'selected'?>
+								value="<?php echo $item->UID?>">
+								<?php echo $item->UserName?>
+							</option>
+							<?php endforeach;?>
+					</select> </span> <select style="width: 150px;" name="filter_5">
+						<option value=""></option>
+						<option value="0">
+						<?php echo $this->_translate(36)?>
+						</option>
+						<option value="1">
+						<?php echo $this->_translate(37)?>
+						</option>
+						<option value="2">
+						<?php echo $this->_translate(38)?>
+						</option>
+					</select> </span>
+				</div>
+			</div>
+		</form>
+		<div class="fl">
+			<div onclick="rowSearch('<?php echo $this->form->i_IFID;?>');"
+				class="btn-custom">
+				<?php echo $this->_translate(39)?>
+			</div>
+			<div onclick="rowCleanSearch('<?php echo $this->form->i_IFID;?>');"
+				class="btn-custom">
+				<?php echo $this->_translate(40)?>
+			</div>
+		</div>
+	</div>
+
+	<div id="item-actions">
+		<ul>
+			<li class="item-action"><a href="#1"
+				onclick="formBack('<?php echo $this->form->FormCode?>')"><span><?php echo $this->form->sz_Name;?>
+				</span> </a></li>
+				<?php
+				$i = 1;
+				foreach ($this->form->a_fGetSubObjects() as $object)
+				:
+				?>
+			<li
+				class="item-action <?php if($this->object->ObjectCode==$object->ObjectCode):?>active<?php endif;?>"><a
+				id="object_<?php
+	echo $i?>" href="#"
+				onclick="rowObject('<?php
+	echo $object->ObjectCode?>','<?php
+	echo $object->i_IFID?>','<?php
+	echo $object->intDepartmentID?>')"><span><?php echo $object->sz_Name;?>
+						(<?php echo $object->countAll()?>)</span> </a></li>
+						<?php
+						$i ++;
+						endforeach;
+						?>
+			<li class="item-action active"><a id="process_log" href="#"
+				onclick="rowProcessLog()"><span id="action_process_log"> <?php echo $this->_translate(41)?>
+						(<?php echo $this->count?>)</span> </a></li>
+		</ul>
+	</div>
+	<div id="qss_process">
+		<?php
+echo $this->listview;
+?>
+	</div>
+</div>
+<script>
+$(function() {
+	$("#filter_1").datepicker();
+	$("#filter_1").datepicker('option', {dateFormat: 'dd-mm-yy'});
+	$("#filter_1").val('<?php echo @$this->filters[1]?>');
+});
+</script>

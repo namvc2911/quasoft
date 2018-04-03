@@ -1,0 +1,55 @@
+<script type="text/javascript" src="/js/common.js"></script>
+
+<script>
+    var m759_material_button = {
+        show : function()
+        {
+            var url  = sz_BaseUrl + '/button/m759/material/show';
+            var data = $('#m759_material_form').serialize();
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#m759_material_show').html(jreturn);
+            });
+        },
+
+        save : function()
+        {
+            var url  = sz_BaseUrl + '/button/m759/material/save';
+            var data = $('#m759_material_form').serialize();
+
+            qssAjax.confirm('Bạn có thực sự muốn lưu lại?',function(){
+                qssAjax.call(url, data, function(jreturn) {
+                    if(jreturn.message != '')
+                    {
+                        qssAjax.notice(jreturn.message);
+                    }
+
+                }, function(jreturn) {
+                    qssAjax.alert(jreturn.message);
+                });
+            });
+        }
+
+
+    }
+
+    $(document).ready(function(){
+        m759_material_button.show();
+    });
+</script>
+
+<div id="wrapper">
+    <form id="m759_material_form">
+        <input type="hidden" name="ifid" value="<?php echo $this->ifid;?>">
+
+        <div id="m759_material_show">
+
+        </div>
+    </form>
+
+    <br/>
+
+    <div>
+        <button type="button" class="btn btn-custom" onclick="m759_material_button.save()"> Cập nhật </button>
+    </div>
+</div>

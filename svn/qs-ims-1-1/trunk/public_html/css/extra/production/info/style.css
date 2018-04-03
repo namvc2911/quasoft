@@ -1,0 +1,85 @@
+/* Loc theo lenh san xuat */
+#pinfo_filter_orders
+{
+	padding: 5px 15px 1px 8px;
+	overflow:hidden;
+	position: relative;
+}
+
+.pinfo_filter_order_label
+{
+	background: green;
+	color: #FFF;
+	font-weight:bold;
+	float:left;
+	margin:2px 3px;
+	padding:2px 18px 2px 5px;
+	position:relative;
+}
+
+.pinfo_filter_order_label span
+{
+	
+}
+
+.pinfo_filter_order_remove
+{
+	height:16px; 
+	display:none;
+	position:absolute; 
+	height:10px; 
+	top:1px; 
+	right:0px;
+}
+
+.pinfo_filter_order_label:hover .pinfo_filter_order_remove
+{
+	display:block;
+}
+
+/* Loc phieu giao viec theo dieu kien khac */
+#pinfo_filter_other
+{
+	
+}
+
+/* Hien thi phieu giao viec*/
+#pinfo_work_orders
+{
+	
+}
+
+/* Chung */
+.border_table
+{
+        background: #fff;
+        border: 1px #666 dotted;
+        border-bottom: none;
+}
+
+.border_table tr td, .border_table tr th
+{
+        border-left: 1px #666 dotted;
+        border-bottom: 1px #999 dashed;
+        word-wrap: break-word;
+}
+
+.pointer
+{
+	cursor:pointer;
+}
+
+.btn-custom
+{
+        background-color: #58a;
+        border-bottom: 1pt solid #333;
+        border-right: 1pt solid #333;
+        color: white;
+        cursor: pointer;
+        display: inline-block;
+        font-size: 11px;
+        min-width: 10px;
+        padding: 2px 6px;
+        text-align:center;
+        white-space:nowrap;
+}

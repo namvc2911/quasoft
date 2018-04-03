@@ -1,0 +1,54 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	$('.datepicker').each(function(){
+		$(this).datepicker({ dateFormat: "dd-mm-yy" });
+	});
+	if(<?php echo $this->form->i_IFID?> == 0){
+		$('#tabs_sub').css('opacity',0.5);
+	}
+	$(function() {
+		// Display the first tab content
+		// Set the first tab as start tab onload: if you want to set no start tab
+		// comment it.
+		// DisplayTabContent(10);
+		// get index of the clicked navigation item in the list
+		$("ul.tabslist_sub li a").click(
+				function() {
+					// if animation has finished: meaning size()==0 then allow for
+					// other clicks
+					var ifid = $('#ifid').val();
+					var deptid = $('#deptid').val();
+					if(ifid && ifid != 0){
+						if ($('div.tabscontent_container > div.tabcontent:animated')
+								.size() == 0) {
+							$("ul.tabslist_sub li").removeClass('current');
+							var $listItem = $(this).parent().addClass('current');
+							var objid = $(this).parent().attr('objid');
+							var fieldid = $(this).parent().attr('fieldid');
+							var vid = $(this).parent().attr('vid');
+							var ioid = $(this).parent().attr('ioid');
+							var html = $(this).children().html();
+							if (ifid && deptid && objid) {
+								DisplayTabContent(ifid, deptid, objid, fieldid, vid,
+										ioid, html);
+							}
+						}	
+					}
+				});
+		return false;
+	});
+});
+</script>
+<div>
+	<input type="hidden" name="fid" id="fid"
+		value="<?php echo $this->form->FormCode ?>"> <input type="hidden"
+		name="ifid" id="ifid" value="<?php echo $this->form->i_IFID ?>"> <input
+		type="hidden" name="deptid" id="deptid"
+		value="<?php echo $this->form->i_DepartmentID ?>">
+	<button
+		onclick="formSave(<?php echo $this->form->FormCode ?>, <?php echo $this->form->i_IFID ?>, <?php echo $this->form->i_DepartmentID ?>)"
+		type="button" class="btn-custom">Lưu lại</button>
+	<button onclick="$( '#qss_trace' ).dialog( 'close' );" type="button"
+		class="btn-custom">Đóng</button>
+</div>
+<?php echo $this->content?>

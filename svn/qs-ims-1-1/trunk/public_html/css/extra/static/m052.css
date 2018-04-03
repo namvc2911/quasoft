@@ -1,0 +1,84 @@
+#m052_wrap {
+    width: 100%;
+    padding-top: 0.5%;
+}
+
+/* A. Các thông tin phần bên trái của module */
+#m052_leftside {
+    float: left;
+    width: 20%;
+    padding: 0.5%;
+    height: 500px;
+}
+
+.m052_leftside_element {
+    margin-bottom: 1%;
+}
+
+/* A. 1. Thông tin khung search */
+#m052_leftside #m052_search_dep {
+    height: 5%;
+}
+
+.m052_search_value {
+    width: 98%;
+    margin: auto;
+    line-height: 18px;
+    font-size: 12px;
+}
+
+#m052_leftside #m052_search_emp {
+    height: 5%;
+}
+
+/* A. 2. Thông tin khung cây danh sách phòng ban bộ phận */
+#m052_leftside #m052_department {
+    border: 1px #ccc solid; /* @remove */
+    height: 43%;
+    background: #fff;
+}
+
+#m052_department_tree {
+    width: 98%;
+    height: 100%;
+    overflow: auto;
+}
+
+/* A. 3. Thông tin khung danh sách nhân viên */
+#m052_leftside #m052_employee {
+    border: 1px #ccc solid; /* @remove */
+    height: 43%;
+    background: #fff;
+}
+
+#m052_count_employee {
+    font-size: 12px;
+    line-height: 24px;
+    width: 40%;
+}
+
+#m052_employee_pageno  {
+    width: 30px;
+}
+
+/* B. Các thông tin phần bên phải của module */
+#m052_rightside {
+    float: right;
+    width: 78%;
+    padding: 0.5%;
+    height: 500px;
+}
+
+#m052_rightside #m052_content {
+}
+
+#m052_department_detail, #m052_employee_detail  {
+    background: #fff;
+    border: 1px solid #ccc;
+    height: 500px;
+    overflow: auto;
+}
+
+.bgonahau {
+    background-color: #BEEBFF !important;
+}

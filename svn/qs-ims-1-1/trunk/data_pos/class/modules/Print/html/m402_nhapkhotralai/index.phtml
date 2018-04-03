@@ -1,0 +1,113 @@
+<?php
+    $stt = 0;
+?>
+
+<script>
+    function excelRender() {
+        $('#report').submit();
+    }
+</script>
+
+<form id="report" action="/print/m402_nhapkhotralai/excel">
+    <input type="hidden" name="popup" value="1">
+    <input type="hidden" name="ifid" value="<?php echo @(int)$this->ONhapKho->IFID_M402;?>" />
+</form>
+
+<div class="portrait">
+
+    <h2 class="center">CÔNG TY CỔ PHẦN DỊCH VỤ LẮP ĐẶT, VẬN HÀNH</h2>
+    <h2 class="center" style="border-bottom: 1px #000 solid">VÀ BẢO DƯỠNG CÔNG    TRÌNH DẦU KHÍ BIỂN PTSC</h2>
+
+    <h2 class="center">DANH MỤC VẬT TƯ    NHẬP LẠI KHO</h2>
+    <p class="center">Ngày …… tháng ……    năm ……</p>
+
+    <p>&nbsp;</p>
+    <table cellspacing="0" cellpadding="0">
+
+        <tr height="21">
+            <td height="21" width="170">Người giao dịch: </td>
+            <td ><?php echo $this->ONhapKho->NguoiGiao;?></td>
+
+        </tr>
+        <tr height="21">
+            <td height="21">Đơn    vị: </td>
+            <td><?php echo '';?></td>
+
+        </tr>
+        <tr height="21">
+            <td height="21">Địa    chỉ:</td>
+            <td><?php echo '';?></td>
+
+        </tr>
+        <tr height="21">
+            <td height="21">Diễn    giải:</td>
+            <td><?php echo $this->ONhapKho->MoTa;?></td>
+
+        </tr>
+        <tr height="21">
+            <td height="21">Nhập    tại kho:</td>
+            <td><?php echo $this->ONhapKho->Kho;?></td>
+
+        </tr>
+        <tr height="21">
+            <td height="21" >Dạng    nhập:</td>
+            <td><?php echo $this->ONhapKho->LoaiNhapKho;?></td>
+
+        </tr>
+    </table>
+    <p>&nbsp;</p>
+    <table cellspacing="0" cellpadding="0" border="0" class="border">
+        <col width="45" />
+        <col width="125" />
+        <col width="81" />
+        <col width="64" span="2" />
+        <col width="119" />
+        <col width="94" />
+        <col width="80" />
+        <tr height="41" class="bggrey">
+            <th height="41" width="45">Stt</th>
+            <th width="125">Tên vật tư</th>
+            <th width="81">Mã<br />
+                Vật tư</th>
+            <th width="64">Đvt</th>
+            <th width="64">Số lượng</th>
+            <th width="119">Tình trạng <br />
+                sử dụng</th>
+            <th width="94">Số phiếu <br />
+                yêu cầu</th>
+            <th width="80">Ghi chú</th>
+        </tr>
+
+        <?php foreach ($this->ODanhSachNhapKho as $item):?>
+            <tr height="21">
+                <td height="21" width="45" class="center"><?php echo ++$stt;?></td>
+                <td width="125"><?php echo $item->TenSanPham;?></td>
+                <td width="81" class="left"><?php echo $item->MaSanPham;?></td>
+                <td width="64" class="left"><?php echo $item->DonViTinh;?></td>
+                <td width="64" class="right"><?php echo Qss_Lib_Util::formatNumber($item->SoLuong);?></td>
+                <td width="119" class="left"><?php echo '';?></td>
+                <td width="94" class="left"><?php echo $this->ONhapKho->SoYeuCau;?></td>
+                <td width="80" class="left"><?php echo $item->MoTa;?></td>
+            </tr>
+        <?php endforeach;?>
+
+
+    </table>
+    <p>&nbsp;</p>
+    <table cellspacing="0" cellpadding="0">
+        <tr height="21">
+            <td height="21" style="width: 33%;" class="center">           Ngày: ..…/..…/….. </td>
+            <td  style="width: 33%;" class="center"> Ngày: ..…/..…/…..   </td>
+            <td  style="width: 33%;" class="center">     Ngày: ..…/..…/……</td>
+        </tr>
+        <tr height="21">
+            <td height="21" style="width: 33%;" class="center bold">  Phòng KHĐT </td>
+            <td  style="width: 33%;" class="center bold">  Đơn vị chức năng    </td>
+            <td  style="width: 33%;" class="center bold">     Người giao </td>
+        </tr>
+    </table>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+</div>

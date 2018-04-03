@@ -1,0 +1,14 @@
+<?php foreach ($this->report as $item):?>
+    <tr class=" italic TS<?php echo (int)$item->Ref_MaNhanVien;?>_<?php echo (int)$item->Ref_MaTaiSan;?> ">
+        <td class="left tree_level_4" colspan="2"> <a href="/user/form/edit?ifid=<?php echo $item->IFID_M182;?>&deptid=<?php echo $this->deptid;?>" target="_blank"><?php echo $item->SoPhieu;?></a> </td>
+        <td class="left <?php echo ($item->NhaMay != $item->NhaMayHienTai)?'bgpink':'';?>"> <?php echo $item->NhaMay;?> </td>
+        <td class="center"> <?php echo Qss_Lib_Date::mysqltodisplay($item->Ngay);?> </td>
+        <td class="left"> <?php echo $item->DonViTinh;?> </td>
+        <td class="right"> <?php echo Qss_Lib_Util::formatNumber($item->SoLuongConLai);?> </td>
+        <td class="right"><?php echo Qss_Lib_Util::formatMoney($item->DonGia);?></td>
+        <td class="right"><?php echo Qss_Lib_Util::formatNumber($item->ThoiGianDaSuDung?$item->ThoiGianDaSuDung:0);?></td>
+        <td class="right"><?php echo Qss_Lib_Util::formatMoney( ($item->SoLuongConLai * $item->DonGia) );?></td>
+        <td class="right"><?php echo $item->PhanTramConLai > 0?Qss_Lib_Util::formatMoney( ($item->SoLuongConLai * $item->DonGia * $item->PhanTramConLai) ):0;?></td>
+        <td class="center"><a href="#1" onclick="m184.history(<?php echo $item->RefBanGiao;?>, <?php echo $item->Ref_MaNhanVien;?>, <?php echo $item->Ref_MaTaiSan;?>)">Xem</a></td>
+    </tr>
+<?php endforeach;?>

@@ -1,0 +1,337 @@
+<style type="text/css" media="screen">
+<!--
+.tag-container {
+	position: relative !important;
+}
+
+
+table tr
+{
+	border-bottom: 1px #ccc solid;
+}
+-->
+</style>
+<script type="text/javascript">
+    <!--
+    $(function () {
+    	var url = sz_BaseUrl + '/system/field/tagging?objid=<?php echo $this->objid?>';
+        $('#szRegx').tagSuggest({
+            url: url,
+            delay: 500
+        });
+    });
+    //-->
+ </script>
+<form id="qss_form" method="post">
+	<input type="hidden" value="<?php echo $this->field->FieldCode?>" name="intFieldID" /> 
+	<input type="hidden" value="<?php echo $this->field->ObjectCode?>" name="intOID" />
+	<input type="hidden" name="szFilter"  id="szFilter" value="" />
+	
+	<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+
+
+		<button id="btnSAVEBACK" type="button" class="btn btn_main_top" onclick="fieldSave('<?php echo $this->objid?>')">
+			<?php echo $this->_translate(35)?>
+		</button>
+
+
+		<button id="btnSAVE" type="button" class="btn btn_main_top" onclick="fieldSave('<?php echo $this->objid?>', 1)">
+			<?php echo $this->_translate(34)?>
+		</button>
+
+		<button type="button" class="btn btn_main_top" onclick="fieldBack('<?php echo $this->objid?>')">
+			<?php echo $this->_translate(32)?>
+		</button>
+	</div>
+
+	<div class="clear"></div>
+	<div id="view">
+		<div id="item-actions">
+			<ul>
+				<li class="item-action active"><a href="#1"><span><?php echo $this->_translate(102)?>
+							- <?php echo $this->_translate(103,'Danh sách trường dữ liệu')?>
+					</span> </a></li>
+			</ul>
+		</div>
+		<?php
+		$objid = (@$this->field->ObjectCode)?$this->field->ObjectCode:$this->objid;
+		?>
+		<table border="0" cellpadding="0" cellspacing="0" class="border_table">
+			<tr>
+				<td><?php echo $this->_translate(1)?></td>
+				<td><select id="intObjID" name="intObjID" style="width: 400px;">
+						<option value="">Không thuộc đối tượng nào</option>
+						<?php foreach ($this->objects as $object):?>
+						<option value="<?php echo $object->ObjectCode?>"
+						<?php if($object->ObjectCode == $objid) echo 'selected';?>>
+							<?php echo $object->ObjectName?>
+						</option>
+						<?php endforeach;?>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(27)?></td>
+				<td><input type="text" value="<?php echo $this->field->intFieldNo?>"
+					style="width: 200px;" name="intFieldNo" /></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(68)?></td>
+				<td><input type="text" value="<?php echo $this->field->FieldCode?>"
+					style="width: 200px;" name="szFieldID" /></td>
+			</tr>
+			<?php foreach ($this->languages as $language):?>
+			<tr>
+				<td><?php echo $this->_translate(44)?> - <?php echo $language->Name?>
+				</td>
+				<?php if($language->Code == 'vn'):?>
+				<td><input type="text" value="<?php echo @$this->data->FieldName?>"
+					style="width: 200px;" name="szFieldName" /></td>
+					<?php else:?>
+				<td><input type="text"
+					value="<?php echo @$this->data->{"FieldName_$language->Code"}?>"
+					style="width: 200px;"
+					name="szFieldName_<?php echo $language->Code?>" /></td>
+					<?php endif;?>
+			</tr>
+			<?php endforeach;?>
+			<tr>
+				<td><?php echo $this->_translate(126)?></td>
+				<td><select style="width: 400px;" size="1" name="intFieldType"
+					id="intFieldType">
+					<?php foreach(Qss_Lib_Const::$FIELD_TYPE as $key=>$value):?>
+						<option value="<?php echo $key?>"
+						<?php if($key==$this->field->intFieldType) echo 'selected';?>>
+							<?php echo $value?>
+						</option>
+						<?php endforeach;?>
+				</select></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(127)?></td>
+				<td><select style="width: 400px;" size="1" name="intInputType"
+					id="intInputType">
+					<?php foreach(Qss_Lib_Const::$FIELD_INPUT as $key=>$value):?>
+						<option value="<?php echo $key?>"
+						<?php if($key==$this->field->intInputType) echo 'selected';?>>
+							<?php echo $value?>
+						</option>
+						<?php endforeach;?>
+				</select></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(125)?></td>
+				<td><input type="text"
+					value="<?php echo $this->field->intFieldWidth?>"
+					style="width: 200px;" name="intFieldWidth" /></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(3)?></td>
+				<td><input type="text"
+					value="<?php echo $this->field->szRefLabel?>"
+					style="width: 200px;" name="szRefLabel" /></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(129)?></td>
+				<td><input type="text"
+					value="<?php echo $this->field->szDefaultVal?>"
+					style="width: 200px;" name="szDefaultVal" /></td>
+			</tr>
+			<tr>
+				<td>Style</td>
+				<td><input type="text"
+					value="<?php echo $this->field->szStyle?>"
+					style="width: 200px;" name="szStyle" /></td>
+			</tr>
+			<tr>
+				<td>Duy nhất</td>
+				<td>
+					<input id="unique0" type="radio" value="0" name="bUnique" <?php if(!$this->field->bUnique) echo 'checked';?> /> <label for="unique0">Không duy nhất</label> <br/>
+					<input id="unique1" type="radio" value="1" name="bUnique" <?php if($this->field->bUnique == 1) echo 'checked';?> /> <label for="unique0">Phân biệt hoa thường</label> <br/>
+					<input id="unique2" type="radio" value="2" name="bUnique" <?php if($this->field->bUnique == 2) echo 'checked';?> /> <label for="unique0">Không phân biệt hoa thường</label> <br/>
+				</td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(76)?></td>
+				<td><input type="checkbox" value="1" name="bReadOnly"
+				<?php if($this->field->bReadOnly) echo 'checked';?> /></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(24)?></td>
+				<td><input type="checkbox" value="1" name="bSearch"
+				<?php if($this->field->bSearch) echo 'checked';?> /></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(130)?></td>
+				<td><input type="checkbox" value="1" name="bRequired"
+				<?php if($this->field->bRequired) echo 'checked';?> /></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(53)?></td>
+				<td><input type="checkbox" value="1" name="bEffect"
+				<?php if($this->field->bEffect) echo 'checked';?> /></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(128)?></td>
+				<td><input type="checkbox" value="1" name="bGrid"
+				<?php if($this->field->bGrid & 1) echo 'checked';?> /></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(2)?></td>
+				<td><input type="checkbox" value="1" name="Mobile"
+				<?php if($this->field->bGrid & 2) echo 'checked';?> /></td>
+			</tr>
+			<tr>
+				<td>Ẩn khi sửa trên desktop</td>
+				<td><input type="checkbox" value="1" name="eGrid"
+				<?php if($this->field->bGrid & 4) echo 'checked';?> /></td>
+			</tr>
+			<tr>
+				<td>Ẩn khi sửa trên mobile</td>
+				<td><input type="checkbox" value="1" name="eMobile"
+				<?php if($this->field->bGrid & 8) echo 'checked';?> /></td>
+			</tr>
+			<tr>
+			<td>Cho phép sửa hàng loạt</td>
+				<td><input type="checkbox" value="1" name="multiEdit"
+				<?php if($this->field->bGrid & 16) echo 'checked';?> /></td>
+			</tr>
+			<tr>
+				<td>TValue</td>
+				<td><input type="text" value="<?php echo $this->field->szTValue?>"
+					style="width: 200px;" name="szTValue" /></td>
+			</tr>
+			<tr>
+				<td>FValue</td>
+				<td><input type="text"
+					value="<?php echo $this->field->szFValue?>"
+					style="width: 200px;" name="szFValue" /></td>
+			</tr>
+			<tr>
+				<td>Pattern</td>
+				<td><input type="text" value="<?php echo $this->field->szPattern?>"
+					style="width: 300px;" name="szPattern" /></td>
+			</tr>
+			<tr>
+				<td>Pattern message</td>
+				<td><input type="text"
+					value="<?php echo $this->field->szPatternMessage?>"
+					style="width: 300px;" name="szPatternMessage" /></td>
+			</tr>
+			<tr>
+				<td>
+					<hr />
+				</td>
+				<td>
+					<hr />
+				</td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(98)?></td>
+				<td>
+                    <?php
+                    $id = array('id'=>'intRefFID', 'size'=>380);
+                    $getDataObject = array('qsforms'=>array('FormCode', 'Name'));
+                    $getFields = array('num' => 2,
+                        'objects' => array('qsforms' => array(
+                            'id' => 'FormCode'
+                        , 'order' => 'FormCode'
+                        , 'display1' => 'FormCode'
+                        , 'display2' => 'Name')));
+
+                    echo $this->views->Report->ListBox(
+                        $id
+                        , $getDataObject
+                        , $getFields
+                        , array()
+                        , array()
+                        ,  'size="1" style="width: 400px;" onchange="fieldLoadObject($(\'#intRefFID\').val());"'
+                        , $this->field->RefFormCode
+                        , $this->field->RefFormCode
+                    );
+                    ?>
+
+
+				</td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(99)?></td>
+				<td><select id="intRefObjID" name="intRefObjID" size="1"
+					style="width: 400px;"
+					onchange="fieldLoadField(this.value);fieldLoadDisplayField(this.value);">
+						<option value="0">
+						<?php echo $this->_translate(38)?>
+						</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(100)?></td>
+				<td><select style="width: 400px;" size="1" name="intRefFieldID"
+					id="intRefFieldID">
+						<option value="0">
+						<?php echo $this->_translate(38)?>
+						</option>
+				</select> <script>var refid=0;</script></td>
+			</tr>
+			<tr>
+				<td>Thuộc tính hiển thị</td>
+				<td><select style="width: 400px;" size="1" name="intRefDisplayID"
+					id="intRefDisplayID">
+						<option value="0">
+						<?php echo $this->_translate(38)?>
+						</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td>Is refresh?</td>
+				<td><input type="checkbox" value="1" name="bRefresh"
+				<?php if($this->field->isRefresh) echo 'checked';?> /></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(131)?></td>
+				<td><input name="AFunction" id="AFunction"
+					value="<?php echo $this->field->AFunction?>" /></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(132)?></td>
+				<td><textarea name="szRegx" cols="80" rows="7" id="szRegx"><?php echo $this->field->szRegx?></textarea></td>
+			</tr>
+			<tr>
+				<td>
+					<hr />
+				</td>
+				<td>
+					<hr />
+				</td>
+			</tr>
+			<?php $formcode = '';?>
+			<?php foreach ($this->steprights as $item):?>
+				<?php if($formcode != $item->FormCode):?>
+					<tr>
+						<td colspan="2" class="bold"><?php echo $item->FName?> (<?php echo $item->FormCode?>)</td>
+					</tr>
+				<?php endif;?>
+				
+				<tr>
+					<td><?php echo $item->Name?></td>
+					<td>
+						<input name="rights_C_<?php echo $item->SID?>" type="checkbox" <?php if($item->Rights&1):?>checked<?php endif;?>>Đọc&nbsp;&nbsp;&nbsp;
+						<input name="rights_R_<?php echo $item->SID?>"  type="checkbox" <?php if($item->Rights&2):?>checked<?php endif;?>>Sửa&nbsp;&nbsp;&nbsp;
+						<input name="rights_U_<?php echo $item->SID?>" type="checkbox" <?php if($item->Rights&4):?>checked<?php endif;?>>Yêu cầu&nbsp;&nbsp;&nbsp;
+					</td>
+				</tr>
+				<?php $formcode = $item->FormCode;?>
+			<?php endforeach;?>
+		</table>
+		<div id="code"></div>
+	</div>
+</form>
+<div id="qss_trace"
+	title="Các tham số lọc dữ liệu"></div>
+<?php if($this->field->RefFormCode):?>
+<script type="text/javascript">
+fieldLoadObject('<?php echo $this->field->RefFormCode?>','<?php echo $this->field->RefObjectCode?>');
+fieldLoadField('<?php echo $this->field->RefObjectCode?>','<?php echo $this->field->RefFieldCode?>');
+fieldLoadDisplayField('<?php echo $this->field->RefObjectCode?>','<?php echo $this->field->RefDisplayCode?>');
+</script>
+<?php endif;?>

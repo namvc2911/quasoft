@@ -1,0 +1,74 @@
+<?php
+$formType = array();
+$formType[Qss_Lib_Const::FORM_TYPE_PUBLIC_LIST]  = 'Danh mục dùng chung';
+$formType[Qss_Lib_Const::FORM_TYPE_PRIVATE_LIST] = 'Danh mục dùng riêng';
+$formType[Qss_Lib_Const::FORM_TYPE_MODULE]       = 'Module';
+$formType[Qss_Lib_Const::FORM_TYPE_REPORT]       = 'Báo cáo';
+$formType[Qss_Lib_Const::FORM_TYPE_PROCESS]      = 'Tiến trình';
+
+$formTypeClass = array();
+$formTypeClass[Qss_Lib_Const::FORM_TYPE_PUBLIC_LIST]  = '';
+$formTypeClass[Qss_Lib_Const::FORM_TYPE_PRIVATE_LIST] = 'blue';
+$formTypeClass[Qss_Lib_Const::FORM_TYPE_MODULE]       = 'green';
+$formTypeClass[Qss_Lib_Const::FORM_TYPE_REPORT]       = 'orange';
+$formTypeClass[Qss_Lib_Const::FORM_TYPE_PROCESS]      = 'red';
+
+$effected = array();
+$effected[0] = '-';
+$effected[1] = 'Hoạt động';
+
+$secure    = array();
+$secure[0] = '-';
+$secure[1] = 'Phân quyền';
+
+$import    = array();
+$import[0] = '-';
+$import[1] = 'Import';
+
+$stt = 0;
+
+$widths = array(0.5, 1, 3, 3, 2.5, 1.5, 1.5, 1, 1, 1, 1, 3, 3);
+$widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+$begin  = 0;
+?>
+
+<table class="grid" cellspacing="0" style="" >
+    <tr>
+        <th style="width: <?php echo $widths[$begin++];?>%">STT</th>
+        <th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Mã</th>
+        <th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Tên tiếng Việt</th>
+        <th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Tên tiếng Anh</th>
+        <th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Kiểu</th>
+        <th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Hoạt động</th>
+        <th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Phân quyền</th>
+        <th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Tài liệu</th>
+        <th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Phản hồi</th>
+        <th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Read log</th>
+        <th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Import</th>
+        <th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Desktop</th>
+        <th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Mobile</th>
+        <th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Objects</th>
+    </tr>
+
+
+    <?php foreach ($this->FormList as $item):?>
+        <?php $activeClass = $item->Effected?'green bold':'red bold';?>
+        <?php $translateErrorClass = (trim($item->Name) == trim($item->Name_en))?'bgpink':'';?>
+        <tr id="<?php echo $item->FormCode;?>" class="" onclick="rowCLK(this)" rights="63">
+            <td class="nocount "><?php echo ++$stt;?></td>
+            <td class="data center break-word <?php echo $activeClass;?>"><?php echo $item->FormCode;?></td>
+            <td class="data <?php echo $translateErrorClass;?> <?php echo !$item->Name?'bgred':'';?>"><?php echo $item->Name;?></td>
+            <td class="data <?php echo $translateErrorClass;?> <?php echo !$item->Name_en?'bgred':'';?>"><?php echo $item->Name_en;?></td>
+            <td class="data <?php echo @$formTypeClass[$item->Type];?>"><?php echo @$formType[$item->Type];?></td>
+            <td class="data center <?php echo $activeClass;?>"><?php echo @$effected[(int)$item->Effected];?></td>
+            <td class="data center"><?php echo @$secure[(int)$item->Secure];?></td>
+            <td class="data center"><?php echo $item->Document&1?'Tài liệu':'-';?></td>
+            <td class="data center"><?php echo $item->Document&2?'Phản hồi':'-';?></td>
+            <td class="data center"><?php echo $item->Document&4?'Read log':'-';?></td>
+            <td class="data center"><?php echo @$import[(int)$item->ExcelImport];?></td>
+            <td class="data break-word <?php echo $item->class?'left':'center';?>" style="padding: 0px 2px;"><?php echo $item->class?$item->class:'-';?></td>
+            <td class="data break-word <?php echo $item->classMobile?'left':'center';?>"  style="padding: 0px 2px;"><?php echo $item->classMobile?$item->classMobile:'-';?></td>
+            <td class="data left"><?php echo $item->Objects;?></td>
+        </tr>
+    <?php endforeach;?>
+</table>

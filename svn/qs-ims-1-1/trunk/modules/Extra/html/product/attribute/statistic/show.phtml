@@ -1,0 +1,271 @@
+
+
+<?php
+$serialLot = $this->serialLot;
+$attributes = $this->attributes;
+$lines = $this->lines; // line - số dòng
+$lotQty = (int) ((is_numeric($this->lotQty) && $this->lotQty > 0) ? $this->lotQty : 1);
+$col = 0;
+$oldValue = $this->oldValue;
+$zoneAndBin = $this->zoneAndBin;  // Trường hợp có lot hoặc serial
+$hasBin = $this->hasBin;
+$zoneBinSort = $this->zoneBinSort; // Trường hợp chỉ không có lot hoặc serial
+$itemQty = $this->itemQty;
+
+
+/* Lấy số lô */
+
+if ($serialLot->lot && $this->stockInfo['Lot']) {
+	$serialLot->lotLength = $serialLot->lotLength ? $serialLot->lotLength : 6; // Độ dài mã lô
+	$defaultLot = $serialLot->preLot . str_pad(0, $serialLot->lotLength, '0', STR_PAD_LEFT); // Lô mặc định
+	$lastLot = $this->lastLot ? $this->lastLot : '0';
+	$oldLot = $serialLot->autoLot ? (int) preg_replace('/' . $serialLot->preLot . '/', '', $lastLot) : 0;
+}
+
+/* Lấy số serial */
+if ($serialLot->serial && $this->stockInfo['Serial']) {
+	$serialLot->serialLength = $serialLot->serialLength ? $serialLot->serialLength : 6; // Độ dài mã serial
+	$defaultSerial = $serialLot->preSerial . str_pad(0, $serialLot->serialLength, '0', STR_PAD_LEFT);
+	$lastSerial = $this->lastSerial ? $this->lastSerial : '0';
+	$oldSerial = $serialLot->autoSerial ? (int) preg_replace('/' . $serialLot->preSerial . '/', '', $lastSerial) : 0;
+}
+?>
+
+
+<!-- table -->
+<tr class="bggrey">
+	<td><input type="hidden" name="lines"
+		value="<?php echo $lines['lines']; ?>" /> STT <?php $col++; ?>
+	</td>
+
+	<?php if ($serialLot->serial && $this->stockInfo['Serial']): ?>
+	<td>Số serial <?php $col++; ?>
+	</td>
+	<?php endif; ?>
+
+	<?php if ($serialLot->lot  && $this->stockInfo['Lot']): ?>
+	<td>Số lô <?php $col++; ?>
+	</td>
+	<?php endif; ?>
+
+	<?php if (($serialLot->lot && $this->stockInfo['Lot']) || ($serialLot->serial && $this->stockInfo['Serial'])): ?>
+	<td>Ngày nhận hàng <?php $col++; ?>
+	</td>
+
+	<td>Ngày sx <?php $col++; ?>
+	</td>
+
+	<td>Ngày hạn <?php $col++; ?>
+	</td>
+	<?php endif; ?>
+
+	<?php if ($this->attributeExists): ?>
+	<td>Thuộc tính <?php $col++; ?>
+	</td>
+	<?php endif; ?>
+
+
+	<?php if ($hasBin): ?>
+	<td>Bin <?php $col++; ?>
+	</td>
+	<?php endif; // hasBin ?>
+
+	<td>Số lượng <?php $col++; ?>
+	</td>
+</tr>
+
+<tr>
+	<td colspan="<?php echo $col; ?>"><b><i>Số lượng sản phẩm : <?php echo $itemQty . ' ' . ($serialLot->itemUOM); ?>
+		</i> </b>
+	</td>
+</tr>
+
+	<?php
+	$j = 0; // Xác định lô và mã nếu chúng không được đánh tự động
+	$decrease = $itemQty;
+
+	if(!($serialLot->lot && $this->stockInfo['Lot']) && !($serialLot->serial && $this->stockInfo['Serial']))
+	{
+		$lines['lines'] = 1;
+	}
+	for ($i = 0; $i < $lines['lines']; $i++):
+
+	/* Lấy số lượng trên mỗi dòng */
+	if ($decrease > $lines['defaultLineQty']) {
+		$qty = (int) $lines['defaultLineQty'];
+	} else {
+		$qty = $decrease;
+	}
+	$decrease -= $lines['defaultLineQty'];
+	$decrease = ($decrease > 0) ? $decrease : 0;
+
+
+	/**
+	 *  Đánh lô
+	 */
+	if (isset($oldValue[$i]['SoLo'])) {
+		//$newLot = $oldValue[$i]['SoLo'];
+
+		if ($serialLot->lot && $serialLot->autoLot && $this->stockInfo['Lot']) {
+			if ($serialLot->serial && $this->stockInfo['Serial']) {
+				if ($i % $lotQty == 0) {
+					// Sang lô mới.
+					$j = 0;
+
+					if (isset($tmpSpecifies)) {
+						$oldValue[$i]['SoLo'] = $tmpSpecifies;
+						$j = $tmpJindex;
+					}
+					while (isset($oldValue[$j]['SoLo']) && ($oldValue[$i]['SoLo'] == $oldValue[$j]['SoLo'])) {
+						$j++;
+					}
+
+					if (floor($i / $lotQty) == 0) {
+						// Dòng đầu
+						$newLot = $oldValue[$i]['SoLo'];
+						$tmpOneLot = $newLot; // lotQty > lines : chỉ duy nhất một lô
+					} else {
+						// Các đòng sau
+						if (isset($oldValue[$j]['SoLo']) && ($oldValue[$j]['SoLo'] != $oldValue[$i]['SoLo'])) {
+							$newLot = $oldValue[$j]['SoLo'];
+							$tmpSpecifies = $oldValue[$j]['SoLo'];
+							$tmpJindex = $j;
+						} else {
+							$oldLot++;
+							$newLot = $serialLot->preLot . str_pad($oldLot, $serialLot->lotLength, '0', STR_PAD_LEFT);
+						}
+					}
+
+					$duplicateNewLot = $newLot; // lotQty < lines && lotQty > 1 , giá trị lập lại
+				} else {
+					// Tiếp tục lô nào đó.
+					if (floor($i / $lotQty) == 0) {
+						// tiếp tục của dòng đầu
+						if ($lotQty < $lines['lines']) {
+							$newLot = $oldValue[$i]['SoLo'];
+						} else {
+							$newLot = $tmpOneLot;
+						}
+					} else {
+						// tiếp tục của các dòng sau
+						$newLot = $duplicateNewLot;
+					}
+				}
+			} else {
+				$newLot = $oldValue[$i]['SoLo'];
+			}
+		} else {
+			$newLot = $oldValue[$i]['SoLo'];
+		}
+	} else {
+
+		if ($serialLot->lot && $serialLot->autoLot && $this->stockInfo['Lot']) {
+			if ($serialLot->serial  && $this->stockInfo['Serial']) {
+				$oldLot = ($i % $lotQty == 0) ?  ++$oldLot : $oldLot;
+			} else {
+				$oldLot++;
+			}
+			$newLot = $serialLot->preLot . str_pad($oldLot, $serialLot->lotLength, '0', STR_PAD_LEFT);
+		} else {
+			$newLot = isset($defaultLot) ? $defaultLot : '';
+		}
+	}
+	/**
+	 *  Đánh mã  ---------------------
+	 */
+	if (isset($oldValue[$i]['SoSerial'])) {
+		$newSerial = $oldValue[$i]['SoSerial'];
+	} else {
+
+		if ($serialLot->serial && $serialLot->autoSerial && $this->stockInfo['Serial']) {
+			$oldSerial++;
+			$newSerial = $serialLot->preSerial . str_pad($oldSerial, $serialLot->serialLength, '0', STR_PAD_LEFT);
+		} else {
+			$newSerial = isset($defaultSerial) ? $defaultSerial : '';
+		}
+	}
+	?>
+
+<tr>
+	<td><?php echo ($i + 1); // In ra số thứ tự?> <input type="hidden"
+		name="no[]" value="<?php echo ($i+1);?>" />
+	</td>
+
+	<?php if ($serialLot->serial  && $this->stockInfo['Serial']): ?>
+	<td><input type="text" name="serial[]"
+		value="<?php echo $newSerial; ?>" class="width_100" />
+	</td>
+	<?php endif; ?>
+
+	<?php if ($serialLot->lot  && $this->stockInfo['Lot']): ?>
+	<td><input type="text" name="lot[]" value="<?php echo $newLot; ?>"
+		class="width_100" />
+	</td>
+	<?php endif; ?>
+
+
+	<?php if (($serialLot->lot && $this->stockInfo['Lot']) || ($serialLot->serial && $this->stockInfo['Serial'])): ?>
+	<td>
+		<!-- Ngay Nhan --> <input type="text" name="receiveDate[]"
+		value="<?php echo date('d-m-Y'); ?>" class="width_70  datepicker" /> <?php $col++; ?>
+	</td>
+
+	<td>
+		<!-- Ngay sx --> <input type="text" name="productionDate[]"
+		value="<?php echo date('d-m-Y'); ?>" class="width_70  datepicker" /> <?php $col++; ?>
+	</td>
+
+	<td>
+		<!-- Ngay han --> <input type="text" name="expiryDate[]"
+		value="<?php echo date('d-m-Y', strtotime('+ 1 years')); ?>"
+		class="width_70  datepicker" /> <?php $col++; ?>
+	</td>
+	<?php endif; ?>
+
+	<?php if ($this->attributeExists): // Nếu sản phẩm có thuộc tính?>
+	<td><?php echo $attributes; ?>
+	</td>
+	<?php endif; ?>
+	<?php if (($serialLot->lot && $this->stockInfo['Lot']) || ($serialLot->serial && $this->stockInfo['Serial'])): ?>
+
+
+	<?php if ($hasBin): ?>
+
+	<td><input type="hidden" name="bin[]"
+		value="<?php echo $this->stockInfo['ToBin'] ?>" /> <?php echo $this->stockInfo['ToBin'] ?>
+	</td>
+	<?php endif; ?>
+
+
+	<?php else: ?>
+
+	<?php if ($this->hasBin): ?>
+	<td><input type="hidden" name="bin[]"
+		value="<?php echo $this->stockInfo['ToBin'] ?>" /> <?php echo $this->stockInfo['ToBin'] ?>
+	</td>
+	<?php endif; ?>
+
+	<?php endif; ?>
+
+	<td><input type="text" class="width_50" name="qty[]"
+		value="<?php echo $qty; //Số lượng?>"
+		<?php echo $lines['lineQtyAccess']; ?> />
+	</td>
+</tr>
+		<?php
+		endfor; // Kết thúc loop dòng
+		?>
+<tr>
+	<td colspan="<?php echo $col; ?>"><b><i>Số lượng sản phẩm : <?php echo $itemQty . ' ' . ($serialLot->itemUOM); ?>
+		</i> </b>
+	</td>
+</tr>
+<!-- /table -->
+
+<script>
+    jQuery(document).ready(function($) {
+        $('.datepicker').each(function() {
+            $(this).datepicker({dateFormat: "dd-mm-yy"});
+        });/* Datepicker*/
+    });
+</script>

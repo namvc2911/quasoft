@@ -1,0 +1,824 @@
+<script type="text/javascript">
+<!--
+    jQuery(document).ready(function($) {
+        $('.datepicker').each(function() {
+            $(this).datepicker({dateFormat: "dd-mm-yy"});
+        });/* Datepicker*/
+    });
+    
+    $('.datepicker').val('<?php echo date('d-m-Y');?>');
+    //-->
+</script>
+<script>
+$(function () {
+	var url = sz_BaseUrl + '/user/statistic/tag/user';
+    $('#member').tagSuggest({
+        url: url,
+        delay: 200,
+        separator : '*',
+        tagContainer: 'div',
+        callback: selecting
+    });
+});
+
+
+function selecting(workingTags,id)
+{
+	var ctrl = $('<div>').addClass('tag-select')
+	 	.html(workingTags + '<input type="hidden" name="members[]" value="'+id+'"><a href="#!" onclick="closeThis(this)" class="tag-close">');
+	$('#member').before(ctrl);
+	$('#member').val('');
+	$('#member').blur().focus();
+}
+function closeThis(ele)
+{
+	$(ele).parent().remove();
+}
+
+function selectRadio(element) {
+	var ele = '';
+	var val = parseInt($(element).val());
+	switch(val){
+	case 0: 
+		ele = 'once';
+		break;
+	case 1: 
+		ele = 'daily';
+		break;
+	case 2: 
+		ele = 'weekly';
+		break;
+	case 3: 
+		ele = 'monthly';
+		break;
+	case 4: 
+		ele = 'yearly';
+                break;
+	case 5: 
+		ele = 'hourly';
+		break;
+	case 6: 
+		ele = 'minute';
+		break;
+	}
+	$('#once').hide();
+	$('#once').children().attr('disabled','disabled');
+	$('#minute').hide();
+    $('#minute').children().attr('disabled','disabled');
+    $('#hourly').hide();
+    $('#hourly').children().attr('disabled','disabled');
+	$('#daily').hide();
+	$('#daily').children().attr('disabled','disabled');
+	$('#weekly').hide();
+	$('#weekly').children().attr('disabled','disabled');
+	$('#monthly').hide();
+	$('#monthly').children().attr('disabled','disabled');
+	$('#yearly').hide();
+	$('#yearly').children().attr('disabled','disabled');
+	$('#'+ele).show();
+	$('#'+ele).children().removeAttr('disabled');
+}
+function addTime(ele) {
+	var id = $(ele).parent().attr('id');
+	var qssform = $('#qss_form');
+	var text = '';
+	var type = 0;
+        var times = $(qssform).find('#'+id+' #stime').val();
+        var sdate = $(qssform).find('#'+id+' #sdate').val();
+        var edate = $(qssform).find('#'+id+' #edate').val();
+        var dayx  = $(qssform).find('#'+id+' #day').val();
+        var interval  = $(qssform).find('#'+id+' #interval').val();
+        
+        if(id == 'once' && sdate == '')
+        {
+            qssAjax.alert('<?php echo $this->_translate(24); ?>'); 
+            return;
+        }
+        
+	switch(id){
+                // +'-'+$(qssform).find('#etime').val()
+                
+		case 'once': 
+                        text = '<div class="tag-select">'+times+' <?php echo $this->_translate(2); ?> '+ sdate;
+			type = 0;
+			break;
+		case 'minute':
+			text = '<div class="tag-select">'+interval+' <?php echo $this->_translate(26); ?>';;
+			type = 6;
+			break;
+		case 'hourly':
+			text = '<div class="tag-select">'+times+' <?php echo $this->_translate(3); ?>';;
+			type = 5;
+			break;                        
+		case 'daily':
+			text = '<div class="tag-select">'+times+' <?php echo $this->_translate(4); ?>';
+			type = 1;
+			break;
+		case 'weekly': 
+			text = '<div class="tag-select">'+times+' '+ $(qssform).find('#wday option:selected').text() + ' <?php echo $this->_translate(5); ?>';
+			type = 2;
+			break;
+		case 'monthly': 
+			text = '<div class="tag-select">'+times+' <?php echo $this->_translate(19); ?> '+ dayx + ' <?php echo $this->_translate(6); ?>';
+			type = 3;
+			break;
+		case 'yearly': 
+			text = '<div class="tag-select">'+times+' <?php echo $this->_translate(19); ?> '+ dayx+ '-' + $(qssform).find('#month').val() + ' <?php echo $this->_translate(7); ?>';
+			type = 4;
+			break;
+	}
+	text += '<input type="hidden" class="times" name="times[]" '
+                        +'value="'+type+','+times+','+sdate
+                        +','+edate+','+$(qssform).find('#wday').val()
+                        +','+dayx+','+$(qssform).find('#month').val()
+                        +','+interval+'"/>'
+                        +'<a href="#1" title="<?php echo $this->_translate(8); ?>" class="tag-close" onclick="closeThis(this)"></a></div>';
+	$(qssform).find('#times').append(text);
+}
+function addMember(e,user) {
+	if(e.keyCode == 13){
+		var id = $(user).parent().attr('id');
+		var text = '<div class="tag-select">Nguyễn Văn A<a href="#1" title="<?php echo $this->_translate(8); ?>" class="tag-close" onclick="closeThis(this)></a></div>';
+		$(user).before(text);
+		$(user).val('');
+	}
+}
+function memberClick(ele) {
+	$(ele).find('input').focus();
+}
+
+
+</script>
+<style>
+.tag-select {
+	float: left;
+	padding: 2px 15px 2px 5px;
+	border: 1pt solid #fff;
+	position: relative
+}
+
+.tag-select:hover {
+	border: 1pt solid #ccc;
+	background: #f1f1f1
+}
+
+.tag-close {
+	display: none
+}
+
+.tag-select:hover .tag-close {
+	display: block;
+	background: url(/images/event/close.png) no-repeat 50% 50%;
+	width: 10px;
+	height: 10px;
+	cursor: pointer;
+	position: absolute;
+	top: 4px;
+	right: 0px
+}
+
+.members input {
+	border: none;
+	outline: none;
+	background-color: #FFF;
+	float: left
+}
+
+.members .member_outline {
+	border: 1pt solid #ccc;
+	width: 700px
+}
+
+.member_inside {
+	float: left;
+	display: inline;
+	position: relative
+}
+
+.tag-container {
+	position: absolute;
+	left: 0px;
+	top: 100%;
+	background: #fff;
+	border: 1pt solid #ccc;
+	max-height: 180px;
+	width: 300px;
+	z-index: 10000;
+	overflow: auto;
+}
+
+.tag-container li {
+	cursor: pointer;
+	white-space: nowrap;
+	padding: 1px 5px
+}
+
+.tag-container li:hover {
+	background: #ccc
+}
+
+.tag-selected {
+	background: #ccc !important
+}
+
+#addmem {
+	display: inline;
+}
+
+#interval {
+	width: 40px;
+}
+.group_outline{
+	max-height:150px;
+	width: 400px;
+	overflow-x:hidden;
+	overflow-y:auto;
+}
+</style>
+<form
+	id="qss_form" method="post">
+	<input type="hidden" name="ifid" value="0"> <input type="hidden"
+		name="ioid" value="0"> <input type="hidden" name="action"
+		value="<?php echo $this->action?>"> <input type="hidden" name="fid"
+		value="<?php echo $this->fid?>">
+	<!--<input type="hidden" name="id" value="<?php //echo (int)@$this->event->EventID?>">-->
+	<table class="detail">
+		<!--	<tr>
+            <th width="100"><?php //echo $this->_translate(1); ?> Module </th>
+		<td colspan="2"><input value="<?php //echo @$this->event->Title?>" style="width: 400px;" name="name" />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<button class="btn-custom" onclick="saveNotify()" type="button">Ghi lại</button>
+			<?php //if(isset($this->event->EventID)):?>
+			<button class="btn-custom" onclick="deleteCalendar()" type="button">Xóa lịch</button>
+			<?php //endif;?>
+		</td>
+	</tr>-->
+	<?php if($this->type !== 'TRIGGER'):?>
+		<tr>
+			<th><?php echo $this->_translate(10); ?></th>
+			<td colspan="2" id="times"><?php foreach ($this->times as $item):?>
+				<div class="tag-select">
+				<?php
+				switch ($item->Type)
+				{
+					case 0:
+						if($item->EDate && $item->EDate != '0000-00-00')
+						{
+							echo substr($item->Time,0,5) . " {$this->_translate(11)} " . Qss_Lib_Date::mysqltodisplay($item->SDate) . " {$this->_translate(12)} " .   Qss_Lib_Date::mysqltodisplay($item->EDate);
+						}
+						else
+						{
+							echo substr($item->Time,0,5)  . " {$this->_translate(2)} " . Qss_Lib_Date::mysqltodisplay($item->SDate);//. '-' . substr($item->ETime,0,5)
+						}
+						break;
+					case 1:
+						echo substr($item->Time,0,5)  . " {$this->_translate(4)}";//. '-' . substr($item->ETime,0,5)
+						break;
+					case 2:
+						echo substr($item->Time,0,5)  . ' ' . Qss_Lib_Const::$TUAN[$item->WDay - 1] . " {$this->_translate(5)} ";//. '-' . substr($item->ETime,0,5)
+						break;
+					case 3:
+						echo substr($item->Time,0,5) . " {$this->_translate(19)} " . $item->Day . " {$this->_translate(6)} ";//. '-' . substr($item->ETime,0,5)
+						break;
+					case 4:
+						echo substr($item->Time,0,5)  . " {$this->_translate(19)} " . $item->Day . '-' . $item->Month ." {$this->_translate(7)}";//. '-' . substr($item->ETime,0,5)
+						break;
+					case 5:
+						echo substr($item->Time,0,5)  ." {$this->_translate(3)}";
+						break;
+					case 6:
+						echo $item->Interval  ." {$this->_translate(26)}";
+						break;
+				}
+				?>
+					<input type="hidden" class="times" name="times[]"
+						value="<?php echo $item->Type?>,<?php echo $item->Time?>,<?php echo Qss_Lib_Date::mysqltodisplay($item->SDate)?>,<?php  echo Qss_Lib_Date::mysqltodisplay($item->EDate)?>,<?php echo $item->WDay?>,<?php echo $item->Day?>,<?php echo $item->Month?>,<?php echo $item->Interval?>" />
+					<a href="#1" title="xóa" class="tag-close"
+						onclick="closeThis(this)"></a>
+				</div> <?php endforeach;?>
+			</td>
+		</tr>
+		<tr>
+			<th><?php echo $this->_translate(13); ?></th>
+			<td><select name="caltype" style="width: 100px"
+				onchange="selectRadio(this);">
+
+					<option value="0">
+					<?php echo $this->_translate(14); ?>
+					</option>
+					<option value="6">
+					<?php echo $this->_translate(26); ?>
+					</option>
+					<option value="5">
+					<?php echo $this->_translate(3); ?>
+					</option>
+					<option value="1">
+					<?php echo $this->_translate(4); ?>
+					</option>
+					<option value="2">
+					<?php echo $this->_translate(5); ?>
+					</option>
+					<option value="3">
+					<?php echo $this->_translate(6); ?>
+					</option>
+					<option value="4">
+					<?php echo $this->_translate(7); ?>
+					</option>
+			</select>
+			</td>
+			<td>
+				<div id='once'>
+				<?php echo $this->_translate(2); ?>
+					<input id="sdate" class="datepicker" name="sdate"
+						style="width: 80px" /> <select id="stime" name="stime"
+						style="width: 50px">
+						<option value="0:00">0:00</option>
+						<option value="0:30">0:30</option>
+						<option value="1:00">1:00</option>
+						<option value="1:30">1:30</option>
+						<option value="2:00">2:00</option>
+						<option value="2:30">2:30</option>
+						<option value="3:00">3:00</option>
+						<option value="3:30">3:30</option>
+						<option value="4:00">4:00</option>
+						<option value="4:30">4:30</option>
+						<option value="5:00">5:00</option>
+						<option value="5:30">5:30</option>
+						<option value="6:00">6:00</option>
+						<option value="6:30">6:30</option>
+						<option value="7:00">7:00</option>
+						<option value="7:30">7:30</option>
+						<option value="8:00">8:00</option>
+						<option value="8:30">8:30</option>
+						<option value="9:00">9:00</option>
+						<option value="9:30">9:30</option>
+						<option value="10:00">10:00</option>
+						<option value="10:30">10:30</option>
+						<option value="11:00">11:00</option>
+						<option value="11:30">11:30</option>
+						<option value="12:00">12:00</option>
+						<option value="12:30">12:30</option>
+						<option value="13:00">13:00</option>
+						<option value="13:30">13:30</option>
+						<option value="14:00">14:00</option>
+						<option value="14:30">14:30</option>
+						<option value="15:00">15:00</option>
+						<option value="15:30">15:30</option>
+						<option value="16:00">16:00</option>
+						<option value="16:30">16:30</option>
+						<option value="17:00">17:00</option>
+						<option value="17:30">17:30</option>
+						<option value="18:00">18:00</option>
+						<option value="18:30">18:30</option>
+						<option value="19:00">19:00</option>
+						<option value="19:30">19:30</option>
+						<option value="20:00">20:00</option>
+						<option value="20:30">20:30</option>
+						<option value="21:00">21:00</option>
+						<option value="21:30">21:30</option>
+						<option value="22:00">22:00</option>
+						<option value="22:30">22:30</option>
+						<option value="23:00">23:00</option>
+						<option value="23:30">23:30</option>
+					</select> <input type="hidden" id="interval" name="interval"
+						value="0" />
+					<!--			-
+			<select id="etime" name="etime" style="width: 50px">
+			<option value="7:30">7:30</option>
+			<option value="8:00">8:00</option>
+			<option value="8:30">8:30</option>
+			<option value="9:00">9:00</option>
+			<option value="9:30">9:30</option>
+			<option value="10:00">10:00</option>
+			<option value="10:30">10:30</option>
+			<option value="11:00">11:00</option>
+			<option value="11:00">11:30</option>
+			<option value="12:00">12:00</option>
+			<option value="12:30">12:30</option>
+			<option value="13:00">13:00</option>
+			<option value="13:30">13:30</option>
+			<option value="14:00">14:00</option>
+			<option value="14:30">14:30</option>
+			<option value="15:00">15:00</option>
+			<option value="15:30">15:30</option>
+			<option value="16:00">16:00</option>
+			<option value="16:30">16:30</option>
+			<option value="17:00">17:00</option>
+			<option value="17:30" selected>17:30</option>
+			</select>-->
+					<button class="btn-custom" onclick="addTime(this)" type="button">
+					<?php echo $this->_translate(18);?>
+					</button>
+				</div>
+
+				<div id="minute" style="display: none;">
+				<?php echo $this->_translate(15); ?>
+					<input id="sdate sdate5" class="datepicker" name="sdate"
+						style="width: 80px" />
+						<?php echo $this->_translate(16); ?>
+					<input id="edate endate5" class="datepicker" name="edate"
+						style="width: 80px" /> 
+					<?php echo $this->_translate(17);?>
+					:<input type="text" id="interval" name="interval" value="1" />
+					<button class="btn-custom" onclick="addTime(this)" type="button">
+					<?php echo $this->_translate(18); ?>
+					</button>
+				</div>
+
+				<div id="hourly" style="display: none;">
+				<?php echo $this->_translate(15); ?>
+					<input id="sdate sdate5" class="datepicker" name="sdate"
+						style="width: 80px" />
+						<?php echo $this->_translate(16); ?>
+					<input id="edate endate5" class="datepicker" name="edate"
+						style="width: 80px" /> <select id="stime" name="stime"
+						style="width: 50px" disabled>
+						<option value="00:00">00</option>
+						<option value="00:30">30</option>
+					</select>
+					<?php echo $this->_translate(17);?>
+					:<input type="text" id="interval" name="interval" value="1" />
+					<button class="btn-custom" onclick="addTime(this)" type="button">
+					<?php echo $this->_translate(18); ?>
+					</button>
+				</div>
+
+				<div id='daily' style="display: none;">
+				<?php echo $this->_translate(15); ?>
+					<input id="sdate sdate1" class="datepicker" name="sdate"
+						style="width: 80px" />
+						<?php echo $this->_translate(16); ?>
+					<input id="edate endate1" class="datepicker" name="edate"
+						style="width: 80px" /> <select id="stime" name="stime"
+						style="width: 50px" disabled>
+						<option value="0:00">0:00</option>
+						<option value="0:30">0:30</option>
+						<option value="1:00">1:00</option>
+						<option value="1:30">1:30</option>
+						<option value="2:00">2:00</option>
+						<option value="2:30">2:30</option>
+						<option value="3:00">3:00</option>
+						<option value="3:30">3:30</option>
+						<option value="4:00">4:00</option>
+						<option value="4:30">4:30</option>
+						<option value="5:00">5:00</option>
+						<option value="5:30">5:30</option>
+						<option value="6:00">6:00</option>
+						<option value="6:30">6:30</option>
+						<option value="7:00">7:00</option>
+						<option value="7:30">7:30</option>
+						<option value="8:00">8:00</option>
+						<option value="8:30">8:30</option>
+						<option value="9:00">9:00</option>
+						<option value="9:30">9:30</option>
+						<option value="10:00">10:00</option>
+						<option value="10:30">10:30</option>
+						<option value="11:00">11:00</option>
+						<option value="11:30">11:30</option>
+						<option value="12:00">12:00</option>
+						<option value="12:30">12:30</option>
+						<option value="13:00">13:00</option>
+						<option value="13:30">13:30</option>
+						<option value="14:00">14:00</option>
+						<option value="14:30">14:30</option>
+						<option value="15:00">15:00</option>
+						<option value="15:30">15:30</option>
+						<option value="16:00">16:00</option>
+						<option value="16:30">16:30</option>
+						<option value="17:00">17:00</option>
+						<option value="17:30">17:30</option>
+						<option value="18:00">18:00</option>
+						<option value="18:30">18:30</option>
+						<option value="19:00">19:00</option>
+						<option value="19:30">19:30</option>
+						<option value="20:00">20:00</option>
+						<option value="20:30">20:30</option>
+						<option value="21:00">21:00</option>
+						<option value="21:30">21:30</option>
+						<option value="22:00">22:00</option>
+						<option value="22:30">22:30</option>
+						<option value="23:00">23:00</option>
+						<option value="23:30">23:30</option>
+					</select>
+
+					<?php echo $this->_translate(17);?>
+					:<input type="text" id="interval" name="interval" value="1" />
+					<!--			-
+			<select id="etime" name="etime" style="width: 50px" disabled>
+			<option value="7:30">7:30</option>
+			<option value="8:00">8:00</option>
+			<option value="8:30">8:30</option>
+			<option value="9:00">9:00</option>
+			<option value="9:30">9:30</option>
+			<option value="10:00">10:00</option>
+			<option value="10:30">10:30</option>
+			<option value="11:00">11:00</option>
+			<option value="11:00">11:30</option>
+			<option value="12:00">12:00</option>
+			<option value="12:30">12:30</option>
+			<option value="13:00">13:00</option>
+			<option value="13:30">13:30</option>
+			<option value="14:00">14:00</option>
+			<option value="14:30">14:30</option>
+			<option value="15:00">15:00</option>
+			<option value="15:30">15:30</option>
+			<option value="16:00">16:00</option>
+			<option value="16:30">16:30</option>
+			<option value="17:00">17:00</option>
+			<option value="17:30" selected>17:30</option>
+			</select>-->
+					<button class="btn-custom" onclick="addTime(this)" type="button">
+					<?php echo $this->_translate(18);?>
+					</button>
+				</div>
+				<div id='weekly' style="display: none;">
+				<?php echo $this->_translate(15); ?>
+					<input id="sdate sdate2" class="datepicker" name="sdate"
+						style="width: 80px" />
+						<?php echo $this->_translate(16); ?>
+					<input id="edate edate2" class="datepicker" name="edate"
+						style="width: 80px" />
+						<?php $wday = date('w')?>
+					<select id="wday" name="wday" style="width: 100px">
+						<option value="1" <?php if($wday == 1) echo 'selected'?>>
+						<?php echo $this->_translate(19); ?>
+							2
+						</option>
+						<option value="2" <?php if($wday == 2) echo 'selected'?>>
+						<?php echo $this->_translate(19); ?>
+							3
+						</option>
+						<option value="3" <?php if($wday == 3) echo 'selected'?>>
+						<?php echo $this->_translate(19); ?>
+							4
+						</option>
+						<option value="4" <?php if($wday == 4) echo 'selected'?>>
+						<?php echo $this->_translate(19); ?>
+							5
+						</option>
+						<option value="5" <?php if($wday == 5) echo 'selected'?>>
+						<?php echo $this->_translate(19); ?>
+							6
+						</option>
+						<option value="6" <?php if($wday == 6) echo 'selected'?>>
+						<?php echo $this->_translate(19); ?>
+							7
+						</option>
+						<option value="7" <?php if($wday == 7) echo 'selected'?>>
+						<?php echo $this->_translate(20); ?>
+						</option>
+					</select> <select id="stime" name="stime" style="width: 50px"
+						disabled>
+						<option value="7:30">7:30</option>
+						<option value="8:00">8:00</option>
+						<option value="8:30">8:30</option>
+						<option value="9:00">9:00</option>
+						<option value="9:30">9:30</option>
+						<option value="10:00">10:00</option>
+						<option value="10:30">10:30</option>
+						<option value="11:00">11:00</option>
+						<option value="11:00">11:30</option>
+						<option value="12:00">12:00</option>
+						<option value="12:30">12:30</option>
+						<option value="13:00">13:00</option>
+						<option value="13:30">13:30</option>
+						<option value="14:00">14:00</option>
+						<option value="14:30">14:30</option>
+						<option value="15:00">15:00</option>
+						<option value="15:30">15:30</option>
+						<option value="16:00">16:00</option>
+						<option value="16:30">16:30</option>
+						<option value="17:00">17:00</option>
+						<option value="17:30">17:30</option>
+					</select>
+
+					<?php echo $this->_translate(17);?>
+					:<input type="text" id="interval" name="interval" value="1" />
+					<!--			-
+			<select id="etime" name="etime" style="width: 50px" disabled>
+			<option value="7:30">7:30</option>
+			<option value="8:00">8:00</option>
+			<option value="8:30">8:30</option>
+			<option value="9:00">9:00</option>
+			<option value="9:30">9:30</option>
+			<option value="10:00">10:00</option>
+			<option value="10:30">10:30</option>
+			<option value="11:00">11:00</option>
+			<option value="11:00">11:30</option>
+			<option value="12:00">12:00</option>
+			<option value="12:30">12:30</option>
+			<option value="13:00">13:00</option>
+			<option value="13:30">13:30</option>
+			<option value="14:00">14:00</option>
+			<option value="14:30">14:30</option>
+			<option value="15:00">15:00</option>
+			<option value="15:30">15:30</option>
+			<option value="16:00">16:00</option>
+			<option value="16:30">16:30</option>
+			<option value="17:00">17:00</option>
+			<option value="17:30" selected>17:30</option>
+			</select>-->
+					<button class="btn-custom" onclick="addTime(this)" type="button">
+					<?php echo $this->_translate(18);?>
+					</button>
+				</div>
+				<div id='monthly' style="display: none;">
+				<?php echo $this->_translate(15); ?>
+					<input id="sdate sdate3" class="datepicker" name="sdate"
+						style="width: 80px" />
+						<?php echo $this->_translate(16); ?>
+					<input id="edate edate3" class="datepicker" name="edate"
+						style="width: 80px" />
+						<?php echo $this->_translate(19); ?>
+					<select id="day" name="day" style="width: 50px" disabled>
+					<?php for($i = 1; $i <= 31; $i++):?>
+						<option <?php if($i == date('d')) echo 'selected'?>
+							value="<?php echo $i?>">
+							<?php echo $i?>
+						</option>
+						<?php endfor;?>
+					</select> <select id="stime" name="stime" style="width: 50px"
+						disabled>
+						<option value="7:30">7:30</option>
+						<option value="8:00">8:00</option>
+						<option value="8:30">8:30</option>
+						<option value="9:00">9:00</option>
+						<option value="9:30">9:30</option>
+						<option value="10:00">10:00</option>
+						<option value="10:30">10:30</option>
+						<option value="11:00">11:00</option>
+						<option value="11:00">11:30</option>
+						<option value="12:00">12:00</option>
+						<option value="12:30">12:30</option>
+						<option value="13:00">13:00</option>
+						<option value="13:30">13:30</option>
+						<option value="14:00">14:00</option>
+						<option value="14:30">14:30</option>
+						<option value="15:00">15:00</option>
+						<option value="15:30">15:30</option>
+						<option value="16:00">16:00</option>
+						<option value="16:30">16:30</option>
+						<option value="17:00">17:00</option>
+						<option value="17:30">17:30</option>
+					</select>
+
+					<?php echo $this->_translate(17);?>
+					:<input type="text" id="interval" name="interval" value="1" />
+					<!--			-
+			<select id="etime" name="etime" style="width: 50px" disabled>
+			<option value="7:30">7:30</option>
+			<option value="8:00">8:00</option>
+			<option value="8:30">8:30</option>
+			<option value="9:00">9:00</option>
+			<option value="9:30">9:30</option>
+			<option value="10:00">10:00</option>
+			<option value="10:30">10:30</option>
+			<option value="11:00">11:00</option>
+			<option value="11:00">11:30</option>
+			<option value="12:00">12:00</option>
+			<option value="12:30">12:30</option>
+			<option value="13:00">13:00</option>
+			<option value="13:30">13:30</option>
+			<option value="14:00">14:00</option>
+			<option value="14:30">14:30</option>
+			<option value="15:00">15:00</option>
+			<option value="15:30">15:30</option>
+			<option value="16:00">16:00</option>
+			<option value="16:30">16:30</option>
+			<option value="17:00">17:00</option>
+			<option value="17:30" selected>17:30</option>
+			</select>-->
+					<button class="btn-custom" onclick="addTime(this)" type="button">
+					<?php echo $this->_translate(18);?>
+					</button>
+				</div>
+				<div id='yearly' style="display: none;">
+				<?php echo $this->_translate(15); ?>
+					<input id="sdate sdate4" class="datepicker" name="sdate"
+						style="width: 80px" />
+						<?php echo $this->_translate(16); ?>
+					<input id="edate edate4" class="datepicker" name="edate"
+						style="width: 80px" />
+						<?php echo $this->_translate(21); ?>
+					<select id="day" name="day" style="width: 40px" disabled>
+					<?php for($i = 1; $i <= 31; $i++):?>
+						<option <?php if($i == date('d')) echo 'selected'?>
+							value="<?php echo $i?>">
+							<?php echo $i?>
+						</option>
+						<?php endfor;?>
+					</select>
+					<?php echo $this->_translate(22); ?>
+					<select id="month" name="month" style="width: 40px" disabled>
+					<?php for($i = 1; $i <= 12; $i++):?>
+						<option <?php if($i == date('m')) echo 'selected'?>
+							value="<?php echo $i?>">
+							<?php echo $i?>
+						</option>
+						<?php endfor;?>
+					</select> <select id="stime" name="stime" style="width: 50px"
+						disabled>
+						<option value="7:30">7:30</option>
+						<option value="8:00">8:00</option>
+						<option value="8:30">8:30</option>
+						<option value="9:00">9:00</option>
+						<option value="9:30">9:30</option>
+						<option value="10:00">10:00</option>
+						<option value="10:30">10:30</option>
+						<option value="11:00">11:00</option>
+						<option value="11:00">11:30</option>
+						<option value="12:00">12:00</option>
+						<option value="12:30">12:30</option>
+						<option value="13:00">13:00</option>
+						<option value="13:30">13:30</option>
+						<option value="14:00">14:00</option>
+						<option value="14:30">14:30</option>
+						<option value="15:00">15:00</option>
+						<option value="15:30">15:30</option>
+						<option value="16:00">16:00</option>
+						<option value="16:30">16:30</option>
+						<option value="17:00">17:00</option>
+						<option value="17:30">17:30</option>
+					</select>
+					<!--			-
+			<select id="etime" name="etime" style="width: 50px" disabled>
+			<option value="7:30">7:30</option>
+			<option value="8:00">8:00</option>
+			<option value="8:30">8:30</option>
+			<option value="9:00">9:00</option>
+			<option value="9:30">9:30</option>
+			<option value="10:00">10:00</option>
+			<option value="10:30">10:30</option>
+			<option value="11:00">11:00</option>
+			<option value="11:00">11:30</option>
+			<option value="12:00">12:00</option>
+			<option value="12:30">12:30</option>
+			<option value="13:00">13:00</option>
+			<option value="13:30">13:30</option>
+			<option value="14:00">14:00</option>
+			<option value="14:30">14:30</option>
+			<option value="15:00">15:00</option>
+			<option value="15:30">15:30</option>
+			<option value="16:00">16:00</option>
+			<option value="16:30">16:30</option>
+			<option value="17:00">17:00</option>
+			<option value="17:30" selected>17:30</option>
+			</select>-->
+
+					<?php echo $this->_translate(17);?>
+					:<input type="text" id="interval" name="interval" value="1" />
+					<button class="btn-custom" onclick="addTime(this)" type="button">
+					<?php echo $this->_translate(18);?>
+					</button>
+				</div>
+			</td>
+		</tr>
+		<?php endif;?>
+		<tr>
+			<th>Gửi cho tài khoản</th>
+			<td colspan="2" class="members" id="members">
+				<div class="member_outline" onclick="memberClick(this)">
+					<div class="member_inside">
+					<?php foreach ($this->members as $member):?>
+						<div class="tag-select">
+						<?php echo $member->UserName?>
+							(
+							<?php echo $member->EMail?>
+							) <input type="hidden" value="<?php echo $member->UID?>"
+								name="members[]"> <a class="tag-close" onclick="closeThis(this)"
+								href="#!"></a>
+						</div>
+						<?php endforeach;?>
+						<input type="text" size="10" id="member" name="member" />
+					</div>
+					<div style="clear: both"></div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<th>Gửi cho nhóm</th>
+			<td colspan="2">
+				<div class="group_outline" >
+					<?php foreach ($this->groups as $group):?>
+						<p><input type="checkbox" name="groups[]" value="<?php echo $group->GroupID;?>" <?php if($group->ExistsGroupID):?>checked<?php endif;?>> <?php echo $group->GroupName?>
+					<?php endforeach;?>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" class="center">
+				<button class="btn-custom" onclick="deleteNotify('<?php echo $this->fid?>')" type="button">
+					<?php echo $this->_translate(25); ?>
+				</button>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<button class="btn-custom" onclick="saveNotify()" type="button">
+					<?php echo $this->_translate(23); ?>
+				</button>
+			
+			</td>
+		</tr>
+
+	</table>
+</form>

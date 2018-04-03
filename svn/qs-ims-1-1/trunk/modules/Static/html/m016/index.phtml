@@ -1,0 +1,97 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	rowCLK(document.getElementById($.cookie('doc_selected')));
+});
+</script>
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+	<button id="btnINSERT" type="button" class="btn btn_main_top" onClick="rowInsert()">
+		<?php echo $this->_translate(12)?>
+	</button>
+	
+	<button id="btnEDIT" type="button" class="btn btn_main_top" disabled onClick="rowEdit()">
+		<?php echo $this->_translate(13)?>
+	</button>
+	
+	<button id="btnDELETE" type="button" class="btn btn_main_top" disabled onClick="rowDelete()">
+		<?php echo $this->_translate(14)?>
+	</button>
+
+	<div class="icon-32_separator"></div>
+	
+	<button id="btnREFRESH" type="button" class="btn btn_main_top"  onClick="rowSearch()">
+		<?php echo $this->_translate(23)?>
+	</button>
+	
+	<div class="fr">
+		<button
+			id="search-button"
+			type="button"
+			class="btn fr extra-button"
+			onclick="showSearch()">
+			<?php echo $this->_translate(24)?>
+		</button>
+	</div>
+	
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div class="clearfix" id="div-search" style="right: 12px; top: 100px; display: none;">
+		<form onsubmit="rowSearch(); return false;" method="post"
+			name="filter_form" id="form_event_filter">
+			<div class="clearfix">
+				<div class="label">
+					<span><?php echo $this->_translate(3)?> </span> <span><?php echo $this->_translate(4)?>
+					</span> <span><?php echo $this->_translate(5)?> </span> <span><?php echo $this->_translate(6)?>
+					</span> <span><?php echo $this->_translate(7)?> </span>
+				</div>
+				<div class="element">
+					<span><input type="text" value="<?php echo @$this->filters[1]?>"
+						name="filter_1" /> </span> <span> <select style="width: 150px;"
+						name="filter_2">
+							<option value=""></option>
+							<?php foreach ($this->users as $item):?>
+							<option
+							<?php if(@$this->filters[2] == $item->UID) echo 'selected'?>
+								value="<?php echo $item->UID?>">
+								<?php echo $item->UserName?>
+							</option>
+							<?php endforeach;?>
+					</select> </span> <span><input type="text" value="" name="filter_3"
+						id="filter_3" /> </span> <span><input type="text" value=""
+						name="filter_4" id="filter_4" /> </span> <span> <select
+						style="width: 150px;" name="filter_5">
+							<option value=""></option>
+							<?php foreach ($this->folder as $item):?>
+							<option
+							<?php if(@$this->filters[5] == $item->Folder) echo 'selected'?>
+								value="<?php echo $item->Folder?>">
+								<?php echo $item->Folder?>
+							</option>
+							<?php endforeach;?>
+					</select> </span>
+				</div>
+			</div>
+		</form>
+		<div class="fl">
+			<div onclick="rowSearch(50);" class="btn-custom">
+			<?php echo $this->_translate(24)?>
+			</div>
+			<div onclick="rowCleanSearch();" class="btn-custom">
+			<?php echo $this->_translate(1)?>
+			</div>
+		</div>
+	</div>
+	<div id="qss_form">
+	<?php echo $this->listview?>
+	</div>
+</div>
+<script>
+$(function() {
+	$("#filter_3").datepicker();
+	$("#filter_3").datepicker('option', {dateFormat: 'dd-mm-yy'});
+	$("#filter_3").val('<?php echo @$this->filters[3]?>');
+	$("#filter_4").datepicker();
+	$("#filter_4").datepicker('option', {dateFormat: 'dd-mm-yy'});
+	$("#filter_4").val('<?php echo @$this->filters[4]?>');
+});
+</script>

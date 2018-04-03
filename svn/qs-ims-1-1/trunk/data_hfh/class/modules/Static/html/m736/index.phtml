@@ -1,0 +1,108 @@
+<script>    
+function printPreview(){
+	var url = sz_BaseUrl + '/static/m736/show';
+	var data = $('#report').serialize();
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#print-area').html(jreturn);
+		removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+	});
+}
+
+function excelRender()
+{
+	$('#report').submit();
+}
+
+function removePrintToolbarDisabled()
+{
+	$('.pt-button').each(function(){
+		$(this).prop('disabled',false);
+	});
+}
+</script>
+
+<div class="clear"></div>
+<div id="view">
+	<div class="line-hr">
+		<span><?php echo Qss_Lib_System::getReportTitle('M736');?></span>
+	</div>
+	<form id="report" method="get" action="/static/m736/excel">
+		<input type="hidden" name="popup" value="1" />
+		<table class="detail">
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(23);?>
+				</th>
+				<td><?php echo $this->views->Report->SelectYear('year');?></td>
+			</tr>
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(24);?>
+				</th>
+				<td><?php echo $this->views->Report->Datepicker('date', date('d-m-Y'));?><span
+					class="bold red">(*)</span></td>
+			</tr>
+			<!--  
+<tr>
+	<th><span class="bold red">(*) <?php echo $this->_translate(6);?></span></th>
+	<td></td>
+</tr>
+-->
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(20)?>
+				</th>
+				<td><?php
+				$id            = 'location';
+				$getFields     = array('num'=>3,
+                                       'objects'=>array('OKhuVuc'=>array(
+                                                            'id'=>'IOID'
+                                                            ,'display1'=>'MaKhuVuc'
+                                                            ,'display2'=>'Ten') ));
+                                                            ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+				</td>
+			</tr>
+
+			<?php if(Qss_Lib_System::fieldActive('ODanhSachThietBi', 'NhomThietBi')): ?>
+				<tr>
+					<th width="20%" class="report-param-label"><?php echo $this->_translate(22) ?>
+					</th>
+					<td><?php
+						$id = 'group';
+						$getFields = array('num' => 2,
+							'objects' => array('ONhomThietBi' => array(
+								'id' => 'IOID'
+							, 'display1' => 'LoaiThietBi'
+							)));
+						?> <?php echo $this->views->Report->ComboBox($id, $getFields); ?>
+
+				</tr>
+			<?php endif; ?>
+
+			<?php if(Qss_Lib_Extra::checkFieldExists('ODanhSachThietBi', 'Ref_LoaiThietBi')):?>
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(21)?>
+				</th>
+				<td><?php
+				$id            = 'type';
+				$getFields     = array('num'=>2,
+                                       'objects'=>array('OLoaiThietBi'=>array(
+                                                            'id'=>'IOID'
+                                                            ,'display1'=>'TenLoai'
+                                                            )) );
+                                                            ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+			
+			</tr>
+			<?php endif;?>
+
+		</table>
+	</form>
+	<p>
+	
+	
+	<hr>
+
+	<?php echo $this->views->Report->PrintToolbar();?>
+
+	<div id="print-content">
+		<div id="print-area"></div>
+	</div>
+</div>
+

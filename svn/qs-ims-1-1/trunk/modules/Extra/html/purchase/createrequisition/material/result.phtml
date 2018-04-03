@@ -1,0 +1,163 @@
+<?php
+$totalCol = 11;
+$oldIOID  = '';
+$stt      = 0;
+$exclude  = array();
+?>
+<script>
+	var fid = 136;
+	jQuery(document).ready(function($){
+	});
+</script>
+
+<form id="create_requisition_result_form">
+	<table class="border_table" cellspacing="0" cellpadding="0" border="1"
+		style="width: 100%;">
+		<tr class="bggrey">
+			<th style="width: 5%;"><?php echo $this->_translate(1);//STT?></th>
+			<th style="width: 10%;"><?php echo $this->_translate(2);//MaMH?></th>
+			<th style="width: 10%;"><?php echo $this->_translate(3);//TenMH?></th>
+			<th style="width: 10%;"><?php echo $this->_translate(4);//DTKT?></th>
+			<th style="width: 5%;"><?php echo $this->_translate(5);//DVT?></th>
+			<th style="width: 10%;"><?php echo $this->_translate(6);//MucDich?></th>
+			<th style="width: 10%;"><?php echo $this->_translate(7);//NhuCauPhatSinh?>
+			</th>
+			<th style="width: 10%;"><?php echo $this->_translate(8);//Tồn kho?></th>
+			<th style="width: 10%;"><?php echo $this->_translate(9);//Điểm đỏ?></th>
+			<th style="width: 10%;"><?php echo $this->_translate(10);//Yeu cau?>
+			</th>
+			<!--		<th style="">
+			<input type="checkbox" 
+				   onclick="common_check_all_table_line(
+							   this
+					   , '.create_requisition_line_checkbox'
+					   , '.create_requisition_line_val')" />
+		</th>-->
+		</tr>
+
+
+		<?php foreach($this->data as $dat):?>
+
+		<?php
+		// Init
+		$inventory  = isset($this->inventory[$dat->RefItem])?$this->inventory[$dat->RefItem]:0;
+		$min        = @(double)$dat->SoLuongToiThieu;
+		$requireQty      = $dat->SoLuong;
+		$purchaseRequire = ($dat->SoLuongMua > $dat->SoLuong)?$dat->SoLuongMua:$dat->SoLuong;
+		$exclude[]       = $dat->RefItem;
+		?>
+
+		<tr>
+			<td class="center">
+				<!-- Tham So --> <input type="hidden" name="itemCodes[]"
+				id="create_requisition_item_code" value="<?php echo $dat->MaSP;?>"
+				class="" /> <input type="hidden" name="itemNames[]"
+				id="create_requisition_item_name" value="<?php echo $dat->TenSP;?>"
+				class="" /> <input type="hidden" name="itemUOMs[]"
+				id="create_requisition_item_uom"
+				value="<?php echo $dat->DonViTinh;?>" class="" /> <input
+				type="hidden" name="itemBaseUOMs[]"
+				id="create_requisition_item_base_uom"
+				value="<?php echo $dat->DonViTinhCoSo;?>" class="" /> <input
+				type="hidden" name="refUOMs[]" id="create_requisition_item_base_uom"
+				value="<?php echo $dat->Ref_DonViTinh;?>" class="" /> <input
+				type="hidden" name="itemQtys[]" id="create_requisition_item_qty"
+				value="<?php echo $purchaseRequire;?>" class="" /> <input
+				type="hidden" name="requireQtys[]"
+				id="create_requisition_item_require_qty"
+				value="<?php echo $requireQty;?>" class="" /> <input type="hidden"
+				name="inventoryQtys[]" id="create_requisition_item_inventory_qty"
+				value="<?php echo $inventory;?>" class="" /> <input type="hidden"
+				name="minQtys[]" id="create_requisition_item_min_qty"
+				value="<?php echo $min;?>" class="" /> <input type="hidden"
+				name="uomConvertRates[]" id="create_requisition_item_qty"
+				value="<?php echo $dat->HeSoQuyDoi;?>" class="" /> <input
+				type="hidden" name="purposes[]" id="create_requisition_purpose"
+				value="<?php echo $dat->MucDich;?>" class="" /> <input type="hidden"
+				name="lineIFID[]" id="create_requisition_line_ifid"
+				value="<?php echo $dat->IFID;?>" class="" /> <input type="hidden"
+				name="lineIOID[]" id="create_requisition_line_ifid"
+				value="<?php echo $dat->LineIOID;?>" class="" /> <input
+				type="hidden" name="IOID[]" id="create_requisition_line_ifid"
+				value="<?php echo $dat->IOID;?>" class="" /> <?php echo ++$stt;?>
+			</td>
+			<td class="left"><?php echo $dat->MaSP;?></td>
+			<td class="left"><?php echo $dat->TenSP;?></td>
+			<td class="left"><?php echo $dat->DacTinhKyThuat;?></td>
+			<td class="left"><?php echo $dat->DonViTinhCoSo;?></td>
+			<td class="left"><?php echo $dat->MucDich;?></td>
+			<td class="right"><?php echo $requireQty;// NhuCau?></td>
+			<td class="right"><?php echo $inventory;// TonKHO?></td>
+			<td class="right"><?php echo $min;// DiemDo?></td>
+			<td class="right"><input type="text" name="purchaseQtys[]"
+				id="create_requisition_purchase_qty " class="" style="width: 50px;"
+				value="<?php echo $purchaseRequire;?>" />
+			</td>
+		</tr>
+
+		<?php $oldIOID = $dat->IOID;?>
+		<?php endforeach; // $dat?>
+
+
+		<?php foreach($this->min as $dat):?>
+
+		<?php
+		// Init
+		$inventory  = $dat->SoLuongHC?$dat->SoLuongHC:0;
+		$min        = $dat->MinQty?$dat->MinQty:0;
+		$tempPurQty = $min - $inventory;
+		$requireQty      = 0;
+		$purchaseRequire = ($dat->SoLuongMua > $tempPurQty)?$dat->SoLuongMua:$tempPurQty;
+		?>
+
+		<?php if(!in_array($dat->IOID, $exclude)):?>
+
+		<tr>
+			<td class="center">
+				<!-- Tham So --> <input type="hidden" name="itemCodes[]"
+				id="create_requisition_item_code"
+				value="<?php echo $dat->MaSanPham;?>" class="" /> <input
+				type="hidden" name="itemNames[]" id="create_requisition_item_name"
+				value="<?php echo $dat->TenSanPham;?>" class="" /> <input
+				type="hidden" name="itemUOMs[]" id="create_requisition_item_uom"
+				value="<?php echo $dat->DonViTinh;?>" class="" /> <input
+				type="hidden" name="itemBaseUOMs[]"
+				id="create_requisition_item_base_uom"
+				value="<?php echo $dat->DonViTinh;?>" class="" /> <input
+				type="hidden" name="refUOMs[]" id="create_requisition_item_base_uom"
+				value="<?php echo $dat->Ref_DonViTinh;?>" class="" /> <input
+				type="hidden" name="itemQtys[]" id="create_requisition_item_qty"
+				value="<?php echo $purchaseRequire;?>" class="" /> <input
+				type="hidden" name="requireQtys[]"
+				id="create_requisition_item_require_qty"
+				value="<?php echo $requireQty;?>" class="" /> <input type="hidden"
+				name="inventoryQtys[]" id="create_requisition_item_inventory_qty"
+				value="<?php echo $inventory;?>" class="" /> <input type="hidden"
+				name="minQtys[]" id="create_requisition_item_min_qty"
+				value="<?php echo $min;?>" class="" /> <input type="hidden"
+				name="uomConvertRates[]" id="create_requisition_item_qty" value="1"
+				class="" /> <input type="hidden" name="purposes[]"
+				id="create_requisition_purpose" value="" class="" /> <input
+				type="hidden" name="lineIFID[]" id="create_requisition_line_ifid"
+				value="0" class="" /> <input type="hidden" name="lineIOID[]"
+				id="create_requisition_line_ifid" value="0" class="" /> <input
+				type="hidden" name="IOID[]" id="create_requisition_line_ifid"
+				value="0" class="" /> <?php echo ++$stt;?>
+			</td>
+			<td class="left"><?php echo $dat->MaSanPham;?></td>
+			<td class="left"><?php echo $dat->TenSanPham;?></td>
+			<td class="left"><?php echo $dat->DacTinhKyThuat;?></td>
+			<td class="left"><?php echo $dat->DonViTinh;?></td>
+			<td class="left">&nbsp;</td>
+			<td class="right"><?php echo $requireQty;// NhuCau?></td>
+			<td class="right"><?php echo $inventory;// TonKHO?></td>
+			<td class="right"><?php echo $min;// DiemDo?></td>
+			<td class="right"><input type="text" name="purchaseQtys[]"
+				id="create_requisition_purchase_qty " class="" style="width: 50px;"
+				value="<?php echo $purchaseRequire;?>" />
+			</td>
+		</tr>
+		<?php endif;?>
+		<?php endforeach; // $dat?>
+	</table>
+</form>

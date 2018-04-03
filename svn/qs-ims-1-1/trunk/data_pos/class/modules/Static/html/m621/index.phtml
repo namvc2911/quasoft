@@ -1,0 +1,315 @@
+<!--  @todo: fix bug chrome multiple select element -->
+<style>
+    #item_dial_box {
+        overflow: hidden;
+    }
+
+    #select_item_box {
+        float: left;
+        width: 45%;
+    }
+
+    #select_item_box select {
+        width: 95%;
+    }
+
+    #button_box {
+        width: 10%;
+        float: left;
+    }
+
+    #button_box .btn-custom {
+        padding: 0px;
+        margin: 0px;
+        width: 90%;
+    }
+
+    #add_button {
+        margin-top: 40px;
+    }
+
+    #items_box {
+        float: left;
+        width: 45%;
+    }
+
+    #items_box select {
+        width: 95%;
+    }
+
+    #qss_report {
+        margin: 5px 0px;
+    }
+</style>
+
+<script type="text/javascript">
+
+    jQuery(document).ready(function($){
+        $('#group').change(function(){
+            changeSelectItem(this);
+        });
+    });
+
+    function printPreview()
+    {
+        var ngaybd      = $('#start').val();
+        var ngaykt      = $('#end').val();
+        /*var period      = $('#period').val();*/
+        var firstValue  = ngaybd.split('-');
+        var secondValue = ngaykt.split('-');
+        var firstDate   = new Date();
+        firstDate.setFullYear(firstValue[2],(firstValue[1] - 1 ),firstValue[0]);
+        var secondDate  = new Date();
+        secondDate.setFullYear(secondValue[2],(secondValue[1] - 1 ),secondValue[0]);
+        var items       = $('#items_box select option').length;
+        var msg         = ''; /* Error message */
+        $('#items_box select option').attr('selected','selected');/* Select all selected item */
+
+        if(ngaybd == '')
+        {
+            msg  += '<?php echo $this->_translate(15);?>';
+        }
+
+        if(ngaykt == '')
+        {
+            msg  += '<?php echo $this->_translate(16);?>';
+        }
+
+        if (firstDate > secondDate)
+        {
+            msg += '<?php echo $this->_translate(17)?>';
+        }
+
+        /*
+         if(period == '')
+         {
+         msg  += '<?php //echo $this->_translate(18);?>';
+     }
+     */
+
+        /*
+         if(items == 0)
+         {
+         msg += '<?php //echo $this->_translate(19);?>';
+     }
+     */
+        if(msg != '')
+        {
+            qssAjax.alert(msg);
+            return;
+        }
+        else
+        {
+            var url = sz_BaseUrl + '/static/m621/show';
+            var data = $('#report').serialize();
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#print-area').html(jreturn);
+                removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+            });
+        }
+    }
+    function excelReport()
+    {
+        var ngaybd      = $('#start').val();
+        var ngaykt      = $('#end').val();
+        var warehouse      = $('#warehouse').val();
+        
+        /*var period      = $('#period').val();*/
+        var firstValue  = ngaybd.split('-');
+        var secondValue = ngaykt.split('-');
+        var firstDate   = new Date();
+        firstDate.setFullYear(firstValue[2],(firstValue[1] - 1 ),firstValue[0]);
+        var secondDate  = new Date();
+        secondDate.setFullYear(secondValue[2],(secondValue[1] - 1 ),secondValue[0]);
+        var items       = $('#items_box select option').length;
+        var msg         = ''; /* Error message */
+        $('#items_box select option').attr('selected','selected');/* Select all selected item */
+
+        if(warehouse == '')
+        {
+            msg  += 'Kho yêu cầu bắt buộc';
+        }
+        
+        if(ngaybd == '')
+        {
+            msg  += '<?php echo $this->_translate(15);?>';
+        }
+
+        if(ngaykt == '')
+        {
+            msg  += '<?php echo $this->_translate(16);?>';
+        }
+
+        if (firstDate > secondDate)
+        {
+            msg += '<?php echo $this->_translate(17)?>';
+        }
+
+        /*
+         if(period == '')
+         {
+         msg  += '<?php //echo $this->_translate(18);?>';
+     }
+     */
+
+        /*
+         if(items == 0)
+         {
+         msg += '<?php //echo $this->_translate(19);?>';
+     }
+     */
+        if(msg != '')
+        {
+            qssAjax.alert(msg);
+            return;
+        }
+        else
+        {
+            //var url = sz_BaseUrl + '/static/m621/show';
+            //var data = $('#report').serialize();
+            /*qssAjax.getHtml(url, data, function(jreturn) {
+                $('#print-area').html(jreturn);
+                removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+            });*/
+        	$('#report').submit();
+        }
+    }
+    function changeSelectItem(ele)
+    {
+        var url = sz_BaseUrl + '/static/m621/show2';
+        var data = {
+            group:$(ele).val()
+        };
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#select_item_box select').html(jreturn);
+        });
+    }
+
+    function addItem()
+    {
+        var add       = $('#select_item_box select option:selected');
+        add.each(function(){
+            $('#items_box select').append('<option value="'+$(this).val()+'" groupmarker="'+$(this).attr('groupmarker')+'">'+$(this).text()+'</option>');
+            $(this).remove();
+        });
+    }
+
+    function removeItem()
+    {
+        var remove = $('#items_box select option:selected');
+        remove.each(function(){
+            $('#select_item_box select ').prepend('<option value="'+$(this).val()+'" groupmarker="'+$(this).attr('groupmarker')+'">'+$(this).text()+'</option>');
+            $(this).remove();
+        });
+    }
+
+</script>
+<div class="clear"></div>
+<div id="view">
+    <div class="line-hr">
+        <span><?php echo $this->_translate(1)?> </span>
+    </div>
+    <form id="report" method="post" action="/static/m621/excel">
+
+        <input type="hidden" name="popup" value="1" />
+
+    	<input type="hidden" value="1" name="popup">
+        <table class="detail" style="margin: 10px">
+            <tr>
+                <th width="20%" class="report-param-label">
+                    <!-- Ngày bắt đầu --> <?php echo $this->_translate(2)?> <span
+                        class="red">(*)</span></th>
+                <td><?php echo $this->views->Report->Datepicker('start','01-'.date('m').'-'.date('Y'));?>
+                </td>
+            </tr>
+
+            <tr>
+                <th width="20%" class="report-param-label">
+                    <!-- Ngày kết thúc --> <?php echo $this->_translate(3)?> <span class="red">(*)</span></th>
+                <td><?php echo $this->views->Report->Datepicker('end',date('d-m-Y'));?>
+                </td>
+            </tr>
+
+
+            <?php if(Qss_Lib_System::fieldActive('OSanPham', 'NhomMatHang')):?>
+                <tr>
+                    <th width="20%" class="report-param-label">
+                        <!-- Nhóm mặt hàng --> <?php echo $this->_translate(12)?></th>
+                    <td><?php
+                        $id            = 'group';
+                        $getFields     = array('num'=>2,
+                            'objects'=>array('ONhomSanPham'=>array(
+                                'id'=>'IOID'
+                            ,'order'=>'TenNhom'
+                            ,'display1'=>'TenNhom'
+                            )) );
+                        ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+                    </td>
+                </tr>
+            <?php endif;?>
+
+            <tr>
+                <th width="20%" class="report-param-label">
+                    <!-- Mặt hàng --> <?php echo $this->_translate(14)?></th>
+                <td>
+                    <?php echo $this->views->Report->DialBox('items', $this->items);?>
+                </td>
+            </tr>
+
+            <tr>
+                <th width="20%" class="report-param-label">
+                    <!-- Kho --> <?php echo $this->_translate(11)?> <span class="red">(*)</span></th>
+                <td><?php
+                    $id            = 'warehouse';
+                    $getFields     = array('num'=>2,
+                        'objects'=>array('ODanhSachKho'=>array(
+                            'id'=>'IOID'
+                        ,'display1'=>'MaKho'
+                        ,'display2'=>'TenKho')) );
+                    ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+                </td>
+            </tr>
+
+            <tr>
+                <th width="20%" class="report-param-label">
+                    <!-- Sl nhap --> <?php echo $this->_translate(21)?></th>
+                <td>
+                    <input type="checkbox" id="has_inventory" name="has_inventory"
+                           value="1"> <?php echo $this->_translate(23)?> <input
+                        type="checkbox" id="has_warehouse_transaction"
+                        name="has_warehouse_transaction" value="1"> <?php echo $this->_translate(22)?>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <p>
+
+
+    <hr>
+    <div id="print-toolbar">
+    
+        <button id="pt-showreport" class="btn-custom" onclick="printPreview()" type="button">Xem báo cáo</button>
+
+        <button onclick="excelReport()" class="btn-custom pt-button" type="button"> Kiết xuất excel </button>
+
+        
+</div>
+    <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>
+<script>
+    function removePrintToolbarDisabled()
+    {
+        $('.pt-button').each(function(){
+            $(this).prop('disabled',false);
+        });
+    }
+	
+	function selectDialBox($id)
+	{
+		$('#'+$id+' option').attr('selected','selected');
+	}
+	
+
+</script>

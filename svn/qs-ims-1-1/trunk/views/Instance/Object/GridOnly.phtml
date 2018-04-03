@@ -1,0 +1,109 @@
+<script>
+    function openLinkModule(code,url){
+        $( this ).dialog( "close" );
+        openModule(code,url);
+    }
+</script>
+<table cellspacing="0" class="grid">
+	<tr>
+		<?php if(!$this->isSub):?>
+			<th class="nocount"><?php echo $this->_translate(101)?></th>
+		<?php endif;?>
+		<?php if ( $this->o_Object->bTrack ):?>
+			<th class="nocount"><?php echo $this->_translate(50)?></th>
+		<?php endif;?>
+		<?php foreach ($this->fields as $field):?>
+		<?php if ( $field->bGrid & 1):?>
+		<th style="border-left: 1px solid rgb(204, 204, 204);">
+		<a href="#" onclick="DisplayTabContent('<?php echo $this->params['ifid'];?>', '<?php echo $this->params['deptid'];?>', '<?php echo $this->params['objid'];?>', '<?php echo $this->params['fieldid'];?>', '<?php echo $this->params['vid'];?>', '<?php echo $this->params['ioid'];?>', '<?php echo $this->object->sz_Name?>','<?php echo $field->FieldCode?>');"><?php
+			echo $field->szFieldName;
+			?> <?php if($this->orderfield === $field->FieldCode):?> <img
+			border="0"
+			src="/images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" />
+			<?php endif;?></a></th>
+		<?php endif;?>
+		<?php endforeach;?>
+	</tr>
+	<?php
+	$groupbyvalue = '';
+	$groupby = $this->groupby;
+	$rights = $this->form->i_fGetRights($this->user->user_group_list);
+	$i=1;
+	foreach ($this->objects as $object)
+	{
+		$this->o_Object->initData($this->o_Object->i_IFID,$this->o_Object->intDepartmentID,$object->IOID);
+		$fields = $this->o_Object->loadFields();
+		?>
+	<?php if ($groupby == -2):?>
+		<?php if($object->UserName !== $groupbyvalue):?>
+			<tr>
+				<td class="groupby" colspan="<?php echo $this->gridFieldCount?>"><?php echo $object->UserName;?></td>
+			</tr>
+			<?php $i=1;?>
+		<?php endif;?>
+		<?php $groupbyvalue = $object->UserName;?>
+	<?php elseif($groupby):?>
+		<?php $groupbyfield = $this->o_Object->getFieldByCode($groupby);?>
+		<?php if($groupbyfield && $groupbyfield->getValue() !== $groupbyvalue):?>
+			<tr>
+				<td class="groupby" colspan="<?php echo $this->gridFieldCount?>"><?php echo $groupbyfield->sz_fGetDisplay(false,true);?></td>
+			</tr>
+			<?php $i=1;?>
+		<?php endif;?>
+		<?php $groupbyvalue = $groupbyfield->getValue();?>
+	<?php endif;?>
+	<tr>
+	<?php if(!$this->isSub):?>
+		<?php $filter='';?>
+		<?php foreach ($fields as $field):?>
+			<?php if($field->FieldCode == $this->fieldid):?>
+			<?php $filter = sprintf('filter_%1$s_%2$s=%3$s',$field->ObjectCode,$field->FieldCode,$field->getValue());?>
+			<?php endif;?>
+		<?php endforeach;?>
+		<!-- <td class="nocount"><a href="/user/form/detail/?ifid=<?php //echo $object->IFID?>&deptid=<?php //echo $object->DepartmentID?>" target="blank"> -->
+            <td class="nocount"><a onclick="openLinkModule('<?php echo $object->FormCode?>','/user/form?fid=<?php echo $object->FormCode?>&<?php echo $filter?>')" href="#1" ><!-- target="blank" -->
+			<?php
+			echo $object->Code?></a></td>
+			<?php endif;?>
+
+			<?php if ( $this->o_Object->bTrack ):?>
+				<td class="nocount" style="border-left: 1px solid #CCCCCC"><?php	echo $object->UserName?></td>
+			<?php endif;?>
+		<?php $bFirst = true;?>
+		<?php foreach ($fields as $field):?>
+		<?php if ( $field->bGrid & 1):?>
+		<td class="data <?php echo Qss_Lib_Const::$FIELD_ALIGN[$field->intFieldType-1]?> <?php if($field->intFieldType == 7) echo ($field->getValue()?'col-checked':'col-unchecked')?>"
+		<?php
+		if ( $bFirst )
+		echo 'style="border-left: 1px solid rgb(204, 204, 204);"'?>><?php if($field->intFieldType != 7 || $field->intInputType == 5 ):?><?php echo $field->sz_fGetDisplay(false);?><?php endif;?></td>
+
+		<?php $bFirst = false;?>
+		<?php endif;?>
+		<?php endforeach;?>
+	</tr>
+	<?php
+	}
+	?>
+	<tr>
+		<?php if(count($this->objects)):?>
+			<?php if(!$this->isSub):?>
+			<th class="nocount">&nbsp;</th>
+			<?php endif;?>
+			<?php if ( $this->o_Object->bTrack ):?>
+			<th class="nocount">&nbsp;</th>
+			<?php endif;?>
+			<?php foreach ($this->fields as $field):?>
+				<?php if ( $field->bGrid & 1):?>
+					<?php if($field->AFunction):?>
+					 	<?php  $field->setValue($this->o_Object->getAgregrate($field,$this->sql))?>
+					 	<th><?php echo $field->sz_fGetDisplay()?></th>
+					<?php else:?>
+						<th>&nbsp;</th>
+					<?php endif;?>
+				<?php endif;?>
+			<?php endforeach;?>
+		<?php else:?>
+			<td class="data center" style="border-left: 1px solid rgb(204, 204, 204);" colspan="<?php echo (count((array)$this->fields) + ($this->isSub?0:1) + ($this->o_Object->bTrack ?1:0))?>" ><?php echo $this->_translate(1)?></td>
+		<?php endif;?>
+	</tr>
+</table>

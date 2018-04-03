@@ -1,0 +1,124 @@
+
+<script src="/js/object-list.js"></script>
+<script>
+    var m1883_clawback = {
+        show : function()
+        {
+            common_selectDialBox('employees');
+
+            var url  = sz_BaseUrl + '/button/m183/clawback/show/';
+            var data = $('#m1883_clawback_form').serialize();
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#m183ClawBack_show').html(jreturn);
+            });
+        },
+
+        save : function()
+        {
+            var url  = sz_BaseUrl + '/button/m183/clawback/save';
+            var data = $('#m1883_clawback_form').serialize();
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != '')
+                {
+                    qssAjax.notice(jreturn.message);
+                }
+                opener.rowObjectSearch(parseInt($('#m1883_clawback_ifid').val()), parseInt($('#m1883_clawback_deptid').val()),'OChiTietThuHoiTaiSan');
+                window.close();
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+        },
+
+        disable_new_employee : function ()
+        {
+            var val = parseInt($('#m183_clawback_genType').val());
+
+            if(val == 1)
+            {
+                $('#newEmployee').removeAttr('disabled');
+                $('#newEmployee_tag').removeAttr('disabled');
+            }
+            else
+            {
+                $('#newEmployee').attr('disabled', true);
+                $('#newEmployee_tag').attr('disabled', true);
+            }
+        }
+    };
+
+    $(document).ready(function () {
+        m1883_clawback.disable_new_employee();
+
+
+        $('#m183_clawback_genType').change(function() {
+            m1883_clawback.disable_new_employee();
+        });
+    });
+</script>
+
+
+<div id="view">
+    <form id="m1883_clawback_form">
+        <input type="hidden" name="ifid" id="m1883_clawback_ifid" value="<?php echo $this->ifid;?>">
+        <input type="hidden" name="deptid" id="m1883_clawback_deptid" value="<?php echo $this->deptid;?>">
+        <input type="hidden" name="docno" id="m1883_clawback_deptid" value="<?php echo $this->clawback->SoPhieu;?>">
+
+
+
+        <div class="">
+            <div class="fl" style="width: 100px;">
+                <label>Nhân viên:</label>
+            </div>
+
+            <div class="fl" style="width: 80%;">
+                <?php echo $this->views->Report->DialBox('employees', $this->employees);?>
+            </div>
+        </div>
+
+        <div class="clear">&nbsp;</div>
+
+        <div class="">
+            <div class="fl" style="width: 100px;">
+                <label>Loại:</label>
+            </div>
+
+            <div class="fl" style="width: 80%;">
+                <select class="" style="width: 200px" name="genType" id="m183_clawback_genType">
+                    <option value="0"> --- Chọn --- </option>
+                    <?php foreach($this->types as $key=>$val):?>
+                        <option value="<?php echo $key;?>"> <?php echo $val;?></option>
+                    <?php endforeach;?>
+                </select>
+            </div>
+        </div>
+
+        <div class="clear">&nbsp;</div>
+
+        <div class="">
+            <div class="fl" style="width: 100px;">
+                <label>Nhân viên mới:</label>
+            </div>
+
+            <div class="fl" style="width: 80%;">
+                <?php echo $this->views->Report->SimpleListBox('newEmployee', '/button/m183/employees?factory='. $this->clawback->Ref_NhaMay);?>
+            </div>
+        </div>
+
+
+        <div class="clear">&nbsp;</div>
+        <br/>
+
+        <div class="fr">
+            <button class="btn btn_main_top" onclick="m1883_clawback.show();" type="button"> Xem tài sản nhân viên </button>
+        </div>
+
+        <div class="clear">&nbsp;</div>
+        <br/>
+
+        <div id="m183ClawBack_show">
+
+        </div>
+    </form>
+</div>

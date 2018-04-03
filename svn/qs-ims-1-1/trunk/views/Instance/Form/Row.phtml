@@ -1,0 +1,27 @@
+	<tr
+		rights="1"
+		deptid="<?php echo $this->o_Object->intDepartmentID?>"
+		id="<?php echo $this->o_Object->i_IFID?>" 
+		fid="<?php echo $this->o_Object->FormCode?>"
+		ondblclick="rowTrace(); return false;"
+		onclick="rowCLK(this);">
+		<td class="nocount">8</td>
+		<?php if($this->o_Object->bTrack):?>
+		<td class="data" style="border-left: 1px solid #CCCCCC"><?php echo $this->user->user_name?></td>
+		<?php endif;?>
+		<?php $fields = $this->o_Object->loadFields();?>
+		<?php foreach ($fields as $field):?>
+			<?php if ( $field->bGrid & 1):?>
+		<td onclick="cellCLK(this);" 
+			class="data <?php echo Qss_Lib_Const::$FIELD_ALIGN[$field->intFieldType-1]?> <?php if($field->intFieldType == 7) echo ($field->getValue()?'col-checked':'col-unchecked')?>"
+			name="<?php echo $field->FieldCode?>" id="<?php echo $field->FieldCode?>"
+			readonly="<?php echo (int) $field->bReadOnly?>" inputtype="<?php echo $field->intInputType?>"
+			reffid="<?php echo $field->RefFormCode?>" refobjid="<?php echo $field->RefObjectCode?>" 
+			reffieldid="<?php echo $field->RefFieldCode?>"
+			dwidth="<?php echo $field->intFieldWidth?>"><?php if($field->intFieldType != 7) echo $field->sz_fGetDisplay(false);?></td>
+			<?php endif;?>
+		<?php endforeach;?>
+		<?php if($this->form->i_Type == Qss_Lib_Const::FORM_TYPE_MODULE):?>
+		<td style="width: 80px;" class="data">8888888</td>
+			<?php endif;?>
+	</tr>

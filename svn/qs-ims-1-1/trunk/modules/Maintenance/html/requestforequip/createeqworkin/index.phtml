@@ -1,0 +1,432 @@
+<style>
+    <!--
+    #requestforequip_createequipworking_title {
+
+    }
+
+    #requestforequip_createequipworking_table {
+
+    }
+
+    #requestforequip_createequipworking_table_inner {
+        overflow: auto;
+        height: 500px;
+    }
+
+    .input_date_style {
+        width: 66px;
+    }
+
+    .input_combobox_style {
+        width: 170px;
+    }
+    -->
+</style>
+
+<link rel="stylesheet" href="/css/form.css" />
+<link rel="stylesheet" href="/css/general.css" />
+<link rel="stylesheet" href="/css/layout.css" />
+
+<script type="text/javascript" src="/js/vn.js"></script>
+<script type="text/javascript" src="/js/jquery.min.1.8.2.js"></script>
+<script type="text/javascript" src="/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="/js/ui/jquery-ui-1.8.1.custom.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript" src="/js/core-ajax.js"></script>
+<script type="text/javascript" src="/js/object-list.js"></script>
+
+
+
+<?php
+// INIT
+$total_col = 7; // tong so cot
+$i         = 0;  // STT cua dong
+$j         = 0;
+$lIndex    = 0;
+$oldLine   = '';
+?>
+<div id='mask'></div>
+<div id="requestforequip_createequipworking_wrap">
+<div id="requestforequip_createequipworking_table">
+<form id="requestforequip_createequipworking_form">
+
+<input type="hidden" name="ifid" value="<?php echo $this->ifid;?>"/>
+
+<fieldset>
+<legend>
+    <?php echo $this->_translate(14);  // Yêu cầu điều động ?>
+</legend>
+
+<div id="requestforequip_createequipworking_table_inner">
+<table class="border_table_none_bg" cellpadding="0" cellspacing="0" border="0">
+<!-- TITLE -->
+<tr class="bggrey center">
+    <!-- Chon -->
+    <th style="width: 5%;">
+        <?php echo $this->_translate(10); ?>
+    </th>
+
+    <!-- Thiết bị -->
+    <th style="width: 15%;">
+        Mã thiết bị
+    </th>
+
+    <!-- Thiết bị -->
+    <th style="width: 20%;">
+        Tên thiết bị
+    </th>
+
+    <!-- Thiết bị -->
+    <th style="width: 15%;">
+        Serial
+    </th>
+
+    <!-- Hạn HC/KĐ -->
+    <th style="width: 15%;">
+        Hạn HC/KĐ
+    </th>
+
+    <!-- Bắt đầu -->
+    <th style="width: 15%;">
+        <?php echo $this->_translate(7); ?>
+    </th>
+
+    <!-- Kết thúc -->
+    <th style="width: 15%;">
+        <?php echo $this->_translate(8); ?>
+    </th>
+</tr>
+
+
+<!-- CONTENT: Hien thi dieu dong thanh tung dong -->
+<?php foreach($this->report as $item): ?>
+    <?php // if($item['Qty'] <= 0) continue; // Neu ko co so luong dieu dong thi chuyen sang tiep theo?>
+
+
+    <?php if($oldLine != $item['RFEDIOID']):?>
+        <!-- 1. Máy mài (YC: 0/12 Cái) từ 01-01-2000 đến 01-02-2000 -->
+        <tr class=" ">
+            <td colspan="<?php echo $total_col;?> " class="bold left">
+
+                <?php echo ++$i; ?>. <?php echo $item['EqType'];?>
+
+
+                ( <?php echo $this->_translate(11); // Yeu cau ?>:
+
+                                        Chọn <span class="requestforequip_createequipworking_num"
+                                              rfedioid="<?php echo $item['RFEDIOID']; // Yeu cau dd IOID?>"
+                                              total="<?php echo $item['Qty']?>"
+                                              id="requestforequip_createequipworking_num_<?php echo $item['RFEDIOID'];?>">
+                                            0
+                                        </span> - Yêu cầu <?php echo $item['Qty']?> - Đáp ứng <?php echo $item['FirstQty']?>
+
+                <?php echo $item['UOM']?>) <?php echo $this->_translate(12); // Tu ?>
+                <?php echo $item['Start'];?> <?php echo $this->_translate(13); // Den ?>
+                <?php echo $item['End'];?>
+            </td>
+        </tr>
+    <?php endif;?>
+    <?php $oldLine = $item['RFEDIOID'];?>
+
+    <?php $equipTypeAndRequestClass = 'tr_'.$item['RFEDIOID'].'_'.$item['EqTypeIOID'];?>
+    <!-- SUB TITLE: Hien thi loai thiet bi theo hinh cay -->
+    <tr class=" "
+        onclick="showHideRequest(this)"
+        hide_class="<?php echo $equipTypeAndRequestClass;?>"
+        hide_status="0"
+        title="Click để đóng mở.">
+        <td colspan="<?php echo $total_col;?> "
+            class="bold left tree_open
+                                    tree_level_1">
+            <?php echo $item['EqType'];?>
+        </td>
+    </tr>
+
+
+    <!-- Cac thiet bi truc thuoc loai thiet bi o level hien tai -->
+    <?php foreach($item['Equips'] AS $eq):// In danh sach thiet bi truc thuoc loai thiet bi?>
+
+
+        <tr class="<?php echo $eq['Transferred']?'bgyellow':'';?> <?php echo $eq['InOther']?'bggrey':'';?> <?php echo $equipTypeAndRequestClass;?>"
+            title="<?php echo $eq['Name'];?>"
+            >
+
+            <!-- Chon -->
+            <td class="center" >
+                <?php if(!$eq['IsChild'] && !$eq['InOther']):?>
+                    <input type="checkbox"
+                        <?php echo $eq['Checked'];?>
+                           class="requestforequip_createequipworking_line_checkbok
+                                                    line_checkbok_<?php echo $item['RFEDIOID']; // Yeu cau dd IOID?>"
+                           onclick="common_check_table_line(this, '.requestforequip_createequipworking_line_checkbok_val');
+                                                    change(this);"
+                           rfeioid="<?php echo $item['RFEDIOID']; ?>"
+                           notdisable="<?php echo $eq['Transferred']?1:0;?>"
+                        <?php echo $eq['DisabledTick'];?>
+                           total="<?php echo $item['Qty'];  ?>" />
+
+                    <input type="hidden"
+                           class="table_line_disabled requestforequip_createequipworking_line_checkbok_val
+                                                    requestforequip_createequipworking_num_<?php echo $item['RFEDIOID'];?>"
+                           value="<?php echo $eq['CheckVal'];?>" <?php echo $eq['Disabled'];?>
+                           name="tick[]" />
+                <?php elseif(!$eq['IsChild'] && $eq['InOther']):?>
+                    <input type="checkbox" checked disabled
+                           class="requestforequip_createequipworking_line_checkbok
+                                                    line_checkbok_<?php echo $item['RFEDIOID']; // Yeu cau dd IOID?>"
+                           rfeioid="<?php echo $item['RFEDIOID']; ?>"
+                           notdisable="<?php echo $eq['Transferred']?1:0;?>"
+                           total="<?php echo $item['Qty'];  ?>"/>
+                <?php endif;?>
+            </td>
+
+            <!-- Thiet bi -->
+            <td class="break-word">
+                <?php echo $eq['Code'];  ?>
+
+                <?php if(!$eq['IsChild']):?>
+                    <!-- Don vi tinh -->
+                    <input class="table_line_disabled" type="hidden"
+                        <?php echo $eq['Disabled'];?> value="<?php echo $item['UOM'];?>" name="uom[]" />
+
+                    <!-- Ma thiet bi -->
+                    <input class="table_line_disabled" type="hidden"
+                        <?php echo $eq['Disabled'];?> value="<?php echo $eq['Code'];?>"
+                           name="eqcode[]" />
+
+                    <!-- Ten thiet bi -->
+                    <input class="table_line_disabled" type="hidden"
+                        <?php echo $eq['Disabled'];?> value="<?php echo $eq['Name'];?>"
+                           name="eqname[]" />
+
+                    <!-- IOID thiet bi -->
+                    <input
+                        class="table_line_disabled" type="hidden"
+                        <?php echo $eq['Disabled'];?> value="<?php echo $eq['IOID'];?>"
+                        name="eqioid[]" />
+
+                    <!-- IOID Diêu dong thiet bi -->
+                    <input
+                        class="table_line_disabled ewioid" type="hidden"
+                        <?php echo $eq['Disabled'];?> value="<?php echo $eq['EWIOID'];?>"
+                        name="ewioid[]" />
+
+                    <!-- IFID Diêu dong thiet bi -->
+                    <input
+                        class="table_line_disabled" type="hidden"
+                        <?php echo $eq['Disabled'];?> value="<?php echo $eq['EWIFID'];?>"
+                        name="ewifid[]" />
+
+                    <!-- So chung tu -->
+                    <input
+                        class="table_line_disabled input_style" type="hidden"
+                        <?php echo $eq['Disabled'];?>
+                        value="<?php echo $eq['DocNo'];    ?>" name="docno[]" />
+
+                    <!-- Du an -->
+                    <input class="table_line_disabled input_style"
+                           type="hidden" <?php echo $eq['Disabled'];?>
+                           value="<?php echo $eq['ProjectCode'] ;  ?>"
+                           name="project[]" />
+                <?php endif;?>
+
+            </td>
+
+            <td>
+                <?php echo $eq['Name'];?>
+            </td>
+
+            <td>
+                <?php echo $eq['Serial'];?>
+            </td>
+
+
+            <?php
+            $class = 'center ';
+            if($eq['HanHCKD'] <=7 && $eq['HanHCKD'] !== '')
+            {
+                $class .= 'red bold';
+            }
+            ?>
+            <!-- Hạn HC/KĐ -->
+            <td class="<?php echo $class?>">
+                <?php echo $eq['HanHCKD']?>
+            </td>
+
+            <!-- Bat dau -->
+            <td>
+                <?php if(!$eq['IsChild']):?>
+                    <input
+                        id="start_<?php echo $lIndex;?>"
+                        type="text"
+                        class="table_line_disabled datepicker input_date_style"
+                        <?php echo $eq['Disabled'];?>
+                        value="<?php echo $eq['Start'];    ?>"
+                        name="start[]" />
+                <?php endif;?>
+            </td>
+
+            <!-- Ket thuc -->
+            <td>
+                <?php if(!$eq['IsChild']):?>
+                    <input
+                        id="end_<?php echo $lIndex;?>"
+                        type="text"
+                        class="table_line_disabled datepicker input_date_style"
+                        <?php echo $eq['Disabled'];?>
+                        value="<?php echo $eq['End']; ?>"
+                        name="end[]" />
+                <?php endif;?>
+            </td>
+        </tr>
+
+        <?php $lIndex++;?>
+    <?php endforeach; // END In danh sach thiet bi truc thuoc loai thiet bi?>
+<?php endforeach; // End In bao cao?>
+</table>
+</div>
+
+<br/>
+
+<!-- Button cập nhật -->
+<div class="fr">
+    <button class="btn-custom" type="button" onclick="save();">
+        <?php echo $this->_translate(15); ?>
+    </button>
+</div>
+</fieldset>
+</form>
+</div><!-- END requestforequip_createequipworking_table -->
+</div><!-- END #requestforequip_createequipworking_wrap -->
+<div id="qss_combobox"></div>
+<div id="qss_trace"></div>
+
+
+
+<script type="text/javascript">
+    var sz_BaseUrl = 'http://' + location.host;
+    var cb = function() { rowObjectSearch('<?php echo $this->ifid;?>','1','ODanhSachDieuDongThietBi'); };
+
+    /**
+     * Luu lai lich dieu dong
+     */
+    function save()
+    {
+        var data = $('#requestforequip_createequipworking_form').serialize();
+        var url = sz_BaseUrl + '/maintenance/requestforequip/createeqworkin/save';
+
+        qssAjax.call(url, data, function(jreturn){
+            if(jreturn.message != ''){
+                qssAjax.alert(jreturn.message);
+            }
+            rowObjectSearch('<?php echo $this->ifid;?>','1','ODanhSachDieuDongThietBi');
+
+            // window.location.href = sz_BaseUrl + '/user/form/edit?ifid=<?php echo $this->ifid;?>&deptid=<?php echo $this->deptid;?>';
+
+            window.opener.rowObjectSearch('<?php echo $this->ifid;?>', '<?php echo $this->deptid;?>', 'ODanhSachDieuDongThietBi');
+
+            window.close();
+
+        }, function(jreturn){
+            qssAjax.alert(jreturn.message);
+        });
+    }
+
+
+    /**
+     * Thay doi so luong 0/12
+     */
+    function change(ele)
+    {
+        var findID = $(ele).attr('rfeioid');
+        var qty    = parseFloat($(ele).attr('total'));
+        var total  = 0; // so thiet bi chon cho dong
+
+        // Dem tong so luong da lay cho dong chi tiet yeu cau dieu dong
+        $('.requestforequip_createequipworking_num_' + findID).each(function(){
+            if($(this).val() == 1 )
+            {
+                total += 1;
+            }
+        });
+
+
+        // Hien thi mau doi voi loai thay doi
+        disabledCheckbox(findID, total, qty);
+    }
+
+    function disabledCheckbox(findID, total, qty)
+    {
+
+        $('#requestforequip_createequipworking_num_' + findID).text(total);
+        $('#requestforequip_createequipworking_num_' + findID).removeClass('red green bold');
+        if(total > qty)
+        {
+            $('#requestforequip_createequipworking_num_' + findID).addClass('red bold');
+        }
+        else if(total == qty)
+        {
+            $('#requestforequip_createequipworking_num_' + findID).addClass('green bold');
+
+            $('.line_checkbok_' + findID+ ':not(:checked)').each(function(){
+                $(this).attr('disabled', true);
+            });
+        }
+        else if(total < qty)
+        {
+            $('.line_checkbok_' + findID+ ':not(:checked)').each(function(){
+                $(this).removeAttr('disabled');
+            });
+        }
+    }
+
+    function showHideRequest(ele)
+    {
+        var hide_class  = $(ele).attr('hide_class');
+        var hide_status = $(ele).attr('hide_status');
+
+        if(hide_status == 0) // dang mo
+        {
+            $(ele).attr('hide_status', 1); // Dong lai
+            $(ele).find('td').eq(0).removeClass('tree_open').addClass('tree_close');
+            $('.'+hide_class).each(function(){
+                $(this).hide();
+            });
+        }
+        else
+        {
+            $(ele).attr('hide_status', 0); // Mo ra
+            $(ele).find('td').eq(0).removeClass('tree_close').addClass('tree_open');
+            $('.'+hide_class).each(function(){
+                $(this).show();
+            });
+        }
+    }
+
+</script>
+
+<script>
+    var rfedioid;
+    var total = 0;
+    var bTotal;
+
+    $('.datepicker').each(function(){
+        $(this).datepicker({ dateFormat: "dd-mm-yy" });
+    });
+
+
+    $('.requestforequip_createequipworking_num').each(function(){
+        rfedioid = parseInt($(this).attr('rfedioid'));
+        total    = 0;
+        bTotal   = parseInt($(this).attr('total'));
+
+        $('.line_checkbok_' + rfedioid).each(function(){
+            if($(this).is(':checked') && ($(this).is(':enabled') || $(this).attr('notdisable') == 1))
+            {
+                total++;
+            }
+        });
+        disabledCheckbox(rfedioid, total, bTotal);
+    });
+</script>

@@ -1,0 +1,42 @@
+<?php
+$no     = 0;
+$width  = 770;
+$rate   = array(5,9,2,3,3,3,3,3,3);
+$widths = Qss_Lib_Report::changeWidthToFitScreen2($rate, $width, 2);
+$begin  = 0;
+?>
+
+<div>
+    <table cellpadding="0" cellspacing="0" class="border_table_none_bg"  border="1"
+           style="width: <?php echo $width;?>px; table-layout: fixed;">
+        <tr>
+            <th style="width:<?php echo $widths[$begin++];?>px" class="center"> <?php echo $this->_translate(1);// Mã vật tư ?></th>
+            <th style="width:<?php echo $widths[$begin++];?>px" class="center"> <?php echo $this->_translate(2);// Tên vật tư ?></th>
+            <th style="width:<?php echo $widths[$begin++];?>px" class="center"> <?php echo $this->_translate(3);// Đơn vị tính ?> </th>
+            <th style="width:<?php echo $widths[$begin++];?>px" class="center"> <?php echo $this->_translate(10);// Số lượng dự kiến ?></th>
+            <th style="width:<?php echo $widths[$begin++];?>px" class="center"> <?php echo $this->_translate(5);// Đã yêu cầu ?> </th>
+            <th style="width:<?php echo $widths[$begin++];?>px" class="center"> <?php echo $this->_translate(8);// Tồn kho ?> </th>
+            <th style="width:<?php echo $widths[$begin++];?>px" class="center"> <?php echo $this->_translate(9);// Số lượng thiếu ?> </th>
+        </tr>
+
+        <?php foreach($this->material as $item):?>
+
+        <?php
+            $thieu = 0;
+            $thieu = $item->TongTonKho - $item->TongSoLuong;
+            $thieu = ($thieu > 0)?0:abs($thieu);
+        ?>
+
+
+        <tr class="<?php echo $thieu>0?'bgpink':'';?>">
+            <td class="left"><?php echo $item->MaVatTu;?></td>
+            <td class="left"><?php echo $item->TenVatTu;?></td>
+            <td class="left"><?php echo $item->DonViTinh;?></td>
+            <td class="right"><?php echo Qss_Lib_Util::formatNumber($item->TongSoLuong);?></td>
+            <td class="right"><?php echo Qss_Lib_Util::formatNumber($item->TongYeuCauMua);?></td>
+            <td class="right"><?php echo Qss_Lib_Util::formatNumber($item->TongTonKho);?></td>
+            <td class="right"><?php echo Qss_Lib_Util::formatNumber($thieu);?></td>
+        </tr>
+        <?php endforeach;?>
+    </table>
+</div>

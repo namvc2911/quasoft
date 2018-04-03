@@ -1,0 +1,193 @@
+<?php $excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);?>
+<?php $bg = "#EEEEEE";?>
+<?php $mergeColumn = count((array)$this->merge) + 4;?>
+<?php date_default_timezone_set('Asia/Ho_Chi_Minh');?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="portrait">
+	<excel orientation="portrait" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+	<div id="head_print">
+	<?php echo $this->views->Common->Portrait()?>
+	<?php $row = 2;?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row?>" column="A"
+					column-merge="<?php echo $excel_col[$mergeColumn]?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(1)?>
+				(<?php echo $this->_translate(14)?>: <?php echo $this->date?>) </xls>
+				<br />
+				<xls row="<?php echo $row?>" column="A"
+					column-merge="<?php echo $excel_col[$mergeColumn]?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(15)?>
+					<?php echo date("h:i:s");?> </xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++?>
+
+	<b><xls row="<?php echo $row?>" column="A"
+			column-merge="<?php echo $excel_col[$mergeColumn]?>" font-size="12"
+			wrap-text="1" h-align="left" v-align="center"> <?php echo $this->_translate(16)?>
+		</xls> </b>
+	<div id="container">
+		<table cellspacing="0" cellpadding="0" border="1" id="" class="border">
+			<tr class="bggrey">
+				<!-- Ma mh -->
+				<th class="center" width="100px"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[1]?>" wrap-text="1" v-align="center"
+						h-align="center" border="1" repeat="1" bold="1" repeat="1"
+						bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(10)?></xls>
+				</th>
+				<!-- Ten mh -->
+				<th class="center" width="150px"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[2]?>" wrap-text="1" v-align="center"
+						h-align="center" border="1" repeat="1" bold="1" repeat="1"
+						bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(11)?></xls>
+				</th>
+				<!-- TT -->
+				<th class="center" width="100px"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[3]?>" wrap-text="1" v-align="center"
+						h-align="center" border="1" repeat="1" bold="1" repeat="1"
+						bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(12)?></xls>
+				</th>
+				<!-- ĐVT -->
+				<th class="center" width="100px"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[4]?>" wrap-text="1" v-align="center"
+						h-align="center" border="1" repeat="1" bold="1" repeat="1"
+						bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(13)?></xls>
+				</th>
+				<?php $excel_col_begin = 5;?>
+				<?php foreach ($this->merge as $lineWithShift):?>
+				<!-- Dc ca -->
+				<th class="center" width="50px"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[$excel_col_begin++]?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						repeat="1" bgcolor="<?php echo $bg;?>"> <?php echo "{$lineWithShift->LineCode}/{$lineWithShift->ShiftCode}"?></xls>
+				</th>
+				<?php endforeach;?>
+			</tr>
+			<?php $row++?>
+
+			<?php foreach ($this->volumes as $item): // In danh sach?>
+			<tr>
+				<!-- Ma mh -->
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[1]?>" width="12" wrap-text="1"
+						v-align="center" h-align="left" border="1"> <?php echo $item['ItemCode'];?></xls>
+				</td>
+				<!-- Ten mh -->
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[2]?>" width="16" wrap-text="1"
+						v-align="center" h-align="left" border="1"> <?php echo $item['ItemName'];?></xls>
+				</td>
+				<!-- TT -->
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[3]?>" width="12" wrap-text="1"
+						v-align="center" h-align="left" border="1"> <?php echo $item['Attribute'];?></xls>
+				</td>
+				<!-- ĐVT -->
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[4]?>" width="12" wrap-text="1"
+						v-align="center" h-align="left" border="1"> <?php echo $item['UOM'];?></xls>
+				</td>
+				<?php $excel_col_begin = 5;?>
+				<?php foreach ($this->merge as $lineWithShift):?>
+				<?php $code = "{$lineWithShift->LineID}-{$lineWithShift->ShiftID}";?>
+				<!-- Dc ca -->
+				<!-- ĐVT -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[$excel_col_begin++]?>" width="8"
+						wrap-text="1" v-align="center" h-align="right" border="1"> <?php echo ($item['Key'] == $code)?$item['Qty']:0;?></xls>
+				</td>
+				<?php endforeach;?>
+			</tr>
+			<?php $row++?>
+			<?php endforeach; // Ket thuc in danh sach?>
+		</table>
+	</div>
+	<?php $row++?>
+	<br /> <b><xls row="<?php echo $row?>" column="A"
+			column-merge="<?php echo $excel_col[$mergeColumn]?>" font-size="12"
+			wrap-text="1" h-align="left" v-align="center"> <?php echo $this->_translate(2)?>
+		</xls> </b>
+		<?php $row++?>
+	<div id="container">
+		<table cellspacing="0" cellpadding="0" border="1" id="" class="border">
+			<tr class="bggrey">
+				<!-- Ma mh -->
+				<th class="center" width="100px"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[1]?>" wrap-text="1" v-align="center"
+						h-align="center" border="1" repeat="1" bold="1" repeat="1"
+						bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(10)?></xls>
+				</th>
+				<!-- Ten mh -->
+				<th class="center" width="150px"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[2]?>" wrap-text="1" v-align="center"
+						h-align="center" border="1" repeat="1" bold="1" repeat="1"
+						bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(11)?></xls>
+				</th>
+				<!-- TT -->
+				<th class="center" width="100px"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[3]?>" wrap-text="1" v-align="center"
+						h-align="center" border="1" repeat="1" bold="1" repeat="1"
+						bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(12)?></xls>
+				</th>
+				<!-- ĐVT -->
+				<th class="center" width="100px"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[4]?>" wrap-text="1" v-align="center"
+						h-align="center" border="1" repeat="1" bold="1" repeat="1"
+						bgcolor="<?php echo $bg;?>"> <?php echo $this->_translate(13)?></xls>
+				</th>
+				<?php $excel_col_begin = 5;?>
+				<?php foreach ($this->merge as $lineWithShift):?>
+				<!-- Dc ca -->
+				<th class="center" width="50px"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[$excel_col_begin++]?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						repeat="1" bgcolor="<?php echo $bg;?>"> <?php echo "{$lineWithShift->LineCode}/{$lineWithShift->ShiftCode}"?></xls>
+				</th>
+				<?php endforeach;?>
+			</tr>
+			<?php $row++?>
+
+			<?php foreach ($this->materials as $item): // In danh sach?>
+			<tr>
+				<!-- Ma mh -->
+				<td class="left" width="100px"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[1]?>" width="12" wrap-text="1"
+						v-align="center" h-align="left" border="1"> <?php echo $item['ItemCode'];?></xls>
+				</td>
+				<!-- Ten mh -->
+				<td class="left" width="150px"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[2]?>" width="16" wrap-text="1"
+						v-align="center" h-align="left" border="1"> <?php echo $item['ItemName'];?></xls>
+				</td>
+				<!-- TT -->
+				<td class="left" width="100px"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[3]?>" width="12" wrap-text="1"
+						v-align="center" h-align="left" border="1"> <?php echo $item['Attribute'];?></xls>
+				</td>
+				<!-- ĐVT -->
+				<td class="left" width="100px"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[4]?>" width="12" wrap-text="1"
+						v-align="center" h-align="left" border="1"> <?php echo $item['UOM'];?></xls>
+				</td>
+				<?php $excel_col_begin = 5;?>
+				<?php foreach ($this->merge as $lineWithShift):?>
+				<?php $code = "{$lineWithShift->LineID}-{$lineWithShift->ShiftID}";?>
+				<!-- Dc ca -->
+				<!-- ĐVT -->
+				<td class="right" width="50px"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[$excel_col_begin++]?>" width="8"
+						wrap-text="1" v-align="center" h-align="right" border="1"> <?php echo ($item['Key'] == $code)?$item['Qty']:0;?>
+					</xls></td>
+				<?php endforeach;?>
+			</tr>
+			<?php $row++?>
+			<?php endforeach; // Ket thuc in danh sach?>
+		</table>
+	</div>
+</div>

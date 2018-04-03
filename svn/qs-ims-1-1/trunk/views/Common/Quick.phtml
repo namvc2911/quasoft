@@ -1,0 +1,15 @@
+<div class="detailAC">
+		<?php foreach ($this->blocklist as $data):?>
+		<?php $formcode = $data->FormCode?$data->FormCode:$data->FormCode1;?>
+		<?php if($formcode):?>
+		<div title="<?php echo $data->MenuName;?>" class="icon-QA <?php if(@$this->menuid == $data->MenuID) echo 'icon-QA-Active'?>" onclick="openModule('<?php echo $formcode?>')">
+			<div class="default <?php echo $data->Icon;?>">&nbsp;</div>
+			<div class="name">
+				<a href="#1">
+					<span><?php echo $data->MenuName;?></span>
+				</a>
+			</div> 
+		</div>
+		<?php endif;?>
+		<?php endforeach;?>
+</div>

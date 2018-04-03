@@ -1,0 +1,73 @@
+<?php
+$arrTmp = array();
+$arrTmp[0] = '--- '.$this->_translate(1).' ---';
+foreach ($this->all as $item)
+{
+	$arrTmp[$item->ID] = $item->Name;
+}
+?>
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+	<button ID="Insert" type="button" class="btn btn_main_top" onClick="rowFormMenuInsert(<?php echo $this->id?>,<?php echo $this->mid?>)">
+		<?php echo $this->_translate(12)?>
+	</button>
+	<button ID="Update" type="button" class="btn btn_main_top" disabled onClick="rowFormMenuEdit(<?php echo $this->mid?>)">
+		<?php echo $this->_translate(13)?>
+	</button>
+	<button ID="Delete" type="button" class="btn btn_main_top" disabled onClick="rowFormMenuDelete(<?php echo $this->mid?>)">
+		<?php echo $this->_translate(14)?>
+	</button>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#"><span><?php echo $this->_translate(119)?>
+				</span> </a></li>
+		</ul>
+	</div>
+	<?php echo $this->views->Common->ComboBox($arrTmp,'mid',$this->mid,null,'onchange="reloadMenu(this);"');?>
+
+	<?php //echo $this->views->Common->List($this->menu,'MenuID','MenuName') ;?>
+	<p>
+	<?php
+	global $dyn_menu;
+	$dyn_menu = '<select id="menuid" name="menuid" size="30" style="width:300px;" onchange="menuCLK()">';
+	$cats = array();
+	foreach($this->menu as $item)
+	{
+		$names[$item->MenuID] = $item->MenuName;
+		$cats[$item->MenuID] = $item->ParentID;
+	}
+	$hierarchize = hierarchize($cats, 0);
+	display_options($hierarchize, $names);
+	$dyn_menu .="</select>";
+	echo $dyn_menu;
+
+	function hierarchize(&$cats, $parent) {
+		$subs = array_keys($cats, $parent);
+		$tree = array();
+		foreach ($subs as $sub)
+		{
+			$tree[$sub] = hierarchize($cats, $sub);
+		}
+		return count($tree) ? $tree : $parent;
+	}
+
+	function display_options(&$tree, &$names, $nest = 0) {
+		global $dyn_menu;
+		if($tree)
+		{
+			foreach ($tree as $key => $branch)
+			{
+				$indent = $nest ? str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $nest) : '';
+				$dyn_menu .="<option value=\"$key\">$indent{$names[$key]}</option>\n";
+				if (is_array($branch))
+				{
+					display_options($branch, $names, $nest + 1);
+				}
+			}
+		}
+}  
+?>
+
+</div>

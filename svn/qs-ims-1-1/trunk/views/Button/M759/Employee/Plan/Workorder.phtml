@@ -1,0 +1,116 @@
+<script>
+var drag = false;
+$(document).ready(function(){
+	$(function () {
+		$('.workorder').draggable({
+			appendTo: "body",
+			revert:true,
+            start: function( event, ui ) {
+            	drag = true;
+			},
+			stop: function(event, ui) {
+				setTimeout(function(){ui.helper.unbind("click.prevent");}, 300);
+				drag = false;
+	        }
+		});
+	});
+	
+});
+</script>
+<?php 
+$starttime = strtotime($this->startdate);
+$startday  = date('w',$starttime);
+$startdate = date_create($this->startdate);
+?>
+<!-- Change month/Chuyển tiếp giữa các tháng -->
+<div style="text-align: center;">
+<div class="cal_content_title">
+	<!-- Btn: Show prev month/Hiển thị tháng trước -->
+    <p class="cal_content_title_arrow">
+		<a href="#1" onclick="m759_employee_plan.showMonth('<?php echo $this->prev[0]?>','<?php echo $this->prev[1]?>');">
+			<img src="/images/calendar/left_arrow_32.png"/>
+		</a>
+	</p>
+
+	<!-- Current month/Tháng hiện tại -->
+	<p class="cal_content_title_info">
+		Tháng <?php echo $this->m?>/<?php echo $this->y?>
+	</p>
+
+	<!-- Btn: Show next month/Hiển thị tháng tiếp theo -->
+    <p class="cal_content_title_arrow">
+		<a href="#1" onclick="m759_employee_plan.showMonth('<?php echo $this->next[0]?>','<?php echo $this->next[1]?>');">
+			<img src="/images/calendar/right_arrow_32.png"/>
+		</a>
+	</p>
+</div><!-- end .cal_content_title -->
+</div>
+
+<div class="cal_content_grid cal_content_month">
+	<div class="rows">
+		<div class="cols cols_employee">Người thực hiện</div>
+    	<?php for($i=1;$i<=$this->daysInMonth;$i++):?>
+			<?php $tempHoliday = (($i + $startday) % 7 == 0 || ($i + $startday) % 7 == 1)?'cal_cols_holiday':''; ?>
+
+			<div class="cols cols_<?php echo $this->daysInMonth?> <?php echo $tempHoliday;?>">
+				<?php echo $i?>
+			</div>
+        <?php endfor;?>
+    </div><!-- end .rows -->
+    
+	<?php $row = 1;?>
+	<?php $dvbt = ''?>
+	<?php foreach ($this->nguoithuchien as $item):?>
+		<?php if($dvbt != $item->Ma):?>
+				<?php $row++;?>
+				 <div class="rows rows_workorder">
+        		<div class="cols cols_workcenter bold"><?php echo mb_strtoupper($item->Ten, 'UTF-8')?></div> 
+				<?php for($i=1;$i<=$this->daysInMonth;$i++):?>
+                        <?php $date = Qss_Lib_Date::add_date($startdate,$i-1);?>
+                        <?php $class = ''?>
+                        <?php if(isset($this->donvibaotri[$item->IOID][$date->format('Y-m-d')])):?>
+							<?php $data = $this->donvibaotri[$item->IOID][$date->format('Y-m-d')]?>
+							<?php $display = $data['DaGiao'].'/'.$data['TongSo']?>
+							<?php if($data['DaGiao'] < $data['TongSo']):?>
+								<?php $class = 'red'?>
+							<?php endif;?>
+						<?php else:?>
+	                    	<?php $display = '&nbsp;'?>
+						<?php endif;?> 
+                        <div class="cols cols_<?php echo $this->daysInMonth?> <?php echo $class?>
+                        <?php if(($i + $startday) % 7 == 0 || ($i + $startday) % 7 == 1):?>cal_cols_holiday<?php endif;?>">
+                           <?php echo $display?>
+                        </div><!-- end .cal_content_grid_cols -->
+                    <?php endfor;?>
+                   </div>
+		<?php endif;?>
+		<?php $row ++?>
+        <div class="rows">
+        	<div class="cols cols_employee"><?php echo $item->TenNV?></div>
+                    <?php for($i=1;$i<=$this->daysInMonth;$i++):?>
+                        <?php $date = Qss_Lib_Date::add_date($startdate,$i-1);?>
+                        <?php $class = ''?>
+                        <?php $title = ''?>
+                        <?php if(isset($this->data[$item->Ref_MaNV][$date->format('Y-m-d')])):?>
+                           	<?php $data = $this->data[$item->Ref_MaNV][$date->format('Y-m-d')]?>
+                           	<?php $display = $data->SoLuong?>
+                           	<?php if($data->ThoiGianDuKien > 8):?>
+								<?php $class = 'bgorange'?>
+								<?php $display .= '+'?>
+							<?php else:?>
+								<?php $class = 'bggreen white'?>
+							<?php endif;?>
+							<?php $title = sprintf('(%1$dh)',$data->ThoiGianDuKien)?>
+                       <?php else:?>
+	                    	<?php $display = '&nbsp;'?>
+						<?php endif;?> 
+                        <div class="cols cols_<?php echo $this->daysInMonth?> <?php echo $class?> 
+                        <?php if(($i + $startday) % 7 == 0 || ($i + $startday) % 7 == 1):?>cal_cols_holiday<?php endif;?>" title="<?php echo $title?>"
+                        	onclick="m759_employee_plan.showDate(<?php echo $item->Ref_MaNV?>,'<?php echo $date->format('Y-m-d')?>')">
+                          	<?php echo $display?>
+                        </div><!-- end .cal_content_grid_cols -->
+                    <?php endfor;?>
+                </div>
+		<?php $dvbt = $item->Ma?>
+	<?php endforeach;?>	
+</div><!-- end .cal_content_grid -->

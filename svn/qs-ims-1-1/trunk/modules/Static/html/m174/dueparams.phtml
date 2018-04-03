@@ -1,0 +1,76 @@
+<?php
+$width   = 1200;
+$widths  = array(5,4,3,3,3,3,3,3,4);
+$widths  = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+$oldNgay = '';
+$tinhTrang = Qss_Lib_System::getFieldRegx('ONhatTrinhThietBi', 'TinhTrang');
+?>
+
+<div>
+    <table id="grid" cellspacing="0" cellpadding="0" border="0" class="grid" >
+        <?php $begin = 0;?>
+
+        <thead>
+            <tr>
+                <th style="width:<?php echo $widths[$begin++];?>%">Thiết bị</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Bộ phận</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Chỉ số</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Giá trị</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Tình trạng</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Ngày</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Ca</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">&nbsp;</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">&nbsp;</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <?php $ci = 0;?>
+            <?php foreach($this->monitors as $item):?>
+                <?php
+                $giaTri         = '';//($item->DongHo && $item->DongHo == 'ONOFF')?
+                $classCotGiaTri = 'right';
+
+                if($item->DongHo && $item->NhatTrinhIOID)
+                {
+                    if($item->DongHo == 'ONOFF')
+                    {
+                        $giaTri = 'NOK';
+                    }
+                    else
+                    {
+                        $giaTri = $item->SoHoatDong;
+                    }
+                }
+
+                ?>
+
+
+                <tr class="<?php //echo $item->LineClass;?>" <?php echo ++$ci%2==0?'bgcolor="#f7f9f9"':'';?>>
+                    <td class="left"><?php echo $item->MaThietBi;?></td>
+                    <td class="left"><?php echo $item->BoPhan;?></td>
+                    <td class="left"><a href="#" onclick="popupFormDetail('<?php echo $item->IFID_M765?>',1);"><?php echo $item->ChiSo;?></a></td>
+                    <td class="right"><?php echo $giaTri;?></td>
+                    <td class="center"><?php echo @$tinhTrang[(int)$item->TinhTrang];?></td>
+
+                    <td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item->Ngay);?></td>
+                    <td class="center"><?php echo $item->TenCa;?></td>
+
+                    <td class="center" style="padding: 1px;"><button type="button" class="btn btn_main_top"
+                            <?php echo(!$item->NhatTrinhIOID)?'disabled':'';?>
+                                                                     onclick="Static_M174.rejectMonitor(<?php echo $item->NhatTrinhIFID;?>);"> Bỏ qua </button></td>
+                    <td class="center" style="padding: 1px;"><button type="button" class="btn btn_main_top"
+                            <?php echo(!$item->NhatTrinhIOID)?'disabled':'';?>
+                                                                     onclick="Static_M174.createOrder(<?php echo $item->EQIOID;?>, <?php echo $item->NhatTrinhIFID;?>, <?php echo $item->NhatTrinhIOID;?>);"> Tạo phiếu bảo trì </button></td>
+                </tr>
+            <?php endforeach;?>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function() {
+        var height = $(window).height() - 210 - $('#grid thead').height();//-8
+        $('#grid').tableScroll({height:height,width:'100%'});
+    });
+</script>

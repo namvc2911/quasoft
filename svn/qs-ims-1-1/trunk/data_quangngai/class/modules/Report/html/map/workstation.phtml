@@ -1,0 +1,123 @@
+<?php
+
+// *****************************************************************
+// === $series, gia tri cot ox, du lieu ve khoang cah; oy, du lieu ve cao do OZ
+// *****************************************************************
+$series = '';
+$seriesTemp = '';
+$xAxis  = '';
+
+// *****************************************************************
+// === Gan du lieu 
+// *****************************************************************
+
+
+$luuluong = array();
+foreach($this->luuluong as $dat)
+{
+	$luuluong[$dat->Day] = $dat->AVG;
+}
+
+
+
+foreach($this->luuluong as $dat)
+{
+	$date = date_create($dat->Day);
+    // Head of serie
+    $seriesTemp .= ($seriesTemp == '')?'':',';
+	$seriesTemp .= '[Date.UTC('.$date->format('Y').','.($date->format('m')-1).','.$date->format('d').')';
+    $seriesTemp .= ($seriesTemp == '')?'':',';
+	$seriesTemp .= $dat->AVG.']';
+		
+	
+}
+//echo $seriesTemp;die;
+if($this->loai == 'Lượng mưa')
+{
+	$series .= "{ type: 'column',name: '{$this->loai} trung bình',data:[";
+}
+else
+{
+	$series .= "{ type: 'line',name: '{$this->loai} trung bình',data:[";
+}
+$series .= $seriesTemp;
+$series .= "]}";
+?>
+
+
+<form id="tram_form" method="post">
+	<div style="text-align: center;">
+	<?php if($this->workstation->Ref_LopBanDo != 52421):?>
+		Chọn dữ liệu:
+		<select name="type" style="width: 150px" onchange="showWorkstationDetail(<?php echo $this->ioid?>)">
+			<option value="0" <?php if($this->type == 0):?>selected<?php endif;?>>Mực nước</option>
+			<option value="1" <?php if($this->type == 1):?>selected<?php endif;?>>Lưu lượng</option>
+		</select>
+	<?php else:?>
+		<input type="hidden" name="type" value="<?php echo $this->type?>">
+	<?php endif;?>
+	Chọn năm:
+	<select name="year" style="width: 100px" onchange="showWorkstationDetail(<?php echo $this->ioid?>)">
+		<?php foreach ($this->NamDuLieu as $item):?>
+			<option value="<?php echo $item->Year?>" <?php if($this->year == $item->Year):?>selected<?php endif;?>><?php echo $item->Year?></option>
+		<?php endforeach;?>
+	</select>
+	</div>
+</form>
+<div id="container1" style="width:900px;height: 400px; margin: 0 auto"></div>
+
+
+
+        <script type="text/javascript">
+            
+        $(document).ready(function() {
+	var chart;
+	chart = new Highcharts.Chart({
+        chart: {
+        	renderTo: 'container1',
+        	zoomType: 'x'
+        } ,title: {
+                text: 'Biểu đồ <?php echo $this->loai?> trung bình năm'
+				+' trạm <?php echo trim($this->workstation->TenTram);?>'
+				+' năm <?php echo $this->year;?>'
+            },
+            xAxis: {
+            	type: 'datetime'
+            },
+            yAxis: {
+                title: {
+                    text: '<?php echo $this->dvt?>'
+                }
+            },
+            plotOptions: {
+                area: {
+                    fillColor: {
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        stops: [
+                            [0, Highcharts.getOptions().colors[0]],
+                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        ]
+                    },
+                    marker: {
+                        radius: 2
+                    },
+                    lineWidth: 1,
+                    states: {
+                        hover: {
+                            lineWidth: 1
+                        }
+                    },
+                    threshold: null
+                }
+            },
+            
+            series: [<?php echo $series;?>]
+        });
+            });
+        </script>
+

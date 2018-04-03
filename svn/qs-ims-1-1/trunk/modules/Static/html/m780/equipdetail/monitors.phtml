@@ -1,0 +1,280 @@
+<?php
+    $begin = 0;
+    $fit   = Qss_Lib_Report::changeWidthToFitScreen3(array(3,3,3,3,3,3,2,2,2,2,2,2));
+?>
+
+<form action="">
+    <?php if($this->hasObjDiemDo)://Public active thong so?>
+        <div id="" class="ui_box_s100">
+
+            <fieldset>
+                <legend>Thông số đo</legend>
+
+                <div style="float: left; width: 100%;position: relative;">
+                    <div class="ui_box_line" id="einfo-tab3-tech-table">
+                        <table cellpadding="0" cellspacing="0" class="border_table"
+                               border="0" style="width: 100%;">
+                            <tr class="bggrey center">
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    Mã điểm đo
+                                </th>
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    Bộ phận
+                                </th>
+
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    Chỉ số
+                                </th>
+
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    Min
+                                </th>
+
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    Max
+                                </th>
+
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    Kỳ
+                                </th>
+
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    Thứ
+                                </th>
+
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    Ngày
+                                </th>
+
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    Tháng
+                                </th>
+
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    Lặp lại
+                                </th>
+
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    &nbsp;
+                                </th>
+
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    &nbsp;
+                                </th>
+                            </tr>
+
+                            <?php $i = 0; ?>
+                            <?php foreach ($this->monitors as $t):?>
+                                <tr>
+                                    <td class="left"><?php echo $t->Ma; ?>
+                                    </td>
+
+                                    <td class="left"><?php echo $t->BoPhan; ?>
+                                    </td>
+
+                                    <td class="left"><?php echo $t->ChiSo; ?>
+                                    </td>
+
+                                    <td class="right">
+                                        <?php echo Qss_Lib_Util::formatNumber($t->GioiHanDuoi); ?>
+                                    </td>
+
+                                    <td class="right">
+                                        <?php echo Qss_Lib_Util::formatNumber($t->GioiHanTren); ?>
+                                    </td>
+
+                                    <td class="center"><?php echo $t->Ref_Ky; ?>
+                                    </td>
+
+                                    <td class="left"><?php echo ($t->Ky == Qss_Lib_Extra_Const::PERIOD_TYPE_WEEKLY)?$t->Thu:''; ?>
+                                    </td>
+
+                                    <td class="right"><?php echo ($t->Ngay != 0)?$t->Ngay:''; ?>
+                                    </td>
+
+                                    <td class="right"><?php echo ($t->Thang != 0)?$t->Thang:''; ?>
+                                    </td>
+
+                                    <td class="right"><?php echo $t->LapLai; ?>
+                                    </td>
+
+                                    <td class="center">
+                                        <a href="#1" class=""
+                                           onclick="popupObjectEdit(eq_ifid_global, deptid, 'ODanhSachDiemDo', <?php echo $t->IOID; ?>, {});">
+                                            Sửa
+                                        </a>
+
+                                    </td>
+
+                                    <td class="center">
+                                        <a href="#1" class=""
+                                           onclick="var ioid = []; ioid[0] = <?php echo $t->IOID; ?>; deleteObject(eq_ifid_global, deptid, 'ODanhSachDiemDo', ioid, function(){einfo_load_tab_for_equip(tab_global);});">
+                                            Xóa
+                                        </a>
+                                    </td>
+                                </tr>
+                                <?php $i++; ?>
+                            <?php endforeach; ?>
+
+                            <!-- Hien Thi Dong Trang Neu Dong In Ra Nho Hon 10 -->
+                            <?php if ($i < 10): ?>
+                                <?php for ($j = $i; $j < 10; $j++):?>
+                                    <tr>
+                                        <td class="center">&nbsp;</td>
+                                        <td class="left">&nbsp;</td>
+                                        <td class="left">&nbsp;</td>
+                                        <td class="left ">&nbsp;</td>
+                                        <td class="left">&nbsp;</td>
+                                        <td class="left">&nbsp;</td>
+                                        <td class="left">&nbsp;</td>
+                                        <td class="left">&nbsp;</td>
+                                        <td class="left">&nbsp;</td>
+                                        <td class="left">&nbsp;</td>
+                                        <td class="left">&nbsp;</td>
+                                        <td class="left">&nbsp;</td>
+                                    </tr>
+                                <?php endfor; ?>
+                            <?php endif; ?>
+                        </table>
+                        <div class="round-button">
+                            <a class="round-button-circle" href="#" onclick="popupObjectInsert(eq_ifid_global, deptid, 'ODanhSachDiemDo', {}, function(){einfo_load_tab_for_equip(tab_global);});">+</a>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+        </div>
+    <?php endif;?>
+
+
+    <?php if($this->hasObjVanHanh):?>
+
+        <?php
+        $begin = 0;
+        $fit   = Qss_Lib_Report::changeWidthToFitScreen3(array(5,3,3,2,2,2,2,2,2,2));
+        ?>
+
+        <div id="" class="ui_box_s100">
+            <fieldset>
+                <legend>Vận hành/ Kiểm tra</legend>
+
+                <div style="float: left; width: 100%;position: relative;">
+                    <div class="ui_box_line" id="einfo-tab3-tech-table">
+                        <table cellpadding="0" cellspacing="0" class="border_table"
+                               border="0" style="width: 100%;">
+                            <tr class="bggrey center">
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    Công việc
+                                </th>
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    TG bắt đầu
+                                </th>
+
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    TG kết thúc
+                                </th>
+
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    Kỳ
+                                </th>
+
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    Thứ
+                                </th>
+
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    Ngày
+                                </th>
+
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    Tháng
+                                </th>
+
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    Lặp lại
+                                </th>
+
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    &nbsp;
+                                </th>
+
+                                <th style="width:<?php echo $fit[$begin++];?>%">
+                                    &nbsp;
+                                </th>
+                            </tr>
+
+                            <?php $i = 0; ?>
+                            <?php foreach ($this->operate as $t):?>
+                                <tr>
+                                    <td class="left"><?php echo $t->CongViec; ?>
+                                    </td>
+
+                                    <td class="center"><?php echo $t->ThoiGianBatDau; ?>
+                                    </td>
+
+                                    <td class="center"><?php echo $t->ThoiGianKetThuc; ?>
+                                    </td>
+
+                                    <td class="center"><?php echo $t->Ref_Ky; ?>
+                                    </td>
+
+                                    <td class="left"><?php echo ($t->Ky == Qss_Lib_Extra_Const::PERIOD_TYPE_WEEKLY)?$t->Thu:''; ?>
+                                    </td>
+
+                                    <td class="right"><?php echo ($t->Ngay != 0)?$t->Ngay:''; ?>
+                                    </td>
+
+                                    <td class="right"><?php echo ($t->Thang != 0)?$t->Thang:''; ?>
+                                    </td>
+
+                                    <td class="right"><?php echo $t->LapLai; ?>
+                                    </td>
+
+                                    <td class="center">
+                                        <a href="#1" class=""
+                                           onclick="popupObjectEdit(eq_ifid_global, deptid, 'OThaoTacVanHanh', <?php echo $t->IOID; ?>, {});">
+                                            Sửa
+                                        </a>
+
+                                    </td>
+
+                                    <td class="center">
+                                        <a href="#1" class=""
+                                           onclick="var ioid = []; ioid[0] = <?php echo $t->IOID; ?>; deleteObject(eq_ifid_global, deptid, 'OThaoTacVanHanh', ioid, function(){einfo_load_tab_for_equip(tab_global);});">
+                                            Xóa
+                                        </a>
+                                    </td>
+                                </tr>
+                                <?php $i++; ?>
+                            <?php endforeach; ?>
+
+                            <!-- Hien Thi Dong Trang Neu Dong In Ra Nho Hon 10 -->
+                            <?php if ($i < 10): ?>
+                                <?php for ($j = $i; $j < 10; $j++):?>
+                                    <tr>
+                                        <td class="center">&nbsp;</td>
+                                        <td class="left">&nbsp;</td>
+                                        <td class="left">&nbsp;</td>
+                                        <td class="left ">&nbsp;</td>
+                                        <td class="left">&nbsp;</td>
+                                        <td class="left">&nbsp;</td>
+                                        <td class="left">&nbsp;</td>
+                                        <td class="left">&nbsp;</td>
+                                        <td class="left">&nbsp;</td>
+                                        <td class="left">&nbsp;</td>
+                                    </tr>
+                                <?php endfor; ?>
+                            <?php endif; ?>
+                        </table>
+
+                        <div class="round-button">
+                            <a class="round-button-circle" href="#" onclick="popupObjectInsert(eq_ifid_global, deptid, 'OThaoTacVanHanh', {}, function(){einfo_load_tab_for_equip(tab_global);});">+</a>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+        </div>
+    <?php endif;?>
+</form>
+

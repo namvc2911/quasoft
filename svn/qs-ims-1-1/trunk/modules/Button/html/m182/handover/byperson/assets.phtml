@@ -1,0 +1,34 @@
+<?php foreach($this->assets as $item):?>
+    <option value="<?php echo $item->Ref_TaiSan;?>"
+        groupmarker="0"
+        refTaiSan="<?php echo $item->Ref_TaiSan;?>"
+        maTaiSan="<?php echo $item->Ma;?>"
+        tenTaiSan="<?php echo $item->Ten;?>"
+        refDonViTinh="<?php echo $item->Ref_DonViTinh;?>"
+        donViTinh="<?php echo $item->DonViTinh;?>"
+        refNhanVien="<?php echo $this->employee?$this->employee->IOID:0;?>"
+        maNhanVien="<?php echo $this->employee?$this->employee->MaNhanVien:'';?>"
+        tenNhanVien="<?php echo $this->employee?$this->employee->TenNhanVien:'';?>"
+        refNhaMay="<?php echo $this->employee?$this->employee->Ref_MaPhongBan:'';?>"
+        refBoPhan="<?php echo $this->employee?$this->employee->Ref_MaBoPhan:'';?>"
+        donGia="<?php echo $item->NguyenGia?$item->NguyenGia/1000:0;?>"
+
+        <?php if($this->clawback != 0):?>
+            soLuong="<?php echo $item->SoLuongConLai;?>"
+            phanTramKhauHao="<?php echo $item->PhanTramKhauHaoThuHoi;?>"
+            thoiGianSuDung="<?php echo $item->ThoiGianDaSuDung;?>"
+        <?php else:?>
+            soLuong="<?php echo $this->qty;?>"
+            phanTramKhauHao="100"
+            thoiGianSuDung="0"
+        <?php endif;?>
+        >
+            <?php if($this->clawback != 0):?>
+                <?php echo $item->Ma;?> - <?php echo $item->Ten;?>:
+                <?php echo Qss_Lib_Util::formatNumber($item->SoLuongConLai);?>
+            <?php else:?>
+                <?php echo $item->Ma;?> - <?php echo $item->Ten;?>
+            <?php endif;?>
+    </option>
+<?php endforeach;?>
+

@@ -1,0 +1,83 @@
+<script>
+    $(document).ready(function(){
+        var step_bar      = $('#M415_step_bar').height();
+        var condition_bar = $('#m415_compare_condition').height();
+        var control_bar   = $('#M415_edit_control').height();
+        var padding       = 65;
+        var view_height   = $( '#view' ).height();
+        var rest          = view_height - (step_bar + condition_bar + control_bar + padding);
+        var screen_width  = $(window).width() - 20;
+
+        $('#M415_compare_show').css({height:rest+'px', width:screen_width+'px'});
+    });
+</script>
+
+<div id="m415_compare_condition">
+    <form id="M415_compare_cond">
+        <table cellpadding="0" cellspacing="0" border="0" style="table-layout:fixed; width:650px;">
+            <tr>
+                <!-- Danh sach ty gia: Luu vao ke hoach -->
+                <?php if($this->currencies):?>
+                    <td valign="top" style="width: 70px;">
+                        <p>
+                            <b>Tỷ giá</b>
+                        </p>
+
+                        <?php foreach($this->currencies as $currency):?>
+                            <?php
+                            $value = 1;
+
+                            if(isset($this->clist[$currency->Code]))
+                            {
+                                $value = $this->clist[$currency->Code];
+                            }
+
+                            ?>
+
+                            <p>
+                                <b>1 <?php echo  $currency->Code;?> = </b>
+                                <input type="text"  class="right" size="12" value="<?php echo $value;?>" name="currencies[<?php echo $currency->CID?>]"
+                                       id="<?php echo  $currency->Code;?>To<?php echo $this->primary->Code;?>"/>
+
+                                <b><?php echo $this->primary->Code;?></b>
+                                <input type="hidden" value="<?php echo  $currency->Code;?>"
+                                       name="curcencycode[<?php echo $currency->CID?>]"/>
+                            </p>
+                        <?php endforeach;?>
+                    </td>
+                <?php endif;?>
+
+                <!-- Hinh thuc so sanh gia: Luu vao ke hoach -->
+                <td valign="top" style="width:40px;">
+                    <p> <b> Hình thức</b></p>
+                    <div>
+                        <input type="radio" name="type" id="trongoi" value="1" <?php echo ($this->plan && $this->plan->HinhThucSoSanh == 1)?'checked':'';?>><label for="trongoi">Trọn gói</label> <br/>
+                        <input type="radio" name="type" id="donle" value="2" <?php echo ($this->plan && $this->plan->HinhThucSoSanh == 2)?'checked':'';?> <?php echo (!$this->plan || !$this->plan->HinhThucSoSanh)?'checked':'';?>><label for="donle">Đơn lẻ</label>
+                    </div>                
+                </td>
+
+
+                <!-- Cac nut dieu khien -->
+                <td valign="top" style="width:140px;">
+                    <div>
+                        <!-- So sanh bao gia -->
+                        <button type="button" class="btn btn-custom" onclick="M415.step7.compare()"> 
+                            So sánh
+                        </button>
+
+
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<br/>
+
+<div id="M415_compare_show" style="width: 1300px; height: 300px; overflow: auto">
+
+</div>
+
+
+<br/>
+<br/>

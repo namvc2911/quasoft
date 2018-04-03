@@ -1,0 +1,95 @@
+<?php
+
+// *****************************************************************
+// === $series, gia tri cot ox, du lieu ve khoang cah; oy, du lieu ve cao do OZ
+// *****************************************************************
+$series = '';
+
+
+$beginSeries = 1;
+
+
+// *****************************************************************
+// === Gan du lieu 
+// *****************************************************************
+
+foreach($this->data as $date=>$item)
+{
+    
+    // Head of serie
+    $series .= (!$beginSeries)?',':'';
+    $series .= "{ name: '{$date}', data:["; 
+    
+
+    // Set begin = 0;
+    if($beginSeries == 1)
+    {
+        $beginSeries = 0;
+    }
+    
+    // Reset begin sub series
+    $beginSubSeries = 1;
+    
+    foreach($item as $val)
+    {
+        
+        // init
+        $val['Distance'] = ($val['Distance'] != '')?$val['Distance']:0;
+        $val['ZIndex'] = ($val['ZIndex'] != '')?$val['ZIndex']:0;
+        
+        // Add ","
+        $series .= (!$beginSubSeries)?',':'';
+        
+        // Set begin = 0;
+        if($beginSubSeries == 1)
+        {
+            $beginSubSeries = 0;
+        }
+        
+        $series .= "[ {$val['Distance']},{$val['ZIndex']} ]";
+    }
+    
+    // Foot of serie
+    $series .= "]}";
+}
+?>
+
+
+
+<div id="container1" style="width: 95%; height: 400px; margin: 0 auto"></div>
+
+
+
+        <script type="text/javascript">
+            
+        $(document).ready(function() {
+	var chart;
+	chart = new Highcharts.Chart({
+        chart: {
+        	renderTo: 'container1'
+        } ,title: {
+                text: 'Biểu đồ mặt cắt'
+            },
+            xAxis: {
+                title: {
+                    text: 'Khoảng cách lẻ '
+                },
+                type: 'linear'
+            },
+            yAxis: {
+                title: {
+                    text: 'Cao độ Z'
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                         this.x + ' - '+ this.y ;
+                }
+            },
+            
+            series: [<?php echo $series;?>]
+        });
+            });
+        </script>
+

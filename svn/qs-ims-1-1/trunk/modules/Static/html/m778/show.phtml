@@ -1,0 +1,816 @@
+<style>
+#print-content th, #print-content td, #print-html th, #print-html td, .default_size {
+    font-size: 13px;
+}
+</style>
+
+<?php
+$excel_col      = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg             = "#EEEEEE";
+$row            = 2;
+$totalColumn    = 15;
+$colWidths      = array(47, 82, 82, 74, 59, 69, 98, 82, 134, 42, 51, 114, 48, 55, 193);
+$excelColWidths = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($colWidths);
+$autoFit        = Qss_Lib_Report::changeWidthToFitScreen($colWidths);
+
+// General Fit
+$totalGenCol    = 4;
+$genColWidths   = array(20, 20, 20, 20);
+$genAutoFit     = Qss_Lib_Report::changeWidthToFitScreen($genColWidths);
+
+// Param Fit
+$paramNo        = 0;
+$totalParamCol  = 5;
+$paramColWidths = array(47, 366, 98, 216, 503);
+$paramAutoFit   = Qss_Lib_Report::changeWidthToFitScreen($paramColWidths);
+
+// Sparepart & Document
+$SDNo        = 0;
+$totalSDCol  = 7;
+$SDColWidths = array(47, 150, 317,  98, 82, 176, 461);
+$SDAutoFit   = Qss_Lib_Report::changeWidthToFitScreen($SDColWidths);
+
+// Work order history
+$woHistoryNo        = 0;
+$breakdownNo        = 0;
+$totalWoHistoryCol  = 8;
+$woHistoryColWidths = array(47,198, 366, 98, 82, 98, 290);
+$woHistoryAutoFit   = Qss_Lib_Report::changeWidthToFitScreen($woHistoryColWidths);
+
+$status = '';
+
+switch(@(int)$this->eq->TrangThai)
+{
+    case 0: $status = $this->_translate(71); break; // Hoạt động
+    case 1: $status = $this->_translate(72); break; // Thanh lý
+    case 2: $status = $this->_translate(73); break; // Mất
+    case 3: $status = $this->_translate(74); break; // Hỏng
+}
+
+?>
+
+<div class="landscape">
+    <!-- REPORT TITLE -->
+	<div id="head_print">
+		<?php echo $this->views->Common->Landscape() ?>
+        <?php //echo $this->views->Common->Legal() ?>
+		<center>
+		    <h2><?php echo $this->_translate(1);?></h2>
+		</center>
+	</div><!-- end div#head_print -->
+	<?php $row++ ?>
+    <?php $row++;?>
+    <br/>
+
+    <!-- REPORT DATA -->
+    <div id="container">
+        <!-- General -->
+        <table cellpadding="0" cellspacing="0" border="0" class="" style="">
+            <?php $begin    = 0;?>
+            <?php $genBegin = 0;?>
+            <tr>
+                <!-- Ten thiet bi -->
+                <td class="left"
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px"
+                    valign="top">
+                    <?php echo $this->_translate(39);?>: <?php echo $this->eq->TenThietBi;?>
+                </td>
+                <?php $begin += 3;?>
+
+                <!-- Ma so -->
+                <td class="left"
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    <?php echo $this->_translate(2);?>: <?php echo $this->eq->MaThietBi;?>
+                </td>
+                <?php $begin += 3;?>
+
+                <!-- Serial -->
+                <td class="left"
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px"
+                    valign="top">
+                    <?php echo $this->_translate(40);?>: <?php echo $this->eq->Serial;?>
+                </td>
+                <?php $begin += 3;?>
+
+                <!-- Model -->
+                <td class="left"
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px"
+                    valign="top">
+                    <?php echo $this->_translate(5);?>: <?php echo $this->eq->Model;?>
+                </td>
+                <?php $begin += 2;?>
+            </tr>
+            <?php $row++;?>
+
+            <?php $begin = 0;?>
+            <?php $genBegin = 0;?>
+            <tr>
+                <!-- Nhà sản xuất -->
+                <td class="left"
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    <?php echo $this->_translate(6);?>: <?php echo $this->eq->XuatXu;?>
+                </td>
+                <?php $begin += 3;?>
+
+                <!-- Nam san xuat -->
+                <td class="left"
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    <?php echo $this->_translate(7);?>: <?php echo $this->eq->NamSanXuat;?>
+                </td>
+                <?php $begin += 3;?>
+
+                <!-- Ngày đưa vào sử dụng -->
+                <td class="left"
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    <?php echo $this->_translate(8);?>: <?php echo Qss_Lib_Date::mysqltodisplay($this->eq->NgayDuaVaoSuDung);?>
+                </td>
+                <?php $begin += 3;?>
+
+                <!-- Đơn vị quản lý -->
+                <?php
+                    $workcenters = array();
+                    foreach($this->workcenter as $wc)
+                    {
+                        if($wc->IOID &&  !in_array($wc->Ma, $workcenters))
+                        $workcenters[] = $wc->Ma;
+                    }
+                ?>
+                <td class="left"
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    <?php echo $this->_translate(17);?>: <?php echo implode(' , ', $workcenters);?>
+                </td>
+                <?php $begin += 2;?>
+            </tr>
+            <?php $row++;?>
+
+            <?php $begin = 0;?>
+            <?php $genBegin = 0;?>
+            <tr>
+                <!-- Đặc tính kỹ thuật -->
+                <td class="left" colspan="3"
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    Đặc tính kỹ thuật: <?php echo $this->eq->DacTinhKT;?>
+                </td>
+                <?php $begin += 11;?>
+
+                <td class="left"
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    Mã tài sản: <?php echo $this->eq->MaTaiSan;?>
+                </td>
+                <?php $begin += 2;?>
+            </tr>
+            <?php $row++;?>
+
+
+            <?php if(Qss_Lib_System::fieldActive('ODanhSachThietBi', 'ChucNang')):?>
+            <?php $begin = 0;?>
+            <?php $genBegin = 0;?>
+            <tr>
+                <!-- Đặc tính kỹ thuật -->
+                <td class="left" colspan="3"
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    Chức năng nhiệm vụ: <?php echo $this->eq->ChucNang;?>
+                </td>
+                <?php $begin += 11;?>
+
+                <td class="left"
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    &nbsp;
+                </td>
+                <?php $begin += 2;?>
+            </tr>
+            <?php $row++;?>
+            <?php endif;?>
+
+
+            <?php $begin = 0;?>
+            <?php $genBegin = 0;?>
+            <tr>
+                <!-- Trang thai -->
+                <td class="left"
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    <?php echo $this->_translate(70);?>: <?php echo $status;?>
+                </td>
+                <?php $begin += 3;?>
+
+                <td class="left"
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    &nbsp;
+                </td>
+
+                <td class="left"
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    &nbsp;
+                </td>
+
+                <td class="left"
+                    style="width: <?php echo $genAutoFit[$genBegin++];?>px" valign="top">
+                    &nbsp;
+                </td>
+
+            </tr>
+            <?php $row++;?>
+        </table><!-- end table.border -->
+        <?php $row++;?>
+        <!--------------------------------------------------------------------->
+
+        <div class="left bold default_size">
+            <br/>
+            <?php echo $this->_translate(47)?>        </div>
+        <?php $row++;?>
+        <br/>
+
+        <!-- Params -->
+        <table cellpadding="0" cellspacing="0" border="0" class="border" style="">
+            <!-- COLUMN TITLE -->
+            <tr class="bggrey">
+                <?php $begin = 0;?>
+                <?php $paramBegin = 0;?>
+                <!-- STT -->
+                <th class="center"
+                    style="width:<?php echo $paramAutoFit[$paramBegin++];?>px">
+                    <?php echo $this->_translate(41)?>
+                </th>
+
+                <!-- Thong so ky thuat -->
+                <th class="center"
+                    style="width:<?php echo $paramAutoFit[$paramBegin++];?>px">
+                    <?php echo $this->_translate(42)?>
+                </th>
+                <?php $begin += 4;?>
+
+                <!-- Don vi -->
+                <th class="center"
+                    style="width:<?php echo $paramAutoFit[$paramBegin++];?>px">
+                    <?php echo $this->_translate(43)?>
+                </th>
+
+                <!-- Gia tri -->
+                <th class="center"
+                    style="width:<?php echo $paramAutoFit[$paramBegin++];?>px">
+                    <?php echo $this->_translate(44)?>
+                </th>
+                <?php $begin += 1;?>
+
+                <!-- Ghi chu -->
+                <th class="center"
+                    style="width:<?php echo $paramAutoFit[$paramBegin++];?>px">
+                    <?php echo $this->_translate(45)?>
+                </th>
+                <?php $begin += 5;?>
+            </tr>
+            <?php $row++;?>
+
+            <!-- COLUMN DATA -->
+            <?php foreach($this->eqTechnicalParams as $data): // In bao cao?>
+
+            <?php $begin = 0;?>
+            <tr>
+                <!-- stt -->
+                <td class="center" >
+                    <?php echo ++$paramNo;?>
+                </td>
+
+                <!-- Thong so ky thuat -->
+                <td class="left" >
+                    <?php echo $data->Ten;?>
+                </td>
+                <?php $begin += 4;?>
+
+                <!-- Don vi -->
+                <td class="left" >
+                    <?php echo $data->DonViTinh;?>
+                </td>
+
+                <!-- GiaTri -->
+                <td class="right" >
+                    <?php echo $data->GiaTri;?>
+                </td>
+                <?php $begin += 1;?>
+
+                <!-- Ghi chu -->
+                <td class="left" >
+                    <?php echo '';?>
+                </td>
+                <?php $begin += 5;?>
+            </tr>
+            <?php $row++;?>
+            <?php endforeach; // Ket thuc in bao cao?>
+        </table><!-- end table.border -->
+        <!--------------------------------------------------------------------->
+
+        <div class="left bold default_size">
+            <br/>
+            <?php echo $this->_translate(48)?>
+        </div>
+        <?php $row++;?>
+        <br/>
+
+        <!-- Sparepart & document -->
+        <table cellpadding="0" cellspacing="0" border="1" class="border" style="">
+            <!-- COLUMN TITLE -->
+            <tr class="bggrey">
+                <?php $begin = 0;?>
+                <?php $SDBegin = 0;?>
+                <!-- stt -->
+                <th class="center"
+                    style="width:<?php echo $SDAutoFit[$SDBegin++];?>px">
+                    <?php echo $this->_translate(46)?>
+                </th>
+
+                <!-- Bo phan -->
+                <th class="center"
+                    style="width:<?php echo $SDAutoFit[$SDBegin++];?>px">
+                    <?php echo $this->_translate(81)?>
+                </th>
+
+                <!-- Ten phu tung tai lieu -->
+                <th class="center"
+                    style="width:<?php echo $SDAutoFit[$SDBegin++];?>px">
+                    <?php echo $this->_translate(49)?>
+                </th>
+                <?php $begin += 4;?>
+
+
+
+                <!-- Quy cach -->
+                <th class="center"
+                    style="width:<?php echo $SDAutoFit[$SDBegin++];?>px">
+                    <?php echo $this->_translate(50)?>
+                </th>
+
+                <!-- So Luong -->
+                <th class="center"
+                    style="width:<?php echo $SDAutoFit[$SDBegin++];?>px">
+                    <?php echo $this->_translate(51)?>
+                </th>
+
+                <!-- Ma so -->
+                <th class="center"
+                    style="width:<?php echo $SDAutoFit[$SDBegin++];?>px">
+                    <?php echo $this->_translate(52)?>
+                </th>
+                <?php $begin += 1;?>
+
+                <!-- Ghi chu -->
+                <th class="center"
+                    style="width:<?php echo $SDAutoFit[$SDBegin++];?>px">
+                    <?php echo $this->_translate(53)?>
+                </th>
+                <?php $begin += 4;?>
+            </tr>
+            <?php $row++;?>
+
+            <?php if(count($this->sparepart)):?>
+            <tr>
+                <!-- Phu tung -->
+                <th class="left" colspan="<?php echo $totalSDCol;?>">
+                    <?php echo $this->_translate(68)?>
+                </th>
+            </tr>
+            <?php $row++;?>
+            <?php endif;?>
+
+            <!-- COLUMN DATA -->
+            <?php foreach($this->sparepart as $data): // In bao cao?>
+            <?php $begin = 0;?>
+            <tr>
+                <!-- stt -->
+                <td class="center" >
+                    <?php echo ++$SDNo?>
+                </td>
+
+                <td class="left" >
+                    <?php echo $data->BoPhan;?>
+                </td>
+                <?php $begin += 4;?>
+
+                <!-- Ten phu tung tai lieu -->
+                <td class="left" >
+                    <?php echo $data->TenSP;?>
+                </td>
+                <?php $begin += 4;?>
+
+
+
+                <!-- Quy cach -->
+                <td class="left" >
+                    <?php echo $data->DacTinhKyThuat;?>
+                </td>
+
+                <!-- So Luong -->
+                <td class="right" >
+                    <?php echo $data->SoLuongHC;?>
+                </td>
+
+                <!-- Ma so -->
+                <td class="left" >
+                    <?php echo $data->MaSP;?>
+                </td>
+                <?php $begin += 1;?>
+
+                <!-- Ghi chu -->
+                <td class="left" >
+                    <?php echo '';?>
+                </td>
+                <?php $begin += 4;?>
+            </tr>
+            <?php $row++;?>
+            <?php endforeach; // Ket thuc in bao cao?>
+
+            <?php if(count($this->document)):?>
+            <tr>
+                <!-- Tai lieu -->
+                <th class="left"  colspan="<?php echo $totalSDCol;?>">
+                    <?php echo $this->_translate(69)?>
+                </th>
+            </tr>
+            <?php $row++;?>
+            <?php endif;?>
+
+            <?php foreach($this->document as $data): // In bao cao?>
+            <?php $begin = 0;?>
+            <tr>
+                <!-- stt -->
+                <td class="center" >
+                    <?php echo ++$SDNo?>
+                </td>
+
+                <td>
+                    &nbsp;
+                </td>
+
+                <!-- Ten phu tung tai lieu -->
+                <td class="left" >
+                    <?php echo $data->Type;?>
+                </td>
+                <?php $begin += 4;?>
+
+                <!-- Quy cach -->
+                <td class="left" >
+                    &nbsp;
+                    
+                </td>
+
+                <!-- So Luong -->
+                <td class="right" >
+                    <?php echo $data->Total;?>
+                </td>
+
+                <!-- Ma so -->
+                <td class="left" >
+                    &nbsp;
+                    
+                </td>
+                <?php $begin += 1;?>
+
+                <!-- Ghi chu -->
+                <td class="left" >
+                    <?php echo '';?>
+                </td>
+                <?php $begin += 4;?>
+            </tr>
+            <?php $row++;?>
+            <?php endforeach; // Ket thuc in bao cao?>
+        </table><!-- end table.border -->
+        <!--------------------------------------------------------------------->
+
+        <!-- Ngay... thang ... nam -->
+        <div class="left default_size"
+             style="text-align:right; margin-right:100px;">
+            <br/>
+            <?php echo $this->_translate(63)?>......<?php echo $this->_translate(64)?>......<?php echo $this->_translate(65)?>......
+        </div>
+        <?php $row++;?>
+
+        <div class="default_size bold overflow clearfix">
+            <!-- Nguoi lap -->
+            <div class="fl"  style="padding-left: 138px;">
+                <?php echo $this->_translate(67)?>
+            </div>
+
+            <!-- Don vi quan ly -->
+            <div class="fr" style="padding-right: 138px;">
+                <?php echo $this->_translate(66)?>
+            </div>
+        </div>
+        <?php $row++;?>
+        <?php $row++;?>
+        <?php $row++;?>
+        <br/>
+        <br/>
+        <br/>
+
+     <!--------------------------------------------------------------------->
+
+        <div class="left bold default_size">
+            <br/>
+            <?php echo $this->_translate(54)?>
+        </div>
+        <?php $row++;?>
+        <br/>
+
+        <!-- Breakdown History -->
+        <table cellpadding="0" cellspacing="0" border="1" class="border" style="">
+            <!-- COLUMN TITLE -->
+            <tr class="bggrey">
+                <?php $begin = 0;?>
+                <?php $woHistoryBegin = 0;?>
+                <!-- stt -->
+                <th class="center"
+                    style="width:<?php echo $woHistoryAutoFit[$woHistoryBegin++];?>px">
+                    <?php echo $this->_translate(55)?>
+                </th>
+
+                 <!-- Vị trí, Bộ phận -->
+                <th class="center"
+                    style="width:<?php echo $woHistoryAutoFit[$woHistoryBegin++];?>px">
+                    Bộ phận
+                </th>
+
+                <!-- Mô tả -->
+                <th class="center"
+                    style="width:<?php echo $woHistoryAutoFit[$woHistoryBegin++];?>px">
+                    <?php echo $this->_translate(76)?>
+                </th>
+                <?php $begin +=  4;?>
+
+                <!-- Ngay sự cố -->
+                <th class="center"
+                    style="width:<?php echo $woHistoryAutoFit[$woHistoryBegin++];?>px">
+                    <?php echo $this->_translate(77)?>
+                </th>
+
+
+                <!-- Nguyên nhân -->
+                <th class="center"
+                    style="width:<?php echo $woHistoryAutoFit[$woHistoryBegin++];?>px">
+                    <?php echo $this->_translate(78)?>
+                </th>
+
+                <!-- Mức độ -->
+                <th class="center"
+                    style="width:<?php echo $woHistoryAutoFit[$woHistoryBegin++];?>px">
+                    <?php echo $this->_translate(79)?>
+                </th>
+                <?php $begin += 1;?>
+
+
+                <!-- Xử lý -->
+                <th class="center"
+                    style="width:<?php echo $woHistoryAutoFit[$woHistoryBegin++];?>px">
+                    <?php echo $this->_translate(80)?>
+                </th>
+                <?php $begin += 2;?>
+
+
+            </tr>
+            <?php $row++;?>
+
+            <?php //echo '<pre>'; print_r($this->history); die;?>
+
+
+            <!-- COLUMN DATA -->
+            <?php foreach($this->history as $data): // In bao cao?>
+
+            <?php if($data['Info']['TypeCode'] != Qss_Lib_Extra_Const::MAINT_TYPE_BREAKDOWN) {continue;}?>
+
+
+
+
+
+
+
+
+
+                                <?php $begin = 0;?>
+                                <tr>
+                                    <!-- stt -->
+                                    <td class="center" >
+                                        <?php echo ++$breakdownNo?>
+                                    </td>
+                                    <!-- Bộ phận -->
+                                    <td class="left" >
+                                        <?php echo $data['Info']['BoPhan'];?>
+                                    </td>
+                                    <!-- Noi dung bao duong sua chua -->
+                                    <td class="left" >
+                                        <?php echo $data['Info']['Des'];?>
+                                    </td>
+                                    <?php $begin +=  4;?>
+
+                                    <!-- Ngay bao duong -->
+                                    <td class="left" >
+                                        <?php echo Qss_Lib_Date::mysqltodisplay($data['Info']['BreakDate']);?>
+                                    </td>
+
+
+
+                                    <!-- Ngoai KH -->
+                                    <td class="center" >
+                                        <?php echo $data['Info']['BreakCode']; ?>
+                                    </td>
+
+                                    <!-- Nguoi thuc hien -->
+                                    <td class="left" >
+                                        <?php echo $data['Info']['Downtime'];?>
+                                    </td>
+                                    <?php $begin += 1;?>
+
+
+
+                                    <!-- Ghi chu -->
+                                    <td class="left" >
+                                        <?php echo $data['Info']['Intervention'];?>
+                                    </td>
+                                    <?php $begin += 2;?>
+                                </tr>
+                                <?php $row++;?>
+
+
+
+
+
+
+
+
+            <?php endforeach;?>
+
+
+        </table><!-- end table.border -->
+        <!--------------------------------------------------------------------->
+
+        <div class="left bold default_size">
+            <br/>
+            <?php echo $this->_translate(75)?>
+        </div>
+        <?php $row++;?>
+        <br/>
+
+        <!-- Work Order History -->
+        <table cellpadding="0" cellspacing="0" border="1" class="border" style="">
+            <!-- COLUMN TITLE -->
+            <tr class="bggrey">
+                <?php $begin = 0;?>
+                <?php $woHistoryBegin = 0;?>
+                <!-- stt -->
+                <th class="center"
+                    style="width:<?php echo $woHistoryAutoFit[$woHistoryBegin++];?>px">
+                    <?php echo $this->_translate(55)?>
+                </th>
+
+                 <!-- Vị trí, Bộ phận -->
+                <th class="center"
+                    style="width:<?php echo $woHistoryAutoFit[$woHistoryBegin++];?>px">
+                    Bộ phận
+                </th>
+
+                <!-- Noi dung bao duong sua chua -->
+                <th class="center"
+                    style="width:<?php echo $woHistoryAutoFit[$woHistoryBegin++];?>px">
+                    <?php echo $this->_translate(56)?>
+                </th>
+                <?php $begin +=  4;?>
+
+                <!-- Ngay bao duong -->
+                <th class="center"
+                    style="width:<?php echo $woHistoryAutoFit[$woHistoryBegin++];?>px">
+                    <?php echo $this->_translate(57)?>
+                </th>
+
+
+                <!-- Ngoai KH -->
+                <th class="center"
+                    style="width:<?php echo $woHistoryAutoFit[$woHistoryBegin++];?>px">
+                    <?php echo $this->_translate(59)?>
+                </th>
+
+                <!-- Nguoi thuc hien -->
+                <th class="center"
+                    style="width:<?php echo $woHistoryAutoFit[$woHistoryBegin++];?>px">
+                    <?php echo $this->_translate(60)?>
+                </th>
+                <?php $begin += 1;?>
+
+
+                <!-- Ghi chu -->
+                <th class="center"
+                    style="width:<?php echo $woHistoryAutoFit[$woHistoryBegin++];?>px">
+                    <?php echo $this->_translate(62)?>
+                </th>
+                <?php $begin += 2;?>
+
+
+            </tr>
+            <?php $row++;?>
+
+
+            <!-- COLUMN DATA -->
+            <?php foreach($this->history as $data): // In bao cao?>
+            <?php if($data['Info']['TypeCode'] == Qss_Lib_Extra_Const::MAINT_TYPE_BREAKDOWN) {continue;}?>
+
+            <?php
+                //echo '<pre>'; print_r($data); die;
+                $trongKH = ($data['Info']['TypeCode'] == Qss_Lib_Extra_Const::MAINT_TYPE_PREVENTIVE)?'x':'';
+                $ngoaiKH = ($data['Info']['TypeCode'] == Qss_Lib_Extra_Const::MAINT_TYPE_PREVENTIVE)?'':'x';
+
+                $ghiChu =  '';
+
+                if($data['Info']['StatusNo'] == 5) // Tinh trang huy
+                {
+                    $ghiChu .= "Hủy phiếu bảo trì ". $data['Info']['DocNo'] . ": ".$data['Info']['Des'] ;
+                }
+            ?>
+
+            <?php
+                /*
+                $workDetail = '';
+
+                if(isset($data['Component']) && count($data['Component']))
+                {
+                    foreach($data['Component'] as $com1)
+                    {
+                        if(isset($com1['Work']) && count($com1['Work']))
+                        {
+                            foreach($com1['Work'] as $work1)
+                            {
+                                $workDetail .= $work1['MoTa'];
+                                $workDetail .= '<br/>';
+                            }
+                        }
+                    }
+                }
+                */
+            ?>
+
+
+            <?php if(isset($data['Component']) && count($data['Component'])):?>
+
+            <?php foreach($data['Component'] as $com1):?>
+
+            <?php if(isset($com1['Work']) && count($com1['Work'])):?>
+
+            <?php foreach($com1['Work'] as $work1):?>
+
+
+
+            <?php $begin = 0;?>
+            <tr>
+                <!-- stt -->
+                <td class="center" >
+                    <?php echo ++$woHistoryNo?>
+                </td>
+				<!-- Bộ phận -->
+				<td class="left" >
+                    <?php echo $work1['BoPhan'];?>
+                </td>
+                <!-- Noi dung bao duong sua chua -->
+                <td class="left" >
+                    <?php echo $work1['MoTa'];?>
+                </td>
+                <?php $begin +=  2;?>
+
+                <!-- Ngay bao duong -->
+                <td class="left" >
+                    <?php echo Qss_Lib_Date::mysqltodisplay(@$data['Info']['SDate']);?>
+                </td>
+
+
+
+                <!-- Ngoai KH -->
+                <td class="center" >
+                    <?php echo $ngoaiKH;?>
+                </td>
+
+                <!-- Nguoi thuc hien -->
+                <td class="left" >
+                    <?php echo $work1['NguoiThucHien']?>
+                </td>
+                <?php $begin += 1;?>
+
+
+
+                <!-- Ghi chu -->
+                <td class="left" >
+                    <?php echo $ghiChu?>
+                </td>                   
+                <?php $begin += 2;?>                
+            </tr>
+            <?php $row++;?>
+
+            <?php endforeach;?>
+
+            <?php endif;?>
+
+
+            <?php endforeach;?>
+
+            <?php endif;?>
+
+
+            <?php endforeach; // Ket thuc in bao cao?>
+        </table><!-- end table.border -->        
+    </div><!-- end div#container -->
+</div><!-- END REPORT -->
+
+

@@ -1,0 +1,86 @@
+<?php $width = 800; ?>
+<?php $i = -1;?>
+
+<table class="border_table" cellpadding="0" cellspacing="0" border="0" style="width:<?php echo $width;?>px">
+    <?php $begin = 0; ?>
+    
+    <tr>
+        <th> Đơn hàng </th>
+        <th> Nhà cung cấp </th>
+        <th> Ngày đặt hàng </th>
+        <th> Sửa </th>
+        <th> Đặt hàng </th>
+        <th style="min-width: 50px;"> &nbsp;</th>
+        <th style="min-width: 50px;"> &nbsp; </th>
+    </tr>
+    
+    <!-- Data -->
+    <?php foreach($this->orders as $item):?>
+    <?php // echo '<pre>'; print_r($item); die;?>
+        <?php $i++;?>
+        
+        <tr>
+            <!-- STT -->
+            <td class="left" style="width: 100px;">
+                <?php echo $item->SoDonHang;?> 
+            </td>
+            
+            <td class="left" style="width: 200px;">
+                <?php echo $item->TenNCC;?> 
+            </td>            
+            
+            <td class="required center"  style="width: 300px;">
+                <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayYCNH);?>
+                <?php /*?>
+                <form id="M415_step8_order_<?php echo $i;?>">
+                    <input type="hidden" name="orderifid" value="<?php echo $item->IFID_M401;?>" />
+                    <?php if($item->Status <= 2):?>
+                        <?php echo $this->views->Report->Datepicker('date'.$i, Qss_Lib_Date::mysqltodisplay($item->NgayYCNH));?>
+                        <button type="button" onclick="M415.step8.updateOrder('M415_step8_order_<?php echo $i;?>', '<?php echo $i;?>')" class="btn btn-custom">Cập nhật</button>
+                    <?php else:?>
+                        <input type="text" value="<?php echo Qss_Lib_Date::mysqltodisplay($item->NgayYCNH);?>" disabled/> 
+                    <?php endif;?>   
+                </form>          
+                */?>           
+            </td>
+            
+            <td class="center"  style="width: 100px;">
+            
+                <button type="button" onclick="popupWindowFormEdit('<?php echo $item->IFID_M401;?>', '<?php echo $item->DeptID;?>', {})" class="btn btn-custom">Sửa</button>
+            </td>    
+            
+            <td class="center"  style="width: 100px;">
+                <?php if($item->Status == 1):?>
+                    <button type="button" onclick="M415.step8.approve(<?php echo $item->IFID_M401;?>)" class="btn btn-custom">Đặt hàng</button>
+                <?php else:?>
+                    <button type="button"  class="btn btn-custom btn-disabled" disabled>Đặt hàng</button>
+                <?php endif;?>
+            </td>
+
+            <td class="center"  style="width: 100px;">
+
+                <?php $GiaTriDonHang = $item->GiaTriDonHang/1000;?>
+                <?php //if($GiaTriDonHang <= 100000000):?>
+                    <button type="button" onclick="M415.excelDonDatHang(<?php echo $item->IOID;?>)" class="btn btn-custom">In đơn hàng </button>
+                <?php /* else:?>
+                    <button type="button"  class="btn btn-custom btn-disabled" disabled>In đơn hàng</button>
+                <?php endif; */?>
+            </td>
+
+            <td class="center"  style="width: 100px;">
+
+                <?php //if($GiaTriDonHang > 100000000):?>
+                    <button type="button" onclick="M415.excelPhuLucHopDong(<?php echo $item->IOID;?>)" class="btn btn-custom">In phụ lục</button>
+                <?php /* else:?>
+                    <button type="button"  class="btn btn-custom btn-disabled" disabled>In phụ lục</button>
+                <?php endif; */?>
+
+
+
+            </td>
+        </tr>
+    <?php endforeach;?>
+</table>
+
+<br/>
+<br/>

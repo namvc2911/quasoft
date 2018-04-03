@@ -1,0 +1,83 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	rowCLK(document.getElementById($.cookie('bash_selected')));
+});
+</script>
+<div id="qss_attach">
+<table class="grid">
+      <tr>
+        <td align="center" style="border-right: 0pt none; width: 100px;"></td>
+        <td align="right">Nhóm theo:
+          <select onchange="rowSearch();" id="bash_groupby">
+            <option value="0"/>
+            <option <?php if($this->groupby == 1) echo 'selected'?> value="1">Người tạo</option>
+            <option <?php if($this->groupby == 2) echo 'selected'?> value="2">Kết chuyển từ mô đun</option>
+            <option <?php if($this->groupby == 3) echo 'selected'?> value="3">Kết chuyển tới mô đun</option>
+          </select>
+          Trang:
+          <select style="" onchange="rowSearch();" id="bash_pageno">
+          <?php for($i = 1;$i <= $this->totalPage;$i++):?>
+            <option <?php if($i == $this->currentpage) echo 'selected';?>><?php echo $i?></option>
+          <?php endfor;?>
+          </select>
+          / <?php echo $this->totalPage;?> Hiển thị:
+          <select onchange="rowSearch();" style="" id="bash_perpage">
+            <option <?php if($this->limit == 10) echo 'selected'?>>10</option>
+            <option <?php if($this->limit == 20) echo 'selected'?>>20</option>
+            <option <?php if($this->limit == 50) echo 'selected'?>>50</option>
+            <option <?php if($this->limit == 100) echo 'selected'?>>100</option>
+          </select></td>
+      </tr>
+</table>
+<table cellspacing="0" class="grid">
+	<tr>
+		<th class="nocount">STT</th>
+		<th><a href="#!" onclick="rowSort(1)">Tên <?php if($this->orderfield == 1):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="rowSort(2)">Người tạo <?php if($this->orderfield == 2):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="rowSort(3)">Ngày tạo <?php if($this->orderfield == 3):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="rowSort(4)">Kết chuyển từ mô đun<?php if($this->orderfield == 4):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="rowSort(5)">Kết chuyển đến mô đun <?php if($this->orderfield == 5):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th>Bước</th>
+		<th>Kiểu</th>
+		<th>Tình trạng</th>
+		<th>Gắn vào bản ghi</th>
+		<th>Class</th>
+	</tr>
+	<?php
+	$group = null;
+	$i=1;
+	foreach ($this->documents as $item)
+	{
+		?>
+	<?php if(isset(Qss_Model_Bash::$arrField[$this->groupby])):?>
+      	<?php if($group != $item->{Qss_Model_Bash::$arrField[$this->groupby]}):?>
+      	<tr>
+			<td class="groupby" colspan="11"><?php echo $item->{Qss_Model_Bash::$arrGroup[$this->groupby]};?></td>
+		</tr>
+      	<?php endif;?>
+      <?php $group = $item->{Qss_Model_Bash::$arrField[$this->groupby]}?>
+      <?php endif;?>	
+	<tr rights="63" id="<?php echo $item->BID;?>" onclick="rowCLK(this);">
+		<td class="nocount"><?php echo $i?></td>
+		<td><?php echo $item->BashName?></td>
+		<td><?php echo $item->UserName?></td>
+		<td class="center"><?php echo  date('d-m-Y H:i:s',strtotime($item->CDate))?></td>
+		<td><?php echo $item->FromName?></td>
+		<td><?php echo $item->ToName?></td>
+		<td class="center"><?php echo $item->Step?></td>
+		<td class="center"><?php echo $item->Type?></td>
+		<td class="center"><?php echo $item->Active?'Hoạt động':'Tạm dừng'?></td>
+		<td class="center"><?php echo $item->Record?'Có':'Không'?></td>
+		<td class="center"><?php echo $item->Class?></td>
+    </tr>
+	<?php
+	$i++;
+	}
+	?>
+</table>
+</div>

@@ -1,0 +1,96 @@
+<script>
+function printPreview(){
+
+	if($('#date').val() == '')	{
+		qssAjax.alert('<?php echo $this->_translate(7)?>');
+		return;
+	}
+	
+//	$('#report').submit(function() {
+//        window.open('', 'formpopup', 'statusbar=no,resizable=yes,scrollbars=yes, addressbar=no,maximize=yes');
+//        this.target = 'formpopup';
+//    });
+//	$('#report').submit();
+       
+        var url = sz_BaseUrl + '/report/maintenancehp/equipments/print1';
+        var data = $('#report').serialize();
+        qssAjax.getHtml(url, data, function(jreturn) {
+                $('#print-area').html(jreturn);
+                removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+        });
+}
+
+jQuery(document).ready(function(){
+	var text;
+	$('#location').change(function(){
+		
+		text = $('#location option:selected').text();
+		$('#LocName').val($.trim(text));
+	});
+});
+</script>
+
+
+<div class="clear"></div>
+<div id="view">
+<div class="line-hr"><span><?php echo $this->_translate(1)?></span></div>
+<form id="report" method="post" action="/report/maintenancehp/equipments/print1">
+<table class="detail" style="margin: 10px">
+
+<tr>
+	<th width="20%" class="report-param-label"><?php echo $this->_translate(20)?></th>
+	<td>
+            
+            <?php
+                $id            = 'location';
+                $getFields     = array('num'=>3, 
+                                       'objects'=>array('OKhuVuc'=>array(
+                                                            'id'=>'IOID'
+                                                            ,'display1'=>'MaKhuVuc'
+                                                            ,'display2'=>'Ten') ));
+            ?>
+            <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+            <input type="hidden" name="LocName" id="LocName" value="" />
+        </td>
+</tr>   
+
+<tr>
+	<th width="20%" class="report-param-label"><!-- Nhom thiet bi --><?php echo $this->_translate(2)?></th>
+	<td>
+            <?php
+                $id            = 'group';
+                $getFields     = array('num'=>3, 
+                                       'objects'=>array('ONhomThietBi'=>array(
+                                                            'id'=>'IOID'
+                                                            ,'display1'=>'LoaiThietBi') ));
+            ?>
+            <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+        </td>
+</tr>
+
+
+ 
+<?php /*?>
+<tr>
+	
+	<th width="20%" class="right"><!-- Don vi bao tri --><?php echo $this->_translate(4)?></th>
+	<td>
+		<select name="workCenter" id="workCenter" class="">
+			<option value=""> --- <?php echo $this->_translate(5)?> --- </option>
+			<?php foreach ($this->workCenter as $item):?>
+			<option value="<?php echo $item->IOID?>"> <?php echo "{$item->Ten} ({$item->Ma})"?> </option>
+			<?php endforeach;?> 
+		</select>
+	</td>
+</tr>
+<?php */?>
+
+</table>
+</form>
+<p>
+<hr>
+    <?php echo $this->views->Report->PrintToolbar();?>
+    <div id="print-content">
+            <div id="print-area"></div>		
+    </div>
+</div>

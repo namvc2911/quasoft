@@ -1,0 +1,339 @@
+<?php 
+    $line              = 0; // dong
+    $stt               = 0; // số thứ tự
+    $nhacungcap        = $this->partners;
+    $mathang           = $this->items;
+    $soluongnhacungcap = count($nhacungcap);
+    $partnerCol        = 7;
+    $tongsocot         = 5 + ($soluongnhacungcap * $partnerCol);
+    $totalByPartner    = array();
+    $excludePartner    = array(); // Giup khong hien lai input hidden ve nha cung cap o dong san pham thu 2
+    
+    //echo '<pre>'; print_r($soluongnhacungcap); die;
+?>
+
+<table class="border_table" cellpadding="0" cellspacing="0" border="0" style="table-layout: fixed; width:auto;">
+    <tr class="bggrey">
+        <th rowspan="2" style="width: 30px;"><div style="width: 30px;">STT</div></th>
+        <th rowspan="2" style="width: 80px;"><div style="width: 80px;">Mã mặt hàng</div></th>
+        <th rowspan="2" style="width: 100px;"><div style="width: 100px;">Tên mặt hàng</div></th>
+        <th rowspan="2" style="width: 50px;"><div style="width: 50px;">ĐVT</div></th>
+        <th rowspan="2" style="width: 50px;"><div style="width: 50px;">SL yêu cầu</div></th>
+        
+        <?php foreach($nhacungcap as $partnerIOID=>$partner):?>
+            <th colspan="<?php echo $partnerCol;?>">
+                <?php echo $partner['PartnerName'];?>
+                <input type="hidden" id="partner_name_<?php echo $partnerIOID;?>" value="<?php echo $partner['PartnerName'];?>"/>
+            </th>
+        <?php endforeach;?>
+    </tr>
+    
+    <tr class="bggrey">
+    
+        <?php if($soluongnhacungcap > 1):?>
+            <?php foreach($nhacungcap as $partnerIOID=>$partner):?>
+                <th style="width: 20px;">
+                    <div style="width: 20px;"> 
+                        <input type="checkbox" onclick="M411.checkAllOnePartner(this, '<?php echo $partnerIOID;?>');"/> 
+                    </div>
+                </th>
+                <th style="width: 80px;"><div style="width: 80px;">Đơn giá</div></th>
+                <th style="width: 50px;"><div style="width: 50px;">SL báo giá</div></th>
+                <th style="width: 50px;"><div style="width: 50px;">SL đặt hàng</div></th>
+                <th style="width: 100px;"><div style="width: 100px;">Thành tiền</div></th>
+                <th style="width: 60px;"><div style="width: 60px;">Kỹ thuật</div></th>
+                <th style="width: 60px;"><div style="width: 60px;">Chất lượng</div></th>
+            <?php endforeach;?>           
+        <?php else:?>
+            <?php foreach($nhacungcap as $partnerIOID=>$partner):?>
+                <th style="width: 20px;">
+                    <div style="width: 20px;"> 
+                        <input type="checkbox" onclick="M411.checkAllOnePartner(this, '<?php echo $partnerIOID;?>');"/> 
+                    </div>
+                </th>
+                <th style="width: 80px;">Đơn giá</th>
+                <th style="width: 50px;">SL báo giá</th>
+                <th style="width: 50px;">SL đặt hàng</th>
+                <th style="width: 100px;">Thành tiền</th>
+                <th style="width: 60px;">Kỹ thuật</th>
+                <th style="width: 60px;">Chất lượng</th>
+            <?php endforeach;?>           
+        <?php endif;?>
+     
+    </tr>
+    
+    <tr>
+        <td class="center bold">I</td>
+        <td colspan="<?php echo ($tongsocot - 1);?>" class="left bold">Giá chào (chưa bao gồm thuế VAT).</td>
+    </tr>
+    
+    
+    <?php foreach($mathang as $itemKey=>$item):?>
+        <?php $line++;?>
+        <?php 
+            $compareMinDonGia = array(); // init & reset
+        ?>        
+        
+        <tr >
+            <td class="center"><?php echo ++$stt?></td>
+            <td class="left"><?php echo $item['ItemCode'];?></td>
+            <td class="left"><?php echo $item['ItemName'];?></td>
+            <td class="left"><?php echo $item['Uom'];?></td>
+            <td class="right"><?php echo $item['ReqQty'];?></td>
+            
+            <?php foreach($nhacungcap as $partnerIOID=>$partner):?>
+                
+                <?php 
+                    if(!isset($totalByPartner[$partnerIOID]))
+                    {
+                        $totalByPartner[$partnerIOID] = 0; // reset & init
+                    }
+                ?>            
+                
+                <?php if(!in_array($partnerIOID, $excludePartner)):?>
+                <input type="hidden" class="M411_quotation3_form_<?php echo $partnerIOID;?>" name="partnerioid" value="<?php echo $partnerIOID;?>"/>
+                <input type="hidden" class="M411_quotation3_form_<?php echo $partnerIOID;?>" name="planioid" value="<?php echo $this->planioid;?>"/>
+                <?php endif;?>
+                <?php $excludePartner[] = $partnerIOID; ?>
+                
+    
+                <?php if(isset($nhacungcap[$partnerIOID]['Item'][$itemKey])):?>
+                    <?php $itemDat   = $nhacungcap[$partnerIOID]['Item'][$itemKey];?>
+                    <?php $compareMinDonGia[$partnerIOID] = $itemDat['UnitPrice'];?>
+                    <?php $minDonGiaLine = array(); // init & reset?>
+                    
+                    <?php 
+                        $noCheck = '';
+                        if($item['ReqQty']>0)
+                        {
+                            if($itemDat['Pass'] == 0)
+                            {
+                                $noCheck = 'no_check="1"';
+                            }
+                        }
+                        else 
+                        {
+                            $noCheck = 'no_check="1"';
+                        }
+                    ?>
+                    
+                    <!-- Chon -->
+                    <td class="center marker_<?php echo $partnerIOID?> marker_<?php echo $partnerIOID?>_<?php echo $line;?>" <?php echo $noCheck;?>> 
+                        <?php if($item['ReqQty']>0):?>
+                            <?php if($itemDat['Pass'] == 1):?>
+                            <input type="checkbox" class="checkbox_<?php echo $partnerIOID;?>" onclick="M411.checkCompareQuotationLine(this, '<?php echo $partnerIOID;?>', '<?php echo $line;?>');"/>
+                            <input type="hidden" class="M411_quotation3_form_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?>_<?php echo $line;?>" name="itemioid[]" value="<?php echo $item['ItemIOID'];?>" disabled/>
+                            <input type="hidden" class="M411_quotation3_form_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?>_<?php echo $line;?>" name="uomioid[]" value="<?php echo $item['UomIOID'];?>" disabled/>
+                            <input type="hidden" class="M411_quotation3_form_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?>_<?php echo $line;?>" name="unitprice[]" value="<?php echo $itemDat['UnitPrice'];?>" disabled/>
+                            <input type="hidden" class="M411_quotation3_form_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?>_<?php echo $line;?>" name="requestioid[]" value="<?php echo $itemDat['RequestIOID'];?>" disabled/>
+                            <?php else:?>
+                                <input type="checkbox" disabled />
+                            <?php endif;?>
+                        <?php else:?>
+                            <input type="checkbox" disabled />
+                        <?php endif;?>
+                    </td>
+                    
+                    <!-- Don gia -->
+                    <td class="
+                        right marker_<?php echo $partnerIOID?> 
+                        marker_<?php echo $partnerIOID?>_<?php echo $line;?>
+                        unit_price_<?php echo $partnerIOID?>_<?php echo $line;?>"
+                        
+                        <?php echo $noCheck;?>>
+                        <input type="hidden" class="M411_compare_quotation_unitprice_<?php echo $partnerIOID?>_<?php echo $line;?>" value="<?php echo $itemDat['UnitPrice'];?>"/>
+                        <?php echo Qss_Lib_Util::formatMoney($itemDat['UnitPrice']);?>
+                    </td>
+                    
+                    <!-- SL bao gia -->
+                    <td class="right marker_<?php echo $partnerIOID?> marker_<?php echo $partnerIOID?>_<?php echo $line;?>" <?php echo $noCheck;?>>
+                        <?php echo $itemDat['QuoteQty'];?>
+                    </td>
+                    
+                    <!-- SL dat hang -->
+                    
+                    <?php if($item['ReqQty']>0):?>
+                        <td class="center marker_<?php echo $partnerIOID?> marker_<?php echo $partnerIOID?>_<?php echo $line;?>" <?php echo $noCheck;?>>
+                            <input type="text" 
+                                class="right M411_quotation3_form_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?> table_line_disabled_<?php echo $partnerIOID;?>_<?php echo $line;?>"
+                                onkeyup="M411.changeTotalAmountInCompareQuotation(this, '<?php echo $partnerIOID?>', '<?php echo $line;?>')" 
+                                name="qty[]" 
+                                value="<?php echo $itemDat['OrderQty'];?>" 
+                                size="3" disabled/>   
+                        </td>                     
+                    <?php else:?>
+                        <td class="right marker_<?php echo $partnerIOID?> marker_<?php echo $partnerIOID?>_<?php echo $line;?>" <?php echo $noCheck;?>>
+                            <?php echo $itemDat['OrderQty'];?>
+                        </td>
+                    <?php endif;?>
+                    
+                    
+                    
+                    <td class="right marker_<?php echo $partnerIOID?> marker_<?php echo $partnerIOID?>_<?php echo $line;?> M411_compare_quotation_totalamount_<?php echo $partnerIOID?>_<?php echo $line;?>" <?php echo $noCheck;?>>
+                        <?php echo Qss_Lib_Util::formatMoney($itemDat['OrderQty']* $itemDat['UnitPrice']);?> 
+                    </td>
+                    <?php $totalByPartner[$partnerIOID] += $itemDat['OrderQty']* $itemDat['UnitPrice'];?>
+                    
+                    
+                    <?php 
+                        $passClass = '';
+                        if($itemDat['Pass'] == 1)
+                        {
+                            $passClass = ' green bold ';
+                        }               
+                        else 
+                        {
+                            $passClass = ' red bold ';
+                        }         
+                    ?>
+                    <td class="<?php echo $passClass;?> center marker_<?php echo $partnerIOID?> marker_<?php echo $partnerIOID?>_<?php echo $line;?>" <?php echo $noCheck;?>>
+                        <?php echo Qss_Lib_System::getFieldRegxByVal('ODSBGMuaHang', 'KyThuat', $itemDat['Pass']);?>
+                    </td>                        
+                    
+                    <?php 
+                        $techClass = '';
+                        if($itemDat['Quality'] == 2)
+                        {
+                            $techClass = ' green bold ';
+                        }
+                        else if($itemDat['Quality'] == 0)
+                        {
+                            $techClass = ' red bold ';
+                        }
+                            
+                    ?>                    
+                    <td class="<?php echo $techClass;?> center marker_<?php echo $partnerIOID?> marker_<?php echo $partnerIOID?>_<?php echo $line;?>" <?php echo $noCheck;?>>
+                        <?php echo Qss_Lib_System::getFieldRegxByVal('ODSBGMuaHang', 'ChatLuong', $itemDat['Quality']);?>
+                    </td>            
+                <?php else:?>
+                    <td class="center"> &nbsp;</td>
+                    <td class="center"> &nbsp;</td>
+                    <td class="center"> &nbsp;</td>
+                    <td class="center"> &nbsp;</td>
+                    <td class="center"> &nbsp;</td>
+                    <td class="center"> &nbsp;</td>   
+                    <td class="center"> &nbsp;</td>            
+                <?php endif;?>
+    
+            <?php endforeach;?>        
+        </tr>
+        
+        
+        <?php 
+            // Lay min don gia <don gia co the bang nhau>
+            
+            $minDonGiaTemp = '';
+            $minDonGiaLine = array();
+            
+            foreach($compareMinDonGia as $nhacungcapIOID2=>$dongia2)
+            {
+                if($minDonGiaTemp === '' || $dongia2 < $minDonGiaTemp)
+                {
+                    $minDonGiaTemp = $dongia2;
+                }
+            }     
+
+            foreach ($compareMinDonGia as $nhacungcapIOID2=>$dongia2)
+            {
+                if($dongia2 > $minDonGiaTemp)
+                {
+                    unset($compareMinDonGia[$nhacungcapIOID2]);
+                }
+            }
+        
+//             $minDonGiaTemp = 0;
+//             foreach($compareMinDonGia as $nhacungcapIOID2=>$dongia2)
+//             {
+//                 $minDonGiaTemp = $dongia2;
+                
+//                 foreach($compareMinDonGia as $nhacungcapIOID3=>$dongia3)
+//                 {
+//                     if($minDonGiaTemp < $dongia3)
+//                     {
+                        
+//                     }
+//                 }
+//             }
+        ?>
+        
+        <script>
+        // In min don gia
+        <?php foreach($compareMinDonGia as $nhacungcapIOID4=>$dongia4):?>
+            $('.unit_price_<?php echo $nhacungcapIOID4;?>_<?php echo $line;?>').addClass('green bold');
+        <?php endforeach;?>
+        </script>
+    
+    
+    <?php endforeach;?>
+    
+    
+    <tr>
+        <td class="center bold">II</td>
+        <td colspan="3" class="left bold">Tổng cộng</td>
+        <td class="right bold">&nbsp;</td>
+
+        <?php foreach($nhacungcap as $partnerIOID=>$partner):?>
+            <td class="center"> </td>
+            <td class="right"></td>
+            <td class="right"></td>
+            <td class="right"></td> 
+            <td class="right bold  marker_total_of_<?php echo $partnerIOID?>">
+                <?php if(isset($totalByPartner[$partnerIOID])) echo Qss_Lib_Util::formatMoney($totalByPartner[$partnerIOID]);?>
+            </td>
+            <td class="center"></td>
+            <td class="center"></td>
+        <?php endforeach;?> 
+        
+        
+    </tr>
+    
+    <tr>
+        <td class="center bold">III</td>
+        <td colspan="4" class="left bold">Địa điểm giao hàng</td>
+        <?php foreach($nhacungcap as $partner):?>
+            <td class="left" colspan="<?php echo $partnerCol;?>"><?php echo $partner['DeliveryTo'];?></td>
+        <?php endforeach;?> 
+    </tr>
+    
+    <tr>
+        <td class="center bold">IV</td>
+        <td colspan="4" class="left bold">Thời gian giao hàng</td>
+        <?php foreach($nhacungcap as $partner):?>
+            <td class="left" colspan="<?php echo $partnerCol;?>"><?php echo $partner['DeliveryTime'];?></td>
+        <?php endforeach;?> 
+    </tr>
+    
+    <tr>
+        <td class="center bold">V</td>
+        <td colspan="4" class="left bold">Hình thức thanh toán</td>
+        <?php foreach($nhacungcap as $partner):?>
+            <td class="left" colspan="<?php echo $partnerCol;?>"><?php echo $partner['PaymentMethod'];?></td>
+        <?php endforeach;?> 
+    </tr>
+    
+    <tr>
+        <td class="center bold">VI</td>
+        <td colspan="4" class="left bold">Thời gian bảo hành</td>
+        <?php foreach($nhacungcap as $partner):?>
+            <td class="left" colspan="<?php echo $partnerCol;?>"><?php echo $partner['Warranty'];?></td>
+        <?php endforeach;?> 
+    </tr>
+  
+    
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        
+        <?php foreach($nhacungcap as $partnerIOID=>$partner):?>
+            <td colspan="<?php echo $partnerCol;?>" class="center">
+                <button type="button" class="btn btn-custom" onclick="M411.createOrder3('<?php echo $partnerIOID;?>')"> 
+                    Tạo đơn hàng
+                </button>
+            </td>
+        <?php endforeach;?>           
+    
+    </tr>  
+</table>

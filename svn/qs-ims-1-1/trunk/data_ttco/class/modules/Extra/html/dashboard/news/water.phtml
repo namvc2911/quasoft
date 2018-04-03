@@ -1,0 +1,120 @@
+<script>
+    $(document).ready(function(){
+        $('#wdate').keypress(function (e) {
+            if (e.which == 13) {
+            	loadWater();
+                return false;    //<---- Add this line
+            }
+        });
+
+        $('#wdate').change(function ()
+        {
+            loadWater();
+        });
+    });
+</script>
+
+<div class="box_das2">
+    <div class="inside_das2 inside_das1" id="">
+        <div class="dash_box_heading">
+            <div class="" >
+
+                <div class="fl" >
+                    Theo dõi tiêu thụ nước công nghiệp
+                </div>
+
+                <div class="fr" style="">
+                    <?php echo $this->views->Report->Datepicker('wdate', $this->date);?>
+                </div>
+            </div>
+        </div>
+
+        <div style="clear: both; width: 100%">
+
+        </div>
+
+        <div style="clear: both; border-top: 1px #cccccc dotted; padding-top: 5px;" class="dash_box_content">
+            <table class="grid">
+            <tr>
+            	<th rowspan="2" style="width: 10%;"> Ngày </th>
+                <th colspan="2" style="width: 18%;"> Nước tuần hoàn </th>
+                <th colspan="2" style="width: 18%;"> Nước bổ sung </th>
+                <th colspan="2" style="width: 18%;"> Cộng </th>
+                <th colspan="2" style="width: 18%;"> Sản lượng than sạch </th>
+                <th colspan="2" style="width: 18%;"> STH </th>
+            </tr>
+            <tr>
+                <th style="width: 9%;">Tuyển 1</th>
+                <th style="width: 9%;">Tuyển 2</th>
+                <th style="width: 9%;">Tuyển 1</th>
+                <th style="width: 9%;">Tuyển 2</th>
+                <th style="width: 9%;">Tuyển 1</th>
+                <th style="width: 9%;">Tuyển 2</th>
+                <th style="width: 9%;">Tuyển 1</th>
+                <th style="width: 9%;">Tuyển 2</th>
+                <th style="width: 9%;">Tuyển 1</th>
+                <th style="width: 9%;">Tuyển 2</th>
+            </tr>
+            <?php 
+            	$c1 = 0;
+            	$c2 = 0;
+            	$c3 = 0;
+            	$c4 = 0;
+            	$c5 = 0;
+            	$c6 = 0;
+            	$c7 = 0;
+            	$c8 = 0;
+            	$c9 = 0;
+            	$c10 = 0;
+            ?>
+            <?php foreach ($this->news as $item):?>
+               	<?php
+               	$slTT1 = @$this->tt1[$item->Ngay];
+               	$slTT2 = @$this->tt2[$item->Ngay];
+               	$sthTT1 = ($slTT1!=0)?($item->TT1/$slTT1):0;
+               	$sthTT2 = ($slTT2!=0)?($item->TT2/$slTT2):0;
+				$c1 += $item->TuanHoanTT1;
+            	$c2 += $item->TuanHoanTT2;
+            	$c3 += $item->BoSungTT1;
+            	$c4 += $item->BoSungTT2;
+            	$c5 += $item->TT1;
+            	$c6 += $item->TT2;
+            	$c7 += $slTT1;
+            	$c8 += $slTT2;
+            	$c9 += $sthTT1;
+            	$c10 += $sthTT2;
+               
+               ?>
+                <tr>
+                	<td class="center"> <?php echo $item->Ngay;?> </td>
+                    <td class="right"> <?php echo Qss_Lib_Util::formatNumber($item->TuanHoanTT1);?> </td>
+                    <td class="right"> <?php echo Qss_Lib_Util::formatNumber($item->TuanHoanTT2);?> </td>
+					<td class="right"> <?php echo Qss_Lib_Util::formatNumber($item->BoSungTT1);?> </td>
+                    <td class="right"> <?php echo Qss_Lib_Util::formatNumber($item->BoSungTT2);?> </td>
+                    <td class="right"> <?php echo Qss_Lib_Util::formatNumber($item->TT1);?> </td>
+                    <td class="right"> <?php echo Qss_Lib_Util::formatNumber($item->TT2);?> </td>
+                    <td class="right"> <?php echo Qss_Lib_Util::formatNumber($slTT1);?> </td>
+                    <td class="right"> <?php echo Qss_Lib_Util::formatNumber($slTT2);?> </td>
+                    <td class="right"> <?php echo Qss_Lib_Util::formatNumber($sthTT1);?> </td>
+                    <td class="right"> <?php echo Qss_Lib_Util::formatNumber($sthTT2);?> </td>
+                </tr>
+            <?php endforeach; ?>
+            <?php if(count($this->news)):?>
+             	<tr>
+                	<th class="center"> TC </th>
+                    <th class="right"> <?php echo Qss_Lib_Util::formatNumber($c1);?> </th>
+                    <th class="right"> <?php echo Qss_Lib_Util::formatNumber($c2);?> </th>
+					<th class="right"> <?php echo Qss_Lib_Util::formatNumber($c3);?> </th>
+                    <th class="right"> <?php echo Qss_Lib_Util::formatNumber($c4);?> </th>
+                    <th class="right"> <?php echo Qss_Lib_Util::formatNumber($c5);?> </th>
+                    <th class="right"> <?php echo Qss_Lib_Util::formatNumber($c6);?> </th>
+                    <th class="right"> <?php echo Qss_Lib_Util::formatNumber($c7);//count($this->news)?> </th>
+                    <th class="right"> <?php echo Qss_Lib_Util::formatNumber($c8);?> </th>
+                    <th class="right"> <?php echo Qss_Lib_Util::formatNumber($c9/count($this->news));?> </th>
+                    <th class="right"> <?php echo Qss_Lib_Util::formatNumber($c10/count($this->news));?> </th>
+                </tr>
+            <?php endif;?>
+            </table>
+        </div>
+    </div>
+</div>

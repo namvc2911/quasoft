@@ -1,0 +1,25 @@
+<div class="box_das2">
+	<div class="inside_das2" id="" style="position: relative">
+		<button class="btn-custom" type="button"
+						onclick="popupFormInsert('M747',{},function(){});">
+						<?php echo $this->_translate(2);?>
+						<!-- Quy Trình -->
+		</button>
+		<table border="0" cellspacing="0" cellpadding="0"
+			id="grid_<?php echo $this->quickReportID?>">
+			<?php foreach ($this->data as $dat):?>
+			<tr>
+				
+				<td><a href="#" onclick="popupFormDetail(<?php echo $dat->IFID_M747;?>,<?php echo $this->deptid;?>)"><?php echo $dat->TenThietBi;?> (<?php echo $dat->MaThietBi;?>)</a>
+				</td>
+
+				<td><?php echo Qss_Lib_Date::mysqltodisplay($dat->Ngay);?> <?php echo $dat->ThoiGian;?>
+				</td>
+
+				<td><?php echo Qss_Lib_System::getFieldRegxByVal('OPhieuBaoTri', 'SuCo', $dat->SuCo);?>
+				</td>
+			</tr>
+			<?php endforeach; ?>
+		</table>
+	</div>
+</div>

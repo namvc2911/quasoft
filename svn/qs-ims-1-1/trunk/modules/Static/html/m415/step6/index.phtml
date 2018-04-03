@@ -1,0 +1,38 @@
+<?php
+    $no = 0;
+    $oldRequest      = '';
+    $oldQuote        = '';
+    $requestWidthArr = array(1,2,2,2,2,2);
+    $totalCol        = 6;
+    $width           = 800;
+    $padding         = 2;
+    $formNo          = 0;
+    $oldSupplier     = '';
+    $fit             = Qss_Lib_Report::changeWidthToFitScreen2($requestWidthArr, $width, $padding);
+?>
+
+<div id="M415_step6_wrap">
+    <div id="M415_step6_control">
+        <!-- <button type="button" class="btn btn-custom" onclick="M415.step6.showAddQuotationScreen();"> Thêm báo giá </button> -->
+    </div><!-- end #M415_step6_control -->
+    
+    <div>
+
+    </div>
+    
+    <div>
+        Lọc báo giá theo nhà cung cấp:
+		<?php
+			echo $this->views->Report->SimpleComboBox('partnerioid2', $this->suppliers);
+		?>  
+		<button type="button" class="btn btn-custom" onclick="M415.step6.show();"> Lọc </button>
+		
+    </div>
+    <br/>
+
+    <div id="M415_step6_show">
+
+    </div><!-- end #M415_step6_show -->
+    
+    <div id="M415_import_quotations"></div>
+</div><!-- end #M415_step6_wrap -->

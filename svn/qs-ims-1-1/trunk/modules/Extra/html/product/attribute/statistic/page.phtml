@@ -1,0 +1,6 @@
+<?php for($i = 1; $i <= $this->totalPage; $i++):?>
+<option value="<?php echo $i?>"
+<?php if($this->page == $i) echo 'selected';?>>
+	<?php echo $i;?>
+</option>
+	<?php endfor;?>

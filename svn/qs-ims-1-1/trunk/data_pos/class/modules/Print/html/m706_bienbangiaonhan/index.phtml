@@ -1,0 +1,245 @@
+<?php
+$stt = 0;
+?>
+
+<script>
+    function excelRender() {
+        $('#report').submit();
+    }
+</script>
+
+<form id="report" action="/print/m706_bienbangiaonhan/excel">
+    <input type="hidden" name="popup" value="1">
+    <input type="hidden" name="ifid" value="<?php echo @(int)$this->OLichThietBi->IFID_M706;?>" />
+</form>
+
+
+<div class="landscape">
+    <h2 class="center">PETROVIETNAM TECHNICAL SERVICES CORPORATION</h2>
+    <h2 class="center" style="border-bottom: 1px #000 solid">PTSC OFFSHORE    SERVICES JOINT STOCK COMPANY</h2>
+
+
+    <h2 class="center">DELIVERY VOUCHER</h2>
+    <p class="center">(BIÊN BẢN GIAO NHẬN)</p>
+    <p>&nbsp;</p>
+
+    <table cellspacing="0" cellpadding="0">
+        <tr height="21">
+            <td height="21" colspan="2" width="306">Delivery No/ Số:       <?php echo '';?></td>
+            <td width="72"></td>
+            <td width="83"></td>
+            <td width="150"></td>
+            <td colspan="4" width="458">Request No./ Reason/ Số phiếu YC/ Lý do: <?php echo $this->OLichThietBi->PhieuYeuCau;?></td>
+        </tr>
+        <tr height="21">
+            <td height="21" colspan="2">Attn/ Người nhận:     <?php echo '';?></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><?php echo '';?></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr height="21">
+            <td height="21" colspan="2">Position/ Chức danh: <?php echo '';?></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td colspan="2">Date/    Ngày giao: <?php echo '';?></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr height="21">
+            <td height="21" colspan="2">Supplier/ Nhà CC:     <?php echo '';?></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    <p>&nbsp;</p>
+    <table cellspacing="0" cellpadding="0" border="0" class="border">
+
+        <tr height="84" class="bggrey">
+            <th height="84" width="42">                           </th>
+            <th width="264">Descriptions<br />
+                (Mô tả vật tư/ trang thiết bị/ dụng cụ)</th>
+            <th width="72">Unit<br />
+                (Đv tính)</th>
+            <th width="83">Quantity<br />
+                (Số lượng)</th>
+            <th width="150">Cert of    Original No (chứng chỉ xuất    xứ)</th>
+            <th width="101">Serial No./ Code<br />
+                (Số xêri/ Mã số)</th>
+            <th width="137">Attached    Doc.<br />
+                (tài liệu kèm theo)</th>
+            <th width="90">Status<br />
+                (Tình trạng)</th>
+            <th width="130">Remarks<br />
+                (Ghi chú)</th>
+        </tr>
+
+        <?php foreach ($this->ODanhSachDieuDongThietBi as $item):?>
+        <tr height="20">
+            <td height="20" width="42" class="center"><?php echo ++$stt;?></td>
+            <td width="264" class="left"><?php echo $item->TenThietBi;?></td>
+            <td width="72" class="left"><?php echo $item->DonViTinh;?></td>
+            <td width="83" class="right">1</td>
+            <td width="150" class="left"><?php echo '';?></td>
+            <td width="101" class="left"><?php echo $item->Serial;?></td>
+            <td width="137" class="left"><?php echo $item->ThamChieu;?></td>
+            <td width="90" class="left"><?php echo $item->TinhTrang;?></td>
+            <td width="130" class="left"><?php echo $item->GhiChu;?></td>
+        </tr>
+        <?php endforeach;?>
+    </table>
+    <p>&nbsp;</p>
+
+
+    <table cellspacing="0" cellpadding="0" border="0">
+        <tr>
+            <td class="bold center" style="">BÊN GIAO</td>
+            <td class="bold center" style="">ĐƠN VỊ MUA SẮM</td>
+            <td class="bold center" style="">ĐƠN VỊ KIỂM TRA (1)/</td>
+            <td class="bold center" style="">P. KHĐT (3)</td>
+            <td class="bold center" style="">BÊN NHẬN (4)</td>
+        </tr>
+
+        <tr>
+            <td class="bold center">(Deliverer)</td>
+            <td class="bold center">(Procurement Dept.)</td>
+            <td class="bold center">GS KT (2)</td>
+            <td class="bold center">(Checked    by)</td>
+            <td class="bold center">(Reciever)</td>
+        </tr>
+
+        <tr>
+            <td class="bold center"">&nbsp;</td>
+            <td class="bold center"">&nbsp;</td>
+            <td class="bold center"">(Checked by)</td>
+            <td class="bold center"">&nbsp;</td>
+            <td class="bold center"">&nbsp;</td>
+        </tr>
+    </table>
+
+    <p>&nbsp;</p>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+
+
+    <table cellspacing="0" cellpadding="0">
+        <tr>
+            <td style="width: 50%;">Họ tên: <?php echo '';?></td>
+            <td style="width: 50%;">Họ tên: <?php echo '';?></td>
+        </tr>
+
+        <tr>
+            <td>Chức danh: <?php echo '';?></td>
+            <td>Chức danh: <?php echo '';?></td>
+        </tr>
+
+        <tr>
+            <td>Công ty/ Đơn vị QL/SD: <?php echo '';?></td>
+            <td>Công ty/ Đơn vị QL/SD: <?php echo '';?></td>
+        </tr>
+    </table>
+
+    <p>&nbsp;</p>
+
+    <table cellspacing="0" cellpadding="0">
+        <col width="42" />
+        <col width="264" />
+        <col width="72" />
+        <col width="83" />
+        <col width="150" />
+        <col width="101" />
+        <col width="137" />
+        <col width="90" />
+        <col width="130" />
+        <tr height="17">
+            <td height="17" width="42"></td>
+            <td width="264">     Ghi chú:</td>
+            <td width="72"></td>
+            <td width="83"></td>
+            <td width="150"></td>
+            <td width="101"></td>
+            <td width="137"></td>
+            <td width="90"></td>
+            <td width="130"></td>
+        </tr>
+        <tr height="17">
+            <td height="17"></td>
+            <td colspan="6">- (1)  ĐV kiểm tra: CB Kỹ thuật/ GS Chất lượng/ GS    An toàn  kiểm tra vật tư, trang thiết    bị và ký xác nhận (được mô tả trong Quy trình POS-LOG-PR01).</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr height="17">
+            <td height="17"></td>
+            <td colspan="7">- (2) Giám sát kỹ thuật    thuộc phòng KT kiểm tra, ký xác nhận các phụ tùng, dụng cụ, trang thiết bị    cung cấp cho phương tiện hàng hải trong trường hợp phương </td>
+            <td></td>
+        </tr>
+        <tr height="17">
+            <td height="17"></td>
+            <td>tiện hàng hải không thể nhận trực tiếp.</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr height="17">
+            <td height="17"></td>
+            <td colspan="7">- (3) Trường hợp giao vật    tư trực tiếp cho đơn vị yêu cầu (không lưu kho nhưng có làm thủ tục nhập/    xuất kho) bên ngoài tỉnh BRVT phòng KHĐT không tham </td>
+            <td></td>
+        </tr>
+        <tr height="17">
+            <td height="17"></td>
+            <td colspan="7">gia thì phòng KHĐT không    cần ký vào phần này; quá trình giao nhận vật tư trang thiết bị có sự tham gia    trực tiếp của đơn vị chủ trì mua sắm, đơn vị yêu cầu, </td>
+            <td></td>
+        </tr>
+        <tr height="17">
+            <td height="17"></td>
+            <td colspan="7">nhà cung cấp cùng ký biên    bản giao nhận. Đơn vị chủ trì mua sắm có nhiệm vụ chuyển biên bản giao nhận    và các hồ sơ liên quan về cho phòng KHĐT để bổ </td>
+            <td></td>
+        </tr>
+        <tr height="17">
+            <td height="17"></td>
+            <td>túc thủ tục nhập/ xuất kho.</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr height="17">
+            <td height="17"></td>
+            <td colspan="5">- (4) Nhân viên bên nhận    sau khi ký giao nhận, chuyển biên bản giao nhận tới Trưởng đơn vị yêu cầu ký    xác nhận.</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr height="17">
+            <td height="17"></td>
+            <td colspan="5">- Khi thực hiện giao-nhận    VT/TTB tại nội bộ đơn vị, chỉ cần thực hiện ký xác nhận giữa “BÊN GIAO” VÀ    “BÊN NHẬN”.</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+</div>

@@ -1,0 +1,77 @@
+<table cellpadding="0" cellspacing="0" class="border_table" border="0"
+	style="width: 100%;" id="einfo_maintplan_worktab">
+	<tr class="bggrey">
+		<th style="width: 5%;"><?php echo $this->_translate(1);?>
+			<!-- STT -->
+		</th>
+		<th style="width: 15%;"><?php echo $this->_translate(2);?>
+			<!-- Loại --></th>
+
+        <?php if($this->activeViTri):?>
+		<th style="width: 15%;"><?php echo $this->_translate(3);?>
+			<!-- Vị trí --></th>
+		<th style="width: 15%;"><?php echo $this->_translate(4);?>
+			<!-- Bộ phận --></th>
+        <?php endif;?>
+		<th style="width: 40%;"><?php echo $this->_translate(6);?>
+			<!-- Mô tả --></th>
+		<th style="width: 4%;">&nbsp; <!-- Mức độ ưu tiên -->
+			</th>
+		<th style="width: 4%;">&nbsp;
+			</th>
+	</tr>
+
+	<?php $j = 0;?>
+	<?php foreach($this->data as $data):?>
+	<?php
+	/*$editControl = ' <div class="einfo_plan_worktab_edit_control" style="display: none;">';
+	$editControl .= '<div class="einfo_delete_eq" style="" onclick="einfo_delete_sub_plan_tab( \'OCongViecBT\', ' . $data->IFID_M724 . ',' . $data->IOID . ');"> </div>';
+	$editControl .= '<div class="einfo_edit_eq" onclick="einfo_edit_sub_plan_tab(\'OCongViecBT\', ' . $data->IFID_M724 . ',' . $data->IOID . ')"> </div>';
+	$editControl .= '</div>';*/
+	?>
+	<tr>
+		<td class="center"><?php echo ++$j;?>
+		</td>
+		<td class="left"><?php echo $data->Ten;?>
+		</td>
+
+        <?php if($this->activeViTri):?>
+		<td class="left"><?php echo $data->ViTri;?>
+		</td>
+		<td class="left"><?php echo $data->BoPhan;?>
+		</td>
+            <?php endif;?>
+		<td class="left"><?php echo $data->MoTa;?>
+		</td>
+		<td class="center"><a href="#" onclick="einfo_edit_sub_plan_tab('OCongViecBT', '<?php echo $data->IFID_M724?>','<?php echo $data->IOID?>')">Sửa</a>
+		</td>
+		<td class="center"><a href="#" onclick="einfo_delete_sub_plan_tab('OCongViecBT', '<?php echo $data->IFID_M724?>','<?php echo $data->IOID?>');">Xóa</a>
+		</td>
+	</tr>
+
+	<?php endforeach;?>
+
+
+	<?php if ($j < 10):?>
+	<?php for ($k = $j; $k < 10; $k++):?>
+	<tr>
+		<td class="center">&nbsp;</td>
+
+            <?php if($this->activeViTri):?>
+		<td class="center">&nbsp;</td>
+		<td class="center">&nbsp;</td>
+                <?php endif;?>
+		<td class="center">&nbsp;</td>
+		<td class="center">&nbsp;</td>
+		<td class="center">&nbsp;</td>
+		<td class="center">&nbsp;</td>
+	</tr>
+	<?php endfor;?>
+	<?php endif;?>
+</table>
+
+<script>
+//$('.einfo_plan_worktab_edit_control').each(function(){ $(this).hide(); });
+/*$('#einfo_maintplan_worktab tr').hover(function(){ $(this).addClass('marker'); $(this).find('.einfo_plan_worktab_edit_control').show();}
+, function(){ $(this).removeClass('marker'); $(this).find('.einfo_plan_worktab_edit_control').hide();});*/
+</script>

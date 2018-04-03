@@ -1,0 +1,27 @@
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+	<button ID="Insert" type="button" onClick="rowWorkflowInsert('<?php echo $this->fid?>')" class="btn btn_main_top" >
+		<?php echo $this->_translate(12)?>
+	</button>
+	<button ID="Update" type="button" class="btn btn_main_top" disabled onClick="rowWorkflowEdit('<?php echo $this->fid?>')">
+		<?php echo $this->_translate(13)?>
+	</button>
+	<button ID="Delete" type="button" class="btn btn_main_top" disabled onClick="rowWorkflowDelete()">
+		<?php echo $this->_translate(14)?>
+	</button>
+	<button ID="Objects" type="button" class="btn btn_main_top" disabled onClick="rowWorkflowStep()">
+		<?php echo $this->_translate(122)?>
+	</button>
+	<button onclick="rowWorkflowBack(<?php echo $this->type?>)" type="button"  class="btn btn_main_top">
+		<?php echo $this->_translate(32)?>
+	</button>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#1"><span><?php echo $this->_translate(124)?>
+				</span> </a></li>
+		</ul>
+	</div>
+	<?php echo $this->views->Common->List($this->workflow,'WFID','Name') ;?>
+</div>

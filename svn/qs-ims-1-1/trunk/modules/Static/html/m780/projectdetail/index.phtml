@@ -1,0 +1,59 @@
+<div id="einfo-info-table" style="margin-top: 0px;">
+	<div class="ui_box_s50_left">
+		<fieldset>
+			<legend>
+			<?php echo $this->_translate(1);?>
+				<!-- Du an -->
+			</legend>
+			<div class="ui_box_line">
+				<div class="label">
+					<label><?php echo $this->_translate(2);?>
+						<!-- MaDuAn -->:</label>
+				</div>
+				<div class="element">
+				<?php echo @$this->data->MaDuAn; ?>
+				</div>
+			</div>
+
+			<div class="ui_box_line">
+				<div class="label">
+					<label><?php echo $this->_translate(3);?>
+						<!-- Mã MH -->:</label>
+				</div>
+				<div class="element">
+				<?php echo @$this->data->TenDuAn; ?>
+				</div>
+			</div>
+
+			<div class="ui_box_line">
+				<div class="label">
+					<label><?php echo $this->_translate(4);?>
+						<!-- NgayBatDau -->:</label>
+				</div>
+				<div class="element">
+				<?php echo Qss_Lib_Date::mysqltodisplay(@$this->data->NgayBatDau); ?>
+				</div>
+			</div>
+
+			<div class="ui_box_line">
+				<div class="label">
+					<label><?php echo $this->_translate(5);?>
+						<!-- NgayKetThuc -->:</label>
+				</div>
+				<div class="element">
+				<?php echo Qss_Lib_Date::mysqltodisplay(@$this->data->NgayKetThuc); ?>
+				</div>
+			</div>
+
+			<div class="ui_box_line">
+				<div class="label">
+					<label><?php echo $this->_translate(6);?>
+						<!-- MoTa -->:</label>
+				</div>
+				<div class="element">
+				<?php echo @$this->data->MoTa; ?>
+				</div>
+			</div>
+		</fieldset>
+	</div>
+</div>

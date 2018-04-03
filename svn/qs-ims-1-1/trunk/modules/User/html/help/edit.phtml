@@ -1,0 +1,57 @@
+<?php if(!$this->module):
+    echo ('Mã module không hợp lệ!'); ?>
+<?php else:?>
+
+<input type="hidden" name="FormCode" value="<?php echo $this->form->FormCode;?>">
+
+<div class="clear"></div>
+<div id="" class="module_edit">
+    <div class="form">
+        <div class="form_title bold">
+            <?php echo $this->form->Name; ?>
+        </div>
+
+        <div class="form_edit">
+            <textarea name="form"><?php echo $this->formContent;?></textarea>
+        </div>
+    </div>
+
+    <div class="clear"></div>
+
+    <div class="objects">
+        <?php if(trim($this->form->class) == ''):?>
+            <?php foreach($this->objects as $objectKey=>$object):?>
+                <div class="object">
+                    <div class="object_title bold italic">
+                        Obj: <?php echo $object['detail']->ObjectName;?>
+                    </div>
+
+                    <div class="object_edit">
+                        <textarea name="object[<?php echo $object['detail']->ObjectCode;?>]"><?php echo $object['html'];?></textarea>
+                    </div>
+
+                    <div class="clear"></div>
+
+                    <div class="fields">
+                        <?php foreach($this->fields[$object['detail']->ObjectCode] as $field):?>
+                            <div class="field">
+                                <div class="field_title">
+                                    <?php echo @$field['detail']->FieldName;?>
+                                </div>
+
+                                <div class="field_edit">
+                                    <textarea name="field[<?php echo $object['detail']->ObjectCode;?>][<?php echo $field['detail']->FieldCode;?>]"><?php echo @$field['html'];?></textarea>
+                                </div>
+                            </div>
+
+                            <div class="clear"></div>
+                        <?php endforeach;?>
+                    </div>
+
+                </div>
+            <?php endforeach;?>
+        <?php endif;?>
+    </div>
+</div>
+<?php endif;?>
+

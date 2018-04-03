@@ -1,0 +1,90 @@
+<script>
+$(document).ready(function(){
+	$('#settingquickaccess').hover(function() {
+		mouse_is_inside = true;
+	}, function() {
+		mouse_is_inside = false;
+	});
+	
+	$('.notify4').hover(function() {
+		mouse_is_click = true;
+	}, function() {
+		mouse_is_click = false;
+	});
+	
+	loadbyid('detail_user_quickacess','/user/statistic/detailuserquickaccess');
+	
+});
+function showSetting() {
+	var isvisible = $("#settingquickaccess").is(":visible");
+	if (isvisible) {
+		$("#settingquickaccess").hide();
+		$('.notify4').removeClass('setting_active');
+	} else {
+		var url = 'http://' + location.host + '/user/statistic/settingquickaccess';
+		var data = {};
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('.notify4').addClass('setting_active');
+			$('#settingquickaccess').addClass('qss_notify4');
+			$('#settingquickaccess').removeClass('qss_notify4');
+			$('#settingquickaccess').html(jreturn);
+			$("#settingquickaccess").show('blind', {
+				to : {
+					width : 280,
+					height : 185
+				}
+			}, 500);
+		});
+	}
+}
+function saveQuickAccess(fid,checked){
+	var url = sz_BaseUrl + '/user/statistic/savequickaccess';
+	var data = {fid:fid,checked:checked};
+	qssAjax.call(url, data, function(jreturn) {
+		loadbyid('detail_user_quickacess','/user/statistic/detailuserquickaccess');
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});	
+}
+
+function saveAllQuickAccess(ele){
+	var url = sz_BaseUrl + '/user/statistic/saveallquickaccess';
+	var checked = $(ele).is(':checked')?1:0;
+	var data = {checked:checked};
+	qssAjax.call(url, data, function(jreturn) {
+		$('.dashboad_checkbox').each(function(){
+			if(checked == 1){
+				$(this).attr('checked', true);
+			}
+			else{
+				$(this).removeAttr('checked');
+			}
+		});
+		loadbyid('detail_user_quickacess','/user/statistic/detailuserquickaccess');
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+});
+}
+function filterQuickAccess(ele){
+	var search = $(ele).val();
+	$('.dashboad_tr').each(function(){
+		if($(this).find('label').text().toString().search(new RegExp(search, 'i')) >= 0 || search == ''){
+			//$(this).attr('checked', true);
+			$(this).show();
+		}
+		else{
+			$(this).hide();
+		}
+	});
+}
+</script>
+<div class="qss_block">
+	<div class="topbox">
+		<div style="position: relative; float: right" class="notify4">
+			<a href="#1" onclick="showSetting();"> Config</a>
+			<div class="slidingDiv" id="settingquickaccess"
+				style="display: none;"></div>
+		</div>
+	</div>
+	<div class="midbox" id="detail_user_quickacess"></div>
+</div>

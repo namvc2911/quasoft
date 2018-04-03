@@ -1,0 +1,613 @@
+<style><!--
+#view
+{
+overflow-y: hidden !important;
+}
+.selected
+{
+ background: #E8E8E8;
+ color: #000000;
+}
+.grid .editor
+{
+border-color: blue;
+position: absolute !important;
+width: auto;
+margin:0px !important;
+}
+.grid .lookup
+{
+border-color: blue;
+width: auto;
+margin:0px !important;
+}
+.grid .combo
+{
+border-color: blue;
+width: auto;
+position: absolute !important;
+margin:0px !important;
+}
+.grid .date
+{
+border-color: blue;
+position: absolute;
+width: auto;
+margin:0px !important;
+}
+/*.grid div
+{
+border-color: blue;
+position:absolute !important;
+}*/
+.select-grid
+{
+position:absolute;
+left:0px;
+height:20px;
+width: 20px;
+background-color: green;
+}
+.select-grid span
+{
+float: right;
+height:20px;
+width: 20px;
+cursor: pointer;
+}
+
+--></style>
+<script type="text/javascript">
+$(document).ready(function() {
+	rowCLK(document.getElementById($.cookie('grid_selected')));
+	if($('#horizontal-toolbar').length){
+		var height = $(window).height() - 83 - $('#item-actions').offset().top - $('#grid thead').height();
+	}
+	else{
+		var height = $(window).height() - 51 - $('#item-actions').offset().top - $('#grid thead').height();
+	}
+	$('#grid').tableScroll({height:height,width:$('#view').width() + $('#midle').width() - 22});
+	$('#grid').click(function(event){
+		//grid_editing = true;
+	    event.stopPropagation();
+	});
+});
+</script>
+<table cellspacing="0" class="grid grid_edit" id="grid">
+<thead>
+	<tr>
+		<th style="border-left: 1px solid rgb(204, 204, 204);"><a href="#"
+			onclick="rowSort(' ')"><?php echo $this->_translate(27,'STT')?></a></th>
+		<?php foreach($this->model->arrField as $key=>$field):?>
+		<th><a href="#"
+			onclick="rowSort('<?php echo $key?>')"><?php
+			echo $this->model->arrFieldName[$key];
+			?> <?php if($this->orderfield == $key):?> <img
+			border="0/"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" />
+			<?php endif;?> </a></th>
+		<?php endforeach;?>
+	</tr>
+</thead>
+<tbody>
+	<tr style="height: 0px !important;">
+	<td class="nocount" style="height: 0px !important;"></td>
+
+	<?php foreach($this->model->arrField as $key=>$field):?>
+		<td style="height: 0px !important;"></td>
+	<?php endforeach;?>
+	</tr>
+	<?php
+	$groupbyvalue = '';
+	$groupby = $this->groupby;
+	$i=1;
+	?>
+	<?php foreach ($this->data as $item):?>
+	<?php if($groupby > 0):?>
+	<?php $groupbyfield = $this->model->arrGroup[$groupby];?>
+	<?php if($groupbyfield && $item->{$groupbyfield} !== $groupbyvalue):?>
+	<tr>
+		<td class="groupby" colspan="<?php echo count($this->model->arrField)?>"><?php echo $item->{$groupbyfield};?></td>
+	</tr>
+	<?php $i=1;?>
+	<?php endif;?>
+	<?php $groupbyvalue = $item->{$groupbyfield};?>
+	
+	<?php endif;?>
+	<tr id="<?php echo $item->{$this->model->dataField}?>" onclick="rowCLK(this);" rights="15">
+		<td class="nocount" value="<?php echo $i?>"><?php echo $i?></td>
+		<?php foreach($this->model->arrField as $key=>$field):?>
+		<td 
+			id="<?php echo $field?>"
+			class="data <?php echo Qss_Lib_Const::$FIELD_ALIGN[$this->model->arrFieldType[$key]]?> <?php if($this->model->arrFieldType[$key] == 9) echo ($item->{$field}?'col-checked':'col-unchecked')?>"
+			name="<?php echo $field?>"
+			inputtype="<?php echo $this->model->arrFieldType[$key]?>"
+			value="<?php echo $item->{$field};?>"><?php if($this->model->arrFieldType[$key] != 9 ):?><?php if($this->model->arrFieldType[$key] == 8 ):?><?php echo Qss_Lib_Date::mysqltodisplay($item->{$field});?><?php else:?><?php echo $item->{$field};?><?php endif;?><?php endif?></td>
+		<?php endforeach;?>
+	</tr>
+	<?php
+	$i++;
+	?>
+	<?php endforeach;?>
+	
+	<?php if(!count($this->data)):?>
+		<tr
+		rights="3"
+		id="0" 
+		onclick="rowCLK(this);">
+		<td class="nocount">*</td>
+		<?php foreach($this->model->arrField as $key=>$field):?>
+		<td 
+			id="<?php echo $field?>"
+			class="data <?php if($this->model->arrFieldType[$key] == 9) echo 'col-unchecked';?>"
+			name="<?php echo $field?>"
+			inputtype="<?php echo $this->model->arrFieldType[$key]?>"
+			readonly="0"></td>
+		<?php endforeach;?>
+	</tr>
+	<?php endif;?>
+</tbody>
+<tfoot>		
+	<tr>
+		<th style="border-left: 1px solid rgb(204, 204, 204);">&nbsp;</th>
+		<?php foreach($this->model->arrField as $key=>$field):?>
+		<th style="">&nbsp;</th>
+		<?php endforeach;?>
+	</tr>
+</tfoot>
+</table>
+<script>
+function cellCLK(el,editing) {
+	esc = true;
+	if(cell != null){
+		$(cell).removeClass('selected');
+		/*if(!editing && edit == $(cell).parent().attr('id')){
+			displayCell(cell);
+		}*/
+	}
+	if(edit && $(cell).parent().attr('id') != $(el).parent().attr('id') && editing == null){
+		if(edit == $(cell).parent().attr('id')){
+			save($(cell).parent());
+		}
+	}
+	/*else if(edit){
+		editCell(el);
+	}*/
+	$(el).addClass('selected');
+	cell = el;
+}	
+function editRow(cell){
+	$(cell).children('td').each(function(){
+		editCell(this);
+	});
+	$(cell).find('textarea').focus();
+	$(cell).find('input').focus();
+	$(cell).find('select').focus();
+}
+function insertRow(){
+	var row = $('.grid_edit').find('tr:last');
+	if($(row).index() == 0){
+		retunr;
+	}
+	if($(row).attr('id')==0 && $(row).attr('edit') == -1){
+		$(row).attr('edit',0)
+		var newrow = row;
+	}
+	else{
+		var newrow = $(row).clone().insertAfter(row);
+		$(newrow).on('change',function() {
+			if(edit && $(this).attr('edit') != 1){
+				$(this).attr('edit',1);
+			}
+		});
+	}
+	$(newrow).attr('id',0);
+	$(newrow).attr('rights',5);
+	$(newrow).find('td').each(function(){
+		$(this).attr('readonly',$('.th_'+$(this).attr('id')).attr('readonly'));
+		//neu co custom button thì cho hien thi luon
+		if($(this).find('button').length == 0){
+			$(this).text('');	
+		}
+		else{
+			$(this).find('button.custom-button-field').prop('disabled',true);
+		}
+		$(this).removeAttr('value');
+		if($(this).hasClass('col-checked')){
+			$(this).removeClass('col-checked');	
+			$(this).addClass('col-unchecked');
+		}
+	});
+	$(newrow).find('.nocount').text('*');
+	editRow(newrow);
+}
+function displayRow(row){
+	$(row).children('td').each(function(){
+		displayCell(this);
+	});
+}
+function cancelRow(){
+	var tr = $('.grid_edit').find('tr:last');
+	rowSearch($(tr).attr('fid'));
+}
+function editCell(cell){
+	if($(cell).is('[readonly]')){
+		return;
+	}
+	var width = $(cell).css('width');
+	var height = $(cell).height();
+	var text = $(cell).text();
+	var inputtype = parseInt($(cell).attr('inputtype'));
+	switch(inputtype ){
+	case 1:
+	case 2:
+		var top = $(cell).offset().top;
+		var left = $(cell).offset().left;
+		if(($(document).width()-left) < 165){
+			left = $(document).width() - 165;
+		}
+		var ctrl = $('<textarea/>').addClass('editor');
+		$(cell).append(ctrl);
+		ctrl.attr('style','top:'+top+'px;left:'+left+'px')
+									.css('height',height);
+		if($(cell).width() > $(ctrl).width()){
+			$(ctrl).width($(cell).width());
+			}
+		$(ctrl).val(text);
+		$(ctrl).focus();
+		break;
+	case 5:
+	case 9:
+		//$(cell).text('');
+		var checked = $(cell).hasClass('col-checked');
+		var ctrl = $('<input/>').attr({ type: 'checkbox'});
+		if(checked){
+			$(ctrl).attr('checked',true);
+			}
+		$(cell).append(ctrl);
+		break;
+	case 8:
+		//$(cell).text('');
+		var top = $(cell).offset().top;
+		var left = $(cell).offset().left;
+		var ctrl = $('<input/>').attr('style','top:'+top+'px;left:'+left+'px')
+								.css('height',height)
+								.addClass('editor');
+		$(cell).append(ctrl);
+		$(ctrl).datepicker();
+		$(ctrl).datepicker('option', {dateFormat: 'dd-mm-yy',showOn:'focus'});
+		$(ctrl).val(text);
+		//$(ctrl).datepicker('show');
+		if($(cell).width() > $(ctrl).width()){
+			$(ctrl).width($(cell).width());
+		}
+		$('#ui-datepicker-div').click(function(event){
+			//grid_editing = true;
+			event.stopPropagation();
+		});
+		break;
+	case 3:
+		var top = $(cell).offset().top;
+		var left = $(cell).offset().left;
+		if(($(document).width()-left) < 165){
+			left = $(document).width() - 165;
+		}
+		var ctrl = $('<select/>').addClass('combo');
+		$(ctrl).attr('style','top:'+top+'px;left:'+left+'px');
+		$(ctrl).attr('id','combo')
+									.css('height',height);
+		$(cell).append(ctrl);
+		if($(cell).width() > 165){
+			$(ctrl).width($(cell).width());
+		}
+		else{
+			$(ctrl).width(165);
+		}
+		var url = sz_BaseUrl + '/user/field/option';
+		var data = {fieldid:$(cell).attr('id'),selected:$(cell).attr('vid')};
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#combo').html(jreturn);
+		});
+		$(ctrl).focus();
+		break;
+	case 4:
+		var top = $(cell).offset().top;
+		var left = $(cell).offset().left;
+		if(($(document).width()-left) < 165){
+			left = $(document).width() - 165;
+		}
+		var ctrl = $('<textarea/>').addClass('lookup');
+		var parent = $('<div/>').addClass('tag-div');
+		$(parent).append(ctrl);
+		$(cell).append(parent);
+		$(parent).attr('style','top:'+top+'px;left:'+left+'px');
+		$(ctrl).attr('id','lookup')
+									.css('height',height);
+		if($(cell).width() > $(ctrl).width()){
+			$(ctrl).width($(cell).width());
+			}
+		$(ctrl).val(text);
+		$(ctrl).focus();
+		$(function () {
+			var url = sz_BaseUrl + '/user/field/tag?fieldid='+$(cell).attr('id');
+		    $('#lookup').tagSuggest({
+		        url: url,
+		        delay: 200,
+		        separator : '*',
+		        tagContainer: 'div',
+		        callback: selecting
+		    });
+		});
+		break;
+	case 11:
+		popupSelect(cell);
+		break;
+	case 6:
+		$(cell).file(function(inp) {
+			inp.id = inp.name = 'myFileInput';
+			
+			/* Upload file by ajax */
+			disabledLayout();
+			$.ajaxFileUpload({
+				url : sz_BaseUrl + '/user/field/uploadpicture',
+				secureuri : false,
+				fileElementId : inp,
+				dataType : 'json',
+				success : function(data, status) {
+					/* Upload file successfully */
+					if (data.error) {
+						qssAjax.alert(data.message);
+						enabledLayout();
+					} else {
+						$(cell).attr('value',data.image);
+						$(cell).find('img').remove();
+						var ctrl = $('<img/>').attr('src','/user/field/tmp?file='+data.image)
+												.attr('width',$(cell).attr('dwidth'));
+						$(cell).append(ctrl);
+						enabledLayout();
+					}
+				},
+				error : function(data, status, e) {
+					/* If upload error */
+					qssAjax.alert(e);
+				}
+			});
+		});
+		break;
+	case 7:
+		$(cell).file(function(inp) {
+			inp.id = inp.name = 'myFileInput';
+			
+			/* Upload file by ajax */
+			disabledLayout();
+			$.ajaxFileUpload({
+				url : sz_BaseUrl + '/user/field/uploadfile',
+				secureuri : false,
+				fileElementId : inp,
+				dataType : 'json',
+				success : function(data, status) {
+					/* Upload file successfully */
+					if (data.error) {
+						qssAjax.alert(data.message);
+						enabledLayout();
+					} else {
+						$(cell).attr('value',data.image);
+						$(cell).find('a').remove();
+						$(cell).text('');
+						var ctrl = $('<a/>').attr('target','new')
+												.attr('href','/user/field/tmp?file='+data.image);
+						$(ctrl).text('tải về');
+						$(cell).append(ctrl);
+						enabledLayout();
+					}
+				},
+				error : function(data, status, e) {
+					/* If upload error */
+					qssAjax.alert(e);
+				}
+			});
+		});
+	break;
+	}
+}
+function displayCell(cell){
+	if ($("#ui-datepicker-div").is(":visible") && $("#ui-datepicker-div").html() != "") {
+		$(cell).find('input').datepicker('hide');
+	}
+	if(!edit){
+		$(row).find('.nocount').text($(row).find('.nocount').attr('value'));
+	}
+	if($(cell).is('[readonly]') || !edit || $(cell).attr('inputtype') == 7 || $(cell).attr('inputtype') == 6){
+		$(cell).find('div').remove();
+		$(cell).find('input').remove();
+		$(cell).find('select').remove();
+		$(cell).find('textarea').remove();
+		return;
+		}
+	var text = $(cell).find('textarea').val();
+	if($(cell).attr('inputtype') == 3){
+		if($(cell).find('select').length){
+			text = $(cell).find('select option:selected').text();
+		}
+		else{
+			return;
+		}
+	}
+	var check = '';
+	if(!text && $(cell).attr('inputtype') != 5 && $(cell).attr('inputtype') != 9){
+		text = $(cell).find('input').val();
+		}	
+	if($(cell).attr('inputtype') == 5 || $(cell).attr('inputtype') == 9){	
+		if($(cell).find('input').attr("checked")){
+			$(cell).addClass('col-checked');
+			$(cell).removeClass('col-unchecked');
+			check = 1;
+			}
+		else{
+			$(cell).addClass('col-unchecked');
+			$(cell).removeClass('col-checked');
+			check = 0;
+			}
+	}
+	//var val = $(cell).find('select').val();
+	$(cell).find('textarea').remove();
+	$(cell).find('div').remove();
+	$(cell).find('input').remove();
+	$(cell).find('select').remove();
+	$(cell).text((text || $(cell).attr('inputtype') == 4 || $(cell).attr('inputtype') == 11)?text:'');
+	if($(cell).attr('inputtype') == 3 ){
+		$(cell).attr('value',val);
+		$(cell).attr('vid',val.split(',')[0]);
+		if ($(cell).attr('refresh') == 1) {
+			refresh($(cell).parent()[0]);
+		}
+	}
+	else if($(cell).attr('inputtype') != 4){
+		$(cell).attr('value',(check != '')?check:((text || $(cell).attr('inputtype') == 11)?text:''));
+	}
+}
+function save(tr)
+{
+	esc = false;
+	displayRow(tr);
+	var data = {id:$(tr).attr('id')};
+	$(tr).find('td').each(function(){
+		data[$(this).attr('name')] = $(this).attr('value')?$(this).attr('value'):'';
+		}
+	);
+	var url = sz_BaseUrl + '<?php echo $this->baseUrl?>/save';
+	qssAjax.call(url, data, function(jreturn) {
+		edit = false;
+		if(jreturn.message != ''){
+			qssAjax.alert(jreturn.message);
+		}
+		if($(tr).attr('id') == 0){
+			rowSearch();
+		}
+		else{
+			$(tr).find('.nocount').text($(tr).find('.nocount').attr('value'));
+		}
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+		var rcell = $(row).find('td[name="'+jreturn.status+'"]');
+		if($(rcell).length){
+			editRow(rcell);
+		}
+		else{
+			var idx = $(cell).index();
+			$(tr).children().each(function(){
+				if($(this).index() == idx){
+					editRow(this);
+				}					
+			});
+		}
+	});
+}
+function refresh(tr)
+{
+	var data = {fid:$(tr).attr('fid'),deptid:$(tr).attr('deptid'),ifid:$(tr).attr('id')};
+	$(tr).find('td').each(function(){
+		data[$(this).attr('name')] = $(this).attr('value');
+		}
+	);
+	var url = sz_BaseUrl + '<?php echo $this->baseUrl?>/reload';
+	qssAjax.call(url, data, function(jreturn) {
+		$.each(jreturn, function(i, item) {
+			if(item.value != null){
+				$(tr).find('td[name="'+i+'"]').attr('value',item.value);
+			}
+		    $(tr).find('td[name="'+i+'"]').text(item.display);
+		  });
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+}
+function popupSelect(ele) {
+	esc = false;
+	refelement = ele;
+	var fid = $(refelement).attr('reffid');
+	var objid = $(refelement).attr('refobjid');
+	var fieldid = $(refelement).attr('reffieldid');
+	reffieldid = fieldid;
+	isrefresh = $(refelement).attr('refresh');
+	var url = sz_BaseUrl + '<?php echo $this->baseUrl?>/select';
+	var data = {
+		fid : fid,
+		objid : objid,
+		fieldid : reffieldid
+	};
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#qss_combo').html(jreturn);
+		$('#qss_combo').dialog({close: function(event,ui) {
+			select = null;
+			//esc = false;
+		}});
+		if(select == null && $('#selecttable').length){
+			select = $('#selecttable').find('tr').eq(1)[0];
+		}
+		selectCLK(select);
+	});
+}
+function selectTrace() {
+	if (select == null) {
+		return;
+	}
+	$(refelement).attr('value',$(select).attr('vid') + ',' + $(select).attr('ioid'));
+	$(refelement).text($(select).attr('vdisplay'));
+	$('#qss_combo').html('');
+	$('#qss_combo').dialog('close');
+	if (isrefresh == 1) {
+		refresh(row);
+	}
+	select = null;
+}
+function selecting(workingTags,id)
+{
+	$('#lookup').val(workingTags);
+	$(cell).attr('value',id);
+	if ($(cell).attr('refresh') == 1) {
+		refresh(row);
+	}
+}
+function editAllRow(){
+	var promise = [];
+	var el = $('.grid_edit').find('tr').eq(1);
+	if($(el).attr('rights') & 4){
+		$(el).children('td').each(function(){
+			var p = editCell(this);
+			promise.push(p);
+		});
+	}
+	$.when.apply($, promise).done(function(){
+		$('.grid_edit').find('tr').each(function(){
+			if($(this).attr('id') !== undefined && $(this).index() > 1){
+				editRow(this);
+			}
+		});
+	});
+}
+function editSelectedRow(){
+	if(row != null){
+		editRow(row);
+	}
+	else{
+		if($('.grid_selected').length){
+			var promise = [];
+			var el = $('.grid_selected').first();
+			if($(el).attr('rights') & 4){
+				$(el).children('td').each(function(){
+					var p = editCell(this);
+					promise.push(p);
+				});
+			}
+			$.when.apply($, promise).done(function(){
+				$('.grid_selected').each(function(idx){
+					if($(this).attr('id') !== undefined && idx > 0){
+						editRow(this);
+					}
+				});
+			});
+		}
+	}
+}
+</script>

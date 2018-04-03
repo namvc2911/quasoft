@@ -1,0 +1,82 @@
+<div id="einfo-info-table" style="margin-top: 0px;">
+	<div class="ui_box_s50_left">
+		<fieldset>
+			<legend>
+			<?php echo $this->_translate(1);?>
+				<!-- Loại thiết bị -->
+			</legend>
+			<div class="ui_box_line">
+				<div class="label">
+					<label><?php echo $this->_translate(2);?>
+						<!-- Tên loại -->:</label>
+				</div>
+				<div class="element">
+				<?php echo @$this->data->TenLoai; ?>
+				</div>
+			</div>
+
+			<div class="ui_box_line">
+				<div class="label">
+					<label><?php echo $this->_translate(3);?>
+						<!-- Mã MH -->:</label>
+				</div>
+				<div class="element">
+				<?php echo @$this->data->MaSanPham; ?>
+				</div>
+			</div>
+
+			<div class="ui_box_line">
+				<div class="label">
+					<label><?php echo $this->_translate(4);?>:</label>
+				</div>
+				<div class="element">
+				<?php echo @$this->data->TenSanPham; ?>
+				</div>
+			</div>
+
+			<div class="ui_box_line">
+				<div class="label">
+					<label><?php echo $this->_translate(6);?>:</label>
+				</div>
+				<div class="element">
+				<?php if(@$this->data->ImageID):?>
+				<?php
+				$imageResult = '';
+				$image       = "/user/field/picture?file={@$this->data->Image}";
+				$imageExists = file_exists(QSS_DATA_DIR. "/documents/{@$this->data->Image}");
+
+				if ($imageExists)
+				{
+					$imageResult = '<img src="'.$image.'" width="480px" height="270px" style="width:480px; height:270px;"/>';
+				}
+				else
+				{
+					$imageResult = '<div '
+					. 'style="width:480px; height:270px; float:left; '
+					. 'background: #fff; font-size: 40px; '
+					. 'line-height: 100px; color: #ccc; text-align: center;">'
+					. ' NO IMAGE '
+					. '</div>';
+				}
+				echo $imageResult;
+				?>
+
+				<?php endif;?>
+				</div>
+			</div>
+		</fieldset>
+	</div>
+
+	<div class="ui_box_s50_right">
+		<br />
+		<?php if(@$this->data->TenLoai):?>
+		<button class="btn-custom"
+			onclick="popupFormInsert('M705', {ODanhSachThietBi_LoaiThietBi: '<?php echo @$this->eqtype ?>', ODanhSachThietBi_MaKhuVuc: '<?php echo @$this->loccode ?>'}, function() {$('#einfo-search-eq-table').jstree('load_node', $('#EQ_TYPE<?php echo $this->nodeioid ?>'));});"
+			type="button" style="width: 100px;">
+			<?php echo $this->_translate(5);?>
+			<!-- Thêm TB -->
+		</button>
+		<br />
+		<?php endif;?>
+	</div>
+</div>

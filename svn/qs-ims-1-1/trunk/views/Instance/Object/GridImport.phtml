@@ -1,0 +1,69 @@
+<table cellspacing="0" class="grid">
+	<tr>
+		<th style="border-left: 1px solid rgb(204, 204, 204);"><a href="#!" onclick="toggleCheckBox()"><?php echo $this->_translate(38,'Chọn')?></a></th>
+		<?php foreach ($this->fields as $field):?>
+			<?php if ( $field->bGrid):?>
+			<th><a href="#"
+			onclick="importSort('<?php
+					echo $this->object->FormCode?>','<?php
+					echo $this->object->i_IFID?>','<?php
+					echo $this->object->intDepartmentID?>','<?php
+					echo $this->object->ObjectCode?>','<?php
+					echo $field->FieldCode?>')"><?php
+					echo $field->szFieldName;?> 
+					<?php if ( $this->orderfield == $field->FieldCode ):?> <img border="0"
+			src="../../../images/<?php
+						echo ($this->ordertype == 'ASC') ? 'up' : 'down';
+						?>.gif" /> 
+						<?php endif;?> 
+						</a></th>
+			<?php endif;?>
+		<?php endforeach;?>		
+	</tr>
+	<?php
+	$groupbyvalue = '';
+	$groupby = $this->groupby;
+	$form_rights = $this->form->i_fGetRights($this->user->user_group_list);
+	$i=1;
+	?>
+	<?php foreach ($this->objects as $object):?>
+	<?php $this->object->initData($this->object->i_IFID,$this->object->intDepartmentID,$object->IOID);
+	$fields = $this->object->loadFields();?>
+	<?php if ($groupby == -2):?>
+		<?php if($object->UserName !== $groupbyvalue):?>
+			<tr>
+				<td class="groupby" colspan="<?php echo $this->gridFieldCount?>"><?php echo $object->UserName;?></td>
+			</tr>
+			<?php $i=1;?>
+		<?php endif;?>
+		<?php $groupbyvalue = $object->UserName;?>
+	<?php elseif($groupby):?>
+		<?php $groupbyfield = $this->o_Object->getFieldByCode($groupby);?>
+		<?php if($groupbyfield && $groupbyfield->getValue() !== $groupbyvalue):?>
+			<tr>
+				<td class="groupby" colspan="<?php echo $this->gridFieldCount?>"><?php echo $groupbyfield->sz_fGetDisplay(false,true);?></td>
+			</tr>
+			<?php $i=1;?>
+		<?php endif;?>
+		<?php $groupbyvalue = $groupbyfield->getValue();?>
+	<?php endif;?>		
+	<tr onclick="rowCLK(this);">
+		<td class="nocount"><input type="checkbox" class="IOID" name="IOID[]" fid="<?php echo $object->FID?>" ifid="<?php echo $object->IFID?>"
+			value="<?php echo $object->IOID?>"
+			deptid="<?php echo $object->DepartmentID?>"></td>
+	<?php foreach ($fields as $field):?>
+		<?php if ( $field->bGrid & 1):?>
+		<td class="data <?php echo Qss_Lib_Const::$FIELD_ALIGN[$field->intFieldType-1]?>"><?php	echo $field->sz_fGetDisplay();?></td>
+		<?php endif;?>
+	<?php endforeach;?>
+	</tr>
+	<?php endforeach;?>
+	<tr>
+		<th>&nbsp;</th>
+		<?php foreach ($this->fields as $field):?>			
+		<?php if ( $field->bGrid & 1):?>
+		<th style="border-left: 1px solid rgb(204, 204, 204);">&nbsp;</th>
+		<?php endif;?>
+		<?php endforeach;?>
+	</tr>
+</table>

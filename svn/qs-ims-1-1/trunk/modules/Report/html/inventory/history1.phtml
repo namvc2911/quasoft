@@ -1,0 +1,87 @@
+<?php
+/**
+ * Get chart data.
+ **/
+$xAxis  = '';
+$series = '';
+$maxInventory = '';
+$minInventory = '';
+$lastInventory = '';
+
+foreach ($this->rangeTime as $key=>$time)
+{
+	if($time['Period'] != 'W')
+	{
+		$xAxis .= ($xAxis != '')?", '{$time['Display']}'":"'{$time['Display']}'";
+	}
+	else
+	{
+		$xAxis .= ($xAxis != '')?", '{$time['StartWeek']} {$this->_translate(1)} {$time['EndWeek']}'":"'{$time['StartWeek']} {$this->_translate(1)} {$time['EndWeek']}'";
+	}
+	$maxInventory .= ($maxInventory != '')?", {$this->history[$key]['Max']}":"{$this->history[$key]['Max']}";
+	$minInventory .= ($minInventory != '')?", {$this->history[$key]['Min']}":"{$this->history[$key]['Min']}";
+	$lastInventory .= ($lastInventory != '')?", {$this->history[$key]['Last']}":"{$this->history[$key]['Last']}";
+}
+$xAxis = ($xAxis)?"[{$xAxis}]":"";
+$series = "[ { name :'{$this->_translate(2)}', data:[$maxInventory]},
+				 { name :'{$this->_translate(3)}', data:[$minInventory]}, 
+				 { name :'{$this->_translate(4)}', data:[$lastInventory]}]";
+
+//echo '<pre>'; echo 'range time:'; print_r($this->rangeTime); die;
+//echo '<pre>'; echo 'xAxis:'; print_r($xAxis); die;
+
+
+?>
+
+<script>
+<!--
+$(document).ready(function() {
+	 var history = new Highcharts.Chart({
+	 chart: {
+	      renderTo: 'container',
+	      type: 'line',
+          spacingBottom: 30
+      },
+      title: {
+          text: '<?php echo "{$this->_translate(5)} ({$this->_translate(7)} {$this->start} {$this->_translate(8)} {$this->end})";?>'
+      },
+      legend: {
+          align: 'center',
+          verticalAlign: 'bottom'
+      },
+      xAxis: {
+          categories: <?php echo $xAxis;?>
+      },
+      yAxis: {
+          min:0,
+          title: {
+              text: '<?php echo $this->_translate(6);?>'
+          },
+          labels: {
+              formatter: function() {
+                  return this.value;
+              }
+          }
+      },
+      tooltip: {
+          formatter: function() {
+              return '<b>'+ this.series.name +'</b><br/>'+
+              this.x +': '+ this.y;
+          }
+      },
+      plotOptions: {
+          area: {
+              fillOpacity: 0.5
+          }
+      },
+      credits: {
+          enabled: false
+      },
+      series: <?php echo $series;?>
+  });
+});
+
+//-->
+</script>
+
+<div id="container" style="width: 95%; margin: auto;"></div>

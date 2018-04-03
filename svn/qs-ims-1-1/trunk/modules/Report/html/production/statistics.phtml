@@ -1,0 +1,300 @@
+<!--  @todo: fix bug chrome multiple select element -->
+<style>
+#item_dial_box {
+	overflow: hidden;
+}
+
+#select_item_box {
+	float: left;
+	width: 45%;
+}
+
+#select_item_box select {
+	width: 95%;
+}
+
+#button_box {
+	width: 10%;
+	float: left;
+}
+
+#button_box .btn-custom {
+	padding: 0px;
+	margin: 0px;
+	width: 90%;
+}
+
+#add_button {
+	margin-top: 40px;
+}
+
+#items_box {
+	float: left;
+	width: 45%;
+}
+
+#items_box select {
+	width: 95%;
+}
+
+#qss_report {
+	margin: 5px 0px;
+}
+</style>
+
+
+<script type="text/javascript">
+function dateWarning()
+{
+
+	var message = '';
+	var period    = $('#period').val();
+
+	if(period != '')
+	{
+		var limit;
+		var retval;
+		var suffix;
+		var prefix = '<?php echo $this->_translate(21)?>';
+		var ngaybd    = $('#start').val();
+		var ngaykt    = $('#end').val();
+		var startArr  = ngaybd.split("-");
+		var endArr    = ngaykt.split("-");
+		var start     = new Date( parseInt(startArr[2]), parseInt(startArr[1]) - 1, parseInt(startArr[0]));
+		var secondDate  = new Date();
+		var secondDateLimit = new Date();
+		
+		switch(period)
+		{
+			case 'D':
+				limit = <?php echo (isset($this->limit['D']) && $this->limit['D'])?$this->limit['D']:0;?>;
+				start.setDate(start.getDate() + limit - 1); 
+				suffix = '<?php echo $this->_translate(22)?>';
+			break;
+			case 'W':
+				limit = <?php echo (isset($this->limit['W']) && $this->limit['W'])?$this->limit['W']:0;?>;
+				start.setDate(start.getDate() + (limit *7 ) -1);
+				suffix = '<?php echo $this->_translate(23)?>';
+			break;
+			case 'M':
+				limit = <?php echo (isset($this->limit['M']) && $this->limit['M'])?$this->limit['M']:0;?>;
+				start.setMonth(start.getMonth() + limit);
+				start.setDate(start.getDate() - 1);
+				suffix = '<?php echo $this->_translate(24)?>';
+			break;
+			case 'Q':
+				limit = <?php echo (isset($this->limit['Q']) && $this->limit['Q'])?$this->limit['Q'] * 3:0;?>;
+				start.setMonth(start.getMonth() + limit);
+				start.setDate(start.getDate() - 1);
+				suffix = '<?php echo $this->_translate(25)?>';
+			break;
+			case 'Y':
+				limit = <?php echo (isset($this->limit['Y']) && $this->limit['Y'])?$this->limit['Y']:0;?>;
+				start.setYear(start.getFullYear() + limit); 
+				start.setDate(start.getDate() - 1); 
+				suffix = '<?php echo $this->_translate(26)?>';
+			break;								
+		}
+		secondDate.setFullYear(parseInt(endArr[2]), parseInt(endArr[1]) - 1, parseInt(endArr[0]));
+		secondDateLimit.setFullYear(start.getFullYear(), start.getMonth(), start.getDate());
+
+		if(secondDateLimit < secondDate )
+		{
+			message = prefix + ' ' + limit + ' ' + suffix;
+		}
+	}
+	return message;
+}
+function printPreview()
+{
+	var ngaybd      = $('#start').val();
+	var ngaykt      = $('#end').val();
+	var period      = $('#period').val();
+	var firstValue  = ngaybd.split('-');
+	var secondValue = ngaykt.split('-');
+	var firstDate   = new Date();
+	firstDate.setFullYear(firstValue[2],(firstValue[1] - 1 ),firstValue[0]);
+	var secondDate  = new Date();
+	secondDate.setFullYear(secondValue[2],(secondValue[1] - 1 ),secondValue[0]);  
+	var items       = $('#items_box select option').length;
+	var msg         = ''; /* Error message */
+	$('#items_box select option').attr('selected','selected');/* Select all selected item */
+
+	if(ngaybd == '')
+	{
+		msg  += '<?php echo $this->_translate(1);?>';
+	}
+
+	if(ngaykt == '')
+	{
+		msg  += '<?php echo $this->_translate(2);?>';
+	}
+
+	if (firstDate > secondDate)
+	{
+	 	msg += '<?php echo $this->_translate(3)?>';
+	}
+
+	if(period == '')
+	{
+		msg  += '<?php echo $this->_translate(4);?>';
+	}
+
+	if(items == 0)
+	{
+		msg += '<?php echo $this->_translate(5);?>';
+	}
+	
+	if(msg != '')
+	{
+		qssAjax.alert(msg);
+		return;
+	}
+	else
+	{
+		var warning = dateWarning();
+		if(warning)
+		{
+			qssAjax.confirm(warning,function(){
+				loadModule();
+			});
+		}
+		else
+		{
+			loadModule();				
+		}
+	}
+	
+}
+
+function loadModule()
+{
+	var url = sz_BaseUrl + '/report/production/statistics1';
+	var data = $('#report').serialize();
+	qssAjax.getHtml(url, data, function(jreturn) {
+			$('#print-area').html(jreturn);
+			removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+	});
+}
+
+function addItem()
+{
+	var add       = $('#select_item_box select option:selected');
+	add.each(function(){
+		$('#items_box select').append('<option value="'+$(this).val()+'" groupmarker="'+$(this).attr('groupmarker')+'">'+$(this).text()+'</option>');
+		$(this).remove();
+	});
+}
+
+function removeItem()
+{
+	var remove = $('#items_box select option:selected');
+	remove.each(function(){
+		$('#select_item_box select optgroup[groupmarker="'+$(this).attr('groupmarker')+'"]').prepend('<option value="'+$(this).val()+'" groupmarker="'+$(this).attr('groupmarker')+'">'+$(this).text()+'</option>');
+		$(this).remove();
+	});
+}
+
+</script>
+
+<div class="clear"></div>
+<div id="view">
+	<div class="line-hr">
+		<span><?php echo $this->_translate(6)?> </span>
+	</div>
+	<form id="report" method="post" action="/report/production/statistics1">
+		<table class="detail">
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Ngày bắt đầu --> <?php echo $this->_translate(7)?> <span
+					class="red">(*)</span></th>
+				<td><?php echo $this->views->Report->Datepicker('start','01-'.date('m').'-'.date('Y'));?>
+				</td>
+			</tr>
+
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Ngày kết thúc --> <?php echo $this->_translate(8)?> <span
+					class="red">(*)</span></th>
+				<td><?php echo $this->views->Report->Datepicker('end',date('d-m-Y'));?>
+				</td>
+			</tr>
+
+
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(9)?>
+					<span class="red">(*)</span></th>
+				<td><?php echo $this->views->Report->SelectPeriod('period', 'period'); ?>
+				</td>
+			</tr>
+
+
+			<tr>
+				<th width="20%">
+					<!-- Mặt hàng --> <?php echo $this->_translate(16)?> <span
+					class="red">(*)</span></th>
+				<td>
+					<div id="item_dial_box">
+						<div id="select_item_box">
+							<select multiple="multiple" size="10">
+							<?php $selected = 0;?>
+							<?php foreach ($this->items as $group):?>
+								<optgroup label="<?php echo $group['TenNhom']?>"
+									groupmarker="<?php echo $group['RefNhom']?>">
+									<?php foreach ($group['SanPham'] as $item):?>
+									<option value="<?php echo $item['Ref'] ?>"
+										groupmarker="<?php echo $group['RefNhom']?>">
+										<?php echo $item['Code']?>
+										-
+										<?php echo $item['Name']?>
+									</option>
+									<?php endforeach;?>
+								</optgroup>
+								<?php endforeach;?>
+							</select>
+						</div>
+
+						<div id="button_box">
+							<div id="add_button">
+								<button type="button" class="btn-custom" onclick="addItem()">>>
+								</button>
+							</div>
+
+							<div id="remove_button">
+								<button type="button" class="btn-custom" onclick="removeItem()">
+									<<</button>
+							</div>
+						</div>
+
+
+						<div id="items_box">
+							<select size="10" multiple="multiple" name="items[]" class="">
+
+							</select>
+						</div>
+					</div> <!-- #item_dial_box -->
+				</td>
+			</tr>
+
+			<tr>
+				<th width="20%"><?php echo $this->_translate(18)?> <span class="red">(*)</span>
+				</th>
+				<td><input type="radio" value="time" name="groupby" checked /> <?php echo $this->_translate(19)?>
+					<input type="radio" value="item" name="groupby" /> <?php echo $this->_translate(20)?>
+				</td>
+			</tr>
+
+
+			<tr>
+		
+		</table>
+	</form>
+	<p>
+	
+	
+	<hr>
+	<?php echo $this->views->Report->PrintToolbar();?>
+	<div id="print-content">
+		<div id="print-area"></div>
+	</div>
+</div>

@@ -1,0 +1,161 @@
+<?php
+foreach($this->report as $key => $report)
+{
+if(count($report)):
+    //$valueY = array();
+    $item = $report[0];
+        //$valueY[] = $item->SoHoatDong;
+        $boPhan = $item->diemDoBoPhan;
+        $chiSo  = $item->diemDoChiSo;
+        $gioiHanTren = $item->GioiHanTren;
+        $gioiHanDuoi = $item->GioiHanDuoi;
+        $donViTinh =  $item->DonViTinh;
+        $maDiemDo =  $item->Ma;
+    $nameChart = '';
+    if($boPhan && $chiSo)
+    {
+        $nameChart .= "{$boPhan} - {$maDiemDo} - {$donViTinh}";
+    }
+    elseif(!$boPhan && $chiSo)
+    {
+        $nameChart .= "{$maDiemDo} - {$donViTinh}";
+    }
+    else
+    {
+        $nameChart .= "{$maDiemDo} {$donViTinh}";
+    }
+    /*for($i=0; $i<count($valueY); $i++) {
+        $valueY_string .= ($valueY[$i] !== '')?',':'';
+        $valueY_string .= $valueY[$i];
+    }*/
+?>
+        <style>
+            <!--
+            .qss_block {
+                border: 1pt solid #c8c8c8;
+                margin-bottom: 10px;
+                line-height: 20px
+            }
+            .box_das2 {
+                padding: 4px;
+            }
+
+            .box_das2 .inside_das2 {
+                width: 805px;
+                height: 400px;
+                border: 1pt solid #ccc;
+                margin: 0 auto;
+            }
+
+            -->
+        </style>
+        <script type="text/javascript">
+            $(document).ready(function () {
+
+                $('#chart<?php echo $key;?>').highcharts({
+                    chart: {
+                        type: 'line'
+                    },
+                    title: {
+                        text: '<?php echo $this->_translate(6); echo $nameChart;?>'
+                    },
+                    xAxis: {
+                    	labels:
+                        {
+                          enabled: false
+                        },
+                        categories: [<?php $valueX = '';
+				            foreach($report as $item)
+							{
+							    $ngay = Qss_Lib_Date::mysqltodisplay($item->Ngay);
+							    $valueX .= ($valueX !== '')?',':'';
+							    $valueX .= "'{$ngay} ({$item->ThoiGian})'";
+							}
+							echo $valueX;?>]
+                    },
+                    
+                    yAxis: {
+                        title: {
+                            text: '<?php echo $this->_translate(3);echo " "."(".$donViTinh.")";?>'
+                        },
+                        plotLines: [
+                            {
+                                color: 'red',
+                                value: '<?php echo $gioiHanDuoi;?>',
+                                width: 2,
+                                dashStyle: 'shortdash',
+                                label: {
+                                    text: '<?php echo $this->_translate(1);?>'
+                                }
+                            },
+                            {
+                                color: 'red',
+                                value: '<?php echo $gioiHanTren;?>',
+                                width: 2,
+                                dashStyle: 'shortdash',
+                                label: {
+                                    text: '<?php echo $this->_translate(2);?>'
+                                }
+                            }
+                        ]
+                    },
+                    tooltip: {
+                        formatter: function () {
+                            return this.key +': '+this.y + '<?php echo " ".$donViTinh;?>';
+                        }
+                    },
+                    plotOptions: {
+                        bar: {
+                            dataLabels: {
+                                enabled: false
+                            }
+                        }
+                    },
+                    series: [{
+                        name: '<?php echo $this->_translate(5);?>',
+                        data: [
+                                <?php $cate = '';
+                                foreach($report as $item)
+                                {
+                                    $cate .= ($cate !== '')?',':'';
+                                    $cate .= $item->SoHoatDong;
+                                }
+                                echo $cate;?>
+                                ]
+                            },
+                        {
+                            showInLegend: false,
+                            marker: {
+                                enabled: false
+                            },
+                            data: [<?php echo $gioiHanTren;?>]
+                        },
+                        {
+                            showInLegend: false,
+                            marker: {
+                                enabled: false
+                            },
+                            data: [<?php echo $gioiHanDuoi;?>]
+                        }
+                    ]
+                });
+            });
+        </script>
+
+        <?php
+    else:
+        echo "No Data.";
+    endif;
+}
+    foreach($this->report as $key => $report)
+    {
+?>
+        <div id = "report_2" >
+                <div class="box_das2" >
+                    <div class="inside_das2" id="chart<?php echo $key;?>">
+                    </div >
+                </div >
+        </div >
+<?php
+    }
+?>

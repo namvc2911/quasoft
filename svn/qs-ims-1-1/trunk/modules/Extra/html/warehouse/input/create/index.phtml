@@ -1,0 +1,412 @@
+<link rel="stylesheet" href="/css/button.css" type="text/css" />
+<style>
+#coming {
+	overflow: auto;
+	min-height: 10px;
+	max-height: 210px;
+}
+
+#order {
+	overflow: auto;
+	min-height: 10px;
+	max-height: 210px;
+}
+</style>
+
+<script>
+<!--
+// js function
+
+jQuery(document).ready(function($){
+  	$('.datepicker').each(function(){ $(this).datepicker({ dateFormat: "dd-mm-yy" }); });/* Datepicker*/
+});
+
+// delete line
+function deleteShipmentLine(lineIOID)
+{
+	var ifid = $('#ifid').val();
+	var insertModule = $('#insert_module').val();
+	var insertObject = $('#insert_object').val();
+	var data = {
+				ifid:ifid, 
+				lineIOID:lineIOID,
+				module:insertModule,
+				insertModule:insertModule,
+				insertObject:insertObject
+	};
+	var url = sz_BaseUrl + '/extra/warehouse/input/create/delete'; 
+	qssAjax.call(url, data, function(jreturn){
+		if(jreturn.message != ''){
+			qssAjax.alert(jreturn.message);
+		}
+		getOrderLine();
+		filterItem();
+		rowSearch(102);
+	}, function(jreturn){
+		qssAjax.alert(jreturn.message);		
+	});
+}
+
+// Line
+function getOrderLine()
+{
+	$('#order_content').html('Loading...')
+	ifid = $('#ifid').val();
+	var data = {ifid:ifid};
+	var url = sz_BaseUrl + '/extra/warehouse/input/create/line'; 
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#order_content').html(jreturn);
+	});
+}
+
+// Loc san pham theo dieu kien
+function filterItem()
+{
+	var ngaybd = $('#start').val();
+	var ngaykt = $('#end').val();
+
+	var firstValue = ngaybd.split('-');
+	var secondValue = ngaykt.split('-');
+	var firstDate=new Date();
+	firstDate.setFullYear(firstValue[2],(firstValue[1] - 1 ),firstValue[0]);
+	var secondDate=new Date();
+	secondDate.setFullYear(secondValue[2],(secondValue[1] - 1 ),secondValue[0]);     
+
+	if (ngaybd && ngaykt && (firstDate > secondDate) )
+	{
+		qssAjax.alert('<?php echo $this->_translate(32)?>');
+		return;
+	}
+	
+	$('#coming_content').html('Loading...')
+	var data = $('.search_filter').serialize();
+	var url = sz_BaseUrl + '/extra/warehouse/input/create/search'; 
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#coming_content').html(jreturn);
+		updatePageNumber();
+	});
+}
+
+// Cap nhat chuyen hang
+function saveOrder()
+{
+	var countCheckedLine = $('.checkbox:checked:not(:disabled)').length;
+	if(countCheckedLine > 0)
+	{
+		var data = $('#show_form').serialize();
+		var url = sz_BaseUrl + '/extra/warehouse/input/create/save'; 
+		qssAjax.call(url, data, function(jreturn){
+			if(jreturn.message != ''){
+				qssAjax.alert(jreturn.message);
+			}
+			filterItem();
+			getOrderLine();
+			rowSearch(102);
+		}, function(jreturn){
+			qssAjax.alert(jreturn.message);		
+		});
+	}
+	else
+	{
+		qssAjax.alert('<?php echo $this->_translate(31);?>');
+	}
+}
+
+// Cap nhat so trang
+function updatePageNumber()
+{
+	var html = '';
+	var url = sz_BaseUrl + '/extra/warehouse/input/create/page';
+	var data = $('.search_filter').serialize();
+	$('#page_filter').val('Loading...');
+	
+	qssAjax.call(url, data, function(jreturn) {
+		jreturn.data.totalPage = (jreturn.data.totalPage > 0)?jreturn.data.totalPage:1;
+		for(var i = 1; i <= jreturn.data.totalPage; i++)
+		{
+			html += '<option value="'+i+'" ';
+			if(jreturn.data.page == i) html += 'selected';
+			html += ' >'+i+'</option>'
+		}
+		$('#page_filter').html(html);
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+}
+
+// check one line
+function checkLine(ele)
+{
+	var finder = $(ele).parent().parent();
+	var lineColor = finder.find('.line_color_class').val(); // line color class
+	
+	if($(ele).is(':checked'))
+	{
+		// To mau canh bao
+		if(lineColor != '') {
+			finder.removeClass(lineColor);
+		}
+		finder.addClass('bgyellow');
+		finder.find('.disabled_input').each(function(){ $(this).removeAttr('disabled'); });
+	}
+	else
+	{
+		// To mau canh bao
+		if(lineColor != '') {
+			finder.addClass(lineColor);
+		}
+		finder.removeClass('bgyellow');	
+		finder.find('.disabled_input').each(function(){ $(this).attr('disabled', true); });	
+	}
+}
+
+// check all line
+function checkAllLine(ele)
+{
+	var lineColor;
+	var finder;
+
+	if($(ele).is(':checked'))
+	{
+		$('.checkbox:not(:checked)').each(function()
+		{
+			finder    = $(this).parent().parent();
+			lineColor = finder.find('.line_color_class').val();
+			if(lineColor != ''){ finder.removeClass(lineColor);}
+			
+			finder.addClass('bgyellow');
+			finder.find('.disabled_input').each(function(){ $(this).removeAttr('disabled'); });
+			$(this).attr('checked',true);
+		});
+	}
+	else
+	{
+		$('.checkbox:checked:not(:disabled)').each(function()
+		{
+			finder    = $(this).parent().parent();
+			lineColor = finder.find('.line_color_class').val();
+			if(lineColor != '') { finder.addClass(lineColor); } 
+			
+			finder.removeClass('bgyellow');
+			finder.find('.disabled_input').each(function(){ $(this).attr('disabled', true); });
+			$(this).removeAttr('checked');
+		});		
+	}
+}
+//-->
+</script>
+
+<div
+	id="wrapper">
+
+	<div id="order">
+		<fieldset>
+			<legend>
+			<?php echo $this->_translate(33);?>
+			</legend>
+			<div id="order_content"></div>
+			<!-- end order_content -->
+			<script>getOrderLine();</script>
+		</fieldset>
+	</div>
+	<!-- end #order -->
+
+	<div id="create_order">
+		<form id="create_form">
+			<input type="hidden" name="partnerFilter" class="search_filter"
+				value="<?php echo @(int)$this->partner->IOID;?>" /> <input
+				type="hidden" name="ifid" id="ifid" class="search_filter"
+				value="<?php echo $this->ifid;?>" />
+
+			<fieldset>
+				<legend>
+				<?php echo $this->_translate(27);?>
+				</legend>
+				<table cellspacing="0" cellpadding="0" width="100%" class="left"
+					id="">
+					<tr>
+						<th>
+							<!-- Đối tác --> <?php echo $this->_translate(26)?>:</th>
+						<td>
+							<!-- Đối tác --> <?php echo @$this->partner->MaDoiTac;?> - <?php echo @$this->partner->TenDoiTac;?>
+						</td>
+
+						<th>
+							<!-- Kho --> <?php echo $this->_translate(25)?>:</th>
+						<td>
+							<!-- Kho --> <select name="warehouseFilter" id=""
+							class="width_200 search_filter">
+								<option value=""></option>
+								<option value="0"
+								<?php if($this->defaultWarehouse == 0) echo 'selected';?>>
+									<?php echo $this->_translate(30)?>
+								</option>
+								<?php foreach ($this->warehouses as $item): // Danh sach kho?>
+								<option value="<?php echo $item->IOID?>"
+								<?php if($this->defaultWarehouse == $item->IOID) echo 'selected class="red bold"'; ?>>
+									<?php echo $item->MaKho;?>
+									-
+									<?php echo $item->TenKho;?>
+								</option>
+								<?php endforeach;// Danh sach kho?>
+						</select> <!-- <span class="red bold">(*)</span> -->
+						</td>
+					</tr>
+
+					<tr>
+						<th>
+							<!-- Từ ngày --> <?php echo $this->_translate(23)?>:</th>
+						<td>
+							<!-- Từ ngày --> <input type="text" name="fromDateFilter"
+							id="start" class="datepicker width_200 search_filter" value="" />
+						</td>
+
+						<th>
+							<!-- Đến ngày --> <?php echo $this->_translate(20)?>:</th>
+						<td>
+							<!-- Đến ngày --> <input type="text" name="toDateFilter" id="end"
+							class="datepicker width_200 search_filter" value="" />
+						</td>
+					</tr>
+
+				</table>
+				<button type="button" class="btn-custom" onclick="filterItem()">
+				<?php echo $this->_translate(29);?>
+				</button>
+
+			</fieldset>
+		</form>
+		<!-- end #create_form -->
+	</div>
+	<!-- end #create_order -->
+
+	<div>
+		<form id="pagination_form">
+			<!-- Trang -->
+		<?php echo $this->_translate(3)?>
+			: <select name="pageFilter" id="page_filter"
+				class="width_50 search_filter" onchange="filterItem()">
+				<option value="1">1</option>
+			</select>
+
+			<!-- Hiển thị -->
+			<?php echo $this->_translate(4)?>
+			: <select name="perpageFilter" id="perpage_filter"
+				class="width_50 search_filter" onchange="filterItem()">
+				<option value="5">5</option>
+				<option value="10" selected>10</option>
+				<option value="20">20</option>
+				<option value="50">50</option>
+				<option value="100">100</option>
+			</select>
+
+			<?php if($this->unlock):?>
+			<button type="button" class="btn-custom" onclick="saveOrder()">
+			<?php echo $this->_translate(17);?>
+			</button>
+			<?php endif;?>
+		</form>
+		<!-- end form#pagination_form -->
+	</div>
+	<!-- noname -->
+
+	<div id="coming" class="margin_top_5">
+		<div class="margin_top_5">
+			<form id="show_form">
+				<input type="hidden" name="ifid" class=""
+					value="<?php echo $this->ifid;?>" /> <input type="hidden"
+					name="insertModule" id="insert_module"
+					value="<?php echo $this->insertModule;?>" /> <input type="hidden"
+					name="insertObject" id="insert_object"
+					value="<?php echo $this->insertObject;?>" />
+
+				<fieldset>
+					<legend>
+					<?php echo $this->_translate(28);?>
+					</legend>
+					<div id="coming_content">
+						<table cellspacing="0" cellpadding="0" width="100%"
+							class="borderX" id="">
+							<tr class="bggrey center">
+								<th width="2%">
+									<!-- Chọn --> <input type="checkbox" class="checkbox width_50" />
+								</th>
+								<th width="8%">
+									<!-- Ngày --> <?php echo $this->_translate(14);?></th>
+								<th width="8%">
+									<!-- Mã đối tác --> <?php echo $this->_translate(12);?></th>
+								<th width="15%">
+									<!-- Tên đối tác --> <?php echo $this->_translate(13);?></th>
+								<th width="8%">
+									<!-- Mã mặt hàng --> <?php echo $this->_translate(6);?>
+								</th>
+								<th width="15%">
+									<!-- Tên mặt hàng --> <?php echo $this->_translate(7);?>
+								</th>
+								<th width="10%">
+									<!-- Thuộc tính --> <?php echo $this->_translate(8);?>
+								</th>
+								<th width="10%">
+									<!-- Kho --> <?php echo $this->_translate(9);?>
+								</th>
+								<th width="8%">
+									<!-- Đơn vị tính --> <?php echo $this->_translate(10);?>
+								</th>
+								<th width="8%">
+									<!-- Số lượng --> <?php echo $this->_translate(11);?>
+								</th>
+								<th width="8%">
+									<!-- Đơn giá --> <?php echo $this->_translate(15);?>
+								</th>
+							</tr>
+
+							<tr class="">
+								<td>
+									<!-- Chọn --> <input type="checkbox" class="checkbox width_50" />
+								</td>
+								<td>
+									<!-- Ngày -->
+								</td>
+								<td>
+									<!-- Mã đối tác -->
+								</td>
+								<td>
+									<!-- Tên đối tác -->
+								</td>
+								<td>
+									<!-- Mã mặt hàng -->
+								</td>
+								<td>
+									<!-- Tên mặt hàng -->
+								</td>
+								<td>
+									<!-- Thuộc tính -->
+								</td>
+								<td>
+									<!-- Kho -->
+								</td>
+								<td>
+									<!-- Đơn vị tính -->
+								</td>
+								<td>
+									<!-- Số lượng -->
+								</td>
+								<td>
+									<!-- Đơn giá -->
+								</td>
+							</tr>
+						</table>
+					</div>
+					<!-- end #coming_content -->
+					<script>filterItem();</script>
+				</fieldset>
+			</form>
+			<!-- end form#show_form -->
+		</div>
+		<!-- noname -->
+	</div>
+	<!-- end #coming -->
+
+
+</div>
+<!-- end #wrapper -->

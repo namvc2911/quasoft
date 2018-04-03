@@ -1,0 +1,76 @@
+<?php
+    if(!$this->OXuatKho || (int)$this->OXuatKho->Ref_SoYeuCau == 0) {
+        echo '<h2>Chưa chọn yêu cầu cho phiếu nhập kho điều động.</h2>';
+        die;
+    }
+
+?>
+
+
+<?php
+$widthTable = array(1,3,3,3,2,2,2,2);
+$widthTable = Qss_Lib_Report::changeWidthToFitScreen3($widthTable);
+?>
+
+<script src="/js/common.js"></script>
+<script src="/js/jquery.tablescroll.js"></script>
+
+<table id="grid1" class="border_table" cellspacing="0" cellpadding="0" border="0">
+    <thead>
+    <?php $begin = 0;?>
+    <tr class="bggrey">
+        <th style="width: <?php echo $widthTable[$begin++];?>%"><input type="checkbox" onclick="common_check_all_table_line(this, '.cwpo_line_checkbok', '.cwpo_line_checkbok_val')"/> </th>
+        <th style="width: <?php echo $widthTable[$begin++];?>%">Mã mặt hàng</th>
+        <th style="width: <?php echo $widthTable[$begin++];?>%">Tên mặt hàng</th>
+        <th style="width: <?php echo $widthTable[$begin++];?>%">Nhóm mặt hàng</th>
+        <th style="width: <?php echo $widthTable[$begin++];?>%">Đơn vị tính</th>
+        <th style="width: <?php echo $widthTable[$begin++];?>%">Số lượng yêu cầu</th>
+        <th style="width: <?php echo $widthTable[$begin++];?>%">Số lượng điều động</th>
+        <th style="width: <?php echo $widthTable[$begin++];?>%">Số lượng nhập kho</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <?php foreach($this->OYeuCauVatTu as $item):?>
+        <tr>
+            <td class="center">
+                <input type="checkbox" class="cwpo_line_checkbok " onclick="common_check_table_line(this, '.cwpo_line_checkbok_val')">
+                <input type="hidden" class="table_line_disabled cwpo_line_checkbok_val" name=""  value="0">
+                <input type="hidden" class="table_line_disabled" disabled name="M402_Get_By_Request_IOID[]" value="<?php echo @$item->RequestIOID;?>"/>
+            </td>
+            <td class="left break"><?php echo @$item->MaSanPham;?></td>
+            <td class="left"><?php echo @$item->TenSanPham;?></td>
+            <td class="left"><?php echo @$item->NhomSanPham;?></td>
+            <td class="left"><?php echo @$item->DonViTinh;?></td>
+            <td class="right"><?php echo Qss_Lib_Util::formatNumber(@$item->SoLuongYeuCau);?></td>
+            <td class="right"><?php echo Qss_Lib_Util::formatNumber(@$item->SoLuongDieuDong);?></td>
+            <td class="center">
+                <input type="text" class="table_line_disabled right" disabled name="M402_Get_By_Request_SoLuongNhapKho[]" style="width: 80px;"
+                       value="<?php echo Qss_Lib_Util::formatNumber(@$item->SoLuongNhapKho);?>"/>
+            </td>
+        </tr>
+    <?php endforeach;?>
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function() {
+        $('#grid1').tableScroll({height:260,width:'100%'});
+    });
+</script>
+<?php /*
+<script>
+    $(document).ready(function() {
+        // SET LẠI CHIỀU CAO BẢNG
+        $('#grid1').tableScroll({height:260,width:'100%'});
+
+        /// SET LẠI TRANG
+        $('#M402_Get_By_Request_Prev').attr('onclick', "$('#M402_Get_By_Request_PageNo').val('<?php echo @(int)$this->prev;?>'); M402_Get_By_Request.show();");
+        $('#M402_Get_By_Request_Next').attr('onclick', "$('#M402_Get_By_Request_PageNo').val('<?php echo @(int)$this->next;?>'); M402_Get_By_Request.show();");
+        $('#M402_Get_By_Request_PageNo').val('<?php echo $this->page;?>');
+        $('#M402_Get_By_Request_TotalPage').text('<?php echo $this->total;?>');
+        $('#M402_Get_By_Request_Total').text('<?php echo $this->count;?>');
+        $('#M402_Get_By_Request_Display').val('<?php echo $this->display;?>')
+    });
+</script>
+ */ ?>

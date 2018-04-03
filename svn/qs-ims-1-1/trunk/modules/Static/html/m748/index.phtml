@@ -1,0 +1,123 @@
+<script>    
+function printPreview(){
+	common_selectDialBox('maintype'); // Danh dau toan bo dialbox, PrintToolbar	
+	var url = sz_BaseUrl + '/static/m748/show';
+	var data = $('#report').serialize();
+	
+	data += "&locationStr="  + encodeURIComponent($('#location option:selected').text());
+	data += "&groupStr="     + encodeURIComponent($('#group option:selected'   ).text());
+	data += "&typeStr="      + encodeURIComponent($('#type option:selected'    ).text());
+	data += "&equipmentStr="  + encodeURIComponent($('#equipment_tag'            ).val());
+	
+	$('#maintype option:selected').each(function(){
+		data += "&maintypeStr[]="  + $(this).text();
+	});
+	
+	
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#print-area').html(jreturn);
+		removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+	});
+}
+</script>
+
+
+
+<div class="clear"></div>
+<div id="view">
+	<div class="line-hr">
+		<span><?php echo Qss_Lib_System::getReportTitle('M748');?> </span>
+	</div>
+	<form id="report" method="get"	action="/static/m748/show">
+		<table class="detail">
+
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(20)?>
+				</th>
+				<td><?php
+				$id            = 'location';
+				$getFields     = array('num'=>3,
+                                       'objects'=>array('OKhuVuc'=>array(
+                                                            'id'=>'IOID'
+                                                            ,'display1'=>'MaKhuVuc'
+                                                            ,'display2'=>'Ten') ));
+                                                            ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+				</td>
+			</tr>
+
+
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(22)?>
+				</th>
+				<td><?php
+				$id            = 'group';
+				$getFields     = array('num'=>3,
+                                       'objects'=>array('ONhomThietBi'=>array(
+                                                            'id'=>'IOID'
+                                                            ,'display1'=>'LoaiThietBi'
+                                                            ) ));
+                                                            ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+				</td>
+			</tr>
+
+
+			<?php if(Qss_Lib_Extra::checkFieldExists('ODanhSachThietBi', 'Ref_LoaiThietBi')):?>
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(21)?>
+				</th>
+				<td><?php
+				$id            = 'type';
+				$getFields     = array('num'=>2,
+                                       'objects'=>array('OLoaiThietBi'=>array(
+                                                            'id'=>'IOID'
+                                                            ,'display1'=>'TenLoai'
+                                                            )) );
+                                                            ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+			
+			</tr>
+			<?php endif;?>
+
+
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(3)?>
+				</th>
+				<td><?php
+				$id            = 'equipment';
+				$getDataObject = array('ODanhSachThietBi'=>array('MaThietBi', 'TenThietBi'));
+				$getFields     = array('num'=>2,
+								   'objects'=>array('ODanhSachThietBi'=>array(
+															'id'=>'IOID'
+															,'display1'=>'MaThietBi'
+															,'display2'=>'TenThietBi')) );
+					$getLookupFilter = array(array('id' => 'group'
+					, 'refField' => array('ODanhSachThietBi' => 'Ref_NhomThietBi') // Nhom TB
+					, 'required' => 0)
+					, array('id' => 'type'
+						, 'refField' => array('ODanhSachThietBi' => 'Ref_LoaiThietBi') // Loai TB
+						, 'required' => 0)
+					, array('id' => 'location'
+						, 'refField' => array('ODanhSachThietBi' => 'Ref_MaKhuVuc') // TT Chi phi
+						, 'required' => 0)
+					);
+															?> <?php echo $this->views->Report->ListBox($id, $getDataObject,$getFields, $getLookupFilter);?>
+				</td>
+			</tr>
+			
+
+
+		</table>
+	</form>
+	<p>
+	
+	
+	<hr>
+	<?php echo $this->views->Report->PrintToolbar();?>
+	<div id="print-content">
+		<div id="print-area"></div>
+	</div>
+</div>
+<script type="text/javascript">
+<!--
+
+//-->
+</script>

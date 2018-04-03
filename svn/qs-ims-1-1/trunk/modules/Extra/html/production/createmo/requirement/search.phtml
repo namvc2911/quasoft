@@ -1,0 +1,159 @@
+<script>
+<!--
+// js function
+jQuery(document).ready(function($){
+  	$('.datepicker').each(function(){ $(this).datepicker({ dateFormat: "dd-mm-yy" }); });/* Datepicker*/
+});
+//-->
+</script>
+<?php $totalCols = 11;?>
+<table cellspacing="0" cellpadding="0" border="1" id="" class="borderX">
+	<tr class="bggrey center">
+		<th class="10%" width="">
+			<!-- Ngay bat dau --> <?php  echo $this->_translate(1);?></th>
+		<th class="10%" width="">
+			<!-- Ngay ket thuc --> <?php  echo $this->_translate(2);?></th>
+		<th class="5%" width="">
+			<!-- Tham chieu --> <?php  echo $this->_translate(3);?></th>
+		<th width="10%">
+			<!-- Mã mặt hàng --> <?php echo $this->_translate(6);?>
+		</th>
+		<th width="15%">
+			<!-- Tên mặt hàng --> <?php echo $this->_translate(7);?>
+		</th>
+		<th width="10%">
+			<!-- Thuộc tính --> <?php echo $this->_translate(8);?>
+		</th>
+		<th width="5%">
+			<!-- Đơn vị tính --> <?php echo $this->_translate(10);?>
+		</th>
+		<th width="5%">
+			<!-- Số lượng kế hoạch --> <?php echo $this->_translate(51);?>
+		</th>
+		<th width="5%">
+			<!-- Số lượng kế hoạch --> <?php echo $this->_translate(11);?>
+		</th>
+		<th class="25%" width="">
+			<!-- Thiết kế --> <?php  echo $this->_translate(47);?></th>
+		<th class="5%" width="">&nbsp;</th>
+	</tr>
+
+	<?php foreach ($this->mainReq as $key=>$main): // In danh sach dong chinh?>
+	<tr>
+		<th colspan="<?php echo ($totalCols - 1)?>"><?php echo $main['ReqNo'] ?>
+		</th>
+		<th class="center"><input type="checkbox" onclick="checkAllLine(this)"
+			value="<?php echo $key;?>" /></th>
+	</tr>
+
+	<?php if(isset($this->detailReq[$key])) :  ?>
+	<?php foreach ($this->detailReq[$key] as $sub):// In danh sach chi tiet yeu cau theo dong chinh?>
+	<?php $disabled = ($sub['OrderedQty'] >= $sub['ItemQty'])?1:0;?>
+	<tr class="line_<?php echo $key;?>" permission="1">
+		<td class="center"><input type="hidden" name="StartDate[]"
+			class="disabled_input disabled_input_<?php echo $key;?>"
+			value="<?php echo $sub['StartDate'];?>" disabled /> <input
+			type="hidden" name="EndDate[]"
+			class="disabled_input disabled_input_<?php echo $key;?>"
+			value="<?php echo $sub['EndDate'];?>" disabled /> <input
+			type="hidden" name="Ref[]"
+			class="disabled_input disabled_input_<?php echo $key;?>"
+			value="<?php echo $sub['Ref'];?>" disabled /> <input type="hidden"
+			name="RefItem[]"
+			class="disabled_input disabled_input_<?php echo $key;?>"
+			value="<?php echo $sub['RefItem'];?>" disabled /> <input
+			type="hidden" name="ItemCode[]"
+			class="disabled_input disabled_input_<?php echo $key;?>"
+			value="<?php echo $sub['ItemCode'];?>" disabled /> <input
+			type="hidden" name="ItemName[]"
+			class="disabled_input disabled_input_<?php echo $key;?>"
+			value="<?php echo $sub['ItemName'];?>" disabled /> <input
+			type="hidden" name="Attribute[]"
+			class="disabled_input disabled_input_<?php echo $key;?>"
+			value="<?php echo $sub['Attribute'];?>" disabled /> <input
+			type="hidden" name="ItemUOM[]"
+			class="disabled_input disabled_input_<?php echo $key;?>"
+			value="<?php echo $sub['ItemUOM'];?>" disabled /> <input
+			type="hidden" name="IOID[]"
+			class="disabled_input disabled_input_<?php echo $key;?>"
+			value="<?php echo $sub['IOID'];?>" disabled /> <input type="hidden"
+			name="ToIOID[]"
+			class="to_ioid disabled_input disabled_input_<?php echo $key?>"
+			value="<?php echo $sub['ToIOID'];?>" disabled /> <input type="hidden"
+			class="disabled_condition" value="<?php echo $disabled;?>" /> <input
+			type="hidden" name="BOMID[]"
+			class="disabled_input disabled_input_<?php echo $key?>"
+			value="<?php echo $key?>" disabled /> <input type="hidden"
+			name="BOMName[]"
+			class="bom_name disabled_input disabled_input_<?php echo $key?>"
+			value="" disabled /> <input type="hidden" name="Assembly[]"
+			class="assembly disabled_input disabled_input_<?php echo $key?>"
+			value="" disabled /> <?php echo Qss_Lib_Date::mysqltodisplay($sub['StartDate'])?>
+		</td>
+		<td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($sub['EndDate'])?>
+		</td>
+		<td class="left"><?php echo $sub['Ref']?></td>
+		<td class="left"><?php echo $sub['ItemCode']?></td>
+		<td class="left"><?php echo $sub['ItemName']?></td>
+		<td class="<?php echo $sub['Attribute']?'left':'center'?>"><?php echo $sub['Attribute']?$sub['Attribute']:'-'?>
+		</td>
+		<td class="left"><?php echo $sub['ItemUOM']?></td>
+		<td class="right"><?php echo $sub['OrderedQty']?>/<?php echo $sub['ItemQty']?>
+		</td>
+		<td class="right"><input type="text" name="ItemQty[]"
+			class="disabled_input width_50 disabled_input_<?php echo $key;?>"
+			value="<?php echo $sub['ItemQty'];?>" disabled /></td>
+		<td class="center" width=""><select name="bom[]" id="bom"
+			class="bom disabled_input width_100 disabled_input_<?php echo $key;?>"
+			disabled onchange="fillBomInfo(this)">
+			<?php if(isset($this->bom[$sub['RefItem']])): // Neu co ton tai bom?>
+				<option value="" bom="" assembly="">
+				<?php echo $this->_translate(48)?>
+				</option>
+				<?php foreach ($this->bom[$sub['RefItem']] as $item):?>
+				<option value="<?php echo $item['Key']?>"
+					bom="<?php echo $item['Name']?>"
+					assembly="<?php echo $item['Assembly']?>">
+					<?php echo $item['Name']?>
+				</option>
+				<?php endforeach;?>
+				<?php else: // Khong ton tai bom?>
+				<option value="<?php //echo $this?>">
+				<?php //echo $this?>
+				</option>
+				<?php endif;?>
+		</select>
+		</td>
+		<td class="center"><input type="checkbox" onclick="checkLine(this)"
+			class="checkbox checkbox_<?php echo $key;?>" /></td>
+	</tr>
+	<?php endforeach;// In danh sach chi tiet yeu cau theo dong chinh ?>
+	<?php else:?>
+	<tr>
+		<td colspan="<?php echo $totalCols?>"><?php echo $this->_translate(12);?>
+		</td>
+	</tr>
+	<?php endif;?>
+	<?php endforeach; // Ket thuc in danh sach dong chinh?>
+</table>
+
+
+
+
+
+<script>
+var finder;
+$('.disabled_condition').each(function(){
+	if($(this).val() != 0)
+	{
+		finder = $(this).parent().parent();
+		//finder.find('.disabled_input').each(function(){
+		//	$(this).removeAttr('disabled');
+		//});
+		finder.find('.checkbox').attr('checked', true);
+		finder.find('.checkbox').attr('disabled', true);
+		finder.attr('permission', 0);
+		finder.addClass('bgyellow');
+	}
+});
+</script>

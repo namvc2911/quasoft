@@ -1,0 +1,52 @@
+<table cellpadding="0" cellspacing="0" class="border_table" border="0"
+	style="width: 100%;" id="einfo_maintplan_daytab">
+	<tr class="bggrey">
+		<th style="width: 5%;"><?php echo $this->_translate(1);?>
+			<!-- STT -->
+		</th>
+		<th style="width: 20%;"><?php echo $this->_translate(2);?>
+			<!-- Ngày -->
+		</th>
+		<th style="width: 75%;"><?php echo $this->_translate(3);?>
+			<!-- Mô tả --></th>
+	</tr>
+
+	<?php $j = 0;?>
+	<?php foreach($this->data as $data):?>
+	<?php
+	$editControl = ' <div class="einfo_plan_daytab_edit_control" style="display: none;">';
+	$editControl .= '<div class="einfo_delete_eq" style="" onclick="einfo_delete_sub_plan_tab( 252, ' . $data->IFID_M724 . ',' . $data->IOID . ');"> </div>';
+	$editControl .= '<div class="einfo_edit_eq" onclick="einfo_edit_sub_plan_tab(252, ' . $data->IFID_M724 . ',' . $data->IOID . ')"> </div>';
+	$editControl .= '</div>';
+	?>
+
+
+	<tr>
+		<td class="center"><?php echo ++$j;?>
+		</td>
+		<td class="left"><?php echo $data->Ngay;?>
+		</td>
+		<td class="left" style="position: relative;"><?php echo $data->MoTa;?>
+		<?php echo $editControl;?>
+		</td>
+	</tr>
+
+	<?php endforeach;?>
+
+
+	<?php if ($j < 10):?>
+	<?php for ($k = $j; $k < 10; $k++):?>
+	<tr>
+		<td class="center">&nbsp;</td>
+		<td class="center">&nbsp;</td>
+		<td class="center">&nbsp;</td>
+	</tr>
+	<?php endfor;?>
+	<?php endif;?>
+</table>
+
+<script>
+	$('.einfo_plan_daytab_edit_control').each(function(){ $(this).hide(); });
+	$('#einfo_maintplan_daytab tr').hover(function(){ $(this).addClass('marker'); $(this).find('.einfo_plan_daytab_edit_control').show();}
+	, function(){ $(this).removeClass('marker'); $(this).find('.einfo_plan_daytab_edit_control').hide();});
+</script>

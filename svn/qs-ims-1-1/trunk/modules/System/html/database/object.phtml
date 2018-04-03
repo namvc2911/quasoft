@@ -1,0 +1,90 @@
+<?php 
+function diff($a1, $a2) {
+	$r = array(); 
+    foreach ($a1 as $k => $v) 
+    {
+     	if(isset($a2[$k]))
+     	{
+     		$v2 = $a2[$k];
+     		foreach ($v as $kk=>$vv)
+     		{
+		        if ($v2->{$kk} != $vv) 
+		        {
+		        	if(!isset($r[$k]))
+		        	{
+		        		$r[$k] = new stdClass();
+		        	}
+		            $r[$k]->{$kk} = $v2->{$kk}; 
+		        }
+     		}
+     	} 
+    } 
+    return $r; 
+}
+?>
+	<form id="qss_form" action="" method="post">
+	<table class="grid" style="width:100%" border="0" cellspacing="0">
+		<tr>
+			<th>Current</th>
+			<th></th>
+			<th>Copy</th>
+		</tr>
+		<?php $bgclass = 'bggrey';?>
+		<?php foreach ($this->objects as $key=>$value):?>
+		<?php $diff = diff(@$value['current'],@$value['copy']);?>
+		<?php if(@$value['current_infor']->ObjectName != @$value['copy_infor']->ObjectName
+				|| @array_keys($value['current']) != @array_keys($value['copy'])
+				|| count($diff)):?>
+		<?php $bgclass = $bgclass?'':'bggrey'?>		
+		<tr class="<?php echo $bgclass;?>">
+			<td valign="top" width="45%">
+				<?php if(!@$value['current_infor']):?>
+					<span class="error">Not installed</span>
+				<?php else:?> 
+					<span class="bold"><?php echo $key?> - <?php echo @$value['current_infor']->ObjectName?></span>
+					<?php foreach ($value['current'] as $k=>$v):?>
+						<?php if($k):?>
+						<?php $class = 'green'?>
+						<?php if(!is_array(@$value['copy']) || !array_key_exists($k,$value['copy'])):?>
+							<?php $class = 'red'?>
+						<?php endif;?>
+						<p style="padding-left: 100px;" class="<?php echo $class?>" >- <?php echo $k?> - <?php echo $v->FieldName?>
+						<?php if($class == 'red'):?>
+							<a href="#" onclick="deleteField('<?php echo $v->ObjectCode?>','<?php echo $v->FieldCode?>')">Xóa</a>
+						<?php endif;?>
+						<?php endif;?>
+					<?php endforeach;?>
+				<?php endif;?>
+			</td>
+			<td width="10%" class="center">
+				<?php if(@$value['copy_infor']):?>
+				<span><button class="btn-custom" type="button" onclick="showObject('<?php echo $key?>')"><<</button></span>
+				<?php endif;?>
+			</td>
+			<td valign="top">
+				<?php if(!@$value['copy_infor']):?>
+					<span class="red">Not installed</span>
+				<?php else:?> 
+					<span class="bold"><?php echo $key?> - <?php echo @$value['copy_infor']->ObjectName?></span>
+					<?php foreach ($value['copy'] as $k=>$v):?>
+						<?php $diffString = '';?>
+						<?php if($k):?>
+						<?php $class = 'green'?>
+						<?php if(!is_array(@$value['current']) || !array_key_exists($k,$value['current'])):?>
+							<?php $class = 'red'?>
+						<?php endif;?>
+						<?php if(isset($diff[$k])):?>
+							<?php foreach ($diff[$k] as $kk=>$vv):?>
+								<?php $diffString .= "/{$kk}: {$vv}";?>
+							<?php endforeach;?>
+						<?php endif;?>
+						<p style="padding-left: 100px;"><span class="<?php echo $class?>">- <?php echo $k?> - <?php echo $v->FieldName?></span> <span class="red"><?php echo $diffString;?></span>
+						<?php endif;?>
+					<?php endforeach;?>
+				<?php endif;?>	
+			</td>
+		</tr>
+		<?php endif;?>
+		<?php endforeach;?>
+	</table>
+	</form>

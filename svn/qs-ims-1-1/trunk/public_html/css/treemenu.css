@@ -1,0 +1,116 @@
+	.treeview ul { /*CSS for Simple Tree Menu*/
+	margin: 0px 2px 2px 2px;
+	padding: 0px;
+}
+.treeview ul li ul { /*CSS for Simple Tree Menu*/
+	margin: 0px;
+	padding: 0px;
+}
+.treeview li { /*Style for LI elements in general (excludes an LI that contains sub lists)*/
+	background:url("/images/bg1.jpg")
+}
+.treeview li ul li {
+	margin-bottom:1px;
+}
+.treeview li ul li.submenu {
+	background:url("/images/closed.gif") no-repeat 0px 0px #f1f1f1;
+}
+.treeview li ul li.submenu a {
+	padding-left:30px
+}
+.treeview li ul li.submenu ul li.submenu {
+	background-position: 0px -22px
+	}
+.treeview li ul li.submenu ul li.submenu a {
+	padding-left:40px
+}
+.treeview li ul li.submenu ul li.submenu ul li.menu-item a {
+	padding-left:50px
+}
+.treeview li ul li.submenu a:hover {
+	/*background:url("/images/arrowleft.png") no-repeat 10px -20px #fff;*/
+	padding-left:30px
+}
+.treeview li ul li a {
+	display:block;
+	padding-left:20px
+}
+.treeview li ul li ul li.menu-item {
+	background: url('/images/arrowleft_s.gif') no-repeat 29px 1px #F1F1F1;
+	margin:0px;
+	/*border-top:1pt solid #4877B7*/
+}
+.treeview li ul li ul li.submenu ul li.menu-item {
+	background: url('/images/arrowleft_s.gif') no-repeat 41px 1px #f1f1f1;
+	margin:0px;
+}
+.treeview li ul li ul li.menu-item :hover {
+	background: url('/images/arrowleft_s.gif') no-repeat 28px 4px #F1F1F1;
+}
+.treeview li ul li.menu-item {
+	background: url('/images/arrowleft.png') no-repeat 10px 0px #f1f1f1;
+}
+.treeview li ul li ul li.menu-item a {
+	padding-left:40px;
+	background-image:none;
+	color:#333;
+	border-top:1pt solid #ccc;
+	}
+.treeview li ul li ul li.menu-item a:hover {
+	padding-left:40px;
+	background:url('/images/arrowleft_s.gif') no-repeat 29px 0px #FFF;
+	color:#000;
+	}
+.treeview li ul li ul li ul li.menu-item a {
+	padding-left:50px;
+	}
+.treeview li ul li ul li ul li.menu-item a:hover {
+	padding-left:50px;
+	background-position: 41px 0px;
+	}		
+.treeview li ul li.menu-item a {	
+	padding-left:30px;
+	background:url("/images/arrowleft.png") no-repeat 10px 0px;
+}
+.treeview li.menu { /* Style for LI that contains sub lists (other ULs). */
+	background:url(/images/closed.gif) no-repeat  0px -47px #58A;
+	margin-bottom:5px;
+	cursor:pointer;
+	overflow:hidden
+}
+.treeview li.menu a {
+	display:block;
+	color:#333
+}
+.treeview li a {
+	display:block;
+	color:#333;
+	line-height:20px;
+	padding-left:20px;
+}
+.treeview li.menu ul { /*Style for ULs that are children of LIs (submenu) */
+	display: none; /*Hide them by default. Don't delete. */
+}
+.treeview .menu ul li { /*Style for LIs of ULs that are children of LIs (submenu) */
+	cursor: default;
+}
+.treeview li.submenu { /* Style for LI that contains sub lists (other ULs). */
+}
+.treeview li.submenu ul { /*Style for ULs that are children of LIs (submenu) */
+	display: none; /*Hide them by default. Don't delete. */
+}
+.treeview .submenu ul li { /*Style for LIs of ULs that are children of LIs (submenu) */
+	cursor: default;
+}
+.menu-title {
+	display:block;
+	color:#f1f1f1;
+	/*font-weight:bold;
+	text-transform:uppercase;*/
+	font-size:12px;
+	line-height:18px;
+	padding-left:20px;
+	text-shadow: 0.1em 0.1em #666;
+}
+.treeview .menu-item :hover {  background: url("/images/arrowleft.png") no-repeat scroll 10px -20px #fff; color:#333}
+.treeview .menu-item :hover a {color:#333; display:block}

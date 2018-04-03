@@ -1,0 +1,190 @@
+<?php
+$pxWidthArr = array(1, 3,2, 5, 3, 2,2,2, 3, 3, 3, 2, 2, 3, 3);
+$pxWidthArr = Qss_Lib_Report::changeWidthToFitScreen($pxWidthArr, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+$stt        = 0;
+?>
+
+<div class="landscape">
+    <div id="head_print">
+        <?php echo $this->views->Common->Landscape('BM.09.03','Ngày hiệu lực : 01/03/2013') ?>
+
+        <h2 class="report-title center">
+            BÁO CÁO CÔNG TÁC QUẢN LÝ TRANG THIẾT BỊ, PHƯƠNG TIỆN CỦA DỰ ÁN và DỊCH VỤ O&M
+        </h2>
+
+        <p class="bold center">
+            Tên Dự án/ Dịch vụ O&M: <?php echo @$this->project->TenDuAn;?> Ngày báo cáo/ Cập nhật : <?php echo date('d-m-Y');?>
+        </p>
+        <br/>
+    </div>
+
+    <div id="container">
+        <table cellspacing="0" cellpadding="0" border="1" id="" class="border">
+            <?php $begin = 0;?>
+            <tr class="bggrey">
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">Stt</th>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">Tên phiếu YCCC</th>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">STT trên phiếu</th>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">Nội dung các hạng mục Dụng cụ, thiết bị</th>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">Mã Code thiết bị</th>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">Đơn vị tính</th>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">Số lượng yêu cầu</th>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">Số lượng còn thiếu</th>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">Số lượng nhận (mua)</th>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">Số lượng nhận (xuất kho)</th>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">Tổng SL nhận</th>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">SL Dụng cụ, thiết bị hư hỏng</th>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">SL Dụng cụ, thiết bị mất mát</th>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">Số lượng còn lại</th>
+                <th class="center" style="width:<?php echo $pxWidthArr[$begin++]; ?>px">Ghi chú</th>
+            </tr>
+
+            <tr class="bggrey">
+                <th class="center">(1)</th>
+                <th class="center">(2)</th>
+                <th class="center">(3)</th>
+                <th class="center">(4)</th>
+                <th class="center">(5)</th>
+                <th class="center">(6)</th>
+                <th class="center">(7)</th>
+                <th class="center">(8)</th>
+                <th class="center">(9)</th>
+                <th class="center">(10)</th>
+                <th class="center">(11)=(9)+(10)</th>
+                <th class="center">(12)</th>
+                <th class="center">(13)</th>
+                <th class="center">(14)=(11)-(12)-(13)</th>
+                <th class="center">(15)</th>
+            </tr>
+
+			<?php $totalSoLuongYeuCau = 0;?>
+            <?php $totalSoLuongMua = 0;?>
+            <?php $totalSoLuongDieuDong = 0;?>
+            <?php $totalTongSoLuongNhan = 0;?>
+            <?php $totalHuHong = 0;?>
+            <?php $totalMat = 0;?>
+            <?php $totalConLai = 0;?>
+            <?php $totalSoLuongConThieu = 0;?>
+
+            <?php foreach($this->data as $item):?>
+
+				<?php $totalSoLuongYeuCau += $item->SoLuong;?>
+                <?php $item->SoLuongMua = $item->SoLuongMua?$item->SoLuongMua:0;?>
+                <?php $totalSoLuongMua += $item->SoLuongMua;?>
+                <?php $item->SoLuongDieuDong = $item->SoLuongDieuDong?$item->SoLuongDieuDong:0;?>
+                <?php $totalSoLuongDieuDong += $item->SoLuongDieuDong;?>
+                <?php $tongSoLuongNhan = $item->SoLuongMua + $item->SoLuongDieuDong;?>
+                <?php $totalTongSoLuongNhan += $tongSoLuongNhan;?>
+                <?php $item->HuHong = $item->HuHong?$item->HuHong:0;?>
+                <?php $totalHuHong += $item->HuHong;?>
+                <?php $item->Mat = $item->Mat?$item->Mat:0;?>
+                <?php $totalMat += $item->Mat;?>
+                <?php $soLuongConLai = ($item->SoLuongMua + $item->SoLuongDieuDong)-$item->HuHong-$item->Mat;?>
+                <?php $totalConLai += $soLuongConLai;?>
+                
+                <?php $soLuongConThieu =  $item->SoLuong - $tongSoLuongNhan;?>
+                <?php $totalSoLuongConThieu += $soLuongConThieu;?>
+
+                <tr>
+                    <!-- STT -->
+                    <td class="center"><?php echo ++$stt;?></td>
+                    <!-- Tên phiếu YCCC -->
+                    <td class="left">
+                        <?php echo $item->SoPhieu;?>
+                    </td>
+                    <td class="left">
+                        <?php echo $item->STT;?>
+                    </td>
+                    <!-- Nội dung các hạng mục Dụng cụ, thiết bị -->
+                    <td class="left">
+                        <?php echo $item->LoaiThietBi;?>
+                    </td>
+                    <!-- Mã Code thiết bị -->
+                    <td class="left">
+
+                    </td>
+                    <!-- Đơn vị tính -->
+                    <td class="left">
+                        <?php echo $item->DonViTinh;?>
+                    </td>
+                    
+                    <td class="right">
+                        <?php echo Qss_Lib_Util::formatNumber($item->SoLuong);?>
+                    </td>
+                    
+                    <td class="right">
+                        <?php echo Qss_Lib_Util::formatNumber($soLuongConThieu);?>
+                    </td>
+                    
+                    <!-- Số lượng nhận (mua) -->
+                    <td class="right">
+                        <?php echo Qss_Lib_Util::formatNumber($item->SoLuongMua);?>
+                    </td>
+
+                    <!-- Số lượng nhận (xuất kho) -->
+                    <td class="right">
+                        <?php echo Qss_Lib_Util::formatNumber($item->SoLuongDieuDong);?>
+                    </td>
+                    <!-- Tổng SL nhận -->
+                    <td class="right">
+                        <?php echo Qss_Lib_Util::formatNumber($tongSoLuongNhan);?>
+                    </td>
+                    <!-- SL Dụng cụ, thiết bị hư hỏng -->
+                    <td class="right">
+                        <?php echo Qss_Lib_Util::formatNumber($item->HuHong);?>
+                    </td>
+                    <td class="right">
+                        <?php echo Qss_Lib_Util::formatNumber($item->Mat);?>
+                    </td>
+                    <td class="right">
+                        <?php echo Qss_Lib_Util::formatNumber($soLuongConLai);?>
+                    </td>
+                    <td class="left"></td>
+                </tr>
+            <?php endforeach;?>
+
+            <tr>
+                <td colspan="4" class="center bold">TỔNG CỘNG</td>
+                <td></td>
+                <td></td>
+                <td class="right"><?php echo Qss_Lib_Util::formatNumber($totalSoLuongYeuCau);?></td>
+                <td class="right"><?php echo Qss_Lib_Util::formatNumber($totalSoLuongConThieu);?></td>
+                <td class="right"><?php echo Qss_Lib_Util::formatNumber($totalSoLuongMua);?></td>
+                <td class="right"><?php echo Qss_Lib_Util::formatNumber($totalSoLuongDieuDong);?></td>
+                <td class="right"><?php echo Qss_Lib_Util::formatNumber($tongSoLuongNhan);?></td>
+                <td class="right"><?php echo Qss_Lib_Util::formatNumber($totalHuHong);?></td>
+                <td class="right"><?php echo Qss_Lib_Util::formatNumber($totalMat);?></td>
+                <td class="right"><?php echo Qss_Lib_Util::formatNumber($totalConLai);?></td>
+                <td></td>
+            </tr>
+        </table>
+
+        <br/>
+        <br/>
+
+        <table>
+            <tr>
+                <td style="width: 25%;" class="center">Ngày: …/ …/ …</td>
+                <td style="width: 25%;" class="center">Ngày: …/ …/ …</td>
+                <td style="width: 25%;" class="center">Ngày: …/ …/ …</td>
+                <td style="width: 25%;" class="center">Ngày: …/ …/ …</td>
+            </tr>
+
+            <tr>
+                <td style="width: 25%;" class="center bold">Người báo cáo</td>
+                <td style="width: 25%;" class="center bold">Lãnh đạo Dự án/ Dịch vụ O&M</td>
+                <td style="width: 25%;" class="center bold">Phòng KHĐT</td>
+                <td style="width: 25%;" class="center bold">Ban Giám Đốc</td>
+            </tr>
+        </table>
+
+        <br/>
+        <br/>
+        <br/>
+
+    </div>
+
+    <div id="qss_trace">
+
+    </div>
+</div>

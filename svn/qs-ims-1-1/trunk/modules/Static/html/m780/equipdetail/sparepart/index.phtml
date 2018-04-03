@@ -1,0 +1,103 @@
+<script type="text/javascript">
+<!--
+$(document).ready(function(){
+	$('#sparepart_search').focus();
+	$('#sparepart_search').val('<?php echo $this->search?>');
+});
+//-->
+</script>
+<input id="sparepart_search" type="text" style="width: 200px;line-height: 20px" onkeypress="sparepart_search_enter(event)">
+<button onclick="einfo_load_tab_for_equip(7)" class="btn-custom" type="button" >Tìm kiếm</button>
+
+<div style="position: relative;">
+    <table cellpadding="0" cellspacing="0" class="border_table"
+           style="width: 100%;" id=''>
+        <tr class="bggrey center">
+
+            <?php // Khi co truong bo phan thi moi in ra ?>
+            <?php if($this->activeViTri):?>
+                <th style="width: 10%"><?php echo $this->_translate(1);?></th>
+                <th style="width: 20%"><?php echo $this->_translate(2);?></th>
+            <?php endif;?>
+
+            <?php // Khi co truong phu tung thi moi in ra ?>
+            <?php if($this->activePhuTung):?>
+                <th style="width: 10%"><?php echo $this->_translate(9);?></th>
+            <?php endif;?>
+
+            <th style="width: 10%"><?php echo $this->_translate(3);?>
+            </th>
+
+            <th style="width: 15%"><?php echo $this->_translate(4);?>
+            </th>
+
+            <th style="width: 10%"><?php echo $this->_translate(5);?>
+            </th>
+
+            <th style="width: 10%">&nbsp;
+            </th>
+
+        </tr>
+
+        <?php $CountLine = 0; ?>
+        <?php foreach ($this->data as $item): ?>
+
+                <tr class="pointer einfo-historytab-row"
+                    ifid="<?php //echo $h->IFID_M707 ?>"
+                    deptid="<?php echo $this->deptid ?>">
+
+                    <?php // Khi co truong bo phan thi moi in ra ?>
+                    <?php if($this->activeViTri):?>
+                        <td class="left tree_level_<?php echo $item->LEVEL;?> <?php echo $item->LEVEL?'tree_open':'';?>"><?php echo $item->ViTri; ?></td>
+                        <td class="left"><?php echo $item->BoPhan; ?></td>
+                    <?php endif;?>
+
+                    <?php // Khi co truong phu tung thi moi in ra ?>
+                    <?php if($this->activePhuTung):?>
+                        <td class="center <?php echo $item->LaPhuTung?'col-checked':'col-unchecked'; ?>">&nbsp;</td>
+                    <?php endif;?>
+
+                    <td class="left"><?php echo $item->MaSP; ?></td>
+                    <td class="left"><?php echo $item->TenSP; ?></td>
+
+                    <td class="right"><?php echo $item->SoLuongHC; ?></td>
+
+                    <td class="center">
+                        <a href="#1"
+                           onclick="einfo_showSparepartHistory(eq_ioid_global, <?php echo (int)$item->Ref_ViTri; ?>, <?php echo (int)$item->Ref_MaSP; ?>, 1)">
+                            <?php echo $this->_translate(7);?>
+                        </a>
+                    </td>
+                </tr>
+            <?php $CountLine++; ?>
+        <?php endforeach; ?>
+
+        <?php if ($CountLine <= 10): ?>
+            <?php for ($i = $CountLine; $i < 10; $i++): ?>
+                <tr class="pointer einfo-historytab-row" onclick="einfo_select_history_row(this)">
+                    <?php // Khi co truong bo phan thi moi in ra ?>
+                    <?php if($this->activeViTri):?>
+                        <td class="left">&nbsp;</td>
+                        <td class="center">&nbsp;</td>
+                    <?php endif;?>
+
+                    <?php // Khi co truong phu tung thi moi in ra ?>
+                    <?php if($this->activePhuTung):?>
+                        <td class="center">&nbsp;</td>
+                    <?php endif;?>
+
+                    <td class="left">&nbsp;</td>
+                    <td class="left">&nbsp;</td>
+                    <td class="left">&nbsp;</td>
+                    <td class="left">&nbsp;</td>
+                </tr>
+            <?php endfor; ?>
+        <?php endif; ?>
+    </table>
+
+    <div class="round-button">
+        <a class="round-button-circle" href="#" onclick="popupObjectInsert(<?php echo $this->eq->IFID_M705 ?>, 1, 'OCauTrucThietBi', {OCauTrucThietBi_TrucThuoc:0}, function() {
+            $('#einfo-search-eq-table').jstree('load_node', $('#EQUIP<?php echo $this->eq->IFID_M705 ?>')); einfo_load_tab_for_equip(7);
+            })">+</a>
+    </div>
+</div>

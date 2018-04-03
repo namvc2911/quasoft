@@ -1,0 +1,34 @@
+<br />
+<table cellpadding="0" cellspacing="0" border="" class="border_table"
+	style="width: 60%;">
+	<tr class="">
+		<th>Mã Lệnh SX</th>
+		<th>Bắt đầu</th>
+		<th>Kết thúc</th>
+		<th>Tình trạng</th>
+	</tr>
+
+	<?php foreach($this->po as $p):?>
+	<?php if(isset($p['Count']) && $p['Count']):?>
+	<tr class="bold">
+		<td colspan="4"><?php echo $p['Code']?> - <?php echo $p['Name']?> (<?php echo $p['Count'];?>)</td>
+	</tr>
+	<?php if(isset($p['PO'])):?>
+	<?php foreach ($p['PO'] as $po):?>
+	<tr
+		onmouseover="common_hover_table_line(this, 'pinfo_po_by_line_hover');"
+		onclick="common_select_table_line(this, 'pinfo_po_by_line', function(){ pinfo_add_po_filter(
+			<?php echo $po['IOID']?>, '<?php echo $po['Code']?>');});"
+		ioid="<?php echo $po['IOID']?>"
+		id="pinfo_po_by_line_<?php echo $po['IOID']?>" class="pointer">
+		<td><?php echo $po['Code']?>
+		</td>
+		<td><?php echo Qss_Lib_Date::mysqltodisplay($po['Start'])?></td>
+		<td><?php echo Qss_Lib_Date::mysqltodisplay($po['End'])?></td>
+		<td class="<?php echo $po['Class']?>"><?php echo $po['Step']?></td>
+	</tr>
+	<?php endforeach;// Hien thi cac lenh san xuat theo day chuyen?>
+	<?php endif; // Neu co dong lenh san xuat?>
+	<?php endif; // Neu dem duoc lenh san xuat?>
+	<?php endforeach;  // Hien thi cac day chuyen va lenh san xuat?>
+</table>

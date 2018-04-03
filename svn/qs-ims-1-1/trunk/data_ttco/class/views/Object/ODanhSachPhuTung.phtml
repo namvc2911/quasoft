@@ -1,0 +1,30 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	var height = $(window).height() - 150 - $('#grid thead').height();//-8
+	$('#grid').tableScroll({height:height,width:'100%'});
+	$('#grid').click(function(event){
+		//grid_editing = true;
+	    //event.stopPropagation();
+	});
+});
+</script>
+<table cellspacing="0" class="grid " id="grid" style="width:100%">
+<thead>
+	<tr>
+		<th style="border-bottom: 1px solid #ccc;">Mã vật tư</th>
+		<th style="border-bottom: 1px solid #ccc;">tên chi tiết và quy cách vật tư, phụ tùng</th>
+		<th style="border-bottom: 1px solid #ccc;">ĐVT</th>
+		<th style="border-bottom: 1px solid #ccc;">Số lượng</th>
+	</tr>
+</thead>
+<tbody>
+	<?php foreach ($this->data as $item):?>
+		<tr>
+			<td class="data"><?php echo $item->ma?></td>
+			<td class="data"><?php echo $item->ten?></td>
+			<td class="data"><?php echo $item->DonViTinh?></td>
+			<td class="data"><?php echo $item->soluong?></td>
+		</tr>
+	<?php endforeach;?>
+</tbody>
+</table>

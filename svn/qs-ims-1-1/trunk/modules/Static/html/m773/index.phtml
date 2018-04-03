@@ -1,0 +1,81 @@
+<script>
+	function printPreview() {
+		var msg = validate();
+
+		if (msg != '')
+		{
+			qssAjax.alert(msg);
+			return;
+		}
+		else
+		{
+			loadModule();
+		}
+	}
+	
+	function validate()
+	{
+		var ngaybd = $('#start').val();
+		var ngaykt = $('#end').val();
+		var msg = '';
+		
+		msg += common_checkEmpty(ngaybd, '<?php echo $this->_translate(2) ?>');
+		msg += common_checkEmpty(ngaykt, '<?php echo $this->_translate(3) ?>');
+		msg += common_compareStartAndEnd(ngaybd, ngaykt);
+		
+		return msg;
+	}
+
+	function loadModule()
+	{
+		var url = sz_BaseUrl + '/static/m773/show';
+		var data = $('#report').serialize();
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#print-area').html(jreturn);
+			removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+		});
+	}
+</script>
+
+<div class="clear"></div>
+<div id="view">
+	<div class="line-hr">
+		<span><?php echo Qss_Lib_System::getReportTitle('M773');?> </span>
+	</div>
+	<form id="report" method="get" action="/report/maintenance/ee1">
+		<table class="detail">
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(2) ?>
+				</th>
+				<td><?php echo $this->views->Report->Datepicker('start', '01-' . date('m-Y')); ?><span
+					class="bold red">(*)</span></td>
+			</tr>
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(3) ?>
+				</th>
+				<td><?php echo $this->views->Report->Datepicker('end', date('d-m-Y')); ?><span
+					class="bold red">(*)</span></td>
+			</tr>
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(4) ?>
+				</th>
+				<td><?php
+				$id = 'type';
+				$getFields = array('num' => 2,
+						'objects' => array('OLoaiThietBi' => array(
+								'id' => 'IOID'
+								, 'display1' => 'TenLoai'
+								)));
+								?> <?php echo $this->views->Report->ComboBox($id, $getFields); ?>
+			
+			</tr>
+		</table>
+	</form>
+	<hr>
+	<?php echo $this->views->Report->PrintToolbar(); ?>
+	<div id="print-content">
+		<div id="print-area"></div>
+	</div>
+</div>
+
+

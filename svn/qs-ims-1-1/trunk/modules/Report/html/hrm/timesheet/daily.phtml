@@ -1,0 +1,168 @@
+<!-- Báo cáo chấm công theo ngày  -->
+
+<script type="text/javascript">
+<!--
+
+function dateWarning()
+{
+
+	var message = '';
+        var limit;
+        var suffix;
+        var prefix = '<?php echo $this->_translate(21)?>';
+        var ngaybd    = $('#start').val();
+        var ngaykt    = $('#end').val();
+        var startArr  = ngaybd.split("-");
+        var endArr    = ngaykt.split("-");
+        var start     = new Date( parseInt(startArr[2]), parseInt(startArr[1]) - 1, parseInt(startArr[0]));
+        var secondDate  = new Date();
+        var secondDateLimit = new Date();
+
+        limit = <?php echo (isset($this->limit['D']) && $this->limit['D'])?$this->limit['D']:0;?>;
+        start.setDate(start.getDate() + limit - 1); 
+        suffix = '<?php echo $this->_translate(22)?>';
+
+        secondDate.setFullYear(parseInt(endArr[2]), parseInt(endArr[1]) - 1, parseInt(endArr[0]));
+        secondDateLimit.setFullYear(start.getFullYear(), start.getMonth(), start.getDate());
+
+        if(secondDateLimit < secondDate )
+        {
+            message = prefix + ' ' + limit + ' ' + suffix;
+        }
+	return message;
+} 
+
+
+// Xem báo cáo chấm công theo tháng
+function printPreview()
+{
+	var start = $('#start').val();
+	var end   = $('#end').val();
+        var msg   = ''
+        var firstValue  = start.split('-');
+	var secondValue = end.split('-');
+	var firstDate   = new Date();
+	firstDate.setFullYear(firstValue[2],(firstValue[1] - 1 ),firstValue[0]);
+	var secondDate  = new Date();
+	secondDate.setFullYear(secondValue[2],(secondValue[1] - 1 ),secondValue[0]);    
+        
+	if(!start)
+	{
+		msg += '<?php echo $this->_translate(1)?>';
+	}
+        
+	if(!end)
+	{
+		msg += '<?php echo $this->_translate(2)?>';
+	}
+        
+        if (firstDate > secondDate)
+        {
+               msg += '<?php echo $this->_translate(3)?>';
+        }
+
+
+//	$('#report').submit(function() {
+//
+//        window.open('', 'formpopup', 'statusbar=no,resizable=yes,scrollbars=yes, addressbar=no,maximize=yes');
+//        this.target = 'formpopup';
+//    });
+//	$('#report').submit();
+
+        if(msg)
+        {
+            qssAjax.alert(msg); 
+            return;
+        }
+        else
+        {
+            var warning = dateWarning();
+			if(warning)
+			{
+				qssAjax.confirm(warning,function(){
+					loadModule();
+				});
+			}
+			else
+			{
+				loadModule();
+			}
+
+        }
+}
+
+function loadModule()
+{
+	var url = sz_BaseUrl + '/report/hrm/timesheet/daily1';
+	var data = $('#report').serialize();
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#print-area').html(jreturn);
+		removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+	});
+}
+//-->
+</script>
+
+<!-- html -->
+<div class="clear"></div>
+<div id="view">
+	<div class="line-hr">
+		<span><?php echo $this->_translate(4)?> </span>
+	</div>
+	<form id="report" method="get" action="/report/hrm/timesheet/daily1">
+		<table class="detail">
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(5)?>
+				</th>
+				<td><?php echo $this->views->Report->Datepicker('start', date('d-m-Y'));?><span
+					class="bold red">(*)</span></td>
+			</tr>
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(6)?>
+				</th>
+				<td><?php echo $this->views->Report->Datepicker('end', date('d-m-Y'));?><span
+					class="bold red">(*)</span></td>
+			</tr>
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(8)?>
+				</th>
+				<td><?php
+				$id            = 'department';
+				$getFields     = array('num'=>3,
+                                       'objects'=>array('OPhongBan'=>array(
+                                                            'id'=>'MaPhongBan'
+                                                            ,'display1'=>'MaPhongBan'
+                                                            ,'display2'=>'TenPhongBan')) );
+                                                            ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+				</td>
+			</tr>
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(7)?>
+				</th>
+				<td><?php
+				$id            = 'employee';
+				$getDataObject = array('ODanhSachNhanVien'=>array('MaNhanVien', 'TenNhanVien'));
+				$getFields     = array('num'=>2,
+                                       'objects'=>array('ODanhSachNhanVien'=>array(
+                                                                'id'=>'MaNhanVien'
+                                                                ,'display1'=>'MaNhanVien'
+                                                                ,'display2'=>'TenNhanVien')) );
+                                                                $getLookupFilter = array( 0=>array('id'=>'department'
+                                                                , 'refField'=>array('ODanhSachNhanVien'=>'MaPhongBan')
+                                                                , 'required'=>0));
+                                                                ?> <?php echo $this->views->Report->ListBox($id, $getDataObject,$getFields
+                                                                , $getLookupFilter);?>
+				</td>
+			</tr>
+
+		</table>
+	</form>
+	<p>
+	
+	
+	<hr>
+	<?php echo $this->views->Report->PrintToolbar();?>
+	<div id="print-content">
+		<div id="print-area"></div>
+	</div>
+</div>

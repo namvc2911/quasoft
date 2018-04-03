@@ -1,0 +1,275 @@
+<?php $i = 0;?>
+<?php $k = 0;?>
+<?php
+	$fields = $this->form->o_fGetMainObject();
+	$widths = array();
+	$widths[] = 6;
+	$widths[] = 4;
+	$widths[] = 3;
+	if($fields->getFieldByCode('NguyenNhan')->bEffect)
+	{
+		$widths[] = 4;//nguyên nhân
+	}
+	if($fields->getFieldByCode('BienPhapKhacPhuc')->bEffect)
+	{
+		$widths[] = 4;
+	}
+	if($fields->getFieldByCode('GhiChu')->bEffect)
+	{
+		$widths[] = 4;
+	}
+	$widths[] = 4;
+	$widths[] = 4;
+	$widths[] = 4;
+    $widths   = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+    $totalCol = count($widths);
+?>
+
+<table id="grid" class="grid" cellspacing="0" cellpadding="0" border="0" style="padding-bottom: 100px; width: 100%;">
+<thead>
+    <tr>
+        <?php $begin = 0;?>
+        <th style="width: <?php echo $widths[$begin++];?>%; text-align: center;">Thiết bị</th>
+<!--        <th style="width: 15%; text-align: center;">Bộ phận</th>-->
+        <th style="width: <?php echo $widths[$begin++];?>%; text-align: center;">Nội dung</th>
+
+		<th class="bglightblue" style="width: <?php echo $widths[$begin++];?>%; text-align: center;">Kết quả</th>
+		<?php if($fields->getFieldByCode('NguyenNhan')->bEffect):?>
+        	<th style="width: <?php echo $widths[$begin++];?>%; text-align: center;">&nbsp;Nguyên nhân</th>
+        <?php endif;?>
+        <?php if($fields->getFieldByCode('BienPhapKhacPhuc')->bEffect):?>
+        	<th style="width: <?php echo $widths[$begin++];?>%; text-align: center;">&nbsp;Biện pháp khắc phục</th>
+		<?php endif;?>
+		<?php if($fields->getFieldByCode('GhiChu')->bEffect):?>
+        <th style="width: <?php echo $widths[$begin++];?>%; text-align: center;">&nbsp;Ghi chú</th>
+        <?php endif;?>
+        <th style="width: <?php echo $widths[$begin++];?>%; text-align: center;">&nbsp;Công cụ/Dụng cụ</th>
+
+        <th style="width: <?php echo $widths[$begin++];?>%; text-align: center;">&nbsp;Ứng phó</th>
+        <th style="width: <?php echo $widths[$begin++];?>%; text-align: center;">&nbsp;Tình trạng</th>
+    </tr>
+</thead>
+<tbody>
+    <tr style="height: 0px;">
+        <td style="height: 0px;"></td>
+        <td style="height: 0px;"></td>
+        <td style="height: 0px;"></td>
+        <?php if($fields->getFieldByCode('NguyenNhan')->bEffect):?>
+        	<td style="height: 0px;"></td>
+        <?php endif;?>
+        <?php if($fields->getFieldByCode('BienPhapKhacPhuc')->bEffect):?>
+        	<td style="height: 0px;"></td>
+        <?php endif;?>
+         <?php if($fields->getFieldByCode('GhiChu')->bEffect):?>
+        	<td style="height: 0px;"></td>
+        <?php endif;?>
+        <td style="height: 0px;"></td>
+        <td style="height: 0px;"></td>
+        <td style="height: 0px;"></td>
+    </tr>
+
+    <!-- Danh sach thiet bi -->
+    <?php foreach($this->tree as $locioid=>$detail):?>
+
+        <tr  class="bggrey ">
+            <td colspan="<?php echo $totalCol;?>" class="left tree_level_<?php echo $detail['Level'];?> tree_open"> <b><?php echo $detail['Name'].' - '.$detail['Code'];?></b> </td>
+        </tr>
+
+        <?php if($locioid > 0 && isset($detail['Equip'])):?>
+
+            <?php $ik=0;?>
+            <?php foreach($detail['Equip'] as $item):?>
+                <?php
+                    $ik++;
+                    $mark = '';
+					
+                    /*if($ik%2 == 0)
+                    {
+                        $mark = 'bglightblue';
+                    }*/
+
+                    if($item->NhatTrinhIOID)
+                    {
+                        if($item->DinhLuong)
+                        {
+                            $item->GioiHanDuoi = (double)$item->GioiHanDuoi;
+                            $item->GioiHanTren = (double)$item->GioiHanTren;
+
+                            if( !($item->GioiHanTren == 0 && $item->GioiHanDuoi == 0)
+                                && ($item->Old >= $item->GioiHanTren || $item->Old <= $item->GioiHanDuoi))
+                            {
+                                $mark = 'bgpink';
+                            }
+                        }
+                        else
+                        {
+                            if($item->Dat == 2)
+                            {
+                                $mark = 'bgpink';
+                            }
+                        }
+                    }
+                ?>
+                <tr class=" line_data ">
+                    <td class="tree_level_<?php echo ($detail['Level']);?> break">
+                        <?php echo $item->TenThietBi;?> - <?php echo $item->MaThietBi;?>
+
+                        <input type="hidden" name="nhattrinhifid[]" value="<?php echo (int)$item->NhatTrinhIFID;?>" />
+                        <input type="hidden" name="nhattrinhioid[]" value="<?php echo (int)$item->NhatTrinhIOID;?>" />
+                        <input type="hidden" name="refdiemdo[]" value="<?php echo $item->MonitorIOID;?>">
+                        <input type="hidden" name="diemdo[]" value="<?php echo $item->Ma;?>">
+                        <input type="hidden" name="dinhluong[]" value="<?php echo @(int)$item->DinhLuong;?>" />
+                        <input type="hidden" name="refmathietbi[]" value="<?php echo $item->EQIOID;?>" />
+                        <input type="hidden" name="mathietbi[]" value="<?php echo $item->MaThietBi;?>" />
+                        <input type="hidden" name="tenthietbi[]" value="<?php echo $item->TenThietBi;?>" />
+                        <input type="hidden" name="bophan[]" value="<?php echo $item->BoPhan;?>" />
+                        <input type="hidden" name="refbophan[]" value="<?php echo $item->Ref_BoPhan;?>" />
+                        <input type="hidden" name="thietbideptid[]" value="<?php echo $item->ThietBiDeptID;?>" />
+                        <input type="hidden" class="min" value="<?php echo (double)$item->GioiHanDuoi;?>" />
+                        <input type="hidden" class="max" value="<?php echo (double)$item->GioiHanTren;?>" />
+                    </td>
+
+                    <?php /*
+                    <td>
+                        <?php echo $item->BoPhan;?>
+                    </td>
+                    */?>
+
+                    <td>
+                        <?php echo $item->Ma;?>
+                    </td>
+
+
+                    <?php $min = (double)$item->GioiHanDuoi;?>
+                    <?php $max = (double)$item->GioiHanTren;?>
+
+                    <td class="center <?php echo $mark?$mark:'bglightgreen'?>">
+
+                        <?php if($item->DinhLuong == 1):?>
+                            <input
+                                type="text"
+                                size="5"
+                                name="val[]"
+                                value="<?php echo $item->Old;?>"
+                                class="m765_value m765_value_text <?php echo ($item->Old > 0)?'bgyellow':'';?>"
+                                onkeypress="m765.highlightMinMax(this);"
+                                onkeyup="m765.highlightMinMax(this);"
+
+                                <?php if($min != 0 || $max != 0):?>
+                                    title="MIN: <?php echo $min;?> - MAX: <?php echo $max;?> "
+                                <?php endif;?>
+                            />
+                        <?php elseif($item->DinhLuong == 0):?>
+                            <input type="checkbox"
+                                   class="radio_<?php echo $i;?> radio_true"
+                                   value="1"
+                                   id="radio_<?php echo $i;?>_true"
+                                   onclick="m765.higlightOnOff(this, <?php echo $i;?>);"
+                                <?php echo ($item->Dat == 1)?'checked':'';?>>OK	
+                        <?php endif;?>
+                       <?php if($item->DinhLuong == 0):?>
+                            <input type="checkbox"
+                                   class="radio_<?php echo $i;?> radio_false"
+                                   value="2"
+                                   id="radio_<?php echo $i;?>_false"
+                                   onclick="m765.higlightOnOff(this, <?php echo $i;?>);"
+                                <?php echo ($item->Dat == 2)?'checked':'';?>>NOK
+
+                            <input type="hidden" name="val[]" class="m765_value m765_value_check"
+                                   value="<?php echo (int)$item->Dat;?>"
+                                   id="m765_checkbox_<?php echo $i++;?>" />
+                        <?php endif;?>
+                    </td>
+                    <?php if($fields->getFieldByCode('NguyenNhan')->bEffect):?>
+                    <td class="center">
+                        <textarea name="reason[]" class=" m765_value_text" style="width: 98%;  margin: 0 1%;"><?php echo $item->NguyenNhan;?></textarea>
+                    </td>
+                    <?php endif;?>
+                    <?php if($fields->getFieldByCode('BienPhapKhacPhuc')->bEffect):?>
+                    <td class="center">
+                        <textarea name="remedy[]" class=" m765_value_text" style="width: 98%; margin: 0 1%;"><?php echo $item->BienPhapKhacPhuc;?></textarea>
+                    </td>
+					<?php endif;?>
+					 <?php if($fields->getFieldByCode('GhiChu')->bEffect):?>
+                    <td class="center">
+                        <textarea name="note[]" class=" m765_value_text" style="width: 98%; margin: 0 1%;"><?php echo $item->GhiChu;?></textarea>
+                    </td>
+                    <?php endif;?>
+                    <td class="left">
+                        <?php echo @$item->CongCuDungCu;?>
+                    </td>
+
+                    <td class="center">
+                        <?php
+                        $ungPho = false;
+                        if($item->NhatTrinhIOID)
+                        {
+                            if($item->DinhLuong)
+                            {
+                                $item->GioiHanDuoi = (double)$item->GioiHanDuoi;
+                                $item->GioiHanTren = (double)$item->GioiHanTren;
+
+                                if( !($item->GioiHanTren == 0 && $item->GioiHanDuoi == 0)
+                                    && ($item->Old >= $item->GioiHanTren || $item->Old <= $item->GioiHanDuoi))
+                                {
+                                    $ungPho = true;
+                                }
+                            }
+                            else
+                            {
+                                if($item->Dat == 2)
+                                {
+                                    $ungPho = true;
+                                }
+                            }
+                        }
+                        ?>
+                        <?php if($ungPho):?>
+                            <button type="button" class="btn btn_main_top" onclick="">
+                                Ứng phó sự cố
+                            </button>
+                        <?php endif;?>
+                    </td>
+
+                    <td class="center" style="padding: 1px;">
+                        <div class="dropdown" >
+                            <?php if($item->NhatTrinhIOID): ?>
+                                <?php if($item->Status == 1 || $item->Status == 0):?>
+                                    <button type="button" class="btn btn_main_top" onclick="m765.finish('<?php echo $item->NhatTrinhIFID;?>', <?php echo $this->deptid;?>);">
+                                        Hoàn thành
+                                    </button>
+                                <?php elseif($item->Status == 2):?>
+                                    <?php foreach($this->approvers as $approver):?>
+
+                                        <?php if($approver->SAID):?>
+                                            <button class="btn-custom btn btn_main_top center green"
+                                                    type="button"
+                                                    onclick="m765.approve('<?php echo $approver->SAID;?>', '<?php echo $item->NhatTrinhIFID;?>', <?php echo $this->deptid;?>);"
+                                            >
+                                                <?php echo $approver->Name?>
+                                            </button>
+
+                                            <?php break;?>
+                                        <?php endif;?>
+                                    <?php endforeach;?>
+                                <?php else:?>
+                                    <span class="<?php echo $item->Color;?>">
+                                        <?php echo $item->StatusName;?>
+                                    </span>
+                                <?php endif;?>
+                            <?php endif;?>
+                        </div>
+                        <input type="hidden" name="status[]" class="" value="<?php echo (int)$item->Dat;?>" id="m765_checkbox_status_<?php echo $k++;?>" />
+                    </td>
+                </tr>
+            <?php endforeach;?>
+        <?php endif;?>
+    <?php endforeach;?>
+</tbody>
+</table>
+<script>
+$(document).ready(function() {
+	var height = $(window).height() - 210 - $('#grid thead').height();//-8
+	$('#grid').tableScroll({height:height,width:'100%'});
+});
+</script>

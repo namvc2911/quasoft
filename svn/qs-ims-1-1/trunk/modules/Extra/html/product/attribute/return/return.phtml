@@ -1,0 +1,553 @@
+<style>
+.return_customer_yellowBg {
+	background: #FFFF33;
+}
+
+.return_customer_regBg {
+	background: red;
+}
+
+.select {
+	width: 142px;
+}
+</style>
+
+
+
+<?php
+
+/**
+ * Nạp dữ kiện
+ */
+$serialLot 		= $this->serialLot;
+$attributes 	= $this->attributes;
+$oldValue       = $this->oldValue;
+$zoneAndBin     = $this->zoneAndBin;
+$col            = 0;  // Đếm số cột
+/* Kết thúc nạp dữ kiện */
+
+/**
+ * Xử lý dữ kiện
+ */
+
+/* Kết thúc xử lý dữ kiện */
+
+?>
+<script type="text/javascript">
+<!--
+function showBin(ele)
+{
+	var zone = ele.value;
+	var data = {
+			zone:zone
+			,refWarehouse:'<?php echo $serialLot->refWarehouse;?>'
+			,refItem:'<?php echo $serialLot->refItem?>'
+			,ifid:'<?php echo $this->ifid;?>'
+			,ioid:'<?php echo $this->ioid;?>'
+			}; 
+	var url = sz_BaseUrl + '/extra/product/attribute/in/bin'; 
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('.bin_a').html(jreturn); 
+	});
+}
+
+function showBinNew(line, ele)
+{
+	var zone = ele.value;
+	var data = {
+			zone:zone
+			,refWarehouse:'<?php echo $serialLot->refWarehouse;?>'
+			,refItem:'<?php echo $serialLot->refItem?>'
+			,ifid:'<?php echo $this->ifid;?>'
+			,ioid:'<?php echo $this->ioid;?>'
+			}; 
+	var url = sz_BaseUrl + '/extra/product/attribute/in/bin'; 
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('.bin_'+line).html(jreturn); 
+	});
+}
+function returnCustomerAttributesNew()
+{
+	var lotQty = $('#lotQty').val()?$('#lotQty').val():1; 
+	var newQty = $('#newQty').val();
+	var updateQty = $('#updateQty').val();
+
+		var url = sz_BaseUrl + '/extra/product/attribute/return/new'; 
+		var data = {
+					 lotQty:lotQty
+					,newQty:newQty
+					,ifid:'<?php echo $this->ifid;?>'
+					,ioid:'<?php echo $this->ioid;?>'
+					,zoneAndBin:'<?php echo serialize($zoneAndBin)?>'
+					,oldValue:'<?php echo serialize($oldValue)?>'
+					}; 
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#return_customer_new').html(jreturn);// 
+		});
+
+}
+
+	function returnCustomerAttributesSearch()
+	{
+		var newQty 	  = $('#newQty').val();
+		var updateQty = $('#updateQty').val();
+
+		if(updateQty != '')
+		{
+			var url  = sz_BaseUrl + '/extra/product/attribute/return/search'; 
+			var data = $('#searchAttr').serialize(); 
+			qssAjax.getHtml(url, data, function(jreturn) {
+				$('#return_customer_update').html(jreturn);// 
+			});
+			returnCustomerPage();
+		}
+		else
+		{
+			qssAjax.alert('Số lượng cập nhật yêu cầu bắt buộc !');
+		}
+
+	}
+
+	function returnCustomerPage()
+	{
+		var url  = sz_BaseUrl + '/extra/product/attribute/return/page'; 
+		var data = $('#searchAttr').serialize(); 
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#page').html(jreturn);// 
+		});
+	}
+
+	function returnCustomerRemoveCondition()
+	{
+		$('#searchAttr input[type=text][name!=updateQty]').val('');
+		returnCustomerAttributesSearch()
+	}
+
+/*	function enableAttr(ele)
+	{
+		
+		if($(ele).is(':checked'))
+		{
+			$(ele).parent().parent().addClass('return_customer_yellowBg')
+			.find('input[type=hidden], input[type=text]').removeAttr('disabled');
+
+		}
+		else
+		{
+			$(ele).parent().parent().removeClass('return_customer_yellowBg')
+			.find('input[type=hidden], input[type=text]').attr('disabled',true);
+		}
+	}*/
+	function enableAttr(ele)
+	{
+		
+		if($(ele).is(':checked'))
+		{
+			$(ele).parent().parent().removeClass('return_customer_regBg').addClass('return_customer_yellowBg')
+			.find('.qty').removeAttr('disabled').removeAttr('readonly');
+			$(ele).parent().parent().find('input[type=hidden]').removeAttr('disabled').removeAttr('readonly');
+			$(ele).parent().parent().find('input[name*=checkUpdate]').attr('value','1');
+		}
+		else
+		{
+			$(ele).parent().parent().find('input[name*=checkUpdate]').attr('value','0');
+			if($(ele).parent().parent().find('input[name*=existsIOID]').val() != 0)
+			{
+				$(ele).parent().parent().removeClass('return_customer_yellowBg').addClass('return_customer_regBg')
+				.find('.qty').attr('readonly','readonly');
+			}
+			else
+			{
+				$(ele).parent().parent().removeClass('return_customer_yellowBg').find('.qty')
+				.attr('disabled','disabled');
+				$(ele).parent().parent().find('input[type=hidden]').attr('disabled',true);
+			}
+			
+		}
+	}
+
+	function checkAllLine(ele)
+	{
+		if($(ele).is(':checked'))
+		{
+			$('#return_customer_update').find('tr').has('input[type=text]').addClass('return_customer_yellowBg')
+			.find('input[type=hidden], input[type=text]').removeAttr('disabled');
+
+			$('#return_customer_update').find('input[type=checkbox]').attr('checked',true);
+		}
+		else
+		{
+			$('#return_customer_update').find('tr').removeClass('return_customer_yellowBg')
+			.find('input[type=hidden], input[type=text]').attr('disabled',true);	
+
+			$('#return_customer_update').find('input[type=checkbox]').removeAttr('checked');	
+		}
+	}
+
+	function returnCustomerSave()
+	{
+		//return_customer_attributes_form_new
+		//return_customer_attributes_form_update
+
+		var data = $('#return_customer_attributes_form_update, #return_customer_attributes_form_new').serialize();
+		var url = sz_BaseUrl + '/extra/product/attribute/return/save'; 
+		
+		qssAjax.call(url, data, function(jreturn){
+			if(jreturn.message != ''){
+				qssAjax.alert(jreturn.message);
+			}
+			returnCustomerAttributesSearch
+		}, function(jreturn){
+			qssAjax.alert(jreturn.message);
+		});
+	}	
+
+-->
+</script>
+
+<?php if($serialLot->lot || $serialLot->serial || $zoneAndBin['hasZone']):?>
+<div>
+	<h1>Trạng thái lưu trữ</h1>
+	<br /> Sản phẩm <b>"<?php echo $serialLot->itemName;?>"</b> với mã <b>"<?php echo $serialLot->itemCode;?>"</b>
+	, nhận lại với số lượng là <b><?php echo $serialLot->itemQty;?> </b>
+	<?php echo strtolower($serialLot->itemUOM);?>
+	!
+</div>
+<br />
+
+	<?php if($serialLot->lot || $serialLot->serial):?>
+<div>
+	<table width="100%" cellpadding="0" cellspacing="0"
+		id="return_customer_change" border="1" style="text-align: center;">
+		<tr>
+			<td>STT</td>
+
+			<?php if($serialLot->serial): ?>
+			<td>Số Serial</td>
+			<?php endif;?>
+
+			<?php if($serialLot->lot): ?>
+			<td>Số Lô</td>
+			<?php endif;?>
+
+			<?php if($this->attributeExists):?>
+			<td>Mã thuộc tính</td>
+			<?php endif;?>
+
+			<?php if($zoneAndBin['hasZone']):?>
+			<td>Zone</td>
+			<?php if($zoneAndBin['hasBin']):?>
+			<td>Bin</td>
+			<?php endif;// hasBin?>
+			<?php endif;//hasZone?>
+
+			<td>Số lượng <?php ?></td>
+
+		</tr>
+		<?php $i=0;?>
+		<?php foreach ($oldValue as $val) :?>
+		<tr>
+			<td><?php $i++; echo $i;?>
+			</td>
+
+			<?php if($serialLot->serial): ?>
+			<td><?php echo  $val['SoSerial'];?>
+			</td>
+			<?php endif;?>
+
+			<?php if($serialLot->lot): ?>
+			<td><?php echo $val['SoLo']?>
+			</td>
+			<?php endif;?>
+
+			<?php if($this->attributeExists):?>
+			<td><?php echo $val['MaThuocTinh'];?></td>
+			<?php endif;?>
+
+			<?php if($zoneAndBin['hasZone']):?>
+			<td><?php echo $val['Zone'];?>
+			</td>
+			<?php if($zoneAndBin['hasBin']):?>
+			<td><?php echo $val['Bin'];?>
+			</td>
+			<?php endif;// hasBin?>
+			<?php endif;//hasZone?>
+
+			<td><?php echo $val['SoLuong'];?></td>
+
+		</tr>
+		<?php endforeach;?>
+	</table>
+</div>
+<br />
+<br />
+<hr />
+<br />
+<br />
+<div>
+	<div>
+		Số lượng đánh mới : <input type="text" id="newQty" value="" />
+		<?php if($serialLot->lot):?>
+		Số lượng trên mỗi lô : <input type="text" id="lotQty" value="" />
+		<?php endif;?>
+
+		<button onclick="returnCustomerAttributesNew()" type="button"
+			class="btn-custom">Thiết lập lưu trữ</button>
+
+	</div>
+	<br /> <br />
+
+	<div>
+		<form id="return_customer_attributes_form_new">
+			<input type="hidden" name="ioid" value="<?php echo $this->ioid;?>" />
+			<input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" />
+			<input type="hidden" name="module"
+				value="<?php echo $this->module;?>" /> <input type="hidden"
+				name="serialLot" value='<?php echo serialize($serialLot)?>' /> <input
+				type="hidden" name="oldValue"
+				value='<?php echo serialize($oldValue)?>' />
+
+
+			<table width="100%" cellpadding="0" cellspacing="0"
+				id="return_customer_new" border="1" style="text-align: center;">
+				<tr>
+					<td>STT</td>
+
+					<?php if($serialLot->serial): ?>
+					<td>Số Serial</td>
+					<?php endif;?>
+
+					<?php if($serialLot->lot): ?>
+					<td>Số Lô</td>
+					<?php endif;?>
+
+					<?php if($this->attributeExists):?>
+					<td>Mã thuộc tính</td>
+					<?php $col++?>
+					<?php endif;?>
+
+					<?php if($zoneAndBin['hasZone']):?>
+					<td>Zone</td>
+					<?php if($zoneAndBin['hasBin']):?>
+					<td>Bin</td>
+					<?php endif;// hasBin?>
+					<?php endif;//hasZone?>
+					<td>Số lượng <?php ?></td>
+
+				</tr>
+			</table>
+		</form>
+	</div>
+	<br />
+
+	<!-- 
+		<div>
+			<button onclick = "" type = "button" class = "btn-custom"> Chỉnh sửa </button>
+			<button onclick = "" type = "button" class = "btn-custom"> Cập nhật </button>
+		</div>
+		-->
+
+	<br />
+
+	<hr />
+	<br />
+
+
+	<!--  <button onclick = "" type = "button" class = "btn-custom"> Cập nhật </button>-->
+	<br /> <br />
+
+	<div>
+		<form name="searchAttr" id="searchAttr">
+			<input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" />
+			<input type="hidden" name="ioid" value="<?php echo $this->ioid;?>" />
+			<input type="hidden" name="itemName"
+				value="<?php echo $serialLot->itemName;?>" /> <input type="hidden"
+				name="itemUOM" value="<?php echo $serialLot->itemUOM;?>" /> <input
+				type="hidden" name="itemCode"
+				value="<?php echo $serialLot->itemCode;?>" /> <input type="hidden"
+				name="itemQty" value="<?php echo $serialLot->itemQty;?>" /> <input
+				type="hidden" name="warehouse"
+				value="<?php echo $serialLot->warehouse;?>" /> <input type="hidden"
+				name="zoneAndBin" value='<?php echo serialize($zoneAndBin);?>' />
+			<table>
+				<tr>
+					<td>Số lượng cập nhật lại :</td>
+					<td><input type="text" id="updateQty" name="updateQty" value="" />
+					</td>
+
+				</tr>
+				<?php if($serialLot->lot):?>
+				<tr>
+					<td>Lô bắt đầu :</td>
+					<td><input type="text" name="beginLot" value="" /></td>
+					<td>Lô kết thúc :</td>
+					<td><input type="text" name="endLot" value="" /></td>
+				</tr>
+				<?php endif;?>
+
+				<?php if($serialLot->serial):?>
+				<tr>
+					<td>Số serial bắt đầu :</td>
+					<td><input type="text" name="beginSerial" value="" /></td>
+					<td>Số serial kết thúc :</td>
+					<td><input type="text" name="endSerial" value="" /></td>
+				</tr>
+				<?php endif;?>
+
+				<?php if($zoneAndBin['hasZone']):?>
+				<td>Zone :</td>
+				<td><select name="zoneFilter" class="select"
+				<?php if($zoneAndBin['hasBin']):?> id="zone_a"
+					onchange="showBin(this)" <?php endif;?>>
+						<option value="">Tất cả</option>
+						<?php foreach ($zoneAndBin['defaultArray'] as $k=>$v):?>
+						<option value="<?php echo $k;?>">
+						<?php echo $v['name'];?>
+							(
+							<?php echo $k?>
+							)
+						</option>
+						<?php endforeach;?>
+				</select>
+				</td>
+				<?php if($zoneAndBin['hasBin']):?>
+				<td>Bin :</td>
+				<td><select name="binFilter" class="bin_a select">
+						<option value="">Tất cả</option>
+				</select>
+				</td>
+				<?php endif;?>
+				<?php endif;?>
+
+				<tr>
+					<td>Số trang hiển thị :</td>
+					<td><select name="perPage"
+						onchange="returnCustomerAttributesSearch()">
+							<option value="5">5</option>
+							<option value="10">10</option>
+							<option value="20" selected>20</option>
+							<option value="50">50</option>
+							<option value="100">100</option>
+					</select>
+					</td>
+					<td>Chọn trang cần đến :</td>
+					<td><select id="page" name="page"
+						onchange="returnCustomerAttributesSearch()">
+							<option value="1">1</option>
+					</select>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						<button onclick="returnCustomerAttributesSearch()" type="button"
+							class="btn-custom">Tìm kiếm</button>
+						<button onclick="returnCustomerRemoveCondition()" type="button"
+							class="btn-custom">Xóa điều kiện</button>
+					</td>
+				</tr>
+			</table>
+
+		</form>
+	</div>
+	<br /> <br />
+
+	<div>
+		<form id="return_customer_attributes_form_update">
+			<table width="100%" cellpadding="0" cellspacing="0"
+				id="return_customer_update" border="1" style="text-align: center;">
+				<tr>
+					<td>STT</td>
+
+					<td><input type="checkbox" name="CheckAll" onclick="" />
+					</td>
+					<?php if($serialLot->serial):?>
+					<td>Số Serial</td>
+					<?php endif;?>
+
+					<?php if($serialLot->lot): ?>
+					<td>Số Lô</td>
+					<?php endif;?>
+
+					<?php if($this->attributeExists):?>
+					<td>Mã thuộc tính</td>
+					<?php $col++?>
+					<?php endif;?>
+
+					<?php if($zoneAndBin['hasZone']):?>
+					<td>Zone</td>
+					<?php if($zoneAndBin['hasBin']):?>
+					<td>Bin</td>
+					<?php endif;// hasBin?>
+					<?php endif;//hasZone?>
+
+
+					<td>Số lượng</td>
+
+					<td>Số lượng cập nhật</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<br />
+
+	<!--  <button onclick = "" type = "button"  class = "btn-custom"> Chỉnh sửa </button>-->
+	<button onclick="returnCustomerSave()" type="button" class="btn-custom">
+		Cập nhật</button>
+</div>
+<br />
+					<?php elseif($zoneAndBin['hasZone']):/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++*/?>
+
+<div>
+
+	<button onclick="returnCustomerAttributesNew()" type="button"
+		class="btn-custom">Thiết lập lưu trữ</button>
+	<button onclick="returnCustomerSave()" type="button" class="btn-custom">
+		Cập nhật</button>
+</div>
+<br />
+<br />
+
+<div>
+	<form id="return_customer_attributes_form_new">
+		<input type="hidden" name="ioid" value="<?php echo $this->ioid;?>" />
+		<input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" />
+		<input type="hidden" name="module" value="<?php echo $this->module;?>" />
+		<input type="hidden" name="serialLot"
+			value='<?php echo serialize($serialLot)?>' /> <input type="hidden"
+			name="oldValue" value='<?php echo serialize($oldValue)?>' />
+
+
+		<table width="100%" cellpadding="0" cellspacing="0"
+			id="return_customer_new" border="1" style="text-align: center;">
+			<tr>
+				<td>STT</td>
+				<?php if($this->attributeExists):?>
+				<td>Mã thuộc tính</td>
+				<?php $col++?>
+				<?php endif;?>
+
+				<?php if($zoneAndBin['hasZone']):?>
+				<td>Zone</td>
+				<?php if($zoneAndBin['hasBin']):?>
+				<td>Bin</td>
+				<?php endif;// hasBin?>
+				<?php endif;//hasZone?>
+				<td>Số lượng <?php ?></td>
+
+			</tr>
+		</table>
+	</form>
+</div>
+<br />
+<br />
+<br />
+				<?php endif;?>
+				<?php else:?>
+Sản phẩm "
+				<?php echo $serialLot->itemName;?>
+" với mã "
+				<?php echo $serialLot->itemCode;?>
+" không quản lý theo serial và lô hoặc trong kho không có zone hay bin
+nào .
+				<?php endif;?>

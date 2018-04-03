@@ -1,0 +1,133 @@
+<?php
+$thuocTinh = (Qss_Lib_System::fieldActive('ThuocTinh', 'OVatTu'));
+$ThayMoi   = (Qss_Lib_System::fieldActive('ThayMoi', 'OVatTu'));
+?>
+
+<table cellpadding="0" cellspacing="0" class="border_table" border="0"
+	style="width: 100%;" id="einfo_maintplan_materialtab">
+	<tr class="bggrey">
+		<th style="width: 5%;"><?php echo $this->_translate(1);?> <!-- STT -->
+		</th>
+
+        <?php if($this->activeViTri):?>
+		<th style="width: 10%;"><?php echo $this->_translate(2);?> <!-- Vị trí -->
+		</th>
+		<th style="width: 10%;"><?php echo $this->_translate(3);?> <!-- Bộ phận -->
+		</th>
+        <?php endif;?>
+
+		<!--  <th style="width: 10%;"><?php echo $this->_translate(11);?> Ảnh 
+		</th> -->
+		<th style="width: 10%;"><?php echo $this->_translate(4);?> <!-- Mã vật tư -->
+		</th>
+		<th style="width: 10%;"><?php echo $this->_translate(5);?> <!-- Tên vật tư  -->
+		</th>
+		<th style="width: 15%;"><?php echo $this->_translate(6);?> <!-- Đặc tính KT -->
+		</th>
+		<?php if($thuocTinh):?>
+		<th style="width: 10%;"><?php echo $this->_translate(7);?> <!-- Thuộc tính -->
+		</th>
+		<?php endif;?>
+		<th style="width: 10%;"><?php echo $this->_translate(8);?> <!-- Đơn vị tính -->
+		</th>
+		<th style="width: 10%;"><?php echo $this->_translate(9);?> <!-- Số lượng -->
+		</th>
+		<?php if($ThayMoi):?>
+		<th style="width: 10%;"><?php echo $this->_translate(10);?> <!-- Thay mới -->
+		</th>
+		<?php endif;?>
+		<th style="width: 4%;">&nbsp; <!-- Mức độ ưu tiên -->
+			</th>
+		<th style="width: 4%;">&nbsp;
+			</th>
+	</tr>
+
+	<?php $j = 0;?>
+	<?php foreach($this->data as $data):?>
+	<?php
+	/*$editControl = ' <div class="einfo_plan_materialtab_edit_control" style="display: none;">';
+	$editControl .= '<div class="einfo_delete_eq" style="" onclick="einfo_delete_sub_plan_tab( 163, ' . $data->IFID_M724 . ',' . $data->IOID . ');"> </div>';
+	$editControl .= '<div class="einfo_edit_eq" onclick="einfo_edit_sub_plan_tab(163, ' . $data->IFID_M724 . ',' . $data->IOID . ')"> </div>';
+	$editControl .= '</div>';*/
+	?>
+
+
+
+	<tr>
+		<td class="center"><?php echo ++$j;?></td>
+
+        <?php if($this->activeViTri):?>
+		<td class="left"><?php echo $data->ViTri;?></td>
+		<td class="left"><?php echo $data->BoPhan;?></td>
+        <?php endif;?>
+
+		<!--  <td class="left">
+		<?php //if($data->ImageID):?> 
+		<?php
+		/*$imageResult = '';
+		$image       = "/user/field/picture?file={$data->Image}";
+		$imageExists = file_exists(QSS_DATA_DIR. "/documents/{$data->Image}");
+
+		if ($imageExists)
+		{
+			$imageResult = '<img src="'.$image.'" width="48px" height="27px" style="width:48px; height:27px;"/>';
+		}
+		echo $imageResult;*/
+		?> 
+		<?php //endif;?>
+		</td>-->
+		<td class="left"><?php echo $data->MaVatTu;?></td>
+		<td class="left"><?php echo $data->TenVatTu;?></td>
+		<td class="left"><?php echo $data->DacTinhKyThuat;?></td>
+		<?php if($thuocTinh):?>
+		<td class="left"><?php echo $data->ThuocTinh;?></td>
+		<?php endif;?>
+		<td class="left"><?php echo $data->DonViTinh;?></td>
+		<td class="right"><?php echo $data->SoLuong;?>
+		</td>
+		<?php if($ThayMoi):?>
+		<td
+			class="left <?php echo $data->ThayMoi?'col-checked' : 'col-unchecked';?>"></td>
+			<?php endif;?>
+		<td class="center"><a href="#" onclick="einfo_edit_sub_plan_tab('OVatTu', '<?php echo $data->IFID_M724?>','<?php echo $data->IOID?>')">Sửa</a>
+		</td>
+		<td class="center"><a href="#" onclick="einfo_delete_sub_plan_tab('OVatTu', '<?php echo $data->IFID_M724?>','<?php echo $data->IOID?>');">Xóa</a>
+		</td>
+	</tr>
+
+	<?php endforeach;?>
+
+
+	<?php if ($j < 10):?>
+	<?php for ($k = $j; $k < 10; $k++):?>
+	<tr>
+		<td class="center">&nbsp;</td>
+
+        <?php if($this->activeViTri):?>
+		<td class="center">&nbsp;</td>
+		<td class="center">&nbsp;</td>
+        <?php endif;?>
+
+		<td class="center">&nbsp;</td>
+		<td class="center">&nbsp;</td>
+		<td class="center">&nbsp;</td>
+		<td class="center">&nbsp;</td>
+		<?php if($thuocTinh):?>
+		<td class="center">&nbsp;</td>
+		<?php endif;?>
+		<td class="center">&nbsp;</td>
+		<?php if($ThayMoi):?>
+		<td class="center">&nbsp;</td>
+		<?php endif;?>
+		<td class="center">&nbsp;</td>
+		<td class="center">&nbsp;</td>
+	</tr>
+	<?php endfor;?>
+	<?php endif;?>
+</table>
+
+<script>
+	/*$('.einfo_plan_materialtab_edit_control').each(function(){ $(this).hide(); });
+	$('#einfo_maintplan_materialtab tr').hover(function(){ $(this).addClass('marker'); $(this).find('.einfo_plan_materialtab_edit_control').show();}
+	, function(){ $(this).removeClass('marker'); $(this).find('.einfo_plan_materialtab_edit_control').hide();});*/
+</script>

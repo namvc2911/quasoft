@@ -1,0 +1,86 @@
+<?php
+$countExists = 0;
+$max         = 10;
+?>
+
+<table class="border_table" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <th style="width: 30%" class="center"><?php echo $this->_translate(1)?></th>
+        <th style="width: 30%" class="center">Serial</th>
+        <th style="width: 20%" class="center"><?php echo $this->_translate(2)?></th>
+        <th style="width: 20%"  class="center"><?php echo $this->_translate(3)?></th>
+    </tr>
+
+    <!-- In vi tri da chon -->
+    <?php if($this->stockstatus && count($this->stockstatus)):?>
+        <?php foreach($this->stockstatus as $item):?>
+            <?php $countExists++; // Dem so luong vi tri da co ?>
+
+            <tr rights="<?php echo $this->rights;?>" class="m506-position-data-line">
+                <td class="left"> <?php echo $item->Bin;?>
+                    <input  type="hidden" value="<?php echo $item->Ref_Bin;?>"
+                        size="8"
+                        class="right m506_position_select"
+                        ioid="<?php echo $this->outputLineIOID;?>"
+                        ssioid="0"
+                        <?php if( !($this->rights &4) ):?>disabled<?php endif;?>
+                    />
+                </td>
+                <td class="center">
+                    <?php echo $item->SoSerial;?>
+                    <input type="hidden" class="right m506_position_serial" name="serial[]" value="<?php echo $item->SoSerial;?>" />
+                </td>
+
+                <td class="right"> <?php echo $item->TonKho;?></td>
+                <td class="center">
+
+                    <?php /*
+                    <?php if($item->SoSerial):?>
+                        <input type="checkbox"
+                            <?php echo ($item->SoLuong != 0)?'checked':'';?>
+                            <?php echo (!$item->SoLuong && $item->TonKho == 0)?'disabled':''; ?>
+                            <?php if($item->TonKho == 1):?>onclick=" if($(this).is(':checked')) {$(this).parent().find('.m506_position_qty').val(1);} else{$(this).parent().find('.m506_position_qty').val('');} keepPositionList3(9); validateQty(9); "<?php endif;?>/>
+
+                        <input type="hidden"
+                               value=""
+                               size="8"
+                               class="right m506_position_qty"
+                               <?php if( !($this->rights &4) ):?>disabled<?php endif;?>
+                            />
+                    <?php else:?>
+                        <input type="text"
+                               value="<?php echo ($item->SoLuong != 0)?$item->SoLuong:0;?>"
+                               size="8"
+                               class="right m506_position_qty"
+                               <?php if( !($this->rights &4) ):?>disabled<?php endif;?>
+                            />
+                    <?php endif;?>
+                    */?>
+
+                    <input type="text"
+                           name="qty[]"
+                           value="<?php echo ($item->SoLuong != 0)?$item->SoLuong:0;?>"
+                           size="8"
+                           class="right m506_position_qty"
+                           <?php if( !($this->rights &4) ):?>disabled<?php endif;?>
+                        />
+                </td>
+            </tr>
+        <?php endforeach;?>
+    <?php endif;?>
+
+    <!-- In du 10 dong -->
+    <?php for($i = 0; $i < ($max - $countExists); $i++):?>
+        <tr>
+            <td class="left">
+            </td>
+            <td class="center">
+            </td>
+            <td class="right">
+            </td>
+
+            <td class="center">
+            </td>
+        </tr>
+    <?php endfor;?>
+</table>

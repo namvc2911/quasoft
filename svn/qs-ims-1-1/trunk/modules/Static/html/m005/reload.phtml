@@ -1,0 +1,38 @@
+<?php
+$widths = array(1, 5, 5, 5, 5, 3, 2);
+$widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+?>
+
+<table class="grid" cellspacing="0" style="">
+    <?php $begin = 0;?>
+    <tr>
+        <th style="width:<?php echo $widths[$begin++];?>%; border-left: 1px solid rgb(204, 204, 204);border-bottom: 1px solid rgb(204, 204, 204);">No</th>
+        <th class="data" style="width:<?php echo $widths[$begin++];?>%; border-bottom: 1px solid rgb(204, 204, 204);">Name</th>
+        <th class="data" style="width:<?php echo $widths[$begin++];?>%; border-bottom: 1px solid rgb(204, 204, 204);">Username</th>
+        <th class="data" style="width:<?php echo $widths[$begin++];?>%; border-bottom: 1px solid rgb(204, 204, 204);">Position</th>
+        <th class="data" style="width:<?php echo $widths[$begin++];?>%; border-bottom: 1px solid rgb(204, 204, 204);">Email</th>
+        <th class="data" style="width:<?php echo $widths[$begin++];?>%; border-bottom: 1px solid rgb(204, 204, 204);">Mobile</th>
+        <th class="data" style="width:<?php echo $widths[$begin++];?>%; border-bottom: 1px solid rgb(204, 204, 204);">Active</th>
+    </tr>
+
+    <?php $ik = 0;?>
+    <?php foreach ($this->user as $value):?>
+        <?php $ik++;?>
+        <tr id="<?php echo $value->UID;?>" class="
+						<?php echo ($value->UID != 1)?(($ik%2==0)?'bglightblue':''):'bgpink';?>"
+            onclick="rowCLK(this)" rights="63">
+            <td class="nocount">
+                <?php echo $ik;?>
+            </td>
+
+            <td class="data "><?php echo $value->UserName; ?></td>
+            <td class="data "><?php echo $value->UserID; ?></td>
+            <td class="data "><?php echo $value->TitleName; ?></td>
+            <td class="data "><?php echo $value->EMail; ?></td>
+            <td class="data center"><?php echo $value->Mobile; ?></td>
+            <td class="data center"><?php echo $value->isActive?'<span class="green bold">Active</span>':'<span class="red bold">Inactive</span>'; ?></td>
+        </tr>
+    <?php endforeach;?>
+</table>
+
+

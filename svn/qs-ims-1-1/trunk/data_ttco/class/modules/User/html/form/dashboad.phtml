@@ -1,0 +1,290 @@
+<?php
+
+?>
+
+
+<script>
+    $(document).ready(function(){
+        $('#pdate').datepicker({ dateFormat: "dd-mm-yy" });
+        //$('#pdate').val('<?php echo date('d-m-Y');?>');
+
+        $('#prdate').datepicker({ dateFormat: "dd-mm-yy" });
+        //$('#prdate').val('<?php echo date('d-m-Y',strtotime("-1 days"));?>');
+
+        loadInit();
+    });
+
+    function loadInit()
+    {
+        loadManufacturings();
+        loadPlanTasks();
+        //loadPlanTasksReport();
+
+        loadPolicy();
+        loadKnowledge();
+        loadWater();
+        loadElectric();
+    }
+
+    function loadPlanTasksDetail(day, month, year)
+    {
+        var url = 'http://' + location.host + '/extra/dashboard/news/plantasks1';
+        var data = {day: day, month:month, year:year};
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#dashboad_2').html(jreturn);
+            $('#dashboad_2').show();
+        });
+    }
+
+    function loadPlanTasks()
+    {
+        var url = 'http://' + location.host + '/extra/dashboard/news/plantasks';
+        var data = {pdate:$('#pdate').val()};
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#plan_tasks').html(jreturn);
+            $('#plan_tasks').show();
+        });
+    }
+
+
+    function showDay(d,m,y) {
+
+        var url = sz_BaseUrl + '/extra/dashboard/news/plantasks2';
+        if(d) $('#day').val(d);
+        if(m) $('#month').val(m);
+        if(y) $('#year').val(y);
+        $('#type').val('day');
+        var data = {day:d, month:m, year: y};
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#plantask_box').html(jreturn);
+            $('#task_month_view').html(jreturn);
+        });
+    }
+
+    function loadPlanTasksReport()
+    {
+        var url = 'http://' + location.host + '/extra/dashboard/news/plantasksreport';
+        var data = {prdate:$('#prdate').val()};
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#plan_tasks_report').html(jreturn);
+            $('#plan_tasks_report').show();
+        });
+    }
+
+    function loadManufacturings()
+    {
+        var url = 'http://' + location.host + '/extra/dashboard/news/manufacturings';
+        var data = {madate:$('#madate').val()};
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#manufacturings').html(jreturn);
+            $('#manufacturings').show();
+        });
+    }
+
+    function loadPolicy()
+    {
+        var url = 'http://' + location.host + '/extra/dashboard/news/policy';
+        var data = {};
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#policy').html(jreturn);
+            $('#policy').show();
+        });
+    }
+
+    function loadKnowledge()
+    {
+        var url = 'http://' + location.host + '/extra/dashboard/news/knowledge';
+        var data = {};
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#knowledge').html(jreturn);
+            $('#knowledge').show();
+        });
+    }
+
+    function loadWater()
+    {
+        var url = 'http://' + location.host + '/extra/dashboard/news/water';
+        var data = {wdate:$('#wdate').val()};
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#water').html(jreturn);
+            $('#water').show();
+        });
+    }
+
+    function loadElectric()
+    {
+        var url = 'http://' + location.host + '/extra/dashboard/news/electric';
+        var data = {edate:$('#edate').val()};
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#electric').html(jreturn);
+            $('#electric').show();
+        });
+    }
+</script>
+
+<style>
+	table.grid th{
+        border-bottom: 1px solid #ccc;
+    }
+    .qss_block {
+        border: 1pt solid #c8c8c8;
+        margin-bottom: 10px;
+        line-height: 20px
+    }
+
+    .qss_block .topbox {
+        background: url("/images/bg_th.gif") repeat-x scroll 0 0;
+        font-weight: bold;
+        height: 24px;
+        padding-left: 20px;
+    }
+
+    table.datagrid {
+        border-color: #eee
+    }
+
+    table.datagrid tr td,table.datagrid tr th {
+        border-color: #ccc;
+        padding: 0 5px
+    }
+
+    .slidingDiv {
+        position: absolute;
+        background: #fff;
+        right: 0;
+        width: 250px;
+        border: 1pt solid #ccc;
+        z-index: 1000
+    }
+
+    .q_setting {
+        background: #f1f1f1;
+        font-weight: normal;
+    }
+
+    .q_setting .datagrid tr:hover {
+        background: #fff
+    }
+
+    .notify4 {
+        margin: 0
+    }
+
+    .notify4 a,.notify5 a {
+        text-indent: 5000em;
+        display: block;
+        height: 18px;
+        width: 16px;
+        background: url('/images/setting.png') no-repeat 0px 0px;
+        margin: 3px
+    }
+
+    .notify4 a:hover,.notify5 a:hover {
+        background-position: 0 -17px;
+        margin: 3px
+    }
+
+    .box_das2 {
+        float: left;
+        padding: 2px;
+        margin-left: 10px;
+    }
+
+    .box_das2 .inside_das2 {
+        width: 590px;
+        /*height: 200px;*/
+        border: 1pt solid #ccc;
+        background:#fff;
+    }
+	
+	.box_das2 .inside_das1 {
+        width: 800px;
+    }
+    
+	.box_das2 .inside_das3 {
+        width: 350px;
+    }
+    
+    .box_das2 .name_box_das2 {
+        background: #fff;
+        padding: 2px 10px;
+        text-align: center;
+        font-weight: bold;
+        border: 1pt solid #ccc;
+        border-top: none;
+        position: relative
+    }
+
+    a.hide_box_das2 {
+        background: url('/images/event/close.png') no-repeat 0px 0px;
+        border: medium none;
+        display: block;
+        float: right;
+        height: 15px;
+        position: absolute;
+        right: 3px;
+        text-indent: 5000em;
+        top: 4px;
+        width: 15px;
+    }
+
+    .dash_box_heading
+    {
+        border-bottom: 1pt solid #ccc;
+        line-height: 36px;
+        font-size: 13px;
+        padding-left: 5px;
+        font-weight: bold;
+        height: 40px;
+    }
+
+    .dash_box_content
+    {
+        padding: 2px 2px;
+        height: 285px;
+        overflow: auto;
+    }
+    /*a.hide_box_das2:hover { background: url('/images/setting.png') no-repeat 0px -17px;}*/
+</style>
+
+<div class="clear"></div>
+<div id="view">
+    <div id="qss_form">
+
+        <div id="dashboad_2">
+
+
+
+
+            <!-- HOAT DONG SAN XUAT -->
+            <div id="manufacturings"></div>
+
+            <!-- KE HOACH SUA CHUA TRONG NGAY -->
+            <div id="plan_tasks" ></div>
+
+            <!-- BAO CAO SUA CHUA THEO NGAY -->
+            <div id="plan_tasks_report"></div>
+
+            <!-- Nuoc cong nghiep-->
+            <div id="electric"></div>
+
+            <!-- Quy dinh/Lenh -->
+            <div id="policy"></div>
+
+            <!-- Kien thuc -->
+            <div id="knowledge"></div>
+            
+            <!-- Nuoc cong nghiep-->
+            <div id="water"></div>
+
+
+
+
+        </div>
+
+
+
+    </div>
+</div>
+<div
+    id="qss_trace" title="Cấu hình hiển thị trang chủ"></div>

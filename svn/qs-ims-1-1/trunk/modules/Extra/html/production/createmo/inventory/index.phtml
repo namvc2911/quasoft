@@ -1,0 +1,413 @@
+<link rel="stylesheet" href="/css/button.css" type="text/css" />
+<style>
+#coming {
+	overflow: auto;
+	min-height: 10px;
+	max-height: 100px;
+}
+
+#order {
+	overflow: auto;
+	min-height: 10px;
+	max-height: 210px;
+}
+
+#capacity {
+	overflow: auto;
+	min-height: 10px;
+	max-height: 100px;
+}
+
+#material {
+	overflow: auto;
+	min-height: 10px;
+	max-height: 100px;
+}
+</style>
+
+<script>
+<!--
+// js function
+
+jQuery(document).ready(function($){
+  	$('.datepicker').each(function(){ $(this).datepicker({ dateFormat: "dd-mm-yy" }); });/* Datepicker*/
+});
+
+//Lay mat hang theo day chuyen
+// Lay cong doan theo day chuyen
+// Lay dv th theo cong doan
+function getItemsByLine()
+{
+	var lineID = parseInt($('#line_filter').val());
+	var html = '<option value=\"\">--- <?php echo $this->_translate(7)?> ---</option>';
+	var htmlOperation = '';
+	var url = sz_BaseUrl + '/extra/production/createmo/inventory/item';
+	var data = {'lineFilter':lineID};
+	var oldOperation = 0;
+	var oldWC = 0;
+	var keep=0;
+	var percent = 0;
+	
+	$('#item_filter').val('<option value="">Loading...</option>');
+	qssAjax.call(url, data, function(jreturn) {
+		for (i in jreturn.data.item)
+		{
+		  html += '<option name="'+jreturn.data.item[i].MaSanPham+'" value="'+jreturn.data.item[i].Ref_MaSanPham+'">'+jreturn.data.item[i].TenSanPham+'-'+jreturn.data.item[i].MaSanPham+'</option>'
+		}
+		$('#item_filter').html(html);
+
+		for(i in jreturn.data.operation)
+		{
+			if(oldOperation != jreturn.data.operation[i].Ref_CongDoan)
+			{
+				keep = 1;
+				percent = jreturn.data.operation[i].HieuSuat;
+			}
+			if(oldOperation == jreturn.data.operation[i].Ref_CongDoan && oldWC != jreturn.data.operation[i].Ref_MaDonViThucHien)
+			{
+				keep += 1;
+				percent += jreturn.data.operation[i].HieuSuat;
+			}
+			htmlOperation += '<input type="hidden" name="lineOperation['+jreturn.data.operation[i].Ref_CongDoan+']['+jreturn.data.operation[i].Ref_MaDonViThucHien+']" value="'+jreturn.data.operation[i].MaDonViThucHien+'" class="saveCondition" />';
+			htmlOperation += '<input type="hidden" name="percentWC['+jreturn.data.operation[i].Ref_CongDoan+']['+jreturn.data.operation[i].MaDonViThucHien+']" value="'+jreturn.data.operation[i].HieuSuat+'" class="saveCondition" />';
+			htmlOperation += '<input type="hidden" name="countWorkCenter['+jreturn.data.operation[i].Ref_CongDoan+']" value="'+keep+'" class="saveCondition checkCondition" />';
+			htmlOperation += '<input type="hidden" name="groupPercent['+jreturn.data.operation[i].Ref_CongDoan+']" value="'+percent+'" class="saveCondition" />';
+			oldOperation = jreturn.data.operation[i].Ref_CongDoan;
+			oldWC = jreturn.data.operation[i].Ref_MaDonViThucHien;
+		}
+		htmlOperation += '<input type="hidden" name="countWorkCenter['+oldOperation+']" value="'+keep+'" class="saveCondition checkCondition" />';
+		htmlOperation += '<input type="hidden" name="groupPercent['+oldOperation+']" value="'+percent+'" class="saveCondition" />';
+		$('#keep_line_operation').html(htmlOperation);
+		
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+}
+
+function fillStartTimeEndTimeOfShift()
+{
+	var findShift = $('#shift_filter').find('option:selected');
+	$('#start_time').val(findShift.attr('start'));
+	$('#end_time').val(findShift.attr('end'));
+}
+
+function validDateFilter(date)
+{
+	var msg  = '';
+	var dateArr = date.split('-');
+	var dateObj = new Date();
+	dateObj.setFullYear(dateArr[2], (dateArr[1] - 1), dateArr[0]);
+	var monthByObj = dateObj.getMonth() + 1;
+	var day = parseInt(dateArr[0]);
+	var month = parseInt(dateArr[1]);
+	var year = parseInt(dateArr[2]);
+
+	if(day != dateObj.getDate() || month != monthByObj || year != dateObj.getFullYear() )
+	{
+		msg += '<?php echo $this->_translate(16);?>'; // Ngay ko hop le
+	}
+	return msg;
+}
+
+function validDataFilter()
+{
+	var date = $('#date_filter_1').val();
+	var msg  = '';
+
+	msg += validDateFilter(date);	
+	msg += ($('#line_filter').val() == '')?'<?php echo $this->_translate(9);?>':'';// dc yeu cau
+	msg += ($('#shift_filter').val() == '')?'<?php echo $this->_translate(10);?>':'';// ca yeu cau
+	msg += ($('#date_filter_1').val() == '')?'<?php echo $this->_translate(11);?>':'';// ngay yeu cau
+        msg += ($('#date_filter_2').val() == '')?'<?php echo $this->_translate(20);?>':'';// ngay yeu cau
+	return msg;
+}
+
+// Loc san pham theo dieu kien
+function filterItem()
+{	
+	var msg1 = validDataFilter();	
+	// Thuc hien loc
+	if(msg1 != '')
+	{
+		qssAjax.alert(msg1); 
+		return;
+	}
+	else
+	{
+		$('#coming_content').html('Loading...')
+		var data = $('.search_filter').serialize();
+		var url = sz_BaseUrl + '/extra/production/createmo/inventory/search'; 
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#save-button-box').attr('status',0);// Xoa nut luu lai
+			$('#checker_content').html(''); // Xoa kiem tra
+			$('#save-button-box').html(''); // Xoa nut luu lai
+			$('#coming_content').html(jreturn); // Hien thi noi dung tim kiem
+			$('#line_filter').attr('old',$('#line_filter').val());
+			$('#shift_filter').attr('old',$('#shift_filter').val());
+			$('#item_filter').attr('old',$('#item_filter').val());
+			$('#date_filter').attr('old',$('#date_filter').val());
+
+			if($('#search_button').attr('status') == 0)
+			{
+				$('#search_button').attr('status', 1);
+			}
+			
+			if($('#button-box').attr('status') == 0)
+			{
+				$('#button-box').append('<button type="button" id="check_button" class="btn-custom" onclick="checkAvailable()"> <?php echo $this->_translate(12);?></button>');
+				$('#button-box').attr('status', 1)
+			}
+		});
+	}
+}
+
+function filterItemOnChangeFilter()
+{
+	if($('#search_button').attr('status') == 1)
+	{
+		qssAjax.confirm('<?php echo $this->_translate(17);?>',function(){
+			filterItem();
+			$('#line').val($('#line_filter option:selected').attr('name'));
+			$('#shift').val($('#shift_filter option:selected').attr('name'));
+    	},function(){
+    		$('#line_filter').val($('#line_filter').attr('old'));
+			$('#shift_filter').val($('#shift_filter').attr('old'));
+			$('#item_filter').val($('#item_filter').attr('old'));
+			$('#date_filter').val($('#date_filter').attr('old'));
+			$('#line').val($('#line_filter option:selected').attr('name'));
+			$('#shift').val($('#shift_filter option:selected').attr('name'));
+        });
+	}
+	else
+	{
+		$('#line').val($('#line_filter option:selected').attr('name'));
+		$('#shift').val($('#shift_filter option:selected').attr('name'));
+	}
+}
+
+// Kiem tra xem so luong co hop le ko 
+function checkQtyAvailable(ele)
+{
+	var val = $(ele).val();
+	var find = $(ele).parent().parent();
+	//var pattern = /^[0-9]+$/;
+	
+	if(val == '' || val == 0)
+	{
+		find.removeClass('bgyellow').removeClass('bgred');
+		$('.operation_'+$(ele).attr('code')).attr('disabled', true);
+		find.attr('title','');
+		$('.id_'+$(ele).attr('code')).remove();
+	}
+	else
+	{
+		if(isNaN(val) == true)
+		{
+			find.removeClass('bgyellow').addClass('bgred');
+			$('.id_'+$(ele).attr('code')).remove();
+			$('.operation_'+$(ele).attr('code')).attr('disabled', true);
+			find.attr('title','<?php echo $this->_translate(14);?>');
+		}
+		else
+		{
+			find.removeClass('bgred').addClass('bgyellow');
+
+			$('.id_'+$(ele).attr('code')).remove();
+			$('.operation_'+$(ele).attr('code')).removeAttr('disabled');
+			$('#keep_item_box').append('<input type="hidden" name="itemAndAttrFilter[]" class="id_'+$(ele).attr('code')+'" value="'+$(ele).attr('code')+'"/>');
+			$('#keep_item_box').append('<input type="hidden" name="itemAndAttrQty['+$(ele).attr('code')+']" class="saveCondition id_'+$(ele).attr('code')+'" value="'+$(ele).val()+'"/>');
+			find.attr('title','');
+		}
+	}
+
+}
+
+//Kiem tra hop ly du lieu 
+function checkAvailable()
+{
+	//var status = $(ele).attr('status');
+	var noOrderQty = true;
+	var notNumber  = false;
+	var tempQty;
+	var msg = '';
+	
+	// Kiem tra co so luong dat sx hay ko
+	$('.item_qty').each(function(){
+		tempQty = ($(this).val() == '')?0:$(this).val();
+		if(tempQty != '' && tempQty != 0 && isNaN(tempQty) == false)
+		{
+			noOrderQty = false;
+		}
+
+		if(tempQty != '' && tempQty != 0 && isNaN(tempQty) == true)
+		{
+			notNumber = true;
+		}
+	});
+
+	// Neu ko co so luong dat sx bao loi return
+	if(noOrderQty)
+	{
+		qssAjax.alert('<?php echo $this->_translate(13);?>');
+		return;
+	}
+	else if(notNumber)
+	{
+		qssAjax.alert('<?php echo $this->_translate(18);?>');
+		return;
+	}
+	else
+	{
+		// in ra ket qua kiem tra
+		// scroll den in ket qua 
+		var errSave;
+		var data = $('#show_form, .checkCondition').serialize();
+		var url = sz_BaseUrl + '/extra/production/createmo/inventory/check'; 
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#checker_content').html(jreturn);
+			errSave = $('#err_save').attr('val');
+
+			if(errSave == 0)
+			{
+				if($('#save-button-box').attr('status') == 0)
+				{
+					$('#save-button-box').append('<button type="button" id="save_button" class="btn-custom" onclick="saveOrder()"> <?php echo $this->_translate(15);?></button>');
+					$('#save-button-box').attr('status',1);
+				}
+			}
+			else
+			{
+				$('#save-button-box').html('');
+				$('#save-button-box').attr('status',0);
+			}	
+		});
+	}
+}
+
+// Save lenh san xuat
+function saveOrder()
+{
+	// chay lenh save (chia deu cho cac don vi)
+	var data = $('.saveCondition').serialize();
+	var url = sz_BaseUrl + '/extra/production/createmo/inventory/save'; 
+	qssAjax.call(url, data, function(jreturn){
+		if(jreturn.message != ''){
+			qssAjax.alert(jreturn.message);
+		}
+		$('#qss_trace').dialog('close');
+		rowSearch(117);
+	}, function(jreturn){
+		qssAjax.alert(jreturn.message);		
+	});
+}
+
+
+//-->
+</script>
+
+<div id="wrapper">
+	<div id="create_order">
+		<form id="create_form">
+			<fieldset>
+				<legend>
+				<?php echo $this->_translate(1);?>
+				</legend>
+				<table cellspacing="0" cellpadding="0" width="100%" class="left"
+					id="">
+					<tr>
+						<th>
+							<!-- Day chuyen --> <?php echo $this->_translate(2)?>:</th>
+						<td>
+							<!-- Day chuyen --> <?php $selectFirst = 1;?> <select
+							name="lineFilter" id="line_filter"
+							class="width_200 search_filter saveCondition" old=""
+							onchange="getItemsByLine(); filterItemOnChangeFilter();">
+								<option value="">
+									---
+									<?php echo $this->_translate(3)?>
+									---
+								</option>
+								<?php foreach ($this->lines as $item):?>
+								<option name="<?php echo $item->MaDayChuyen;?>"
+									value="<?php echo  $item->IOID?>"
+									<?php if($selectFirst) { $selectFirst=0; echo 'selected';}?>>
+									<?php echo $item->MaDayChuyen;?>
+								</option>
+								<?php endforeach;?>
+						</select><span class="red bold">(*)</span> <input type="hidden"
+							name="line" id="line" class="saveCondition" value="" />
+							<div id="keep_line_operation"></div>
+						</td>
+
+						<th>
+							<!-- Mặt hàng --> <?php echo $this->_translate(6)?>:</th>
+						<td>
+							<!-- Mặt hàng --> <select id="item_filter" name="itemFilter"
+							class="width_200 search_filter " old=""
+							onchange="filterItemOnChangeFilter();">
+								<option value="">
+									---
+									<?php echo $this->_translate(7)?>
+									---
+								</option>
+						</select>
+						</td>
+					</tr>
+
+					<tr>
+						<th>
+							<!-- Ngày --> <?php echo $this->_translate(5)?>:</th>
+						<td>
+							<!-- Ngày --> <input type="text" name="dateFilter"
+							id="date_filter_1"
+							class="datepicker width_200 search_filter saveCondition"
+							value="<?php echo date('d-m-Y');?>" old=""
+							onchange="filterItemOnChangeFilter();" /> <span class="red bold">(*)</span>
+						</td>
+						<th>
+							<!-- Ngày --> <?php echo $this->_translate(19)?>:</th>
+						<td>
+							<!-- Ngày --> <input type="text" name="endDateFilter"
+							id="date_filter_2"
+							class="datepicker width_200 search_filter saveCondition"
+							value="<?php echo date('d-m-Y');?>" old=""
+							onchange="filterItemOnChangeFilter();" /> <span class="red bold">(*)</span>
+						</td>
+
+
+					</tr>
+
+				</table>
+				<button type="button" id="search_button" class="btn-custom"
+					status="0" onclick="filterItem()">
+					<?php echo $this->_translate(8);?>
+				</button>
+
+			</fieldset>
+		</form>
+		<!-- end #create_form -->
+	</div>
+	<!-- end #create_order -->
+
+	<div id="coming" class="margin_top_5">
+		<div class="margin_top_5">
+			<form id="show_form">
+				<div id="coming_content"></div>
+				<!-- end #coming_content -->
+			</form>
+			<!-- end form#show_form -->
+		</div>
+		<!-- noname -->
+	</div>
+	<!-- end #coming -->
+	<div id="button-box" class="margin_top_5" status="0"></div>
+	<div id="checker_content" class="margin_top_5"></div>
+	<div id="save-button-box" class="margin_top_5" status="0"></div>
+
+
+</div>
+<!-- end #wrapper -->
+
+<script type="text/javascript">filterItemOnChangeFilter();</script>
+<script type="text/javascript">getItemsByLine();</script>
+<script type="text/javascript">fillStartTimeEndTimeOfShift();</script>

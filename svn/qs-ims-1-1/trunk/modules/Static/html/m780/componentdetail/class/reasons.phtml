@@ -1,0 +1,27 @@
+<table class="border_table" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <th style="width: 33%;" class="center">Mã nguyên nhân</th>
+        <th style="width: 33%;" class="center">Tên nguyên nhân</th>
+        <th style="width: 33%;" class="center">Tần suất</th>
+    </tr>
+
+    <!-- Loai hu hong cua thiet bi va bo phan -->
+    <?php foreach($this->reasonList as $item):?>
+        <tr class="reason_line" reasonioid="<?php echo $item->IOID;?>" onclick="einfo_failure_class_select_reason_in_component(this)">
+            <td class="left"><?php echo $item->Ma;?></td>
+            <td class="left"><?php echo $item->Ten;?></td>
+            <td class="right"><?php echo $item->TanSuat?$item->TanSuat:0;?></td>
+        </tr>
+    <?php endforeach;?>
+</table>
+
+<script>
+    if($('.reason_line').length)
+    {
+        $('.reason_line').eq(0).click();
+    }
+    else
+    {
+        einfo_failure_class_select_reason_in_component();
+    }
+</script>

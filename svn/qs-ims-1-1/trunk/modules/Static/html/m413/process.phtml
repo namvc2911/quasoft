@@ -1,0 +1,46 @@
+<?php 
+$detailWidthArr  = array(1,3,4,2,2,2);
+$width           = 800;
+$padding         = 2;
+$detailFit       = Qss_Lib_Report::changeWidthToFitScreen2($detailWidthArr, $width, $padding);
+?>
+
+<div id="M413_process_wrap">    
+    <!-- Chi tiet xu ly giao nhan don hang -->
+    <h3>
+        Tình trạng xử lý
+    </h3>
+    
+    <div class="clear"></div>
+    <table 
+        class="border_table" 
+        cellpadding="0" 
+        cellspacing="0" 
+        border="0" 
+        style="width:<?php echo $width;?>px;  table-layout: fixed;" >
+        <?php $begin = 0; ?>
+        <?php $stt   = 0;?>
+        <tr>
+            <th style="width:<?php echo $detailFit[$begin++];?>px">STT</th>
+            <th style="width:<?php echo $detailFit[$begin++];?>px">Mã mặt hàng</th>
+            <th style="width:<?php echo $detailFit[$begin++];?>px">Tên mặt hàng</th>
+            <th style="width:<?php echo $detailFit[$begin++];?>px">Đơn vị tính</th>
+            <th style="width:<?php echo $detailFit[$begin++];?>px">Số lượng đặt hàng</th>
+            <th style="width:<?php echo $detailFit[$begin++];?>px">Số lượng đã nhận</th>
+        </tr>
+        
+        <?php foreach($this->detail as $item):?>
+        <tr>
+            <td class="center"><?php echo ++$stt;?></td>
+            <td class="left"><?php echo $item->MaSP;?></td>
+            <td class="left"><?php echo $item->TenSanPham;?></td>
+            <td class="left"><?php echo $item->DonViTinh;?></td>
+            <td class="right"><?php echo $item->OrderedQty;?></td>
+            <td class="right"><?php echo $item->ReceivedQty;?></td>
+        </tr>
+        <?php endforeach;?>
+    </table>
+    <div class="clear"></div>
+    <br/>
+    <hr/>    
+</div><!-- end #M413_process_wrap -->

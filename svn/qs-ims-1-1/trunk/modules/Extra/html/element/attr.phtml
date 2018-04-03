@@ -1,0 +1,568 @@
+<style>
+<!--
+#attr_wrapper {
+	font-size: 11px;
+	line-height: 20px;
+}
+/*#ddd999*/
+.border_warning {
+	border: 1px orange solid;
+}
+
+.border_okie {
+	border: 1px green solid;
+}
+
+.border_alert {
+	border: 1px red solid;
+}
+
+.select_width {
+	width: 200px;
+}
+
+.attribute_label {
+	float: left;
+	width: 25%;
+	font-size: 11px;
+	line-height: 20px;
+}
+
+.attribute_select {
+	float: right;
+	width: 75%;
+	font-size: 11px;
+	line-height: 20px;
+}
+
+.clr {
+	height: 0px;
+	content: '&nbsp;';
+	clear: both;
+}
+
+.hide {
+	display: none;
+}
+
+.padding_5 {
+	padding: 5px;
+}
+
+.borderX {
+	border-top: 1px dotted #bbb;
+	border-right: 1px dotted #bbb;
+}
+
+.borderX tr {
+	border-bottom: 1px dotted #bbb;
+}
+
+.borderX td,.borderX th {
+	border-left: 1px dotted #bbb;
+}
+
+.bggrey {
+	background: #eee;
+}
+
+th {
+	padding-top: 1px;
+	padding-bottom: 1px;
+}
+
+#search {
+	overflow: auto;
+	max-height: 220px;
+	min-height: 30px;
+}
+
+#edit_attribute {
+	overflow: auto;
+	max-height: 220px;
+	min-height: 30px;
+}
+
+.disabled {
+	background: #ccc !important;
+}
+-->
+</style>
+<script>
+<!--
+
+    function changeCheckHidden(ele, id)
+    {
+        if ($(ele).is(':checked'))
+        {
+            $('#' + id).val(1);
+        }
+        else
+        {
+            $('#' + id).val(0);
+        }
+    }
+
+    function addAttribute()
+    {
+        // refelement biến global
+        var url = sz_BaseUrl + '/extra/element/save';
+        var data = $('#attributes_form').serialize();
+        var html = '';
+        var pre = ''; /* Tieu de ma thuoc tinh, doan dau cua chuoi html*/
+        var tof; /* true or false*/
+        var attrVal
+
+        pre = $('#attrcode_text').val() + '<br>';
+        $('.current').each(function() {
+
+            if ($(this).attr('checkbox') == 1)
+            {
+                attrVal = ($(this).val() == 1) ?
+                        '<span class="col-checked" style="display: inline-block; min-height: 14px;  min-width: 14px;">&nbsp;</span>' :
+                        '<span class="col-unchecked" style="display: inline-block; min-height: 14px; min-width: 14px;">&nbsp;</span>';
+            }
+            else
+            {
+                attrVal = $(this).val();
+            }
+            html += $(this).attr('attr') + ':&nbsp;' + attrVal + '<br>';
+        });
+
+        qssAjax.call(url, data, function(jreturn) {
+            if (jreturn.status.confirm)
+            {
+            	qssAjax.confirm('<?php echo $this->_translate(6) ?> "' + jreturn.status.display + '"<?php echo $this->_translate(7)?>',function(){
+            		$('#attrcode_text').val(jreturn.status.display)
+                    pre = jreturn.status.display + '<br>';
+
+                    $(refelement).attr('value', jreturn.status.value);
+                    $(refelement).html(pre + html);
+                    $('#' + $(refelement).attr('refid')).val(jreturn.status.value);
+                    $('#qss_combo').html('');
+                    $('#qss_combo').dialog('close');
+            	});
+             }
+            else
+            {
+                $(refelement).attr('value', jreturn.status.value);
+                $(refelement).html(pre + html);
+                $('#' + $(refelement).attr('refid')).val(jreturn.status.value);
+                $('#qss_combo').html('');
+                $('#qss_combo').dialog('close');
+            }
+        }, function(jreturn) {
+            qssAjax.alert(jreturn.message);
+        });
+    }
+
+    function deleteAttribute()
+    {
+        $(refelement).attr('value',0);
+        $(refelement).text('');
+        $('#' + $(refelement).attr('refid')).val(0);
+        $('#qss_combo').html('');
+        $('#qss_combo').dialog('close');
+    }
+
+    /**
+     * Function: Thay doi gia tri cac thuoc tinh tu dong tinh toan (Co cong thuc)
+     * Desription: 
+     + Danh dau nhung dong kieu so ma nhap vao ko phai kieu so.
+     + Thay so vao cong thuc, neu cong thuc dang ko tinh duoc thi in cong thuc ra
+     * Add: Cac ma thuoc tinh can chua it nhat mot chu cai va ko chua cac ky tu dac biet (L)
+     */
+    function changeAutoCalculateAttributes(ele)
+    {
+        var val = $(ele).val();          /* Gia tri cua dong */
+        var num = $(ele).attr('number'); /* Dong thuoc kieu so hay kieu chu */
+        var key = $(ele).attr('key');    /* Ma thuoc tinh cua thuoc tinh dang thay doi */
+        var formula;                     /* Cong thuc can tinh */
+        var tempFormula;                 /* Luu cong thuc thay doi */
+        var tempValue;                   /* Luu lai gia tri thay doi */
+        var formulaOrResult = 0;         /* In ra bieu thuc hay in ra ket qua*/
+        val = (val == '') ? 0 : val;           /* set val ve 0 neu bang rong */
+
+        /* Description: Danh dau nhung dong kieu so nhap sai (1)*/
+        if (num == 1 && isNaN(val))
+        {
+            $(ele).addClass('border_alert');
+        }
+        else
+        {
+            $(ele).removeClass('border_alert');
+        }/* End (1) */
+
+
+        /* Thay the cong thuc bang so  (2)*/
+        $('.auto_calculate_by_formula').each(function() {
+            formula = $(this).attr('formula'); /* Lay cong thuc can tinh toan */
+            tempFormula = formula;
+
+
+            /* Neu tim thay thuoc tinh trong cong thuc moi thuc hien thay the */
+            if ((formula.indexOf(key) >= 0))
+            {
+                    <?php $this->attrs = $this->attrs?$this->attrs:array();?>
+<?php foreach ($this->attrs as $key => $val): ?>
+                    tempValue = $("#<?php echo $val['MaThuocTinh']; ?>").val();
+                    tempValue = (tempValue == '') ? 0 : tempValue;
+                    tempFormula = tempFormula.replace("<?php echo $val['MaThuocTinh']; ?>", tempValue);
+
+                    /* Neu thuoc tinh co trong cong thuc va ko phai la so ta in cong thuc */
+                    if ((formula.indexOf('<?php echo $val['MaThuocTinh']; ?>') > 0) && isNaN(tempValue))
+                    {
+                        formulaOrResult = 1;
+                    }
+<?php endforeach; ?>
+
+                /* In ra bieu thuc hoac in ra ket qua cua bieu thuc  */
+                if (formulaOrResult == 1)
+                {
+                    $(this).val(tempFormula);
+
+                    if ($(this).attr('number') == 1)
+                    {
+                        $(this).removeClass('border_okie');
+                        $(this).addClass('border_alert');
+                    }
+                }
+                else
+                {
+                    tempFormula = eval(tempFormula);
+                    $(this).val(tempFormula);
+                    $(this).removeClass('border_alert');
+                    $(this).addClass('border_okie');
+                }
+            }
+
+        });/* End thay cong thuc bang so (2) */
+    }
+    /* End Function: Thay doi gia tri cac thuoc tinh tu dong tinh toan (Co cong thuc)*/
+
+    /**
+     * Function: Tim kiem thuoc tinh (Search attributes)
+     * Description: Tim kiem thuoc tinh theo 
+     */
+    function searchAttributes()
+    {
+        var ext = {all: 0};
+        var data = $('#attributes_form').serialize() + '&' + $.param(ext);
+        var url = sz_BaseUrl + '/extra/element/search';
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#search').html(jreturn);
+        });
+    }
+
+
+    function searchAllAttributes()
+    {
+        var ext = {all: 1};
+        var data = $('#attributes_form').serialize() + '&' + $.param(ext);
+        var url = sz_BaseUrl + '/extra/element/search';
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#search').html(jreturn);
+        });
+    }
+    /* End Function: Tim kiem thuoc tinh */
+
+    function selectAttributes(no)
+    {
+        var html = '';
+        html += $('#exAttrCode' + no).val() + '<br>';
+        $('.ex' + no).each(function() {
+            if ($(this).attr('checkbox') == 1)
+            {
+                attrVal = ($(this).val() == 1) ?
+                        '<span class="col-checked" style="display: inline-block; min-height: 14px;  min-width: 14px;">&nbsp;</span>' :
+                        '<span class="col-unchecked" style="display: inline-block; min-height: 14px; min-width: 14px;">&nbsp;</span>';
+            }
+            else
+            {
+                attrVal = $(this).val();
+            }
+            html += $(this).attr('attr') + ':&nbsp;' + attrVal + '<br>';
+            //html += $(this).attr('attr') + ':&nbsp;' + $(this).val() + '<br>';
+        });
+
+        $(refelement).attr('value', $('#exRefid' + no).val() + ',' + $('#exIOID' + no).val());
+        $(refelement).html(html);
+        $('#' + $(refelement).attr('refid')).val($('#exRefid' + no).val() + ',' + $('#exIOID' + no).val());
+        $('#qss_combo').html('');
+        $('#qss_combo').dialog('close');
+    }
+
+    function setInitForCheckBox()
+    {
+        if ($('input[type="hidden"][checkbox="1"]').val() == '')
+        {
+            $('input[type="hidden"][checkbox="1"]').val(0);
+        }
+    }   
+    
+    function checkAttrExists()
+    {
+        var data = $('#attributes_form').serialize();
+        var url = sz_BaseUrl + '/extra/element/check';
+        $('.btn-custom').attr('disabled',true);
+        $('.btn-custom').addClass('disabled');
+        
+        clearInterval(timer);
+	timer = setTimeout(function(){
+            qssAjax.call(url, data, function(jreturn) {
+                $('.btn-custom').removeAttr('disabled');
+                $('.btn-custom').removeClass('disabled');
+                
+                if(jreturn.data.attrcode == '')
+                {
+                    $('#attrcode_text').removeAttr('readonly');
+                    $('#attrcode_text').removeClass('readonly');
+                }
+                else
+                {
+                    $('#attrcode_text').val(jreturn.data.attrcode);
+                    $('#attrcode_text').addClass('readonly');
+                    $('#attrcode_text').attr('readonly', true);
+                }
+
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+	}, 100); 
+
+    }
+
+-->
+</script>
+<div id="attr_wrapper">
+<?php
+//echo '<pre>: Old value: '; print_r($this->oldValue); die;
+// echo '<pre>: Item uom: '; print_r($this->uoms); die;
+
+$i = 0;
+?>
+<?php if ($this->productcode && $this->uomID): // Must select item and uom before?>
+<?php $attributes = $this->attributes; ?>
+
+<?php if($this->hasBaseUOM || count($this->uoms) == 1 ) : // if has base uom or only one uom ?>
+<?php if (count((array) $attributes)): // attach attribute if has attribute arr ?>
+	<div id="edit_attribute">
+		<form id="attributes_form" method="post">
+
+
+			<!-- general input -->
+			<input type="hidden" name="uomID" value="<?php echo $this->uomID; ?>"
+				class="submit_special" /> <input type="hidden" name="product"
+				value="<?php echo $this->productcode; ?>" class="submit_special" />
+			<input type="hidden" name="ifid"
+				value="<?php echo $this->params['ifid']; ?>" class="submit_special" />
+
+
+
+			<!-- Attribute code -->
+			<div>
+				<div class="attribute_label">
+				<?php echo $this->_translate(1); ?>
+					<!-- Mã thuộc tính -->
+					:
+				</div>
+				<div class="attribute_select">
+					<input type="text"
+						class="select_width <?php echo isset($this->oldValue['MaThuocTinh'])?'readonly':''; ?>"
+						id="attrcode_text" name="attrCode"
+						value="<?php echo isset($this->oldValue['MaThuocTinh']) ? $this->oldValue['MaThuocTinh'] : '' ?>"
+						<?php echo isset($this->oldValue['MaThuocTinh'])?'readonly':''; ?> />
+					<span class="red bold">(*)</span>
+				</div>
+			</div>
+
+
+			<!-- Attribute value element -->
+			<?php foreach ($attributes as $key => $value): ?>
+
+			<div>
+				<!-- Attribute Label -->
+				<div class="attribute_label">
+				<?php echo "{$this->attrs[$key]['ThuocTinh']} "
+				. "({$this->attrs[$key]['MaThuocTinh']})"; ?>
+				</div>
+				<div class="attribute_select">
+
+
+				<?php
+				$attrKey     = $this->attrs[$key]['MaThuocTinh'];
+				$attrNumType = $this->attrs[$key]['KieuSo'];
+				$attrName    = $this->attrs[$key]['ThuocTinh'];
+				?>
+
+					<!-- Check attribute element type -->
+				<?php if ($this->attrs[$key]['CongThuc']): //Fomular: readonly, auto calculate by fomular ?>
+					<!-- Fomular: readonly, auto calculate by fomular  -->
+					<input type="text"
+						class=" select_width auto_calculate_by_formula readonly current filter-attr"
+						name="attr[<?php echo $attrKey ?>]" id="<?php echo $attrKey; ?>"
+						number="<?php echo $attrNumType; ?>" key="<?php echo $attrKey; ?>"
+						attr="<?php echo $attrName; ?>"
+						formula="<?php echo $this->attrs[$key]['CongThuc']; ?>"
+						value="<?php echo isset($this->oldValue['ThuocTinh'][$attrKey]) ? 
+                                                    $this->oldValue['ThuocTinh'][$attrKey] : '' ?>"
+						checkbox="0" freetext="0" selectbox="0" formulabox="1"
+						onchange="checkAttrExists()" readonly />
+
+
+
+						<?php elseif ($this->attrs[$key]['NhapTuDo']): // Free text: free text?>
+					<!-- Free text:  -->
+					<input type="text" class="select_width current filter-attr"
+						name="attr[<?php echo $attrKey ?>]" id="<?php echo $attrKey; ?>"
+						number="<?php echo $attrNumType; ?>" key="<?php echo $attrKey; ?>"
+						attr="<?php echo $attrName; ?>"
+						value="<?php echo isset($this->oldValue['ThuocTinh'][$attrKey]) 
+                                                    ? $this->oldValue['ThuocTinh'][$attrKey] : '' ?>"
+						checkbox="0" freetext="1" selectbox="0" formulabox="0"
+						onkeyup="changeAutoCalculateAttributes(this); checkAttrExists();" />
+
+
+
+						<?php elseif ($this->attrs[$key]['Checkbox']): // Checkbox:  ?>
+					<!-- Checkbox -->
+					<input type="checkbox"
+						onchange="changeCheckHidden(this, '<?php echo $attrKey; ?>'); checkAttrExists();"
+						<?php echo (isset($this->oldValue['ThuocTinh'][$attrKey]) && $this->oldValue['ThuocTinh'][$attrKey] == 1) ? 'checked' : '' ?> />
+					<input type="hidden" name="attr[<?php echo $attrKey ?>]"
+						id="<?php echo $attrKey; ?>" class="current filter-attr"
+						attr="<?php echo $attrName; ?>" checkbox="1" freetext="0"
+						selectbox="0" formulabox="0"
+						value="<?php echo isset($this->oldValue['ThuocTinh'][$attrKey]) ? 
+                                                    $this->oldValue['ThuocTinh'][$attrKey] : '' ?>" />
+
+
+
+                                                    <?php else: // Select box: ?>
+					<select name="attr[<?php echo $attrKey ?>]"
+						id="<?php echo $attrKey; ?>"
+						class="select_width current filter-attr"
+						number="<?php echo $attrNumType; ?>" key="<?php echo $attrKey; ?>"
+						attr="<?php echo $attrName; ?>"
+						onchange="changeAutoCalculateAttributes(this); checkAttrExists();"
+						checkbox="0" freetext="0" selectbox="1" formulabox="0">
+
+						<?php if (count($value)): ?>
+						<option value="">
+						<?php echo $this->_translate(5); ?>
+							<!-- Chọn -->
+						</option>
+						<?php foreach ($value as $k => $v): ?>
+						<option value="<?php echo $v; ?>"
+						<?php if (isset($this->oldValue['ThuocTinh'][$attrKey])
+						&& $this->oldValue['ThuocTinh'][$attrKey] == $v)
+						echo 'selected'; ?>>
+						<?php echo $v; ?>
+						</option>
+						<?php endforeach; ?>
+						<?php else: ?>
+						<!-- Chưa cài đặt giá trị thuộc tính -->
+						<option value="0"></option>
+						<?php endif; ?>
+					</select>
+					<?php endif;  ?>
+					<?php // End Check attribute element type ?>
+
+
+					<!-- Required: Yes/No -->
+					<?php if ($this->attrs[$key]['BatBuoc'] && !$this->attrs[$key]['Checkbox']): ?>
+					<span class="red bold">(*)</span>
+					<?php endif; ?>
+
+				</div>
+			</div>
+			<div class="clr"></div>
+			<?php $i++; ?>
+			<?php endforeach; ?>
+
+
+			<?php if($this->uomInfo['TTSL'] && count($this->uoms)):?>
+			<!-- UOM has "use qty attr" -->
+			<div>
+				<div class="attribute_label">
+				<?php echo $this->_translate(11); ?>
+				</div>
+				<div class="attribute_select">
+					<input type="text" name="baseUomStr" class="readonly select_width"
+						name="uom" value="<?php echo $this->defaultUOM['DonViTinh']?>"
+						readonly /> <input type="hidden" name="baseUomID"
+						class="readonly select_width"
+						value="<?php echo $this->defaultUOM['IOID']?>" readonly />
+					<!--                                    <select  class="select_width">
+                                        <option value=""> <?php //echo $this->_translate(5); ?> Chọn    </option>
+                                        <?php //foreach ($this->uoms as $v): ?> 
+                                            <option value="<?php //echo $v['DonViTinh']; ?>" >
+                                                    <?php //echo $v['DonViTinh'];?>
+                                            </option>
+                                        <?php //endforeach; ?>
+                                    </select>-->
+				</div>
+			</div>
+			<div class="clr"></div>
+
+			<div>
+				<div class="attribute_label">
+				<?php echo $this->_translate(12); ?>
+				</div>
+				<div class="attribute_select">
+					<input type="text"
+						value="<?php echo isset($this->oldValue['SoLuong']) ? 
+                                                    $this->oldValue['SoLuong'] : '' ?>"
+						class="select_width" name="qty" /> <span class="red bold">(*)</span>
+				</div>
+			</div>
+			<div class="clr"></div>
+			<?php endif;?>
+		</form>
+	</div>
+
+	<div class="clr"></div>
+	<div class="center padding_5">
+		<button type="button" onclick="searchAttributes()" class="btn-custom">
+		<?php echo $this->_translate(2); ?>
+			<!-- Tìm kiếm -->
+		</button>
+		<button type="button" onclick="searchAllAttributes()"
+			class="btn-custom">
+			<?php echo $this->_translate(10); ?>
+			<!-- Tìm kiếm tat ca-->
+		</button>
+		<button type="button" onclick="addAttribute()" class="btn-custom">
+		<?php echo $this->_translate(3); ?>
+			<!-- Gắn thuộc tính -->
+		</button>
+		<button type="button" onclick="deleteAttribute()" class="btn-custom">
+		<?php echo $this->_translate(4); ?>
+			<!-- Xoá thuộc tính  -->
+		</button>
+	</div>
+
+	<div class="clr"></div>
+
+	<div id="search"></div>
+	<!-- End #search -->
+	<script>searchAttributes();
+                            setInitForCheckBox();</script>
+
+	<?php else: // if attribute arr empty then warning?>
+	<?php $oldValues = @$this->oldValue; ?>
+	<?php if (count((array) $oldValues)): ?>
+	<button type="button" onclick="deleteAttribute()" class="btn-custom">
+	<?php echo $this->_translate(4); ?>
+	</button>
+	<?php else: ?>
+	<?php echo $this->_translate(8) ?>
+	<?php endif; ?>
+	<?php endif; ?>
+	<?php else : // if has base uom or only one uom ?>
+	<?php echo $this->_translate(13) ?>
+	<?php endif; ?>
+	<?php else: // Must select item and uom before ?>
+	<?php echo $this->_translate(9) ?>
+	<?php endif; ?>
+</div>

@@ -1,0 +1,9 @@
+<select style="width: 150px;" onchange="rowSearch('<?php echo $this->form->FormCode?>');" style="width: 180px;" size="1"	name="filter_makhuvuc" id="filter_makhuvuc"
+<?php if($this->selected):?>class="bglightgreen"<?php endif;?>>
+	<?php if($this->rights & 2):?>
+		<option value="0">--- <?php echo $this->_translate(1);?> ---</option>
+	<?php endif;?>
+	<?php foreach ($this->khuvuc as $item):?>
+	<option <?php if($item->IOID == $this->selected):?>selected<?php endif;?> value="<?php echo $item->IOID?>"><?php echo str_repeat('&nbsp;&nbsp;&nbsp;',$item->LEVEL-1);?><?php echo $item->MaKhuVuc?> - <?php echo $item->Ten?></option>
+	<?php endforeach;?>
+</select>

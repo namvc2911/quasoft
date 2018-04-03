@@ -1,0 +1,183 @@
+<?php $excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);?>
+<?php
+// $widthArr   = array(1, 4, 5, 3, 2.5, 2.5, 2.5, 2.5, 2.5, 2, 2, 2, 2, 2, 3, 4);
+$htmlWidth  = array(25, 50, 70, 50, 50, 35);
+
+FOREACH($this->objLoaiBaoTri AS $item) {
+    $htmlWidth[] = 35;
+}
+
+$totalCol   = count($htmlWidth);
+$htmlWidth  = Qss_Lib_Report::changeWidthToFitScreen($htmlWidth, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+$excelWidth = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($htmlWidth, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+$row        = 1;
+$bg         = "#EEEEEE"; // Mau nen cua cot tieu de
+$stt        = 0;
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+    <input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="landscape" style="font-size: 13px !important;">
+    <excel orientation="landscape" font-name="Times New Roman" font-size="12"
+           margin-left="0.5" margin-right="0.5" margin-top="0.75"
+           margin-bottom="0.75" />
+
+    <div id="head_print">
+        <?php  echo $this->views->Common->Landscape(); ?>
+
+        <h1 class="center">
+            <xls row="<?php echo $row?>" column="A" column-merge="<?php echo $excel_col[$totalCol];?>"
+                 font-size="16" h-align="center" v-align="center" bold="1"
+                 bgcolor="<?php echo $bg; ?>"><?php echo Qss_Lib_System::getUpperCaseReportTitle('M864');?></xls>
+        </h1>
+
+        <?php $row++;?>
+        <?php $row++;?>
+    </div>
+    <br/>
+
+
+    <div id="container">
+        <table cellspacing="0" cellpadding="0" border="0" class="border" style="table-layout: fixed !important;">
+            <?php $beginHtml = 0;?>
+
+            <tr class="bggrey">
+                <!-- STT -->
+                <th class="center" style="width: <?php echo $htmlWidth[$beginHtml];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$beginHtml];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$beginHtml++];?>"
+                             column="<?php echo $excel_col[$beginHtml];?>"  h-align="center" v-align="center" font-size="11"
+                             border="1" bold="1" wrap-text="1" bgcolor="<?php echo $bg; ?>">STT</xls>
+                    </div>
+                </th>
+
+                <!-- Mã thiết bị -->
+                <th class="center" style="width: <?php echo $htmlWidth[$beginHtml];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$beginHtml];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$beginHtml++];?>"
+                             column="<?php echo $excel_col[$beginHtml];?>"  h-align="center" v-align="center" font-size="11"
+                             border="1" bold="1" wrap-text="1" bgcolor="<?php echo $bg; ?>">Mã thiết bị</xls>
+                    </div>
+                </th>
+
+                <!-- Tên thiết bị -->
+                <th class="center" style="width: <?php echo $htmlWidth[$beginHtml];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$beginHtml];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$beginHtml++];?>"
+                             column="<?php echo $excel_col[$beginHtml];?>"  h-align="center" v-align="center" font-size="11"
+                             border="1" bold="1" wrap-text="1" bgcolor="<?php echo $bg; ?>">Tên thiết bị</xls>
+                    </div>
+                </th>
+
+                <!-- Khu vực -->
+                <th class="center" style="width: <?php echo $htmlWidth[$beginHtml];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$beginHtml];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$beginHtml++];?>"
+                             column="<?php echo $excel_col[$beginHtml];?>"  h-align="center" v-align="center" font-size="11"
+                             border="1" bold="1" wrap-text="1" bgcolor="<?php echo $bg; ?>">Khu vực</xls>
+                    </div>
+                </th>
+
+                <!-- Điểm đo/Chỉ số -->
+                <th class="center" style="width: <?php echo $htmlWidth[$beginHtml];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$beginHtml];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$beginHtml++];?>"
+                             column="<?php echo $excel_col[$beginHtml];?>"  h-align="center" v-align="center" font-size="11"
+                             border="1" bold="1" wrap-text="1" bgcolor="<?php echo $bg; ?>">Điểm đo/Chỉ số</xls>
+                    </div>
+                </th>
+
+                <!-- Tổng số -->
+                <th class="center" style="width: <?php echo $htmlWidth[$beginHtml];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$beginHtml];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$beginHtml++];?>"
+                             column="<?php echo $excel_col[$beginHtml];?>"  h-align="center" v-align="center" font-size="11"
+                             border="1" bold="1" wrap-text="1" bgcolor="<?php echo $bg; ?>">Tổng số</xls>
+                    </div>
+                </th>
+
+                <?php FOREACH($this->objLoaiBaoTri AS $item): // In loại bảo trì trên tiêu đề ?>
+                    <?php $tieuDeCotBaoTri = 'Sau '.mb_strtolower($item->Loai, 'utf8'); ?>
+
+                    <!-- Sau loại bảo trì <?php echo $item->Loai; ?> -->
+                    <th class="center" style="width: <?php echo $htmlWidth[$beginHtml];?>px !important;">
+                        <div class="center" style="<?php echo $htmlWidth[$beginHtml];?>px !important;;">
+                            <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$beginHtml++];?>"
+                                 column="<?php echo $excel_col[$beginHtml];?>"  h-align="center" v-align="center" font-size="11"
+                                 border="1" bold="1" wrap-text="1" bgcolor="<?php echo $bg; ?>"><?php echo $tieuDeCotBaoTri;?></xls>
+                        </div>
+                    </th>
+                <?php ENDFOREACH;?>
+            </tr>
+            <?php $row++;?>
+
+            <?php foreach($this->report as $item):?>
+                <?php $begin = 0;?>
+                <tr>
+                    <!-- STT -->
+                    <td class="center">
+                        <div >
+                            <xls row="<?php echo $row ?>" column="<?php echo $excel_col[++$begin] ?>" wrap-text="1" v-align="center"
+                                 h-align="center" border="1" font-size="11"><?php echo ++$stt;?></xls>
+                        </div>
+                    </td>
+
+                    <!-- Mã thiết bị -->
+                    <td class="left">
+                        <div >
+                            <xls row="<?php echo $row ?>" column="<?php echo $excel_col[++$begin] ?>" wrap-text="1" v-align="center"
+                                 h-align="left" border="1" font-size="11"><?php echo $item->MaThietBi;?></xls>
+                        </div>
+                    </td>
+
+                    <!-- Tên thiết bị -->
+                    <td class="left">
+                        <div >
+                            <xls row="<?php echo $row ?>" column="<?php echo $excel_col[++$begin] ?>" wrap-text="1" v-align="center"
+                                 h-align="left" border="1" font-size="11"><?php echo $item->TenThietBi;?></xls>
+                        </div>
+                    </td>
+
+                    <!-- Khu vực -->
+                    <td class="left">
+                        <div >
+                            <xls row="<?php echo $row ?>" column="<?php echo $excel_col[++$begin] ?>" wrap-text="1" v-align="center"
+                                 h-align="left" border="1" font-size="11"><?php echo $item->TenKhuVuc;?></xls>
+                        </div>
+                    </td>
+
+                    <!-- Chỉ số -->
+                    <td class="left">
+                        <div >
+                            <xls row="<?php echo $row ?>" column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+                                 v-align="center" h-align="left" border="1"
+                                 font-size="11"><?php echo $item->DiemDo? ($item->DiemDo.' / '.$item->ChiSo):'';?></xls>
+                        </div>
+                    </td>
+
+                    <!-- Tổng số -->
+                    <td class="right">
+                        <div >
+                            <xls row="<?php echo $row ?>" column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+                                 v-align="center" h-align="right" border="1"
+                                 font-size="11"><?php echo Qss_Lib_Util::formatNumber($item->TongSoHoatDong);?></xls>
+                        </div>
+                    </td>
+
+                    <?php FOREACH($this->objLoaiBaoTri AS $loaiBaoTri): // In loại bảo trì trên tiêu đề ?>
+                        <td class="right">
+                            <div >
+                                <xls row="<?php echo $row ?>" column="<?php echo $excel_col[++$begin] ?>" wrap-text="1" v-align="center"
+                                     h-align="right" border="1"
+                                     font-size="11"><?php echo Qss_Lib_Util::formatNumber(@$item->{'SauLoai'.$loaiBaoTri->IOID});?></xls>
+                            </div>
+                        </td>
+                    <?php ENDFOREACH;?>
+                </tr>
+                <?php $row++;?>
+            <?php endforeach;?>
+        </table>
+    </div>
+</div>

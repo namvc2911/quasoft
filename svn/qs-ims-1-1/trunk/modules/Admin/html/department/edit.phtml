@@ -1,0 +1,91 @@
+<script>
+$(document).ready(function(){
+	$('.datepicker').each(function(){
+		$(this).datepicker({ dateFormat: "dd-mm-yy" });
+	});
+});
+</script>
+<form id="qss_form" method="post">
+	<div id="horizontal-toolbar" class="horizontal-toolbar">
+		<button id="btnSAVE" type="button" class="btn btn_main_top"
+			onclick="departmentSave(<?php echo $this->dept->intDepartmentID?>)">
+			<?php echo $this->_translate(34)?>
+		</button>
+		<button type="button" class="btn btn_main_top"
+			onclick="departmentBack()">
+			<?php echo $this->_translate(32)?>
+		</button>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<table class="detail">
+			<tr>
+				<th width="200">Code</th>
+				<td><input value="<?php echo $this->dept->szCode?>" style="width: 400px;" name="szCode"></td>
+			</tr>
+			<tr>
+				<th width="200"><?php echo $this->_translate(44)?></th>
+				<td><input value="<?php echo $this->dept->szName?>" style="width: 400px;" name="szName"></td>
+			</tr>
+			<tr>
+				<th width="200"><?php echo $this->_translate(2)?></th>
+				<td><select name="intParentID" style="width: 400px;">
+						<option value="0">
+							---
+							<?php echo $this->_translate(1)?>
+							---
+						</option>
+						<?php foreach($this->depts as $item):?>
+						<option
+						<?php if($item->DepartmentID == $this->dept->intParentID):?>
+							selected <?php endif;?> value="<?php echo $item->DepartmentID?>">
+							<?php echo $item->Name?>
+						</option>
+						<?php endforeach;?>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<th width="200"><?php echo $this->_translate(61,'Địa chỉ')?></th>
+				<td><input value="<?php
+		echo $this->dept->szAddress?>"
+					style="width: 400px;" name="szAddress"></td>
+			</tr>
+			<tr>
+				<th width="200"><?php echo $this->_translate(62,'Điện thoại')?></th>
+				<td><input value="<?php
+		echo $this->dept->szTel?>"
+					style="width: 100px;" name="szTel"></td>
+			</tr>
+			<tr>
+				<th width="200"><?php echo $this->_translate(63,'Fax')?></th>
+				<td><input value="<?php
+		echo $this->dept->szFax?>"
+					style="width: 100px;" name="szFax"></td>
+			</tr>
+			<tr>
+				<th width="200"><?php echo $this->_translate(52,'E-Mail')?></th>
+				<td><input value="<?php
+		echo $this->dept->szMail?>"
+					style="width: 150px;" name="szMail"></td>
+			</tr>
+			<tr>
+				<th width="200"><?php echo $this->_translate(3)?></th>
+				<td><input <?php if($this->dept->bLegalEntity) echo 'checked';?>
+					type="checkbox" value="1" name="bLegalEntity"></td>
+			</tr>
+			<tr>
+				<th width="200"><?php echo $this->_translate(8)?></th>
+				<td><input class="datepicker" type="text"
+					value="<?php echo Qss_Lib_Date::mysqltodisplay($this->dept->dStartDate)?>"
+					name="dStartDate"></td>
+			</tr>
+			<tr>
+				<th width="200"><?php echo $this->_translate(9)?></th>
+				<td><input class="datepicker" type="text"
+					value="<?php echo Qss_Lib_Date::mysqltodisplay($this->dept->dEndDate)?>"
+					name="dEndDate"></td>
+			</tr>
+		</table>
+	</div>
+</form>

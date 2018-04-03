@@ -1,0 +1,140 @@
+<style type="text/css" media="screen">
+<!--
+.tag-container {
+	position: relative !important;
+}
+-->
+</style>
+<script type="text/javascript">
+    <!--
+    $(function () {
+    	var url = sz_BaseUrl + '/system/field/tagging?objid=<?php echo $this->objid?>';
+        $('#validation').tagSuggest({
+            url: url,
+            delay: 200
+        });
+    });
+    //-->
+</script>
+<form id="qss_form" method="post">
+	<input type="hidden" name="id"
+		value="<?php echo (int)@$this->bash->BID?>" />
+	<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+		<button id="btnSAVE" type="button" class="btn btn_main_top" onclick="bashSave()">
+			<?php echo $this->_translate(34)?>
+		</button>
+		<button type="button" class="btn btn_main_top" onclick="rowBack()">
+			<?php echo $this->_translate(32)?>
+		</button>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<div id="item-actions">
+			<ul>
+				<li class="item-action active"><a href="#"><span>Kết chuyển tự động</span>
+				</a></li>
+			</ul>
+		</div>
+		<table class="detail border_table" cellspacing="0" cellpadding="0" border="0">
+		<?php foreach ($this->languages as $language):?>
+			<tr>
+				<td><?php echo $this->_translate(44)?> - <?php echo $language->Name?>
+				</td>
+				<?php if($language->Code == 'vn'):?>
+				<td><input type="text" value="<?php echo @$this->bash->BashName?>"
+					style="width: 200px;" name="name" /></td>
+					<?php else:?>
+				<td><input type="text"
+					value="<?php echo @$this->bash->{"BashName_$language->Code"}?>"
+					style="width: 200px;" name="name_<?php echo $language->Code?>" /></td>
+					<?php endif;?>
+			</tr>
+			<?php endforeach;?>
+			<tr>
+				<td width="150">Kết chuyển từ mô đun</td>
+				<td><select style="width: 200px;" name="fromfid"
+					onchange="bashLoadObject($(this).val(),'objid',0)">
+						<option value=""></option>
+						<?php foreach ($this->forms as $item):?>
+						<?php if(!$item->class):?>
+						<option
+						<?php if(@$this->bash->FormCode == $item->FormCode) echo 'selected'?>
+							value="<?php echo $item->FormCode?>">
+                            <?php echo $item->FormCode?> - <?php echo $item->Name?>
+						</option>
+						<?php endif;?>
+						<?php endforeach;?>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<td width="150">Đối tượng con</td>
+				<td><select style="width: 200px;" name="objid" id="objid">
+						<option value=""></option>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<td width="150">Kết chuyển đến mô đun</td>
+				<td><select style="width: 200px;" name="tofid">
+						<option value=""></option>
+						<?php foreach ($this->forms as $item):?>
+						<?php if(!$item->class):?>
+						<option
+						<?php if(@$this->bash->ToFormCode == $item->FormCode) echo 'selected'?>
+							value="<?php echo $item->FormCode?>">
+                            <?php echo $item->FormCode?> - <?php echo $item->Name?>
+						</option>
+						<?php endif;?>
+						<?php endforeach;?>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<td width="150">Bước</td>
+				<td><input type="text" id="step" name="step"
+					value="<?php echo @$this->bash->Step?>" style="width: 50px">
+				</td>
+			</tr>
+			<tr>
+				<td width="150">Kiểu</td>
+				<td><select id="type" name="type">
+						<option value="1" <?php if(@$this->bash->Type == 1):?> selected
+						<?php endif;?>>Kết chuyển dữ liệu tự động</option>
+						<option value="2" <?php if(@$this->bash->Type == 2):?> selected
+						<?php endif;?>>Kết chuyển dữ liệu thủ công</option>
+						<option value="3" <?php if(@$this->bash->Type == 3):?> selected
+						<?php endif;?>>Chạy lệnh</option>
+						<option value="4" <?php if(@$this->bash->Type == 4):?> selected
+						<?php endif;?>>Mở popup</option>
+						<option value="5" <?php if(@$this->bash->Type == 5):?> selected
+						<?php endif;?>>Mở cửa sổ mới</option>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<td width="150">Hoạt động</td>
+				<td><input type="checkbox" id="active" name="active" value="1"
+				<?php if(@$this->bash->Active):?> checked <?php endif;?>>
+				</td>
+			</tr>
+			<tr>
+				<td width="150">Gắn vào bản ghi</td>
+				<td><input type="checkbox" id="record" name="record" value="1"
+				<?php if(@$this->bash->Record):?> checked <?php endif;?>>
+				</td>
+			</tr>
+			<tr>
+				<td width="150">Class</td>
+				<td><input type="text" id="class" name="class"
+					value="<?php echo @$this->bash->Class?>">
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>
+<?php if(@$this->bash->FormCode):?>
+<script>
+bashLoadObject('<?php echo $this->bash->FormCode?>','objid','<?php echo $this->bash->ObjectCode?>');
+</script>
+<?php endif;?>

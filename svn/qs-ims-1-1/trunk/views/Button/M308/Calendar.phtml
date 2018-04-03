@@ -1,0 +1,92 @@
+<script>
+var drag = false;
+$(document).ready(function(){
+	$(function () {
+		$('.workorder').draggable({
+			appendTo: "body",
+			revert:true,
+            start: function( event, ui ) {
+            	drag = true;
+			},
+			stop: function(event, ui) {
+				setTimeout(function(){ui.helper.unbind("click.prevent");}, 300);
+				drag = false;
+	        }
+		});
+	});
+	
+});
+</script>
+<?php 
+$starttime = strtotime($this->startdate);
+$startday  = date('w',$starttime);
+$startdate = date_create($this->startdate);
+?>
+<!-- Change month/Chuyển tiếp giữa các tháng -->
+<div style="text-align: center;">
+<div class="cal_content_title">
+	<!-- Btn: Show prev month/Hiển thị tháng trước -->
+    <p class="cal_content_title_arrow">
+		<a href="#1" onclick="m308_calendar.showMonth('<?php echo $this->prev[0]?>','<?php echo $this->prev[1]?>');">
+			<img src="/images/calendar/left_arrow_32.png"/>
+		</a>
+	</p>
+
+	<!-- Current month/Tháng hiện tại -->
+	<p class="cal_content_title_info">
+		Tháng <?php echo $this->m?>/<?php echo $this->y?>
+	</p>
+
+	<!-- Btn: Show next month/Hiển thị tháng tiếp theo -->
+    <p class="cal_content_title_arrow">
+		<a href="#1" onclick="m308_calendar.showMonth('<?php echo $this->next[0]?>','<?php echo $this->next[1]?>');">
+			<img src="/images/calendar/right_arrow_32.png"/>
+		</a>
+	</p>
+</div><!-- end .cal_content_title -->
+</div>
+
+<div class="cal_content_grid cal_content_month">
+	<div class="rows">
+		<div class="cols cols_employee">Tên nhân viên</div>
+    	<?php for($i=1;$i<=$this->daysInMonth;$i++):?>
+			<?php $tempHoliday = (($i + $startday) % 7 == 0 || ($i + $startday) % 7 == 1)?'cal_cols_holiday':''; ?>
+
+			<div class="cols cols_<?php echo $this->daysInMonth?> <?php echo $tempHoliday;?>">
+				<?php echo $i?>
+			</div>
+        <?php endfor;?>
+    </div><!-- end .rows -->
+    
+	<?php $row = 1;?>
+	<?php $dvbt = ''?>
+	<?php foreach ($this->nguoithuchien as $item):?>
+		<?php if($dvbt != $item->MaPhongBan):?>
+				<?php $row++;?>
+				<div class="rows rows_workorder">
+        			<div class="cols cols_workcenter bold"><?php echo mb_strtoupper($item->MaPhongBan, 'UTF-8')?>: <?php echo $item->TenPhongBan?></div> 
+				</div>
+		<?php endif;?>
+		<?php $row ++?>
+        <div class="rows">
+        	<div class="cols cols_employee"><span class="bold"><?php echo $item->TenNhanVien?></span></div>
+                    <?php for($i=1;$i<=$this->daysInMonth;$i++):?>
+                        <?php $date = Qss_Lib_Date::add_date($startdate,$i-1);?>
+                        <?php $class = ''?>
+                        <?php $title = ''?>
+                        <?php if(isset($this->data[$item->IOID][$date->format('Y-m-d')])):?>
+                           	<?php $data = $this->data[$item->IOID][$date->format('Y-m-d')]?>
+                           	<?php $display = $data?>
+                       <?php else:?>
+	                    	<?php $display = '&nbsp;'?>
+						<?php endif;?> 
+                        <div class="cols cols_<?php echo $this->daysInMonth?> <?php echo $class?> 
+                        <?php if(($i + $startday) % 7 == 0 || ($i + $startday) % 7 == 1):?>cal_cols_holiday<?php endif;?>" title="<?php echo $title?>"
+                        	onclick="m308_calendar.showTaskDate(<?php echo $item->IOID?>,'<?php echo $date->format('Y-m-d')?>')">
+                          	<span class="bold green"><?php echo $display?></span><?php if(isset($this->nghi[$item->IOID][$date->format('Y-m-d')])):?><?php if($display != '&nbsp;'):?>/<?php endif;?><span class="bold red"><?php echo $this->nghi[$item->IOID][$date->format('Y-m-d')]?></span><?php endif;?>
+                        </div><!-- end .cal_content_grid_cols -->
+                    <?php endfor;?>
+                </div>
+		<?php $dvbt = $item->MaPhongBan?>
+	<?php endforeach;?>	
+</div><!-- end .cal_content_grid -->

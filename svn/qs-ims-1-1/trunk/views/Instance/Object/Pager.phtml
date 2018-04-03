@@ -1,0 +1,42 @@
+<input type='hidden' id='qss_<?php echo $this->object->ObjectCode?>_tree' name='qss_object_tree' value='0'> 
+<table class="grid_navigator">
+	<tr>
+		<td align="left" style="border-right: 0; width: 350px">
+		<?php echo $this->_translate(1);?>
+		</td>
+		<td align="right"> 
+			<select id="qss_<?php echo $this->object->ObjectCode?>_groupby"
+			<?php if(count($this->groupby)):?>class="bglightgreen"<?php endif;?>
+			onchange="rowObjectSearch('<?php echo $this->object->i_IFID;?>','<?php echo $this->object->intDepartmentID;?>','<?php echo $this->object->ObjectCode;?>');">
+			<option value=""> --- <?php echo $this->_translate(26,'Nhóm theo')?> --- </option>
+			<?php foreach ( $this->fields as $field):?>
+			<?php if($field->intFieldType == 17) continue;?>
+			<option value="<?php echo $field->FieldCode?>" <?php if(in_array($field->FieldCode,$this->groupby)):?>class="bglightgreen"<?php endif;?>>
+				<?php echo $field->szFieldName;?>
+			</option>
+			<?php endforeach;?>
+		</select> 
+		<?php echo $this->_translate(30,'Trang')?>: 
+			<a title="Trang trước" class="bold" href="#" onclick="$('#qss_<?php echo $this->object->ObjectCode?>_pageno').val('<?php echo ($this->currentpage - 1)?($this->currentpage - 1):1;?>');rowObjectSearch('<?php echo $this->object->i_IFID;?>','<?php echo $this->object->intDepartmentID;?>','<?php echo $this->object->ObjectCode;?>');"><<</a>
+			<input id="qss_<?php echo $this->object->ObjectCode?>_pageno" style="width: 20px; text-align: center;"
+			onchange="rowObjectSearch('<?php echo $this->object->i_IFID;?>','<?php echo $this->object->intDepartmentID;?>','<?php echo $this->object->ObjectCode;?>');"
+			value="<?php echo $this->currentpage;?>">/<?php echo $this->pagecount?>
+			<a title="Trang sau" class="bold" href="#" onclick="$('#qss_<?php echo $this->object->ObjectCode?>_pageno').val('<?php echo ($this->currentpage < $this->pagecount)?($this->currentpage + 1):$this->pagecount;?>');rowObjectSearch('<?php echo $this->object->i_IFID;?>','<?php echo $this->object->intDepartmentID;?>','<?php echo $this->object->ObjectCode;?>');">>></a>
+			<?php echo $this->_translate(28,'Hiển thị')?>: <select id="qss_<?php echo $this->object->ObjectCode?>_perpage"
+			style="width: 100;"
+			onchange="rowObjectSearch('<?php echo $this->object->i_IFID;?>','<?php echo $this->object->intDepartmentID;?>','<?php echo $this->object->ObjectCode;?>');">
+			<?php foreach (Qss_Lib_Const_Display::$OBJECT_LIMIT_OPTION as $val):?>
+			<option
+			<?php
+			if ( $val == $this->limit )
+			echo 'selected';
+			?>><?php
+			echo $val;
+			?></option>
+			<?php endforeach;?>
+		</select>
+		<?php echo $this->_translate(3)?> <?php echo $this->recordcount?>
+		</td>
+	</tr>
+</table>
+

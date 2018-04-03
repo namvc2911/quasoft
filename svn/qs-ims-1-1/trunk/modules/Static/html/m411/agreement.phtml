@@ -1,0 +1,158 @@
+<?php
+    $oldRequest      = '';
+    $requestWidthArr = array(1,2,4,4,2,2,2,2);
+    $width           = 780;
+    $padding         = 2;
+    $formNo          = 0;
+    
+    $fit = Qss_Lib_Report::changeWidthToFitScreen2($requestWidthArr, $width, $padding);
+    
+    if(!count($this->agreement))
+    {
+        echo 'Không có hợp đồng nguyên tắc!';
+        die;
+    }
+?>
+
+<div id="M411_agreement_wrap">
+    <?php foreach($this->agreement as $group):?>
+        <?php if(isset($group['Data']) && count($group['Data'])):?>
+            <p class="bold left">NCC: <?php echo $group['Group']->NCC?></p>           
+            <p class="bold left">Số kế hoạch: <?php echo $group['Group']->PlanNo?></p>
+            <br/>
+            
+            <form id="M411_agrrement_<?php echo ++$formNo;?>">
+            
+                <input type="hidden" name="partnerioid" value="<?php echo $group['Group']->PartnerIOID;?>" />
+                <input type="hidden" name="planioid" value="<?php echo $group['Group']->PlanIOID;?>" />
+                
+                
+            
+                <table class="border_table" cellpadding="0" cellspacing="0" border="0" style="width:<?php echo $width;?>px">
+                    <!-- Title -->
+                    <?php $begin = 0; ?>
+                    <tr class="bggrey">
+                        <!-- STT -->
+                        <th style="width:<?php echo $fit[$begin++];?>px;">
+                            <input type="checkbox" onclick="common_check_all_table_line(this, '.cwpo_line_checkbok', '.cwpo_line_checkbok_val')"/>
+                        </th>
+                        
+                        <!-- Số yêu cầu -->
+                        <th style="width:<?php echo $fit[$begin++];?>px;">
+                            <?php echo $this->_translate(9);?>
+                        </th>                        
+            
+                        <!-- Mã mặt hàng -->
+                        <th style="width:<?php echo $fit[$begin++];?>px;">
+                            <?php echo $this->_translate(2);?>
+                        </th>
+            
+                        <!-- Tên mặt hàng -->
+                        <th style="width:<?php echo $fit[$begin++];?>px;">
+                            <?php echo $this->_translate(3);?>
+                        </th>
+            
+                        <!-- ĐVT -->
+                        <th style="width:<?php echo $fit[$begin++];?>px;">
+                            <?php echo $this->_translate(4);?>
+                        </th>
+            
+                        <!-- Số lượng  -->
+                        <th style="width:<?php echo $fit[$begin++];?>px;">
+                            <?php echo $this->_translate(5);?>
+                        </th>
+            
+                        <!-- Đơn giá -->
+                        <th style="width:<?php echo $fit[$begin++];?>px;">
+                            <?php echo $this->_translate(6);?>
+                        </th>
+            
+                        <!-- Thành tiền -->
+                        <th style="width:<?php echo $fit[$begin++];?>px;">
+                            <?php echo $this->_translate(7);?>
+                        </th>
+            
+                    </tr>
+        
+                    <?php $no = 0;?>     
+                    
+                    
+                    <?php foreach ($group['Data'] as $dat):?>
+
+                    
+                        <tr>
+                            <!-- STT -->
+                            <td class="center">
+                                <input type="checkbox" class="cwpo_line_checkbok " onclick="common_check_table_line(this, '.cwpo_line_checkbok_val')">
+                                <input type="hidden" class="table_line_disabled cwpo_line_checkbok_val" name="CheckBox[]"  value="0">
+                                
+                                <input class="table_line_disabled" type="hidden" name="itemioid[]" value="<?php echo $dat->ItemIOID;?>" disabled /> 
+                                <input class="table_line_disabled" type="hidden" name="uomioid[]" value="<?php echo $dat->UomIOID;?>" disabled /> 
+                                <input class="table_line_disabled" type="hidden" name="unitprice[]" value="<?php echo $dat->DonGia;?>" disabled /> 
+                                <input class="table_line_disabled" type="hidden" name="requestioid[]" value="<?php echo $dat->RequestIOID;?>" disabled />                                
+                                
+                            </td>
+                            
+                            <!-- Số yêu cầu -->
+                            <td class="left">
+                                <?php echo $dat->RequestNo;?>
+                            </td>                            
+            
+                            <!-- Mã mặt hàng -->
+                            <td class="left">
+                                <?php echo $dat->MaSanPham;?>
+                            </td>
+            
+                            <!-- Tên mặt hàng -->
+                            <td class="left">
+                                <?php echo $dat->SanPham;?>
+                            </td>
+            
+                            <!-- ĐVT -->
+                            <td class="left">
+                                <?php echo $dat->DonViTinh;?>
+                            </td>
+            
+                            <!-- Số lượng -->
+                            <td class="right">
+                                <input type="text" class="table_line_disabled right" name="qty[]" onkeyup="M411.changeTotalAmountInAgreement(this)" value="<?php echo $dat->Rest;?>" size="10" disabled/>
+                            </td>
+            
+                            <!-- Đơn giá  -->
+                            <td class="right">
+                                <input type="hidden" class="M411_agreement_unitprice" value="<?php echo $dat->DonGia;?>"/>
+                                <?php echo Qss_Lib_Util::formatMoney($dat->DonGia);?>
+                            </td>
+            
+                            <!-- Thành tiền -->
+                            <td class="right M411_agreement_totalamount">
+                                <?php echo Qss_Lib_Util::formatMoney($dat->DonGia * $dat->Rest);?>
+                            </td>
+                        </tr>                
+                    <?php endforeach;?>
+                    
+                    
+                </table>   
+            </form>
+            
+    
+            <div class="clear"></div>
+            <br/>
+            
+            
+            <div>
+                <!-- Button: Tạo đơn hàng-->
+                <button type="button" class="btn btn-custom" onclick="M411.createOrder1('M411_agrrement_<?php echo $formNo;?>');">
+                    <?php echo $this->_translate(8);?>
+                </button>
+            </div>        
+            
+            <br/>
+            <hr/>
+            <br/>        
+        <?php endif;?>
+    
+    <?php endforeach;?>    
+</div><!-- END #M411_agreement_wrap -->
+
+

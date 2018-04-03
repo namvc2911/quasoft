@@ -1,0 +1,185 @@
+
+<?php if($this->component):?>
+
+<?php
+// Hien thi hinh anh thiet bi
+
+
+$imageResult = '';
+$image       = "user/field/picture?file={$this->component->Anh}";
+$imageExists = file_exists(QSS_DATA_DIR
+. "/documents/{$this->component->Anh}");
+
+if ($imageExists && $this->component->Anh)
+{
+	$imageResult = '<img width="100" src="'.$image.'" />';
+}
+else
+{
+	$imageResult = '<div '
+	. 'style="width: 100px; float:left; '
+	. 'background: #fff; font-size: 36px;  '
+	. 'line-height:  40px; color: #ccc; text-align: center;">'
+	. ' NO IMAGE '
+	. '</div>';
+}
+
+?>
+
+<div class="ui_box">
+	<div class="ui_box_s50_left">
+		<fieldset>
+			<legend>
+			<?php echo $this->_translate(1);?>
+				<!-- Vị trí -->
+			</legend>
+			<div class="ui_box_line">
+				<div class="label">
+					<label><?php echo $this->_translate(1);?> <!-- Vị trí --> </label>
+				</div>
+				<div class="element">
+				<?php echo $this->component->ViTri; ?>
+				</div>
+			</div>
+
+			<div class="ui_box_line">
+				<div class="label">
+					<label><?php echo $this->_translate(2);?> <!-- Bộ phận --> </label>
+				</div>
+				<div class="element">
+				<?php echo $this->component->BoPhan; ?>
+				</div>
+			</div>
+
+			<div class="ui_box_line">
+				<div class="label">
+					<label><?php echo $this->_translate(3);?> <!-- Trực thuộc --> </label>
+				</div>
+				<div class="element">
+				<?php echo $this->component->TrucThuoc; ?>
+				</div>
+			</div>
+
+			<div class="ui_box_line">
+				<div class="label">
+					<label><?php echo $this->_translate(4);?> <!-- Ánh --> </label>
+				</div>
+				<div class="element">
+				<?php echo $imageResult; // Hien thi anh ?>
+				</div>
+			</div>
+
+			<div class="ui_box_line">
+				<div class="label">
+					<label><?php echo $this->_translate(5);?> <!-- Mô tả --> </label>
+				</div>
+				<div class="element">
+					<!--<textarea name="MoTa_109" id="MoTa_109">-->
+				<?php echo $this->component->MoTa; ?>
+					<!--</textarea>-->
+				</div>
+			</div>
+		</fieldset>
+	</div>
+
+	<div class="ui_box_s50_right">
+		<br />
+		<button class="btn-custom"
+			onclick="popupObjectInsert(<?php echo $this->nodeifid ?>, 1, 'OCauTrucThietBi', {OCauTrucThietBi_TrucThuoc: '<?php echo $this->component->ViTri ?>'}, function() {$('#einfo-search-eq-table').jstree('load_node', $('#COMPONENT<?php echo $this->nodeioid ?>'));});"
+			type="button" style="width: 120px;">
+			<?php echo $this->_translate(6);?>
+			<!-- Thêm bộ phận con -->
+		</button>
+		<br />
+
+		<button class="btn-custom"
+			onclick="popupObjectEdit(<?php echo $this->nodeifid ?>, 1, 'OCauTrucThietBi',<?php echo $this->nodeioid ?>, null, function() {$('#COMPONENT<?php echo $this->nodeioid ?>_anchor').click();});"
+			type="button" style="width: 120px;">
+			<?php echo $this->_translate(7);?>
+			<!-- Sửa bộ phận -->
+		</button>
+		<br />
+
+		<button class="btn-custom"
+			onclick="popupObjectInsert(<?php echo $this->nodeifid ?>, 1, 'ODanhSachPhuTung', {ODanhSachPhuTung_ViTri: '<?php echo $this->component->ViTri; ?>'}, function() {$('#COMPONENT<?php echo $this->nodeioid ?>_anchor').click();});"
+			type="button" style="width: 120px;">
+			<?php echo $this->_translate(8);?>
+			<!-- Thêm PT -->
+		</button>
+		<br />
+
+
+	</div>
+</div>
+<div class="ui_box">
+	<div class="ui_box_s100">
+		<fieldset>
+			<legend>
+			<?php echo $this->_translate(9);?>
+				<!-- Danh sách phụ tùng -->
+			</legend>
+
+			<table cellspacing="0" cellpadding="0" border="1"
+				style="width: 100%;" class="border_table"
+				id="einfo_componentdetail_sparepart">
+				<tr class="bggrey center">
+					<th><?php echo $this->_translate(10);?> <!-- Mã phụ tùng --></th>
+					<th><?php echo $this->_translate(11);?> <!-- Tên phụ tùng --></th>
+					<th><?php echo $this->_translate(15);?> <!-- Thay thế --></th>
+					<th><?php echo $this->_translate(12);?> <!-- ĐVT --></th>
+					<th><?php echo $this->_translate(13);?> <!-- Số lượng chuẩn --></th>
+					<th><?php echo $this->_translate(14);?> <!-- Số lượng HC --></th>
+					<th><?php echo $this->_translate(16);?> <!-- Số ngày cảnh báo --></th>
+					<th><?php echo $this->_translate(17);?> <!-- Tồn kho --></th>
+				</tr>
+
+				<?php $i = 0; ?>
+				<?php foreach ($this->data as $d): ?>
+
+				<?php
+				$editControl = ' <div class="einfo_componentdetail_edit_control" style="display: none;">';
+				$editControl .= '<div class="einfo_delete_eq" style="" onclick="einfo_delete_component( \'ODanhSachPhuTung\', ' . $d->IFID_M705 . ',' . $d->IOID . ');"> </div>';
+				$editControl .= '<div class="einfo_edit_eq" onclick="einfo_edit_component(\'ODanhSachPhuTung\', ' . $d->IFID_M705 . ',' . $d->IOID . ')"> </div>';
+				$editControl .= '</div>';
+				?>
+				<tr>
+					<td style="width: 10%"><?php echo $d->MaSP; ?></td>
+					<td style="width: 20%"><?php echo $d->TenSP; ?></td>
+					<td style="width: 10%"><?php echo $d->ThayThe; ?></td>
+					<td style="width: 10%"><?php echo $d->DonViTinh; ?></td>
+					<td style="width: 10%" class="right"><?php echo $d->SoLuongChuan; ?>
+					</td>
+					<td style="width: 10%" class="right"><?php echo $d->SoLuongHC; ?></td>
+					<td style="width: 10%;" class="right"><?php echo $d->SoNgayCanhBao; ?>
+					</td>
+					<td style="position: relative; width: 10%;" class="right"><?php echo @(int)$d->TonKho; ?>
+					<?php echo $editControl;?></td>
+				</tr>
+				<?php $i++; ?>
+				<?php endforeach; ?>
+
+				<?php if ($i < 10): ?>
+				<?php for ($iTemp = $i; $iTemp <= 10; $iTemp++): ?>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<?php endfor; ?>
+				<?php endif; ?>
+				</fieldset>
+				</div>
+				</div>
+
+				<script>
+	$('.einfo_componentdetail_edit_control').each(function(){ $(this).hide(); });
+	$('#einfo_componentdetail_sparepart tr').hover(function(){ $(this).addClass('marker'); $(this).find('.einfo_componentdetail_edit_control').show();}
+	, function(){ $(this).removeClass('marker'); $(this).find('.einfo_componentdetail_edit_control').hide();});
+</script>
+
+<?php endif;?>

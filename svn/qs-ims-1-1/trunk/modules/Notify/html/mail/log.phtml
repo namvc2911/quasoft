@@ -1,0 +1,213 @@
+<link rel="stylesheet" type="text/css" href="/css/button.css" />
+<script>
+function check(el)
+{
+    var check = el.checked;
+    if(check == 1)
+    {
+    	checkAll();
+    }
+    else
+    {
+        uncheckAll();
+    }
+}
+
+function refreshLog(ele)
+{
+	var url  = sz_BaseUrl + '/notify/mail/log';
+    var data = {pageno:$(ele).val()};
+	
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#qss_combo').html(jreturn);
+		//$('#qss_combo').dialog({ width: 800,height:500 });
+	});
+}
+
+function refreshLogByPage(page)
+{
+	var url  = sz_BaseUrl + '/notify/mail/log';
+    var data = {pageno:page};
+	
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#qss_combo').html(jreturn);
+		//$('#qss_combo').dialog({ width: 800,height:500 });
+	});
+}
+
+function checkAll()
+{
+    var field = document.getElementsByName('Mail[]');
+    for (i = 0; i < field.length; i++)
+    {
+    	field[i].checked = true ;
+    }
+}
+
+function uncheckAll()
+{
+    var field = document.getElementsByName('Mail[]');
+    for (i = 0; i < field.length; i++)
+    {
+    	field[i].checked = false ;
+    }
+}
+
+function deleteSel()
+{
+	if(confirm("<?php echo $this->_translate(15)?>"))
+	{
+        var ext  = {pageno:$('#pageno').val(), delete_selected:1};
+        var data = $('#log_form').serialize() + '&' + $.param(ext);
+		var url  = sz_BaseUrl + '/notify/mail/log';
+		
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#qss_combo').html(jreturn);
+			//$('#qss_combo').dialog({ width: 800,height:500 });
+		});
+	}
+}
+
+function deleteAll()
+{
+	if(confirm("<?php echo $this->_translate(16)?>"))
+	{
+		var url  = sz_BaseUrl + '/notify/mail/log';
+	    var data = {pageno:$('#pageno').val(), delete_all:1};
+		
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#qss_combo').html(jreturn);
+			//$('#qss_combo').dialog({ width: 800,height:500 });
+		});
+	}
+}
+
+function showLog(logid)
+{
+	var url  = sz_BaseUrl + '/notify/mail/log/detail';
+    var data = {logid:logid};
+	
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#qss_trace').html(jreturn);
+		$('#qss_trace').dialog({ width: 600,height:500 });
+	});	
+}
+
+$(document).ready(function(){
+	// loai bo submit cua form
+	$('#log_form').on("keyup keypress", function(e) {
+	  var code = e.keyCode || e.which; 
+	  if (code  == 13) {               
+	    e.preventDefault();
+	    return false;
+	  }
+	});	
+
+	$('#pageno').on("keyup keypress", function(e) {
+	  var code = e.keyCode || e.which; 
+	  if (code  == 13) {               
+	    var page = $('#pageno').val();
+	    refreshLogByPage(page);
+	  }
+	});		
+});
+</script>
+
+<?php $status = array(0=>$this->_translate(13),1=>$this->_translate(12),2=>$this->_translate(17) );?>
+<?php $class  = array(0=>'error',1=>'working',2=>'error');?>
+
+<?php
+$diff      = $this->pageno - 1;
+$add       = $this->pageno + 1;
+$firstPage = 1;
+$lastPage  = $this->pagecount;
+$prevPage  = ($diff > 1)?$diff:1;
+$nextPage  = ($add > $this->pagecount)?$this->pagecount:$add;
+?>
+
+<form id="log_form">
+	<div>
+		<div class="clearfix">
+			<div class="fr">
+
+
+
+
+
+				<a href="#" onclick="refreshLogByPage(<?php echo $firstPage;?>)">&lt;&lt;</a>
+				<a href="#" onclick="refreshLogByPage(<?php echo $prevPage;?>)">&lt;</a>
+				<?php /*
+				<select id="pageno" name="pageno" onchange="refreshLog(this)">
+				<?php for($i=1;$i<=$this->pagecount;$i++):?>
+				<option
+				<?php echo ($i==$this->pageno)?'selected':'';?>
+				value="<?php echo $i;?>">
+				<?php echo $i;?>
+				</option>
+				<?php endfor;?>
+				</select>*/?>
+				<input type="text" id="pageno" name="pageno" style="width: 30px;"
+					value="<?php echo $this->pageno;?>" />/
+					<?php echo $this->pagecount;?>
+
+				<a href="#" onclick="refreshLogByPage(<?php echo $nextPage;?>)">&gt;</a>
+				<a href="#" onclick="refreshLogByPage(<?php echo $lastPage;?>)">&gt;&gt;</a>
+
+			</div>
+
+			<div class="fl">
+				<button class="btn-custom" type="button" onclick="deleteSel()">
+				<?php echo $this->_translate(9); // xoa?>
+				</button>
+				<button class="btn-custom" type="button" onclick="deleteAll()">
+				<?php echo $this->_translate(10); // xoa tat ca?>
+				</button>
+
+			</div>
+		</div>
+		<br />
+
+		<div>
+			<table class="border_table" cellpadding="0" cellspacing="0"
+				border="0">
+				<tr class="bggrey">
+					<th style="width: 5%"><input type="checkbox" onclick="check(this)">
+					</th>
+					<th style="width: 5%"><?php echo $this->_translate(2); // ID ?></th>
+					<th style="width: 20%"><?php echo $this->_translate(3); // Subject ?>
+					</th>
+					<th style="width: 15%"><?php echo $this->_translate(4); // To ?></th>
+					<th style="width: 15%"><?php echo $this->_translate(5); // CC ?></th>
+					<th style="width: 10%"><?php echo $this->_translate(6); // Date ?>
+					</th>
+					<th style="width: 10%"><?php echo $this->_translate(7); // Send date ?>
+					</th>
+					<th style="width: 10%"><?php echo $this->_translate(8); // Body ?>
+					</th>
+					<th style="width: 10%"><?php echo $this->_translate(11); // Status ?>
+					</th>
+				</tr>
+
+				<?php foreach($this->list as $item):?>
+				<tr>
+					<td class="center"><input type="checkbox" name="Mail[]"
+						value="<?php echo $item->MLID?>" /></td>
+					<td class="break-word center"><?php echo $item->MLID?></td>
+					<td class=""><?php echo $item->Subject?></td>
+					<td class="break-word"><?php echo $item->To?></td>
+					<td class="break-word"><?php echo $item->Cc?></td>
+					<td class="break-word center"><?php echo $item->Date?></td>
+					<td class="break-word center"><?php echo $item->SendDate?></td>
+					<td class="break-word center"><button class="btn-custom"
+							type="button" onclick="showLog(<?php echo $item->MLID?>)">
+							<?php echo $this->_translate(14); // Detail ?>
+						</button></td>
+					<td class="<?php echo $class[$item->Status]?> break-word center"><?php echo $status[$item->Status]?>
+					</td>
+				</tr>
+				<?php endforeach;?>
+			</table>
+		</div>
+
+	</div>
+</form>

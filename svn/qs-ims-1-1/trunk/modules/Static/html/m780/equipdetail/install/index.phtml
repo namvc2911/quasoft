@@ -1,0 +1,270 @@
+<?php
+$no     = 0;
+$width  = 860;
+$rate   = array(1,2,2,2,2,2,2,1,1);
+$widths = Qss_Lib_Report::changeWidthToFitScreen2($rate, $width, 2);
+$begin  = 0;
+?>
+
+<style>
+#m780_install_wrap
+{
+
+}
+
+#m780_install_wrap #filter
+{
+
+}
+
+#m780_install_wrap #add
+{
+    /*overflow: hidden;*/
+}
+
+#m780_install_wrap #add input
+{
+    width: 200px !important;
+}
+
+#m780_install_wrap #add select
+{
+    width: 200px !important;
+}
+
+#m780_install_wrap #add .element_of_add
+{
+    float: left;
+}
+
+#m780_install_wrap #content
+{
+
+}
+</style>
+
+<script>
+    $('#date').change(function(){
+        var today  = common_getCurrentDate();
+        var compare = common_compareDate($(this).val(), today);
+
+        if(compare == -1)
+        {
+            alert('Ngày phải nhỏ hơn ngày hiện tại!');
+        }
+    });
+</script>
+
+<?php //echo '<Pre>'; print_r($this->last); die;?>
+<div id="m780_install_wrap">
+    <div id="add">
+        <div class="ui_box">
+            <form id="edit_form">
+
+                <input type="hidden" name="equip" id="equip" value="<?php echo $this->equip->IOID;?>">
+                <input type="hidden" name="equipifid" id="equipifid" value="<?php echo $this->equip->IFID_M705;?>">
+                <input type="hidden" name="start" id="equipifid" value="<?php echo $this->equip->NgayDuaVaoSuDung;?>">
+                <input type="hidden" name="ioid" id="ioid" value="0">
+                <input type="hidden" name="ifid" id="ifid" value="0">
+
+                <div class="ui_box_s50_left">
+                    <fieldset>
+                        <legend>Thông tin chung</legend>
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Mã thiết bị</label>
+                            </div>
+
+                            <div class="element">
+                                <div class="">
+                                    <input type="text" value="<?php echo $this->equip->MaThietBi;?>" class="readonly" style="width: 200px;" readonly disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Tên thiết bị</label>
+                            </div>
+
+                            <div class="element">
+                                <div class="">
+                                    <input type="text" value="<?php echo $this->equip->TenThietBi;?>" class="readonly" style="width: 200px;" readonly disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Ngày</label>
+                            </div>
+
+                            <div class="element">
+                                <div class="required">
+                                    <?php echo $this->views->Report->Datepicker('date', date('d-m-Y'));?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Giờ</label>
+                            </div>
+
+                            <div class="element">
+                                <div class="">
+                                    <input type="text" class="" id="time" name="time" value="<?php echo date('H:i');?>">
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="ui_box_s50_right">
+                    <fieldset>
+                        <legend>Cài đặt</legend>
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Khu vực</label>
+                            </div>
+
+                            <div class="element">
+                                <div class="required">
+                                    <?php
+                                    $getFields = array(
+                                        'num' => 2
+                                    ,'objects' => array('OKhuVuc' => array('id' => 'IOID', 'display1' => 'MaKhuVuc', 'display2' => 'Ten'))
+                                    );
+
+                                    $selectedValue = $this->last?$this->last->Ref_KhuVuc:0;
+                                    ?>
+                                    <?php echo $this->views->Report->ComboBox('location', $getFields, array(), array(), false, '', true, $selectedValue); ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Dây chuyền</label>
+                            </div>
+
+                            <div class="element">
+                                <div class="">
+                                    <?php
+                                    $getFields = array(
+                                        'num' => 2
+                                    ,'objects' => array('ODayChuyen' => array('id' => 'IOID', 'display1' => 'MaDayChuyen', 'display2' => 'TenDayChuyen'))
+                                    );
+                                    $selectedValue = $this->last?$this->last->Ref_DayChuyen:0;
+                                    ?>
+                                    <?php echo $this->views->Report->ComboBox('line', $getFields, array(), array(), false, '', true, $selectedValue); ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Trung tâm chi phí</label>
+                            </div>
+
+                            <div class="element">
+                                <div class="">
+                                    <?php
+                                    $getFields = array(
+                                        'num' => 2
+                                    ,'objects' => array('OTrungTamChiPhi' => array('id' => 'IOID', 'display1' => 'Ma', 'display2' => 'Ten'))
+                                    );
+
+                                    $selectedValue = $this->last?$this->last->Ref_TrungTamChiPhi:0;
+                                    ?>
+                                    <?php echo $this->views->Report->ComboBox('costcenter', $getFields, array(), array(), false, '', true, $selectedValue); ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Quản lý</label>
+                            </div>
+
+                            <div class="element">
+                                <div class="">
+                                    <?php
+
+                                    $filter        = array('ODanhSachNhanVien'=>array('MaNhanVien', 'TenNhanVien'));
+                                    $display       = array('num'=>2,'objects'=>array('ODanhSachNhanVien'=>array('id'=>'IOID','display1'=>'MaNhanVien','display2'=>'TenNhanVien')));
+                                    $selectedText  = $this->last?"{$this->last->MaNhanVien} - {$this->last->TenNhanVien}":'';
+                                    $selectedValue = $this->last?$this->last->Ref_NhanVien:0;
+                                    ?>
+                                    <?php echo $this->views->Report->ListBox('manager', $filter, $display, array(), array(),'', $selectedText, $selectedValue);?>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </form>
+        </div>
+
+        <div class="clear"></div>
+
+        <div class="fr">
+            <button class="btn-custom" id="update_button" type="button" onclick="einfo_install_history_insert()"> Thêm </button>
+            <button class="btn-custom" type="button" onclick="einfo_install_history(<?php echo $this->equip->IOID;?>)"> Reset </button>
+        </div>
+
+    </div>
+
+    <div class="clear"></div>
+
+    <div id="content">
+        <fieldset>
+            <legend>Lịch sử</legend>
+
+            <div id="history">
+                <table cellpadding="0" cellspacing="0" class="border_table"  border="0"
+                       style="width: <?php echo $width;?>px; table-layout: fixed;">
+
+                    <tr>
+                        <th style="width:<?php echo $widths[$begin++];?>px" class="center"> STT </th>
+                        <th style="width:<?php echo $widths[$begin++];?>px" class="center"> Ngày </th>
+                        <th style="width:<?php echo $widths[$begin++];?>px" class="center"> Giờ </th>
+                        <th style="width:<?php echo $widths[$begin++];?>px" class="center"> Khu vực </th>
+                        <th style="width:<?php echo $widths[$begin++];?>px" class="center"> Dây chuyền </th>
+                        <th style="width:<?php echo $widths[$begin++];?>px" class="center"> Trung tâm chi phí </th>
+                        <th style="width:<?php echo $widths[$begin++];?>px" class="center"> Quản lý </th>
+                        <th style="width:<?php echo $widths[$begin++];?>px" class="center"> Sửa </th>
+                        <th style="width:<?php echo $widths[$begin++];?>px" class="center"> Xóa </th>
+                    </tr>
+
+                    <?php foreach($this->history as $item):?>
+                        <tr>
+                            <td class="center" class="">
+                                <?php echo ++$no;?>
+                                <input type="hidden" class="ifid" value="<?php echo $item->IFID_M173;?>"/>
+                                <input type="hidden" class="ioid" value="<?php echo $item->IOID;?>"/>
+                                <input type="hidden" class="date" value="<?php echo Qss_Lib_Date::mysqltodisplay($item->Ngay);?>"/>
+                                <input type="hidden" class="time" value="<?php echo $item->Gio;?>"/>
+                                <input type="hidden" class="location" value="<?php echo $item->Ref_KhuVuc;?>"/>
+                                <input type="hidden" class="line" value="<?php echo $item->Ref_DayChuyen;?>"/>
+                                <input type="hidden" class="costcenter" value="<?php echo $item->Ref_TrungTamChiPhi;?>"/>
+                                <input type="hidden" class="manager" value="<?php echo $item->Ref_NhanVien;?>"/>
+                                <input type="hidden" class="manager_tag" value="<?php echo $item->Ref_NhanVien?"{$item->MaNhanVien} - {$item->TenNhanVien}":'';?>  "/>
+                            </td>
+                            <td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item->Ngay);?> </td>
+                            <td class="center"><?php echo $item->Gio;?> </td>
+                            <td class="left <?php echo ($item->ThayKhuVuc)?'bggreen bold':'';?>"><?php echo $item->MaKhuVuc;?> </td>
+                            <td class="left <?php echo ($item->ThayDayChuyen)?'bggreen bold':'';?>"><?php echo $item->MaDayChuyen;?> </td>
+                            <td class="left <?php echo ($item->ThayTrungTamChiPhi)?'bggreen bold':'';?>"><?php echo $item->MaTrungTamChiPhi;?></td>
+                            <td class="left <?php echo ($item->ThayNhanVien)?'bggreen bold':'';?>"><?php echo $item->MaNhanVien;?></td>
+                            <td class="center"> <a href="#1" onclick="einfo_install_history_edit(this, 'Cập nhật')">Sửa</a>  </td>
+                            <td class="center"> <?php if($item->IFID_M173):?><a href="#1" onclick="einfo_install_history_delete(<?php echo $item->IFID_M173;?>)">Xóa</a><?php endif;?> </td>
+                        </tr>
+                    <?php endforeach;?>
+                </table>
+            </div>
+        </fieldset>
+    </div>
+</div>
+

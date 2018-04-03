@@ -1,0 +1,132 @@
+<?php if($this->main): // In thong tin chung cua ke hoach theo IFID?>
+<table class="popup_detail">
+    <tr>
+        <th style="width: 20%">
+            Mã:
+        </th>
+
+        <td  style="width: 30%">
+            <?php echo $this->main->Ma;?>
+        </td>
+
+        <th style="width: 20%">
+            Tên:
+        </th>
+
+        <td  style="width: 30%">
+            <?php echo $this->main->Ten;?>
+        </td>
+    </tr>
+
+    <tr>
+        <th style="width: 20%">
+            Từ ngày:
+        </th>
+
+        <td  style="width: 30%">
+            <?php echo Qss_Lib_Date::mysqltodisplay($this->main->NgayBatDau);?>
+        </td>
+
+        <th style="width: 20%">
+            Đến ngày:
+        </th>
+
+        <td  style="width: 30%">
+            <?php echo Qss_Lib_Date::mysqltodisplay($this->main->NgayKetThuc);?>
+        </td>
+    </tr>
+
+    <tr>
+        <th>
+            Người tạo:
+        </th>
+
+        <td>
+            <?php echo $this->main->NguoiTao;?>
+        </td>
+
+        <th>
+            Ngày tạo:
+        </th>
+
+        <td>
+            <?php echo Qss_Lib_Date::mysqltodisplay($this->main->NgayTao);?>
+        </td>
+    </tr>
+
+    <tr>
+        <th>
+            Người phê duyệt:
+        </th>
+
+        <td>
+            <?php echo $this->main->NguoiPheDuyet;?>
+        </td>
+
+        <th>
+            Ngày phê duyệt:
+        </th>
+
+        <td>
+            <?php echo Qss_Lib_Date::mysqltodisplay($this->main->NgayPheDuyet);?>
+        </td>
+    </tr>
+</table>
+<?php endif; // Kiem tra co thong tin chung de in thong tin chung ?>
+
+
+<?php if($this->detail):?>
+    <table cellspacing="0" cellpadding="0" class="border_table" border="0" style="margin-bottom: 10px;">
+        <?php $begin = 0;?>
+        <tr>
+            <th class="center" style="width: <?php echo $width[$begin++];?>%"><input type="checkbox" onclick="common_check_all_table_line(this, '.cwpo_line_checkbok', '.cwpo_line_checkbok_val')"/></th>
+            <th class="center break" style="width: <?php echo $width[$begin++];?>%">Mã thiết bị</th>
+            <th class="center" style="width: <?php echo $width[$begin++];?>%">Tên thiết bị</th>
+            <th class="center" style="width: <?php echo $width[$begin++];?>%">Loại bảo trì</th>
+            <th class="center" style="width: <?php echo $width[$begin++];?>%">Ưu tiên</th>
+            <th class="center" style="width: <?php echo $width[$begin++];?>%">Ngày bắt đầu</th>
+            <th class="center" style="width: <?php echo $width[$begin++];?>%">Ngày kết thúc</th>
+            <th class="center" style="width: <?php echo $width[$begin++];?>%">Số phiếu</th>
+        </tr>
+
+
+        <?php foreach($this->detail as $detail): // In danh muc chi tiet theo IFID ?>
+            <tr>
+                <td class="center">
+                    <?php if($detail->IFID_M759 == 0):?>
+                        <input type="checkbox" class="cwpo_line_checkbok " onclick="common_check_table_line(this, '.cwpo_line_checkbok_val')">
+                        <input type="hidden" class="table_line_disabled cwpo_line_checkbok_val" name="CheckBox[]"  value="0">
+                        <input class="table_line_disabled" type="hidden" value="<?php echo $detail->IFID_M837;?>" name="detail_ifid[]" disabled>
+                    <?php else:?>
+                        &nbsp;
+                    <?php endif;?>
+
+                </td>
+                <td class="left break"><?php echo $detail->MaThietBi;?></td>
+                <td class="left"><?php echo $detail->TenThietBi;?></td>
+                <td class="left"><?php echo $detail->LoaiBaoTri;?></td>
+                <td class="left"><?php echo $detail->MucDoUuTien;?></td>
+                <td class="center">
+                    <?php if($detail->IFID_M759 == 0):?>
+                        <input type="text" class="datepicker table_line_disabled" name="start[]" value="<?php echo Qss_Lib_Date::mysqltodisplay($detail->NgayBatDau);?>" disabled/>
+                    <?php else:?>
+                        <?php echo Qss_Lib_Date::mysqltodisplay($detail->NgayBatDauPhieu);?>
+                    <?php endif;?>
+                </td>
+
+                <td class="center">
+                    <?php if($detail->IFID_M759 == 0):?>
+                        <input type="text" class="datepicker table_line_disabled" name="end[]" value="<?php echo Qss_Lib_Date::mysqltodisplay($detail->NgayKetThuc);?>" disabled/>
+                    <?php else:?>
+                        <?php echo Qss_Lib_Date::mysqltodisplay($detail->NgayKetThucPhieu);?>
+                    <?php endif;?>
+                </td>
+                <td class="left"><?php echo $detail->SoPhieuBaoTri;?></td>
+            </tr>
+        <?php endforeach;?>
+    </table>
+
+    <div class="right">
+        <button class="btn btn_main_top" type="button" onclick="calendar_index_file.create_order_from_general_plans()"> Tạo phiếu bảo trì </button>
+    </div>
+<?php endif; // Kiem tra co detail de in detail?>

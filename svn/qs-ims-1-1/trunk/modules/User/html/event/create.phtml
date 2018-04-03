@@ -1,0 +1,239 @@
+<script>
+    $(document).ready(function() {
+
+        $('#none').datepicker();
+        $("#ui-datepicker-div").wrap('<div style="position:absolute;top:0px;"></div>');
+        $(".datepicker").datepicker();
+        $(".datepicker").datepicker('option', {dateFormat: 'dd-mm-yy'});
+        $(".datepicker").val('');
+        $('#qss_event').dialog({
+            width: 390,
+            height: 220,
+            modal: true
+        });
+    });
+
+    function addActivity()
+    {
+        var url = sz_BaseUrl + '/user/event/quick';
+        var data = $('#activity_form').serialize();
+        qssAjax.call(url, data, function(jreturn) {
+            $('#qss_event').dialog('close');
+        }, function(jreturn) {
+            qssAjax.alert(jreturn.message);
+        });
+    }
+
+    function removeActivity()
+    {
+        //logDeleteAction
+        var url = sz_BaseUrl + '/user/event/log/delete';
+        var elid = $('#elid').val();
+        var data = {elid: elid};
+    	qssAjax.confirm(Language.translate('CONFIRM_DELETE'),function(){
+    		qssAjax.call(url, data, function(jreturn) {
+                $('#qss_event').dialog('close');
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+    	});        
+    }
+
+</script>
+<style>
+#activity_wrap {
+	width: 100%;
+	font-size: 11px;
+}
+
+#activity_wrap a {
+	color: #0B55C4;
+}
+
+#activity_wrap {
+	border: none;
+}
+
+.act_overflow {
+	overflow: hidden;
+}
+
+.act_left {
+	float: left;
+	width: 22%;
+}
+
+.act_right {
+	float: right;
+	width: 76%;
+}
+
+#activity_wrap textarea {
+	width: 275px;
+	height: 50px;
+	overflow: auto;
+	resize: none;
+}
+</style>
+
+
+<div id="activity_wrap">
+	<form id="activity_form" method="post">
+		<input type="hidden" value="<?php echo $this->elid; ?>" id="elid"
+			name="elid"> <input type="hidden" value="<?php echo $this->ifid ?>"
+			name="ifid"> <input type="hidden" value="<?php echo $this->typeid ?>"
+			name="typeid"> <input type="hidden"
+			value="<?php echo $this->eventid ?>" name="eventid">
+		<div class="act_overflow">
+			<div class="act_left">
+			<?php echo $this->_translate(1)?>
+			</div>
+			<!-- end .act_left -->
+
+			<div class="act_right">
+				<select name="eventtype" id="eventtype" style="width: 250px">
+					<option value="">-----</option>
+					<?php foreach ($this->activititype as $v): ?>
+					<option value="<?php echo $v->TypeID; ?>"
+					<?php if ($v->TypeID == $this->eventtype): ?> selected
+					<?php endif; ?>>
+						<?php echo $v->TypeName; ?>
+					</option>
+					<?php endforeach; ?>
+				</select>
+			</div>
+			<!-- end .act_right -->
+		</div>
+		<!-- end .act_overflow -->
+
+		<div class="act_overflow">
+			<div class="act_left">
+			<?php echo $this->_translate(2)?>
+			</div>
+			<!-- end .act_left -->
+
+			<div class="act_right">
+				<input type="text" name="date" id="date"
+					value="<?php echo $this->date ?>" size="18" class="datepicker" />
+			</div>
+			<!-- end .act_right -->
+		</div>
+		<!-- end .act_overflow -->
+
+		<div class="act_overflow">
+			<div class="act_left">
+			<?php echo $this->_translate(3)?>
+			</div>
+			<!-- end .act_left -->
+			<div class="act_right">
+				<select name="stime" id="stime" style="width: 60px;">
+					<option value="07:30:00">7:30</option>
+					<option value="08:00:00">8:00</option>
+					<option value="08:30:00">8:30</option>
+					<option value="09:00:00">9:00</option>
+					<option value="09:30:00">9:30</option>
+					<option value="10:00:00">10:00</option>
+					<option value="10:30:00">10:30</option>
+					<option value="11:00:00">11:00</option>
+					<option value="11:30:00">11:30</option>
+					<option value="12:00:00">12:00</option>
+					<option value="12:30:00">12:30</option>
+					<option value="13:00:00">13:00</option>
+					<option value="13:30:00">13:30</option>
+					<option value="14:00:00">14:00</option>
+					<option value="14:30:00">14:30</option>
+					<option value="15:00:00">15:00</option>
+					<option value="15:30:00">15:30</option>
+					<option value="16:00:00">16:00</option>
+					<option value="16:30:00">16:30</option>
+					<option value="17:00:00">17:00</option>
+					<option value="17:30:00">17:30</option>
+				</select>
+			</div>
+			<!-- end .act_right -->
+		</div>
+		<!-- end .act_overflow -->
+
+		<div class="act_overflow">
+			<div class="act_left">
+			<?php echo $this->_translate(4)?>
+			</div>
+			<!-- end .act_left -->
+			<div class="act_right">
+				<select name="etime" id="etime" style="width: 60px;">
+					<option value="07:30:00">7:30</option>
+					<option value="08:00:00">8:00</option>
+					<option value="08:30:00">8:30</option>
+					<option value="09:00:00">9:00</option>
+					<option value="09:30:00">9:30</option>
+					<option value="10:00:00">10:00</option>
+					<option value="10:30:00">10:30</option>
+					<option value="11:00:00">11:00</option>
+					<option value="11:30:00">11:30</option>
+					<option value="12:00:00">12:00</option>
+					<option value="12:30:00">12:30</option>
+					<option value="13:00:00">13:00</option>
+					<option value="13:30:00">13:30</option>
+					<option value="14:00:00">14:00</option>
+					<option value="14:30:00">14:30</option>
+					<option value="15:00:00">15:00</option>
+					<option value="15:30:00">15:30</option>
+					<option value="16:00:00">16:00</option>
+					<option value="16:30:00">16:30</option>
+					<option value="17:00:00">17:00</option>
+					<option value="17:30:00" selected="selected">17:30</option>
+				</select>
+			</div>
+			<!-- end .act_right -->
+		</div>
+		<!-- end .act_overflow -->
+
+		<div class="act_overflow">
+			<div class="act_left">
+			<?php echo $this->_translate(5)?>
+			</div>
+			<!-- end .act_left -->
+			<div class="act_right">
+				<textarea name="note" id="note">
+				<?php echo $this->name ?>
+				</textarea>
+			</div>
+			<!-- end .act_right -->
+		</div>
+		<!-- end .act_overflow -->
+
+		<div class="act_overflow">
+			<div class="act_left">
+			<?php echo $this->_translate(6)?>
+			</div>
+			<!-- end .act_left -->
+			<div class="act_right">
+				<input type="checkbox" name="status" id="status" value="1"
+				<?php if ($this->status): ?> checked <?php endif; ?> />
+			</div>
+			<!-- end .act_right -->
+		</div>
+		<!-- end .act_overflow -->
+
+		<div class="act_overflow">
+			<div class="act_left">&nbsp;</div>
+			<!-- end .act_left -->
+			<div class="act_right">
+				<button type="button" class="btn-custom" onclick="addActivity()">&nbsp;Thêm
+					công việc&nbsp;</button>
+					<?php if ($this->elid): ?>
+				<button type="button" class="btn-custom" onclick="removeActivity()">&nbsp;Xóa
+					công việc&nbsp;</button>
+					<?php endif; ?>
+			</div>
+			<!-- end .act_right -->
+		</div>
+		<!-- end .act_overflow -->
+	</form>
+</div>
+<!-- end #activity_wrap -->
+<script>
+    $('#date').val('<?php echo $this->date ?>');
+    $('#stime').val('<?php echo $this->stime ?>');
+    $('#etime').val('<?php echo $this->etime ?>');
+</script>

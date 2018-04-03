@@ -1,0 +1,1046 @@
+<?php
+/**
+ * $this->type: Print one or many employee
+ * @todo: Sau se sua in mot nhan vien thanh in bang luong nhan vien theo dang pdf cua mot hoac nhieu nv
+ */
+$dev            = 0;
+$companyWorkingDaysInLaw = 24; /* Số ngày lấy chia cho lương cơ bản */
+$excel_col      = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$no             = 1; /* So thu tu*/
+$prevDepartment = '';/* Phong ban truoc do */
+$countPayroll   = count((array)$this->payroll);/* Dem so dong trong bang luong */
+$countOT        = count((array)$this->overtime);/* Dem so loai lam them gio */
+$countAllowances= count((array)$this->allowances);/* Dem so loai phu cap */
+$totalLeftOTG   = 13; /*Tong so cot phia ben trai nhom cot phu cap thu nhat*/
+$totalRightOTG  = 2; /* Tong so cot phia ben phai nhom phu cap thu nhat */
+$overtime = array(); /* Làm thêm giờ chịu thuế TNCN */
+$overtimeNotTaxable = array(); /* Làm thêm giờ không chịu thuế */
+$i        = 0;
+$j        = 0;
+
+/* Lấy những làm thêm có phần trăm lơn hơn 100, chịu thuế TNCN */
+foreach ($this->overtime as $ot)
+{
+	if($ot->PhanTram > 100) /* Lay mang chiu thue */
+	{
+		$overtime[$i]['PhanTram'] = $ot->PhanTram;
+		$overtime[$i]['MoTa']     = $ot->MoTa;
+		$i++;
+	}
+	else /* Lay mang khong chiu thue */
+	{
+		$overtimeNotTaxable[$j]['PhanTram'] = $ot->PhanTram;
+		$overtimeNotTaxable[$j]['MoTa']     = $ot->MoTa;
+		$j++;
+	}
+}
+
+$countOvertimeTaxable    = $i; /* Đếm số cột overtime chịu thuế thu nhập cá nhân */
+$countOvertimeNotTaxable = $j; /* Đếm số cột overtime không chịu thuế thu nhập cá nhân */
+
+
+$incomeForDeductionPITCols =  $countAllowances + $countOvertimeTaxable + 3;
+/* $incomeForDeductionPITCols: Số cột khấu trừ thuế thu nhập cá nhân bao gồm phụ cấp, làm thêm giờ,
+ * thanh toán phép năm, khấu trừ khác, tổng phần bị khấu trừ thuế */
+$incomeNotDeductionPITCols = $countOT + 2;
+/* Phan khong bi khau tru thue gom qua gio ngoai thue, thu nhap khac + thuong,
+ * tong cong phan khong bi chiu thue*/
+$nextNotDeductionCols = 1;/* So cot sau nhom cot khong bi khau tru thue*/
+$deductionNonTaxable  = 7;/* Di tre ve som, bao hiem, phi cong doan, tru khac, tong tru*/
+$nextDeductionNontaxable =2 ;/*So cot tiep theo cua tru ko chiu thue */
+$pitCalculateCols = 5; /* Tinh thue TNCN */
+$nextPitCalcualte = 3;/* Bonus o trong */
+$companyPayment = 4;
+
+
+$totalCol       = $totalLeftOTG + $totalRightOTG + $countOT + $incomeForDeductionPITCols
++ $incomeNotDeductionPITCols + $nextNotDeductionCols + $deductionNonTaxable + $nextDeductionNontaxable
++ $pitCalculateCols + $nextPitCalcualte + $companyPayment; /* Tong so column */
+
+if($countPayroll > 1)
+{
+	$this->type = 2;/* In nhieu dong */
+}
+
+/**
+ * @todo : Chưa tính làm thêm giờ
+ * @todo : Chưa tính được phụ cấp
+ * @todo : Chưa tính đi muộn về sơm
+ * @todo : Chưa phân lại cột excel
+ * @todo : Chưa tính được thanh toán phép năm
+ * @todo : Chỉnh lại
+ * @todo : Chưa tính  được ra vao giua gio
+ */
+//echo '<pre>'; print_r($overtime); die;
+?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="landscape">
+	<excel orientation="landscape" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+	<div id="head_print">
+	<?php echo $this->views->Common->Landscape()?>
+	<?php $row = 9;?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol]?>" font-size="11"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo "{$this->_translate(1)} ".@$this->info->Thang."-".@$this->info->Nam;?>
+				</xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++?>
+
+	<div id="container">
+		<table cellpadding="0" cellspacing="0" class="border" border="1">
+		<?php //if($this->type == 1):// In Bang Luong một nhân viên?>
+
+		<?php //elseif($this->type == 2): // In Bang Luong của một hoặc nhiều phòng?>
+
+			<!-- II.1 Tieu de in bang luong cua nhieu nhan vien dang excel -->
+
+			<!-- ****** Hang thu nhat *******  -->
+		<?php if($dev) {$devi = 1; $devj = 1;} ?>
+		<?php $ai = 0; /* So thu tu cot */?>
+			<tr class="bggrey">
+				<!-- 1 -->
+				<!-- STT 2-->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 40px; word-wrap: break-word;">
+						<xls width="6" row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" width="4" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(2);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 2 -->
+				<!-- Ma nhan vien 3-->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 85px; word-wrap: break-word;">
+						<xls width="12" row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(3);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div>
+				</th>
+				<!-- 3 -->
+				<!-- Ten nhan vien 4 -->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 100px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" width="15" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(4);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 4 -->
+				<!-- Chuc danh 5-->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 85px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(5);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 5 -->
+				<!-- Phong ban  6-->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 85px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(6);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 6 -->
+				<!-- Bo phan  7-->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 85px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(7);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 7 -->
+				<!-- Nhom  8-->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 85px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(8);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 8 -->
+				<!-- Ngay Vao Cong ty  9-->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 100px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(9);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 9 -->
+				<!-- Luong CB  10-->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(10);?></xls>
+					</div></th>
+				<!-- 10 -->
+				<!-- So ngay lam viec Cong ty  11-->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" width="12" row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(11);?>
+						</xls>
+						<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 11 -->
+				<!-- Ngay cong - So Ngay lam viec 12 -->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(12);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 12 -->
+				<!-- So ngay nghi ko huong luong  14 -->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(14);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 13 -->
+				<!-- Luong 13 -->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(13);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+					<?php $group1 = $ai; ?>
+					<?php $colspan = $ai + $countOT;?>
+				<!-- 14 -->
+				<!-- Gio lam them 15 -->
+				<th colspan="<?php echo $countOT;?>"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>"
+						column-merge="<?php echo $excel_col[$colspan] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(15);?></xls>
+						<?php if($dev) echo $excel_col[$ai]?> <?php if($dev) echo '-'.$excel_col[$colspan]?>
+					</div></th>
+					<?php $ai += ($countOT - 1);?>
+				<!-- 15 -->
+				<!-- Di tre & ve som 16-->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(16);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 16 -->
+				<!-- Tong tro cap 17-->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(17);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+					<?php $group2 = $ai; ?>
+					<?php $colspan = $ai + $incomeForDeductionPITCols;?>
+				<!-- 17 -->
+				<!-- Phan bi khau tru thue TNCN 18-->
+				<th colspan="<?php echo $incomeForDeductionPITCols;?>"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>"
+						column-merge="<?php echo $excel_col[$colspan] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(18);?></xls>
+						<?php if($dev) echo $excel_col[$ai]?> <?php if($dev) echo '-'.$excel_col[$colspan]?>
+				</th>
+				<?php $ai += ($incomeForDeductionPITCols - 1);?>
+				<?php $group3 = $ai; ?>
+				<?php $colspan = $ai + $incomeNotDeductionPITCols;?>
+				<!-- 18 -->
+				<!-- Phan khong bi khau tru thue TNCN 23-->
+				<th colspan="<?php echo $incomeNotDeductionPITCols;?>"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>"
+						column-merge="<?php echo $excel_col[$colspan] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(23);?></xls>
+						<?php if($dev) echo $excel_col[$ai]?> <?php if($dev) echo '-'.$excel_col[$colspan]?>
+				</th>
+				<?php $ai += ($incomeNotDeductionPITCols - 1);?>
+				<!-- 19 -->
+				<!-- Tong thu nhap truoc thue 26-->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 85px; word-wrap: break-word;">
+						<xls row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(26);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+					<?php $group4 = $ai; ?>
+					<?php $colspan = $ai + $deductionNonTaxable;?>
+				<!-- 20 -->
+				<!-- Phan tru khong chiu thue 27-->
+				<th colspan="<?php echo $deductionNonTaxable;?>"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>"
+						column-merge="<?php echo $excel_col[$colspan] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(27);?></xls>
+						<?php if($dev) echo $excel_col[$ai]?> <?php if($dev) echo '-'.$excel_col[$colspan]?>
+				</th>
+				<?php $ai += ($deductionNonTaxable - 1);?>
+				<!-- 21 -->
+				<!-- Tong tru khong chiu thue 35 -->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(35);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 22 -->
+				<!-- Tong thu nhap sau khi tru các khoan 36 -->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(36);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+					<?php $group5 = $ai; ?>
+					<?php $colspan = $ai + $pitCalculateCols;?>
+				<!-- 23 -->
+				<!-- Tinh thue 37-->
+				<th colspan="<?php echo $pitCalculateCols;?>"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>"
+						column-merge="<?php echo $excel_col[$colspan] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(37);?></xls>
+						<?php if($dev) echo $excel_col[$ai]?> <?php if($dev) echo '-'.$excel_col[$colspan]?>
+				</th>
+				<?php $ai += ($pitCalculateCols - 1);?>
+
+				<!-- 24 -->
+				<!-- Net 43 -->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(43);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 25 -->
+				<!-- Thuc nhan lam tron  44 -->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(44);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 26 -->
+				<!-- O trong -->
+				<th rowspan="4"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 20px; word-wrap: break-word;">
+						<xls width="4" row="<?php echo $row?>" row-merge="3"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> </xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+
+					<?php $group6 = $ai; ?>
+					<?php $colspan = $ai + $companyPayment;?>
+				<!-- 27 -->
+				<!-- COng ty tham gia 45-->
+				<th colspan="<?php echo $companyPayment;?>"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>"
+						column-merge="<?php echo $excel_col[$colspan] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(45);?></xls>
+						<?php if($dev) echo $excel_col[$ai]?> <?php if($dev) echo '-'.$excel_col[$colspan]?>
+				</th>
+				<?php $ai += ($companyPayment - 1);?>
+			</tr>
+			<?php $row++;?>
+			<!-- |****** End Hang thu nhat *******|  -->
+
+
+			<!-- ****** Hang thu hai *******  -->
+			<?php if($dev) {$devi++; $devj = 1;} ?>
+			<tr class="bggrey">
+
+				<!-- 1 -->
+				<!-- In phu cap theo phan tram phu cap -->
+			<?php $ai = $group1;/* reset ai theo group column thu nhat */?>
+			<?php foreach ($this->overtime as $ot):?>
+				<th><?php if($dev) echo $row.' '.$devi .'-'. $devj?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $ot->PhanTram;?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+					<?php endforeach;// overtime?>
+					<?php if($dev) $devj++;?>
+
+				<!-- 2 -->
+				<!-- In lam them gio theo ten-->
+					<?php $ai = $group2;/* reset ai theo group column thu hai */?>
+					<?php $group2_1 = $ai; /* Lấy giá trị khởi đầu của group để reset ai ở dòng 3*/?>
+					<?php foreach ($this->allowances as $a):?>
+				<th rowspan="2"><?php if($dev) echo $row.' '.$devi .'-'. $devj?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" height="20" row="<?php echo $row?>" row-merge="1"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $a->Ten;?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div>
+				</th>
+				<?php endforeach;// overtime?>
+				<?php if($dev) $devj++;?>
+
+				<!-- 3 -->
+				<!-- Cac loai lam them gio co khau tru thue -->
+				<?php foreach ($overtime as $ot):?>
+				<th rowspan="2"><?php if($dev) echo $row.' '.$devi .'-'. $devj?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="1"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $ot['PhanTram'];?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div>
+				</th>
+				<?php endforeach;// overtime?>
+				<?php if($dev) $devj++;?>
+
+				<!-- 4 -->
+				<!-- Thanh toan phep nam 19-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(19);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div>
+				</th>
+				<!-- 5 -->
+				<!-- Tong tien thuong + Thu nhap khác 20-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(20);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div>
+				</th>
+				<!-- 6 -->
+				<!-- Tong phan bi khau tru thue 21-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(21);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div>
+				</th>
+
+				<!-- 7 -->
+				<!-- Lam them gio khong khau tru thue cua phan phu cap co tinh thue -->
+				<?php foreach ($overtime as $ot):?>
+				<th rowspan="2"><?php if($dev) echo $row.' '.$devi .'-'. $devj?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="1"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $ot['PhanTram'];?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div>
+				</th>
+				<?php endforeach;// overtime?>
+				<?php if($dev) $devj++;?>
+
+				<!-- 8 -->
+				<!-- Lam them gio khong khau tru thue cua phan phu cap ko tinh thue -->
+				<?php foreach ($overtimeNotTaxable as $ot):?>
+				<th rowspan="2"><?php if($dev) echo $row.' '.$devi .'-'. $devj?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="1"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $ot['PhanTram'];?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div>
+				</th>
+				<?php endforeach;// overtime?>
+				<?php if($dev) $devj++;?>
+
+				<!-- 9 -->
+				<!-- Thu nhap khac + Thuong 24-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(24);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 10 -->
+				<!-- Tong  khong khau tru thue 25-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(25);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+
+					<?php $ai += $nextNotDeductionCols;?>
+				<!-- 11 -->
+				<!-- Di som, ve tre, ra vao giua gio 28-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(28);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 12 -->
+				<!-- BHXH 29-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(29);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 13 -->
+				<!-- BHYT 30-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(30);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 14 -->
+				<!-- BHTN 31-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(31);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 15 -->
+				<!-- Phi cong doan 32-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(32);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 16 -->
+				<!-- Tru khac 33-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(33);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 17 -->
+				<!-- Tong tru 34-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(34);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+
+					<?php $ai = $group5;/* reset ai theo group column thu nam */?>
+				<!-- 18 -->
+				<!-- Tong thu nhap chiu thue 38-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(38);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 19 -->
+				<!-- Giam tru gia canh phu thuoc 39-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(39);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 20 -->
+				<!-- Sau khi giam tru gia canh 40-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(40);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 21 -->
+				<!-- Thue TNCN 41-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(41);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 22 -->
+				<!-- Tong thu nhap sau thue 42-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(42);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+
+					<?php $ai = $group6;/* reset ai  */?>
+				<!-- 23 -->
+				<!-- BHTN 31-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(31);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 24 -->
+				<!-- BHYT 30-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(30);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 25 -->
+				<!-- BHXH 29-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(29);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+				<!-- 26 -->
+				<!-- Phi cong doan 32-->
+				<th rowspan="3"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<div style="width: 65px; word-wrap: break-word;">
+						<xls width="16" row="<?php echo $row?>" row-merge="2"
+							column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(32);?></xls>
+							<?php if($dev) echo $excel_col[$ai]?>
+					</div></th>
+			</tr>
+			<?php $row++;?>
+			<!-- |****** End Hang thu hai *******|  -->
+
+
+			<!-- ****** Hang thu ba *******  -->
+			<?php if($dev) {$devi++; $devj = 1;} ?>
+			<tr class="bggrey">
+				<!-- 1 -->
+				<!-- In phu cap theo ma -->
+			<?php $ai = $group1; /* reset ai theo group column thu nhat */?>
+			<?php foreach ($this->overtime as $ot):?>
+				<th><?php if($dev) echo $row.' '.$devi .'-'. $devj?> <xls
+						row="<?php echo $row?>" column="<?php echo $excel_col[++$ai]?>"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1"> <?php echo $ot->MaLamThem;?></xls> <?php if($dev) echo $excel_col[$ai]?>
+				</th>
+				<?php endforeach;// overtime?>
+				<?php if($dev) $devj++;?>
+			</tr>
+			<?php $row++;?>
+			<!-- |****** End Hang thu ba *******|  -->
+
+
+			<!-- ****** Hang thu bon *******  -->
+			<?php if($dev) {$devi++; $devj = 1;} ?>
+			<tr class="bggrey">
+			<?php $ai = $group1;/* reset ai theo group column thu nhat */?>
+
+				<!-- 1 -->
+				<!-- In phu cap theo mo ta  -->
+			<?php foreach ($this->overtime as $ot):?>
+				<th><?php if($dev) echo $row.' '.$devi .'-'. $devj?> <xls
+						row="<?php echo $row?>" column="<?php echo $excel_col[++$ai]?>"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1"> <?php echo $ot->MoTa;?></xls> <?php if($dev) echo $excel_col[$ai]?>
+				</th>
+				<?php endforeach;// overtime?>
+				<?php if($dev) $devj++;?>
+
+				<?php $ai = $group2_1; /* reset ai*/?>
+				<?php $colspan = $ai + $countAllowances;?>
+				<!-- 2 -->
+				<!-- Phu cap - group(day la mot nhom cac cot, nhom o duoi) 22-->
+				<th colspan="<?php echo $countAllowances;?>"><?php if($dev) echo $row.' '.$devi .'-'. $devj++?>
+					<xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>"
+						column-merge="<?php echo $excel_col[$colspan] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(22);?></xls>
+						<?php if($dev) echo $excel_col[$ai]?> <?php if($dev) echo '-'.$excel_col[$colspan]?>
+				</th>
+				<?php $ai += ($countAllowances - 1)?>
+
+				<!-- 3 -->
+				<!-- In lam them gio theo mo ta  -->
+				<?php foreach ($overtime as $ot):?>
+				<th><?php if($dev) echo $row.' '.$devi .'-'. $devj?> <xls
+						row="<?php echo $row?>" column="<?php echo $excel_col[++$ai]?>"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1"> <?php echo $ot['MoTa'];?></xls> <?php if($dev) echo $excel_col[$ai]?>
+				</th>
+				<?php endforeach;// overtime?>
+				<?php if($dev) $devj++;?>
+
+				<!-- 4 -->
+				<!-- lam them gio khong khau tru thue cua phan phu cap co tinh tax-->
+				<?php $ai = $group3;?>
+				<?php foreach ($overtime as $ot):?>
+				<th rowspan="1"><?php if($dev) echo $row.' '.$devi .'-'. $devj?> <xls
+						row="<?php echo $row?>" column="<?php echo $excel_col[++$ai]?>"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1"> <?php echo $ot['MoTa'];?></xls> <?php if($dev) echo $excel_col[$ai]?>
+				</th>
+				<?php endforeach;// overtime?>
+				<?php if($dev) $devj++;?>
+
+				<!-- 5 -->
+				<!-- lam them gio khong khau tru thue cua phan phu cap ko tinh tax -->
+				<?php foreach ($overtimeNotTaxable as $ot):?>
+				<th rowspan="1"><?php if($dev) echo $row.' '.$devi .'-'. $devj?> <xls
+						row="<?php echo $row?>" column="<?php echo $excel_col[++$ai]?>"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1"> <?php echo $ot['MoTa'];?></xls> <?php if($dev) echo $excel_col[$ai]?>
+				</th>
+				<?php endforeach;// overtime?>
+				<?php if($dev) $devj++;?>
+			</tr>
+			<?php $row++;?>
+			<!-- |****** End Hang thu bon *******|  -->
+
+			<!-- In tong tien khau tru thue TNCN + phan phu cap -->
+			<tr class="bggrey">
+
+
+			</tr>
+			<?php $row++;?>
+
+			<!-- ****** Hang thu nam *******  -->
+			<?php if($dev) {$devi++; $devj = 1;} ?>
+			<!-- In so thu tu cac cot  -->
+			<tr class="bggrey">
+				<!-- 1 -->
+				<!-- So thu tu cot   -->
+			<?php for($ai = 1; $ai <= $totalCol; $ai++):?>
+				<th><?php if($dev) echo $row.' '.$devi .'-'. $devj?> <xls
+						row="<?php echo $row?>" column="<?php echo $excel_col[$ai]?>"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1"> <?php echo "({$ai})";?></xls> <?php if($dev) echo $excel_col[$ai]?>
+				</th>
+				<?php endfor;?>
+				<?php if($dev) $devj++;?>
+			</tr>
+			<?php $row++;?>
+			<!-- |****** End Hang thu nam *******|  -->
+
+
+			<!-- II.2 Noi dung in bang luong cua nhieu nhan vien dang excel -->
+			<?php foreach ($this->payroll as $pr):// Bang Luong?>
+
+			<?php
+			/* Description: Calculate */
+			$basicSalary     = $pr->LuongCoBan; /* Luong co ban = he so luong * tham so luong co ban */
+			$calculateSalary = ($basicSalary/$companyWorkingDaysInLaw) * $pr->NgayCong; /* Luong =( luong co ban / so ngay cong (24) ) nhan voi so ngay cong */
+			?>
+			<?php if($prevDepartment != $pr->PhongBan): // In label Phong ban ?>
+			<tr>
+				<!-- Nhan phong ban -->
+				<td colspan="22"><b><xls row="<?php echo $row?>"
+							column="<?php echo $excel_col[1]?>"
+							column-merge="<?php echo $excel_col[$totalCol]?>" wrap-text="1"
+							h-align="left" v-align="center" border="1" bold="1"> <?php echo $pr->PhongBan;?></xls>
+				</b>
+				</td>
+			</tr>
+			<?php $row++;?>
+			<?php endif; // End: In label phong ban ?>
+			<?php $ai = 0; /* So thu tu cot */?>
+			<?php $prevDepartment = $pr->PhongBan;?>
+			<tr>
+				<!-- STT -->
+				<td class="center"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $no?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Ma nhan vien -->
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $pr->MaNhanVien;?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Ten nhan vien  -->
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $pr->TenNhanVien;?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Chuc danh -->
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $pr->ChucDanh;?>
+					</xls> <?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Phong ban  -->
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $pr->PhongBan;?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Bo phan  -->
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $pr->BoPhan;?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Nhom  -->
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $pr->Nhom;?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!--  Ngay Vao Cong ty  -->
+				<td class="center"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo Qss_Lib_Date::mysqltodisplay($pr->NgayGiaNhap);?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Luong co ban  -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney( $basicSalary, $this->currency);?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- So ngay lam viec cua cong ty  -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo $this->daysInMonth;?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Ngay cong -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo $pr->NgayCong;?>
+					</xls> <?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- So ngay nghi khong huong luong -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> 0 </xls> <?php if($dev) echo $excel_col[$ai]?>
+				</td>
+				<!-- Luong -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($calculateSalary, $this->currency);?>
+					</xls> <?php if($dev) echo $excel_col[$ai]?></td>
+					<?php foreach ($this->overtime as $ot):?>
+				<!-- Lam them gio -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?> </xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+						<?php endforeach;// overtime?>
+				<!--   Di tre & ve som -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!--   Tong tro cap -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+						<?php foreach ($this->allowances as $a):?>
+				<!-- Tro cap khau tru thue -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+						<?php endforeach;// allowances?>
+						<?php foreach ($overtime as $ot):?>
+				<!-- lam them gio khau tru thue -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+						<?php endforeach;// overtime?>
+				<!-- Thanh toan phep nam -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Thu nhap khac cong thuong -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Tong phan bi khau tru thue -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+						<?php foreach ($overtime as $ot):?>
+				<!-- lam them gio khong khau tru thue -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+						<?php endforeach;// overtime?>
+						<?php foreach ($overtimeNotTaxable as $ot):?>
+				<!-- lam them gio khong khau tru thue -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+						<?php endforeach;// overtime?>
+				<!-- Thu nhap khac + thuong -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Tong phan kho chiu thue-->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Tong thu nhap truoc thue -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Di tre, ve som, ra vao giua gio -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- BHXH -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- BHYT -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- BHTN -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Phi cong doan -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Tru khac-->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+						<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Tong tru -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+					<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Tru chiu thue-->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+				</td>
+				<!-- Tong tien sau khi tru cac khoan -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+					<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Tong thu nhap chiu thue-->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+					<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Giam tru gia canh -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+					<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Sau giam tru -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+					<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Thue thu nhap ca nhan-->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+					<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Tong tien sau thue -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+					<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- net-->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+				</td>
+				<!-- Thuc nhan lam tron -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+					<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- O trong -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> </xls> <?php if($dev) echo $excel_col[$ai]?>
+				</td>
+				<!-- BHTN -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+					<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- BHYT -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+					<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- BHXH -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+					<?php if($dev) echo $excel_col[$ai]?></td>
+				<!-- Phi CD -->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$ai]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo '0';?></xls>
+					<?php if($dev) echo $excel_col[$ai]?></td>
+			</tr>
+			<?php $row++;?>
+			<?php $no++;// So thu tu?>
+			<?php endforeach;;//Bang Luong?>
+
+			<?php //endif;?>
+
+		</table>
+	</div>
+</div>

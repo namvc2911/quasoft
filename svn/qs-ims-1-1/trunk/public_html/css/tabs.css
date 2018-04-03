@@ -1,0 +1,76 @@
+* {
+	margin: 0;
+	padding: 0;
+}  /* clear all default CSS */
+li {
+	list-style: none
+}
+
+a {
+	text-decoration: none;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	cursor: pointer;
+}
+#tabs_sub {
+float:left;
+line-height:normal;
+width:100%;
+}
+
+#tabs_nav_wrapper_sub {
+	height: 29px;
+	margin-left: -1px
+}
+
+#tabs_bar_sub {
+	margin-left: 50px;
+	line-height: 26px;
+	font-size: 14px;
+	font-weight: bold;
+	color: #000;
+}
+
+ul.tabslist_sub li {
+	float: left;
+	background-color:#666;
+	margin: 0 0 2px 2px;
+	width:18%;
+	line-height: 18px;
+}
+ul.tabslist_sub li.current{
+	background-color:#333
+}
+ul.tabslist_sub li a {
+	background: url("/images/arrowleft_s.gif") no-repeat 10px center;
+	display:block
+}
+
+ul.tabslist_sub li a span {
+	display: block;
+	color:#fff;
+	padding: 0px 0px 0 30px;
+}
+
+ul.tabslist_sub li.current a {
+
+}
+
+ul.tabslist_sub li.current a span {
+	
+}
+
+ul.tabslist_sub li.current a {
+	color:#FF0
+}
+
+#noFloat {
+	clear: both
+}
+.show {
+	visibility: visible;
+}
+
+.hide {
+	visibility: hidden;
+}

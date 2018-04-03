@@ -1,0 +1,54 @@
+<script>
+    var m334_button_download = {
+        save : function() {
+            var ioid = $('input[name=m334_button_download_ioid]:checked', '#m334_button_download_form').val() 
+            if(ioid == '' || ioid === undefined){
+            	qssAjax.alert('Bạn phải chọn máy  chấm công');
+            	return;
+            }
+            var data = {ioid:ioid};
+            var url  = sz_BaseUrl + '/button/m334/download/save';
+            qssAjax.call(url, data, function(jreturn){
+                $('#qss_trace').dialog('close');
+                //rowObjectSearch('<?php echo $this->ifid;?>','<?php echo $this->deptid;?>','ODanhSachXuatKho');
+            }, function(jreturn){
+                qssAjax.alert(jreturn.message);
+            });
+        }
+    };
+</script>
+
+<form id="m334_button_download_form">
+    <div class="popup_wrap">
+        <div class="popup_header">
+
+
+            <table class="detail" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td class="left">
+                        Chọn máy chấm công
+                    </td>
+                    <td class="left">
+                        <?php foreach ($this->data as $item):?>
+                        	<?php if($item->Master):?>
+	                        	<input type="radio" name="m334_button_download_ioid" id="m334_button_download_ioid_<?php echo $item->MaMay?>" value="<?php echo $item->IOID?>">
+	                        	<label for="m334_button_download_ioid_<?php echo $item->MaMay?>"><?php echo $item->MaMay?>: <?php echo $item->ViTri?> <?php echo $item->IP?> <?php echo $item->Port?></label>
+	                        	<br>
+	                        <?php endif;?>
+                        <?php endforeach;?>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+        <div class="popup_content">
+
+            <div class="overflow" style="padding-top: 10px;">
+                <div class="fr">
+                    <button type="button" class="btn" onclick="m334_button_download.save()"> Cập nhật </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

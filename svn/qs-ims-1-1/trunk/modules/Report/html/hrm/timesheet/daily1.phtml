@@ -1,0 +1,177 @@
+<!-- Báo cáo chấm công theo ngày  -->
+<?php
+$excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$no        = 1; // Số thứ tự
+?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="portrait">
+	<excel orientation="portrait" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+	<div id="head_print">
+	<?php echo $this->views->Common->Portrait()?>
+	<?php $row = 9;?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row?>" column="A"
+					column-merge="<?php echo $excel_col[11]?>" font-size="11"
+					wrap-text="1" h-align="center" v-align="center" bold="1"> <?php echo $this->_translate(1)?>
+				(<?php echo $this->_translate(2)?> <?php echo $this->startDate?> <?php echo $this->_translate(3)?>
+				<?php echo $this->endDate?>) </xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++?>
+
+
+	<div id="container">
+		<table cellpadding="0" cellspacing="0" class="border" border="1">
+			<!--  Tiêu đề  -->
+			<tr class="bggrey">
+				<th width="25px">
+					<!-- STT --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[1]?>" width="4" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(4)?></xls>
+				</th>
+				<th width="65px">
+					<!-- Ngày --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[2]?>" width="10" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(5)?>
+					</xls>
+				</th>
+				<th width="80px">
+					<!-- Mã nhân viên --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[3]?>" width="10" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(6)?></xls>
+				</th>
+				<th width="120px">
+					<!-- Tên nhân viên --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[4]?>" width="12" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(7)?></xls>
+				</th>
+				<th width="100px">
+					<!-- Phòng ban --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[5]?>" width="12" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(8)?></xls>
+				</th>
+				<th width="55px">
+					<!-- Giờ vào --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[6]?>" width="8" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(9)?></xls>
+				</th>
+				<th width="55px">
+					<!-- Giờ ra --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[7]?>" width="8" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(10)?></xls>
+				</th>
+				<th width="55px">
+					<!-- Đi muộn --> <!-- Phút --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[8]?>" width="8" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(12)?>
+					(<?php echo $this->_translate(13)?>)</xls></th>
+				<th width="55px">
+					<!-- Về sớm --> <!-- Phút --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[9]?>" width="8" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(14)?>
+					(<?php echo $this->_translate(13)?>)</xls></th>
+				<th width="55px">
+					<!-- Công --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[10]?>" width="8" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(16)?></xls>
+				</th>
+				<th width="55px">
+					<!-- Số giờ --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[11]?>" width="8" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(11)?></xls>
+				</th>
+				<th width="150px">
+					<!-- Ghi chú --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[12]?>" width="15" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(15)?>
+				
+				</th>
+			</tr>
+			<?php $row++;// Lên một hàng?>
+
+			<!-- Nội dung -->
+			<?php foreach ($this->timesheet as $empl):?>
+			<tr>
+				<td class="center">
+					<!-- STT --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[1]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1"> <?php echo $no?></xls></td>
+				<td class="center">
+					<!-- Ngày --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[2]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1"> <?php echo Qss_Lib_Date::mysqltodisplay($empl->Ngay);?>
+				
+				</td>
+				<td class="left">
+					<!-- Mã nhân viên --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[3]?>" wrap-text="1" h-align="left"
+						v-align="center" border="1"> <?php echo $empl->MaNhanVien;?>
+				
+				</td>
+				<td class="left">
+					<!-- Tên nhân viên --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[4]?>" wrap-text="1" h-align="left"
+						v-align="center" border="1"> <?php echo $empl->TenNhanVien;?>
+				
+				</td>
+				<td class="left">
+					<!-- Phòng ban --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[5]?>" wrap-text="1" h-align="left"
+						v-align="center" border="1"> <?php echo $empl->MaPhongBan;?>
+				
+				</td>
+				<td class="center">
+					<!-- Giờ vào --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[6]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1"> <?php echo $empl->GioBatDau;?>
+				
+				</td>
+				<td class="center">
+					<!-- Giờ ra --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[7]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1"> <?php echo $empl->GioKetThuc;?>
+				
+				</td>
+				<td class="right">
+					<!-- Đi muộn --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[8]?>" wrap-text="1" h-align="right"
+						v-align="center" border="1"> <?php echo $empl->DiMuon;?>
+				
+				</td>
+				<td class="right">
+					<!-- Về sớm --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[9]?>" wrap-text="1" h-align="right"
+						v-align="center" border="1"> <?php echo $empl->VeSom;?>
+				
+				</td>
+				<td class="right">
+					<!-- Công --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[10]?>" wrap-text="1" h-align="right"
+						v-align="center" border="1"> <?php echo floor($empl->SoGio/$empl->SoGioYeuCau * 10)/10;?>
+				
+				</td>
+				<td class="right">
+					<!-- Số giờ --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[11]?>" wrap-text="1" h-align="right"
+						v-align="center" border="1"> <?php echo $empl->SoGio;?>
+				
+				</td>
+				<td class="left">
+					<!-- Ghi chú --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[12]?>" wrap-text="1" h-align="left"
+						v-align="center" border="1"> <?php echo $empl->GhiChuChamCong;?>
+				
+				</td>
+			</tr>
+			<?php $no++;// Tăng số thứ tự?>
+			<?php $row++; // Lên một hàng?>
+			<?php endforeach;?>
+		</table>
+	</div>
+</div>

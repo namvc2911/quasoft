@@ -1,0 +1,37 @@
+
+<script>
+function printPreview(){
+	/*$('#report').submit(function() {
+        window.open('', 'formpopup', 'statusbar=no,resizable=yes,scrollbars=yes, addressbar=no,maximize=yes');
+        this.target = 'formpopup';
+    });
+	$('#report').submit();*/
+	 var url = sz_BaseUrl + '/report/dynamic/show';
+		var data = $('#report').serialize();
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#print-area').html(jreturn);
+                        removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+		});
+}
+</script>
+<div class="clear"></div>
+<div id="view">
+	<div class="line-hr">
+		<span><?php echo$this->report->Name;?> </span>
+	</div>
+	<form id="report" method="get" action="/report/dynamic/show">
+		<input name="reportid" type="hidden"
+			value="<?php echo $this->reportid?>">
+			<?php echo $this->content;?>
+	</form>
+	<p>
+	
+	
+	<hr>
+	<?php $hidden = array('return'=>false);?>
+	<?php echo $this->views->Report->PrintToolbar($hidden);?>
+	<div id="print-content">
+		<div id="print-area"></div>
+	</div>
+</div>
+

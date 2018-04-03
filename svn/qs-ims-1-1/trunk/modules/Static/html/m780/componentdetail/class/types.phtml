@@ -1,0 +1,123 @@
+<?php
+$xAxisOfType  = '';
+$columnOfType = '';
+$totalOfType  = 0;
+$increase     = 0;
+$typeArr      = array();
+$lineOfType   = '';
+
+
+foreach ($this->failureList as $type)
+{
+	$totalOfType              += $type->TanSuat;
+	$typeArr[$type->IOID] = $type->TanSuat;
+}
+
+foreach ($this->failureList as $label)
+{
+	$xAxisOfType .= ($xAxisOfType != '')?',':'';
+	$xAxisOfType .= "'{$label->Ma}'";
+	$value        = $typeArr[$label->IOID];
+	$increase    += $value;
+	$columnOfType.= ($columnOfType != '')?',':'';
+	$columnOfType.= $value;
+	$lineOfType  .= ($lineOfType != '')?',':'';
+	$lineOfType  .= $totalOfType?(($increase/$totalOfType)*100):0;
+}
+
+?>
+<script>
+$(document).ready(function() {
+	var chart;
+	chart = new Highcharts.Chart({
+        chart: {
+        	renderTo: 'container',
+	         plotBackgroundColor: null,
+	         plotBorderWidth: null,
+	         plotShadow: false
+        },
+        title: {
+            text: '<?php echo "{$this->_translate(1)} ({$this->_translate(2)} {$this->start} {$this->_translate(3)} {$this->end})"?>'
+        },
+        yAxis: [{
+            title: {
+                text: '<?php echo $this->_translate(8);?>' // Tran man-day
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }],opposite: true
+        }
+        ,
+        {
+        	allowDecimals: false,
+            title: {
+                text: '<?php echo $this->_translate(4);?>' // Tran man-day
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+            
+        }],
+        xAxis: {
+            categories: [<?php echo $xAxisOfType;?>]
+        },
+        tooltip: {
+            formatter: function() {
+                var s;
+                    s = ''+this.x  +': '+ this.y;
+                return s;
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        series: [{
+            type: 'column',
+            yAxis: 1,
+            name: '',
+            data: [<?php echo $columnOfType;?>]
+        }, {
+            type: 'spline',
+            name: 'Average',
+            data: [<?php echo $lineOfType?>],
+            marker: {
+            	lineWidth: 2,
+            	lineColor: Highcharts.getOptions().colors[3],
+            	fillColor: 'white'
+            }
+        }]
+    });
+});
+</script>
+<div id="container" style="width: 80%; height: 200px; margin: 0 auto"></div>
+<table class="border_table" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <th style="width: 33%;" class="center">Mã loại hư hỏng</th>
+        <th style="width: 33%;" class="center">Tên loại hư hỏng</th>
+        <th style="width: 33%;" class="center">Tần suất</th>
+    </tr>
+
+    <!-- Loai hu hong cua thiet bi va bo phan -->
+    <?php foreach($this->failureList as $item):?>
+        <tr class="failure_line" typeioid="<?php echo $item->IOID;?>" onclick="einfo_failure_class_select_failure_in_component(this)">
+            <td class="left"><?php echo $item->Ma;?></td>
+            <td class="left"><?php echo $item->Ten;?></td>
+            <td class="right"><?php echo $item->TanSuat?$item->TanSuat:0;?></td>
+        </tr>
+    <?php endforeach;?>
+</table>
+
+<script>
+    if($('.failure_line').length)
+    {
+        $('.failure_line').eq(0).click();
+    }
+    else
+    {
+        einfo_failure_class_select_failure_in_component();
+    }
+</script>

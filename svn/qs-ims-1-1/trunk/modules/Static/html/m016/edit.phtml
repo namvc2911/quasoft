@@ -1,0 +1,182 @@
+<script>
+$(function () {
+	var url = sz_BaseUrl + '/user/statistic/tag/user';
+    $('#member').tagSuggest({
+        url: url,
+        delay: 200,
+        separator : '*',
+        tagContainer: 'div',
+        callback: selecting
+    });
+});
+function selecting(workingTags,id)
+{
+	alert(workingTags);
+	var ctrl = $('<div>').addClass('tag-select')
+	 	.html(workingTags+ '<input type="hidden" name="members[]" value="'+id+'"><a href="#!" onclick="closeThis(this)" class="tag-close">');
+	$('#member').before(ctrl);
+	$('#member').val('');
+	$('#member').blur().focus();
+}
+function memberClick(ele) {
+	$(ele).find('input').focus();
+}
+function closeThis(ele)
+{
+	$(ele).parent().remove();
+}
+</script>
+<style>
+.tag-select {
+	float: left;
+	padding: 2px 15px 2px 5px;
+	border: 1pt solid #fff;
+	position: relative
+}
+
+.tag-select:hover {
+	border: 1pt solid #ccc;
+	background: #f1f1f1
+}
+
+.tag-close {
+	display: none
+}
+
+.tag-select:hover .tag-close {
+	display: block;
+	background: url(/images/event/close.png) no-repeat 50% 50%;
+	width: 10px;
+	height: 10px;
+	cursor: pointer;
+	position: absolute;
+	top: 4px;
+	right: 0px
+}
+
+.members input {
+	border: none;
+	outline: none;
+	background-color: #FFF;
+	float: left
+}
+
+.members .member_outline {
+	border: 1pt solid #ccc;
+	width: 717px
+}
+
+.member_inside {
+	float: left;
+	display: inline;
+	position: relative
+}
+
+.tag-container {
+	position: absolute;
+	left: 0px;
+	top: 100%;
+	background: #fff;
+	border: 1pt solid #ccc;
+	max-height: 180px;
+	width: 300px;
+	z-index: 10000;
+	overflow: auto;
+}
+
+.tag-container li {
+	cursor: pointer;
+	white-space: nowrap;
+	padding: 1px 5px
+}
+
+.tag-container li:hover {
+	background: #ccc
+}
+
+.tag-selected {
+	background: #ccc !important
+}
+
+#addmem {
+	display: inline;
+}
+</style>
+<form id="qss_form" method="post">
+	<input type="hidden" name="id"
+		value="<?php echo (int)@$this->document->DID?>" />
+	<div id="horizontal-toolbar" class="horizontal-toolbar">
+		<button id="btnSAVE" type="button" class="btn btn_main_top" onClick="docSave()">
+			<?php echo $this->_translate(34)?>
+		</button>
+
+		<button id="btnBACK" type="button" class="btn btn_main_top" onClick="rowBack()">
+			<?php echo $this->_translate(32)?>
+		</button>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<table class="detail">
+			<tr>
+				<th width="150">Tên tài liệu</th>
+				<td><input type="text" id="name" name="name"
+					value="<?php echo @$this->document->Name?>" style="width: 200px">
+				</td>
+			</tr>
+			<tr>
+				<th width="150">Thư mục</th>
+				<td><input value="<?php echo @$this->document->Folder?>"
+					style="width: 200px;" name="folder" /></td>
+			</tr>
+			<tr>
+				<th width="150">Tải tài liệu</th>
+				<td><input type="file" id="file" name="file"
+					onchange="return uploadFile();"> <input type="hidden" id="doc"
+					name="doc" value=""> <?php if(@$this->document->DID):?> <a
+					href="#!" onclick="downloadDoc(<?php echo $this->document->DID?>)"><span
+						class="<?php echo @$this->document->Ext?> unknown"
+						style="display: inline-block !important; width: 18px;"
+						title="tải về">&nbsp;</span> </a> <?php endif;?>
+				</td>
+			</tr>
+			<tr>
+				<th width="150">Public</th>
+				<td colspan="2"><input type="checkbox" name="public" value="1"
+				<?php if(@$this->document->Public):?> checked <?php endif;?>>
+				</td>
+			</tr>
+			<tr>
+				<th width="150">Chia sẻ</th>
+				<td colspan="2" class="members" id="members">
+					<div class="member_outline" onclick="memberClick(this)">
+						<div class="member_inside">
+						<?php foreach ($this->members as $member):?>
+							<div class="tag-select">
+							<?php echo $member->UserName?>
+								(
+								<?php echo $member->EMail?>
+								) <input type="hidden" value="<?php echo $member->UID?>"
+									name="members[]"> <a class="tag-close"
+									onclick="closeThis(this)" href="#!"></a>
+							</div>
+							<?php endforeach;?>
+							<input type="text" size="10" id="member" name="member">
+						</div>
+						<div style="clear: both"></div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<?php foreach ($this->refers as $item):?>
+		<div class="line-hr">
+			<span><?php echo $item->Name?> </span>
+		</div>
+		<div>
+			<?php echo $this->views->Instance->Form->GridDocument($this->document->DID,$item->FormCode)?>
+		</div>
+		<br />
+		<hr />
+		<?php endforeach;?>
+
+	</div>
+</form>

@@ -1,0 +1,82 @@
+<script>
+    $(document).ready(function(){
+        // Tim kiem khi an enter
+        $('#m412_material_filter_for_under_case').keypress(function (e) {
+            if (e.which == 13) {
+                m412_material_button.search_for_under_case();
+                return false;    //<---- Add this line
+            }
+        });
+
+        $('#m412_material_filter_for_items_case').keypress(function (e) {
+            if (e.which == 13) {
+                m412_material_button.search_for_items_case();
+                return false;    //<---- Add this line
+            }
+        });
+
+        <?php if($this->filter == 1):?>
+            // Xoa cac mat hang da duoc chon vao trong danh sach
+            $('.selected_line').each(function(){
+                var refItem = $(this).find('.RefItem').val();
+                var stock = $(this).find('.stock').val();
+                $('#select_m412_material_box select option[value="'+refItem+'"][stock="'+stock+'"]').remove();
+            });
+        <?php endif;?>
+    });
+</script>
+
+<div id="select_m412_material_box">
+
+
+    <?php if($this->filter == 1): // truong hop chon tu don hang, phieu xuat kho?>
+        <input type="text" id="m412_material_filter_for_under_case" placeholder="Tìm kiếm..." style="width: 94%" />
+
+        <select class="select" size="16" multiple="multiple">
+            <?php foreach($this->underminimum as $item):?>
+                <?php $temYeuCau = ($item->TongYeuCauMua > 0)?$item->TongYeuCauMua:0;?>
+                <option value="<?php echo $item->IOID;?>"
+                        itemioid="<?php echo $item->IOID;?>"
+                        uomioid="<?php echo $item->Ref_DonViTinhCoSo;?>"
+                        itemcode="<?php echo $item->MaSanPham;?>"
+                        itemname="<?php echo $item->TenSanPham;?>"
+                        uom="<?php echo $item->DonViTinhCoSo;?>"
+                        qty="<?php  echo Qss_Lib_Util::formatNumber(($item->ToiThieu - $item->TongTonKho)) ;?>"
+                        inv="<?php echo Qss_Lib_Util::formatNumber($item->TongTonKho);?>"
+                        min="<?php echo Qss_Lib_Util::formatNumber($item->ToiThieu);?>"
+                        req="<?php echo Qss_Lib_Util::formatNumber(($temYeuCau));?>"
+                        order="0"
+                        in="0"
+                        stock="<?php echo $item->MaKho;?>"
+                        stockIOID="<?php echo $item->Ref_MaKho;?>"
+                        title="Kho: <?php echo $item->MaKho?$item->MaKho:'Chung';?> TK: <?php  echo Qss_Lib_Util::formatNumber(($item->TongTonKho)) ;?>  - TT: <?php  echo Qss_Lib_Util::formatNumber(($item->ToiThieu)) ;?> <?php echo $item->DonViTinhCoSo;?>">
+                    <?php echo $item->MaSanPham;?> - <?php echo $item->TenSanPham;?> (Kho: <?php echo $item->MaKho?$item->MaKho:'Chung';?> TK: <?php  echo Qss_Lib_Util::formatNumber(($item->TongTonKho)) ;?>  - TT: <?php  echo Qss_Lib_Util::formatNumber(($item->ToiThieu)) ;?> <?php echo $item->DonViTinhCoSo;?>)
+                </option>
+            <?php endforeach;?>
+        </select>
+    <?php elseif($this->filter == 2): // Truong hop chon tu danh sach mat hang?>
+        <input type="text" id="m412_material_filter_for_items_case" placeholder="Gõ và nhấn Enter..." style="width: 94%" name="itemSuggestion"/>
+
+        <select class="select" size="16" multiple="multiple" id="m412_material_select_items_case">
+            <!-- Truong hop chon tu don hang, phieu xuat kho -->
+            <?php /*foreach($this->items as $item):?>
+                <option value="<?php echo $item->IOID;?>"
+                        itemioid="<?php echo $item->IOID;?>"
+                        uomioid="<?php echo $item->Ref_DonViTinh;?>"
+                        itemcode="<?php echo $item->MaSanPham;?>"
+                        itemname="<?php echo $item->TenSanPham;?>"
+                        uom="<?php echo $item->DonViTinh;?>"
+                        min="0"
+                        qty="1"
+                        inv="<?php  echo Qss_Lib_Util::formatNumber(($item->SoLuongHC)) ;?>"
+                        req="<?php echo Qss_Lib_Util::formatNumber(($item->TongYeuCauMua - $item->TongNhapKho));?>"
+                        order="<?php echo Qss_Lib_Util::formatNumber($item->TongDatHang);?>"
+                        in="<?php echo Qss_Lib_Util::formatNumber($item->TongNhapKho);?>"
+                        stock="">
+                    <?php echo $item->MaSanPham;?> - <?php echo $item->TenSanPham;?> (TK: <?php  echo Qss_Lib_Util::formatNumber(($item->SoLuongHC)) ;?> <?php echo $item->DonViTinh;?>)
+                </option>
+            <?php endforeach; */ ?>
+        </select>
+    <?php endif;?>
+
+</div>

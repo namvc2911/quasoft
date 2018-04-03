@@ -1,0 +1,136 @@
+<table cellspacing="0" cellpadding="0" border="1" id="" width="100%"
+	class="borderX">
+	<tr class="bggrey">
+		<th width="40%" class="center">Công đoạn</th>
+		<th width="15%" class="center">Yêu cầu (h)</th>
+		<th width="15%" class="center">Khả năng (h)</th>
+		<th width="15%" class="center">Đã lên kế hoạch (h)</th>
+		<th width="15%" class="center">Thiếu (h)</th>
+	</tr>
+
+	<?php //$issueDateIndex = 0;?>
+	<?php $oldIssueDate = '';?>
+	<?php //foreach ($this->issueDate as $issueDate):?>
+	<?php
+	// @todo: Nếu ngày bắt đầu lớn hơn ngày xuất hàng thì phải xem xét lại
+	//$beginDate = ($issueDateIndex != 0)?$oldIssueDate:$this->begin;
+	//$dateRange = floor((strtotime($issueDate) - strtotime($beginDate))/(3600*24));
+	?>
+
+	<?php $ok = true;?>
+	<?php $arrTimes = array();?>
+	<?php foreach ($this->operation as $operationIndex=>$operation):?>
+
+	<?php
+	//$requireTimeAr = isset($this->operationTime[$this->issueDate][$this->refOperation[$operationIndex]])?$this->operationTime[$this->issueDate][$this->refOperation[$operationIndex]]:array();
+	$requireTime = isset($this->operationTime[$this->issueDate][$operationIndex])?$this->operationTime[$this->issueDate][$operationIndex]:0;
+	$khaNang = isset($this->KhaNang[$operationIndex])?$this->KhaNang[$operationIndex]:0;
+	$daNenKeHoach = isset($this->DaNenKeHoach[$operationIndex])?$this->DaNenKeHoach[$operationIndex]:0;
+	$timerAlert = $khaNang - ($daNenKeHoach + $requireTime);
+	$classTimerAlert = '';
+	if($timerAlert < 0)
+	{
+		$classTimerAlert = 'bgorange bold';
+		$ok = false;
+	}
+	else
+	{
+		$classTimerAlert = 'bggreen bold white';
+	}
+	?>
+	<tr class="<?php echo $classTimerAlert?>">
+		<td class="left"><?php echo $operation?></td>
+		<td class="right"><?php echo $requireTime;?>/<?php echo ($khaNang - $daNenKeHoach);?>
+			<input type="hidden"
+			name="operationTimeStorage[<?php echo $operationIndex?>][<?php echo $this->lineNo?>]"
+			value="<?php echo $requireTime;?>" class="filter" /></td>
+		<td class="right"><?php echo $khaNang;?>
+		</td>
+		<td class="right"><?php echo $daNenKeHoach?></td>
+		<?php $arrTimes[$operationIndex] = max($requireTime + $daNenKeHoach - $khaNang,0);?>
+		<td class="right"><?php echo max($requireTime + $daNenKeHoach - $khaNang,0)?>
+		</td>
+	</tr>
+	<?php endforeach;?>
+
+
+	<?php
+	//$issueDateIndex++;
+	//$oldIssueDate = $issueDate;
+	?>
+	<?php //endforeach;?>
+</table>
+	<?php if(!$ok)://print each BOM analyst?>
+	<?php foreach($this->BOMs as $bom):?>
+	<?php
+	$model = new Qss_Model_Extra_BOM();
+	$dataBOM = $model->getBomById($bom);
+	$bomAmmount = $dataBOM->SoLuong;
+	$dataOperations = $model->getOperations($bom);
+	$dataLabors = $model->getLabors($bom);
+	$dataMachines = $model->getMachines($bom);
+	$arrOperations = array();
+	foreach ($dataOperations as $item)
+	{
+		$arrOperations[$item->Ref_Ten] = $item->SoGio;
+	}
+	$arrLabors = array();
+	$arrLaborNames = array();
+	foreach ($dataLabors as $item)
+	{
+		if($arrTimes[$item->Ref_CongDoan])
+		{
+			//calculate labor need
+			$arrLaborNames[$item->Ref_CongViec] = $item->CongViec;
+			if(isset($arrLabors[$item->Ref_CongViec]))
+			$arrLabors[$item->Ref_CongViec] += $arrTimes[$item->Ref_CongDoan]*$item->SoLuong;
+			else
+			$arrLabors[$item->Ref_CongViec] = $arrTimes[$item->Ref_CongDoan]*$item->SoLuong;
+		}
+	}
+
+	$arrMachines = array();
+	$arrMachineNames = array();
+	foreach ($dataMachines as $item)
+	{
+		if($arrTimes[$item->Ref_CongDoan])
+		{
+			//calculate labor need
+			$arrMachineNames[$item->Ref_MaThietBi] = $item->MaThietBi;
+			if(isset($arrMachines[$item->Ref_MaThietBi]))
+			$arrMachines[$item->Ref_MaThietBi] += $arrTimes[$item->Ref_CongDoan];
+			else
+			$arrMachines[$item->Ref_MaThietBi] = $arrTimes[$item->Ref_CongDoan];
+		}
+	}
+	?>
+
+<h3>Số nhân công</h3>
+<table class="borderX">
+	<tr class="bggrey">
+		<th width="40%" class="center">Công việc</th>
+		<th width="15%" class="center">Số giờ</th>
+	</tr>
+	<?php foreach($arrLabors as $key=>$val):?>
+	<tr>
+		<td><?php echo $arrLaborNames[$key];?></td>
+		<td class="right"><?php echo $val;?></td>
+	</tr>
+	<?php endforeach;?>
+</table>
+
+<h3>Máy móc</h3>
+<table class="borderX">
+	<tr class="bggrey">
+		<th width="40%" class="center">Máy móc</th>
+		<th width="15%" class="center">Số giờ</th>
+	</tr>
+	<?php foreach($arrMachines as $key=>$val):?>
+	<tr>
+		<td><?php echo $arrMachineNames[$key];?></td>
+		<td class="right"><?php echo $val;?></td>
+	</tr>
+	<?php endforeach;?>
+</table>
+	<?php endforeach;?>
+	<?php endif;?>

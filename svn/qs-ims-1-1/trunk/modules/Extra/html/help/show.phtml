@@ -1,0 +1,39 @@
+<?php echo $this->content;?>
+<script>
+    
+        
+        var andchorID;
+        
+        
+        // Di chuyen den vi tri neo
+        $(".goto_anchor").click(function() {
+            
+            // xoa danh dau the anchor truoc do da duoc danh dau
+            // tranh loi the cu du lai class anchor do ko setTimeout thuc hien xoa duoc
+            if($.cookie('anchor') != undefined)
+            {
+                $('#' + $.cookie('anchor')).removeClass('anchor bold');
+            }
+            
+            
+            andchorID = $(this).attr('goto');
+            $.cookie('anchor',andchorID);
+            var scrollAmount = $('#' + andchorID).offset().top  ;
+            scrollAmount = Math.round($('#' + andchorID).offset().top - $('#main').offset().top) - 10;
+            //$('html,body, #wrap').scrollTo('#' + andchorID);
+            $('html,body, #wrap').animate({ scrollTop: scrollAmount }, 'slow'
+            , function () {});
+            
+            
+            // danh dau neo
+            $('#' + andchorID).addClass('anchor bold');
+            
+            // xoa danh dau sau mot thoi gian
+            setTimeout(function() {
+                $('#' + andchorID).removeClass('anchor bold');
+          }, 6000);
+        });
+        
+        
+        
+</script>

@@ -1,0 +1,77 @@
+<?php
+$thuocTinh = (Qss_Lib_System::fieldActive('ThuocTinh', 'OVatTu'));
+$ThayMoi   = (Qss_Lib_System::fieldActive('ThayMoi', 'OVatTu'));
+?>
+
+<table cellpadding="0" cellspacing="0" class="border_table" border="0"
+	style="width: 100%;" id="einfo_maintplan_materialtab">
+	<tr class="bggrey">
+		<th style="width: 5%;"><?php echo $this->_translate(1);?> <!-- STT -->
+		</th>
+		<th style="width: 10%;"><?php echo $this->_translate(4);?> <!-- Mã vật tư -->
+		</th>
+		<th style="width: 10%;"><?php echo $this->_translate(5);?> <!-- Tên vật tư  -->
+		</th>
+		<th style="width: 15%;"><?php echo $this->_translate(6);?> <!-- Đặc tính KT -->
+		</th>
+		<?php if($thuocTinh):?>
+		<th style="width: 10%;"><?php echo $this->_translate(7);?> <!-- Thuộc tính -->
+		</th>
+		<?php endif;?>
+		<th style="width: 10%;"><?php echo $this->_translate(8);?> <!-- Đơn vị tính -->
+		</th>
+		<th style="width: 10%;"><?php echo $this->_translate(9);?> <!-- Số lượng -->
+		</th>
+		<?php if($ThayMoi):?>
+		<th style="width: 10%;"><?php echo $this->_translate(10);?> <!-- Thay mới -->
+		</th>
+		<?php endif;?>
+	</tr>
+
+	<?php $j = 0;?>
+	<?php foreach($this->data as $data):?>
+	<tr>
+		<td class="center"><?php echo ++$j;?></td>
+		<td class="left"><?php echo $data->MaVatTu;?></td>
+		<td class="left"><?php echo $data->TenVatTu;?></td>
+		<td class="left"><?php echo $data->DacTinhKyThuat;?></td>
+		<?php if($thuocTinh):?>
+		<td class="left"><?php echo $data->ThuocTinh;?></td>
+		<?php endif;?>
+		<td class="left"><?php echo $data->DonViTinh;?></td>
+		<td class="right" style="position: relative;"><?php echo $data->SoLuong;?>
+		</td>
+		<?php if($ThayMoi):?>
+		<td
+			class="left <?php echo $data->ThayMoi?'col-checked' : 'col-unchecked';?>"></td>
+			<?php endif;?>
+	</tr>
+
+	<?php endforeach;?>
+
+
+	<?php if ($j < 10):?>
+	<?php for ($k = $j; $k < 10; $k++):?>
+	<tr>
+		<td class="center">&nbsp;</td>
+		<td class="center">&nbsp;</td>
+		<td class="center">&nbsp;</td>
+		<td class="center">&nbsp;</td>
+		<td class="center">&nbsp;</td>
+		<?php if($thuocTinh):?>
+		<td class="center">&nbsp;</td>
+		<?php endif;?>
+		<td class="center">&nbsp;</td>
+		<?php if($ThayMoi):?>
+		<td class="center">&nbsp;</td>
+		<?php endif;?>
+	</tr>
+	<?php endfor;?>
+	<?php endif;?>
+</table>
+
+<script>
+
+	$('#einfo_maintplan_materialtab tr').hover(function(){ $(this).addClass('marker');}
+	, function(){ $(this).removeClass('marker'); });
+</script>

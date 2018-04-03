@@ -1,0 +1,70 @@
+<?php
+$widths = array(571, 3029, 1729, 1671, 1786, 1971, 1729, 1800);
+$widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+$stt    = 0;
+?>
+
+<div class="landscape">
+    <!-- REPORT TITLE -->
+	<div id="head_print">
+		<?php echo $this->views->Common->Landscape() ?>
+        <?php //echo $this->views->Common->Legal() ?>
+        <h2 class="center">LIST OF INSPECTION EQUIPMENT</h2>
+        <h2 class="center">DANH MỤC THIẾT BỊ KIỂM ĐỊNH</h2>
+	</div><!-- end div#head_print -->
+    <br/>
+
+    <!-- REPORT DATA -->
+    <div id="container">
+        <!-- General -->
+
+        <div class="fr italic bold" style="padding-right: 90px;">
+            Year/Năm: <?php echo $this->year;?>
+        </div>
+
+        <table cellpadding="0" cellspacing="0" border="1" class="border" style="">
+            <?php $begin = 0;?>
+
+            <tr class="bggrey">
+                <th style="width:<?php echo $widths[$begin++];?>%">No. STT</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Name of equipment/ Tên thiết bị</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Type/Kí hiệu</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Location / Nơi lắp đặt</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Contract No./Số hợp đồng</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Inspection Organization/Cơ quan kiểm định</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Date of Certificate/Ngày cấp</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Expire Date of Certificate/Ngày hết hạn</th>
+            </tr>
+
+            <?php foreach($this->report as $item):?>
+                <tr>
+                    <td class="center"><?php echo ++$stt;?></td>
+                    <td class="left"><?php echo @$item->TenThietBi;?></td>
+                    <td class="left"><?php echo @$item->MaThietBi;?></td>
+                    <td class="left"><?php echo @$item->TenKhuVuc;?></td>
+                    <td class="left"><?php echo @$item->SoHopDong;?></td>
+                    <td class="left"><?php echo @$item->TenDoiTac;?></td>
+                    <td class="center"><?php echo @$item->Ngay?Qss_Lib_Date::mysqltodisplay($item->Ngay):'';?></td>
+                    <td class="center"><?php echo @$item->NgayKiemDinhTiepTheo?Qss_Lib_Date::mysqltodisplay($item->NgayKiemDinhTiepTheo):'';?></td>
+                </tr>
+            <?php endforeach;?>
+        </table>
+        <br/>
+        <br/>
+
+        <p class="fl bold" style="margin-left: 40px;"> Prepared by chief engineer    </p>
+
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+
+    </div><!-- end div#container -->
+</div><!-- END REPORT -->
+
+

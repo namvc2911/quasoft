@@ -1,0 +1,93 @@
+<script>
+    $(document).ready(function(){
+        $('#start').change(function(){
+            m838.plan(<?php echo $this->ifid;?>, <?php echo $this->ioid;?>, $('#start').val(), $('#end').val());
+        });
+
+        $('#end').change(function(){
+            m838.plan(<?php echo $this->ifid;?>, <?php echo $this->ioid;?>, $('#start').val(), $('#end').val());
+        });
+    });
+</script>
+
+<?php
+$width  = '800';
+$widths = array(1,3,5,5,5,3);
+$fit    = Qss_Lib_Report::changeWidthToFitScreen2($widths, $width);
+$begin  = 0;
+?>
+<form id="m838_plans">
+    <input type="hidden" name="GeneralPlanIOID" value="<?php echo $this->ioid;?>" />
+
+    <div>
+        Ngày bắt đầu: <?php echo $this->views->Report->Datepicker('start', $this->start);?>
+        Ngày kết thúc: <?php echo $this->views->Report->Datepicker('end', $this->end);?>
+    </div>
+    <br/>
+
+    <table class="border_table" cellspacing="0" cellpadding="0" border="0" style="width:100%">
+        <tr>
+            <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                <input type="checkbox" onclick="common_check_all_table_line(this, '.cwpo_line_checkbok', '.cwpo_line_checkbok_val')"/>
+            </th>
+
+            <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                Ngày
+            </th>
+
+            <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                Mã Thiết bị
+            </th>
+
+            <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                Tên thiết bị
+            </th>
+
+            <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                Bộ phận
+            </th>
+
+            <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                Loại bảo trì
+            </th>
+        </tr>
+
+        <?php foreach($this->plans as $item):?>
+            <tr>
+                <td class="center">
+                    <input type="hidden" name="refPlan[]" value="<?php echo (int)$item->IFID_M724;?>" class="table_line_disabled" disabled />
+                    <input type="hidden" name="date[]" value="<?php echo $item->NgayKeHoach;?>" class="table_line_disabled" disabled />
+                    <input type="hidden" name="period[]" value="<?php echo $item->ChuKyIOID;?>" class="table_line_disabled" disabled />
+                    <input type="checkbox" class="cwpo_line_checkbok " onclick="common_check_table_line(this, '.cwpo_line_checkbok_val')"/>
+                    <input type="hidden" class="table_line_disabled cwpo_line_checkbok_val" name="CheckBox[]"  value="0" disabled/>
+                </td>
+
+                <td class="center">
+                    <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayKeHoach);?>
+                </td>
+
+                <td class="left">
+                    <?php echo $item->MaThietBi;?>
+                </td>
+
+                <td class="left">
+                    <?php echo $item->TenThietBi;?>
+                </td>
+
+                <td class="left">
+                    <?php echo $item->BoPhan;?>
+                </td>
+
+                <td class="left">
+                    <?php echo $item->LoaiBaoTri;?>
+                </td>
+            </tr>
+        <?php endforeach;?>
+    </table>
+
+    <br/>
+
+    <div class="fr">
+        <button type="button" class="btn btn-custom" onclick="m838.createDetailFromPlan(<?php echo $this->ifid;?>)"> Tạo phiếu </button>
+    </div>
+</form>

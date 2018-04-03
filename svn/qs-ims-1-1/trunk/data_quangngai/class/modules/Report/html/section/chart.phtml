@@ -1,0 +1,93 @@
+<script>
+function removePrintToolbarDisabled()
+{
+    $('.pt-button').each(function(){
+        $(this).prop('disabled',false);
+    });
+}
+function printPreview(){
+	var section = $('#section').val();
+        var msg    = '';
+	if(section == '' )	{
+		msg += 'Mặt cắt yêu cầu bắt buộc!';
+	}
+
+	/*
+	$('#report').submit(function() {
+        window.open('', 'formpopup', 'statusbar=no,resizable=yes,scrollbars=yes, addressbar=no,maximize=yes');
+        this.target = 'formpopup';
+    });
+	$('#report').submit();
+	*/
+       
+        if(msg != '')
+        {
+            qssAjax.alert(msg);
+            return;
+        }
+        else
+        {
+            var url = sz_BaseUrl + '/report/section/chart1';
+            var data = $('#report').serialize();
+            qssAjax.getHtml(url, data, function(jreturn) {
+                    $('#print-area').html(jreturn);
+            });
+            
+            
+//        $('#report').submit(function() {
+//            window.open('', 'formpopup', 'statusbar=no,resizable=yes,scrollbars=yes, addressbar=no,maximize=yes');
+//            this.target = 'formpopup';
+//        });
+//	$('#report').submit();
+        }
+	
+	
+}
+</script>
+
+
+<?php
+$start = 1;
+?>
+
+<div class="clear"></div>
+<div id="view">
+<div class="line-hr"><span>Biểu đồ mặt cắt</span></div>
+<form id="report" method="post" action="/report/section/chart1">
+<table class="detail" style="margin: 10px">
+<tr>
+	<th width="20%"> Mặt cắt</th>
+	<td>
+            <select id="section" name="section">
+                <!-- Hien thi mat cat -->
+                <option value=""> Chọn </option>
+                <?php foreach($this->section as $sec):?>
+                <option value="<?php echo $sec->Ma;?>"
+                        <?php if($start == 1) { echo 'selected'; $start = 0;}?>
+                        > 
+                    <?php echo $sec->Ma; ?>
+                </option>
+                <?php endforeach;?>
+            </select>
+            <span class="bold red">(*)</span>
+        </td>
+</tr>
+
+
+
+</table>
+</form>
+
+
+<br/>
+
+<p>
+<hr>
+    <button type="button" onclick="printPreview()" class="btn-custom" id="pt-showreport">Xem báo cáo</button>
+    <br/>
+    <br/>
+    <div id="print-content">
+            <div id="print-area"></div>		
+    </div>
+
+</div>

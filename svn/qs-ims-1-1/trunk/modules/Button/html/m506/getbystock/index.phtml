@@ -1,0 +1,131 @@
+<script>
+    var m506_button_getbystock = {
+
+        /*
+        // Kiểm tra số lượng có đúng không
+        valid : function (ele) {
+            var qty   = parseFloat($(ele).val());
+            var valid = parseFloat($(ele).parent().parent().find('.M506_Get_By_Stock_Valid').val());
+            valid     = (valid > 0)?valid:0;
+
+            $(ele).parent().parent().find('.M506_Get_By_Stock_Valid').addClass('bgorange')
+            if(qty > valid) {
+                $(ele).addClass('red bgpink');
+            }
+            else {
+                $(ele).removeClass('red bgpink');
+            }
+        },
+        */
+
+
+        // Hiển thị bản ghi theo yêu cầu cung cấp
+        show : function () {
+            var data = $('#M506_Get_By_Stock_Form').serialize();
+            var url = sz_BaseUrl + '/button/m506/getbystock/show';
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#M506_Get_By_Stock_ShowTable').html(jreturn);
+            });
+        },
+
+        // Lưu lại những bản ghi được chọn
+        save : function () {
+            var data = $('#M506_Get_By_Stock_Form').serialize();
+            var url  = sz_BaseUrl + '/button/m506/getbystock/save';
+            qssAjax.call(url, data, function(jreturn){
+                $('#qss_trace').dialog('close');
+                rowObjectSearch('<?php echo $this->ifid;?>','<?php echo $this->deptid;?>','ODanhSachXuatKho');
+
+            }, function(jreturn){
+                qssAjax.alert(jreturn.message);
+            });
+        }
+    };
+
+    $(document).ready(function () {
+        m506_button_getbystock.show();
+
+        $('#M506_Get_By_Stock_Item').on("keyup keypress", function(e) {
+            var code = e.keyCode || e.which;
+            if (code  == 13) {
+                e.preventDefault();
+                m506_button_getbystock.show();
+                return false;
+            }
+        });
+
+        $('#M506_Get_By_Stock_PageNo').on("keyup keypress", function(e) {
+            var code = e.keyCode || e.which;
+            if (code  == 13) {
+                e.preventDefault();
+                m506_button_getbystock.show();
+                return false;
+            }
+        });
+
+    });
+</script>
+
+<form id="M506_Get_By_Stock_Form">
+    <input type="hidden" name="M506_Get_By_Stock_IFID" id="M506_Get_By_Stock_IFID" value="<?php echo $this->ifid;?>"/>
+
+    <div class="popup_wrap">
+        <div class="popup_header">
+
+            <table class="detail" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td class="left">
+                        <div class="overflow">
+                            <div class="fl">
+                                <input type="text" id="M506_Get_By_Stock_Item" name="M506_Get_By_Stock_Item" value="" placeholder="Tìm mã & tên mặt hàng"/>
+
+                                <input type="checkbox" id="M506_Get_By_Stock_Tool" name="M506_Get_By_Stock_Tool" value="1" />
+                                <label for="M506_Get_By_Stock_Tool">Công cụ</label>
+                                <input type="checkbox" id="M506_Get_By_Stock_Material" name="M506_Get_By_Stock_Material" value="1" />
+                                <label for="M506_Get_By_Stock_Material">Vật tư</label>
+                                <button type="button" class="btn" onclick="m506_button_getbystock.show()"> Xem </button>
+                            </div>
+
+                            <div class="fr">
+                                Trang:
+                                <a title="Trang trước" class="bold" href="#"
+                                   onclick="$('#M506_Get_By_Stock_PageNo').val('1'); m506_button_getbystock.show();"
+                                   id="M506_Get_By_Stock_Prev">&lt;&lt;</a>
+                                <input id="M506_Get_By_Stock_PageNo" name="M506_Get_By_Stock_PageNo"
+                                       onchange="M506_Get_By_Stock.show();"
+                                       style="width: 20px !important; text-align: center;" value="1">/
+                                <span id="M506_Get_By_Stock_TotalPage">1</span>
+                                <a title="Trang sau" class="bold" href="#"
+                                   onclick="$('#M506_Get_By_Stock_PageNo').val('1'); m506_button_getbystock.show();"
+                                   id="M506_Get_By_Stock_Next">&gt;&gt;</a>
+                                Hiển thị: <select id="M506_Get_By_Stock_Display"
+                                                  name="M506_Get_By_Stock_Display" style="width: 100;"
+                                                  onchange="m506_button_getbystock.show();;">
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option selected="" value="20">20</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                                Tổng số: <span id="M506_Get_By_Stock_Total">1</span>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+        <div class="popup_content">
+            <div id="M506_Get_By_Stock_ShowTable" style="min-height: 241px; overflow: hidden">
+
+            </div>
+
+            <div class="overflow" style="padding-top: 10px;">
+                <div class="fr">
+                    <button type="button" class="btn" onclick="m506_button_getbystock.save()"> Cập nhật </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

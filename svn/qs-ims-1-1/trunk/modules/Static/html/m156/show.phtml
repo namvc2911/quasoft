@@ -1,0 +1,565 @@
+<!--
+TRANSLATE VN
+1   = "BẢNG THEO DÕI NGHIỆM THU CÁC CHỈ SỐ ĐIỆN NĂNG NỘI BỘ THÁNG"
+2   = "NĂM"
+100 = "TT"
+101 = "Đơn vị - Công tơ"
+102 = "Chỉ số đầu kỳ"
+103 = "Chỉ số cuối kỳ"
+104 = "Hệ số nhân"
+105 = "Sản lượng (Kwh)"
+106 = "Tỉ lệ"
+107 = "Tổn hao"
+108 = "Sản lượng nghiệm thu"
+
+
+TRANSLATE EN
+1   = "INTERNAL REPORT MONTH"
+2   = "YEAR"
+100 = "No."
+101 = "Position - metter"
+102 = "Start"
+103 = "End"
+104 = "Multipliers"
+105 = "Qty (Kwh)"
+106 = "Ratio"
+107 = "Loss"
+108 = "Real qty"
+-->
+
+<script type="text/javascript">
+<!--
+$(document).ready(function(){
+	$('.tooltip').tooltip();
+});
+//-->
+</script>
+
+<?php
+
+if($this->start == $this->end)
+{
+    $reportTitle = 'BẢNG THEO DÕI NGHIỆM THU CÁC CHỈ SỐ ĐIỆN NĂNG MUA THÁNG '.$this->start.' NĂM '. $this->year;
+}
+else
+{
+    $reportTitle = 'BẢNG THEO DÕI NGHIỆM THU CÁC CHỈ SỐ ĐIỆN NĂNG MUA TỪ THÁNG '.$this->start.' ĐẾN THÁNG ' .$this->end. ' NĂM '. $this->year;
+}
+
+$excel_col      = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg             = Qss_Lib_Extra_Const::REPORT_EXCEL_THEAD_COLOR;
+$row            = 2;
+$totalColumn    = 9;
+$colWidths      = array(1,8,3,3,3,3,3,3,3);
+$excelColWidths = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($colWidths);
+$autoFit        = Qss_Lib_Report::changeWidthToFitScreen($colWidths);
+?>
+
+<?php 
+$report  = array();
+$nextRow = 0;
+$deptNum = 0;
+$rowPos  = array();
+
+//echo '<pre>'; print_r($this->MuaBanDonViNoiBo); die;
+
+foreach($this->MuaBanDonViNoiBo as $item)
+{
+    $report[$nextRow][1] = '<b>'.Qss_Lib_Util::numberToRome(++$deptNum).'</b>';
+    $report[$nextRow][2] = '<b>'.$item['Name'];
+    $report[$nextRow][6] = '<b>'.Qss_Lib_Util::formatInteger($item['Qty']).'</b>';
+    $report[$nextRow][7] = '<b>'.round($item['Rate'], 4).'</b>';
+    $report[$nextRow][8] = '<b>'.Qss_Lib_Util::formatInteger($item['Loss']).'</b>';
+    $report[$nextRow][9] = '<b>'.Qss_Lib_Util::formatInteger($item['LQty']).'</b>';
+    if(isset($item['Title'])) $report[$nextRow][100] = $item['Title'];
+    $nextRow++;  
+    
+    if(isset($item['Detail']))
+    {
+        $deptNum2 = 0;
+        
+        foreach($item['Detail'] as $item2)
+        {
+            if($item2['PurchaseQty'])
+            {
+                $report[$nextRow][1] = ++$deptNum2;
+                $report[$nextRow][2] = $item2['Code'];
+                $report[$nextRow][3] = Qss_Lib_Util::formatInteger($item2['PurchaseStartNumber']);
+                $report[$nextRow][4] = Qss_Lib_Util::formatInteger($item2['PurchaseEndNumber']);
+                $report[$nextRow][5] = Qss_Lib_Util::formatInteger($item2['PurchaseRate']);
+                $report[$nextRow][6] = Qss_Lib_Util::formatInteger($item2['PurchaseQty']);
+                $nextRow++;
+            }
+        }        
+    }
+    
+    $report[$nextRow][1] = ++$deptNum2;
+    $report[$nextRow][2] = 'Cấp cho đơn vị khác';
+    $report[$nextRow][3] = '';
+    $report[$nextRow][4] = '';
+    $report[$nextRow][5] = '';
+    $report[$nextRow][6] = Qss_Lib_Util::formatInteger($item['SaleQty2']);
+    
+    
+    $nextRow++;    
+}
+
+$rowPos[$nextRow] = 'right';
+$report[$nextRow][1] = '';
+$report[$nextRow][2] = '<b>Cộng</b>';
+$report[$nextRow][3] = '';
+$report[$nextRow][4] = '';
+$report[$nextRow][5] = '';
+$report[$nextRow][6] = '<b>'.Qss_Lib_Util::formatInteger($this->TongSanLuongDonViNoiBo).'</b>';
+$nextRow++;
+?>
+
+<div class="portrait">
+    <excel
+        orientation="<?php echo Qss_Lib_Extra_Const::REPORT_ORIENTATION_PORTRAIT;?>"
+        font-name="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_NAME;?>"
+        font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_SIZE;?>"
+        margin-left="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_LEFT;?>"
+        margin-right="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_RIGHT;?>"
+        margin-top="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_TOP;?>"
+        margin-bottom="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_BOTTOM;?>"  />
+
+    <!-- REPORT TITLE -->
+    <div id="head_print">
+        <?php  echo $this->views->Common->Portrait(); ?>
+        <center>
+            <h2>
+                <xls
+                    row="<?php echo $row ?>"
+                    column="A"
+                    column-merge="<?php echo $excel_col[$totalColumn] ?>"
+                    font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_TITLE_FONT_SIZE;?>"
+                    wrap-text="1"
+                    bold="1"
+                    h-align="center"
+                    v-align="center" ><?php echo $reportTitle; ?></xls>
+            </h2>
+        </center>
+    </div><!-- end div#head_print -->
+    <?php $row++ ?>
+
+    <p style="text-align: right; margin-right: 90px;">
+        <xls
+            row="<?php echo $row ?>"
+            column="<?php echo $excel_col[10] ?>"
+            font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_TITLE_FONT_SIZE;?>"
+            wrap-text="1"
+            bold="1"
+            h-align="center"
+            v-align="center" > NB01  </xls>
+    </p>
+    <?php $row++ ?>
+
+
+    <div id="container">
+        <table class="border"  border="1" cellspacing="0" cellpadding="0" style="width: 100%; table-layout:inherit !important;" >
+
+            <!-- REPORT TITLE -->
+            <?php $begin    = 0;?>
+            <?php $columnNo = 0; // Sô thư tụ của từng cột?>
+			<thead>
+            <tr class="bggrey">
+                <!-- TT -->
+                <th  class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->TT<!-- #1 --><?php // echo $this->_translate(100); ?></xls>
+                </th>
+
+                <!-- Đơn vị - Công tơ -->
+                <th  class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->Đơn vị - Công tơ<!-- #1 --><?php // echo $this->_translate(101); ?></xls>
+                </th>
+
+                <!-- Chỉ số đầu kỳ -->
+                <th  class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->Chỉ số đầu kỳ<!-- #1 --><?php // echo $this->_translate(102); ?></xls>
+                </th>
+
+                <!-- Chỉ số cuối kỳ -->
+                <th  class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->Chỉ số cuối kỳ<!-- #1 --><?php // echo $this->_translate(103); ?></xls>
+                </th>
+
+                <!-- Hệ số nhân -->
+                <th  class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->Hệ số nhân<!-- #1 --><?php // echo $this->_translate(104); ?></xls>
+                </th>
+
+                <!-- Sản lượng (Kwh) -->
+                <th  class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->Sản lượng (Kwh)<!-- #1 --><?php // echo $this->_translate(105); ?></xls>
+                </th>
+
+                <!-- Tỉ lệ -->
+                <th  class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->Tỉ lệ<!-- #1 --><?php // echo $this->_translate(106); ?></xls>
+                </th>
+
+                <!-- Tổn hao -->
+                <th  class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->Tổn hao<!-- #1 --><?php // echo $this->_translate(107); ?></xls>
+                </th>
+
+                <!-- Sản lượng nghiệm thu -->
+                <th  class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->Sản lượng nghiệm thu<!-- #1 --><?php // echo $this->_translate(108); ?></xls>
+                </th>
+
+            </tr>
+            <?php $row++;?>
+
+
+            <?php $begin    = 0;?>
+            <?php $columnNo = 0; // Sô thư tụ của từng cột?>
+
+            <tr class="bggrey">
+                <!-- number -->
+
+                <!-- number -->
+                <th  class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><?php echo ++$columnNo;?></xls>
+                </th>
+
+                <!-- number -->
+                <th  class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><?php echo ++$columnNo;?></xls>
+                </th>
+
+                <!-- number -->
+                <th  class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><?php echo ++$columnNo;?></xls>
+                </th>
+
+                <!-- number -->
+                <th  class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><?php echo ++$columnNo;?></xls>
+                </th>
+
+                <!-- number -->
+                <th  class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><?php echo ++$columnNo;?></xls>
+                </th>
+
+                <!-- number -->
+                <th  class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><?php echo ++$columnNo;?></xls>
+                </th>
+
+                <!-- number -->
+                <th  class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><?php echo ++$columnNo;?></xls>
+                </th>
+
+                <!-- number -->
+                <th  class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><?php echo ++$columnNo;?></xls>
+                </th>
+
+                <!-- number -->
+                <th  class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><?php echo ++$columnNo;?></xls>
+                </th>
+
+            </tr>
+            <thead>
+            <?php $row++;?>
+
+            <!----------------------------------------------------------------------------------------------------------------->
+            <?php // echo '<pre>'; print_r($report); die;?>
+            <!-- REPORT DATA -->
+            <?php foreach($report as $rowNum=>$item):?>
+                <?php $begin  = 0;?>
+                <?php $itemID = 1;?>
+                <tr class="break-word <?php echo @$item[100]?'tooltip':'';?>" title="<?php echo @$item[100]?>">
+                    <!-- 1: TT -->
+                    <td class="center">
+                        <xls
+                            row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>"
+                            wrap-text="1"
+                            v-align="top"
+                            h-align="center"
+                            border="1"><?php echo @$item[$itemID++];?></xls>
+                    </td>
+
+                    <!-- 2: Vị trí công tơ -->
+                    <?php $class = @$rowPos[$rowNum]?$rowPos[$rowNum]:'left';?>
+                    <td class="<?php echo $class;?>">
+                        <xls
+                            row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>"
+                            wrap-text="1"
+                            v-align="top"
+                            h-align="<?php echo $class;?>"
+                            border="1"><?php echo @$item[$itemID++];?></xls>
+                    </td>
+
+                    <!-- 3: % Tổn hao -->
+                    <td class="right">
+                        <xls
+                            row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>"
+                            wrap-text="1"
+                            v-align="top"
+                            h-align="right"
+                            border="1"><?php echo @$item[$itemID++];?></xls>
+                    </td>
+
+                    <!-- 4: Hệ số nhân -->
+                    <td class="right">
+                        <xls
+                            row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>"
+                            wrap-text="1"
+                            v-align="top"
+                            h-align="right"
+                            border="1"><?php echo @$item[$itemID++];?></xls>
+                    </td>
+
+                    <!-- 5: Đầu -->
+                    <td class="right">
+                        <xls
+                            row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>"
+                            wrap-text="1"
+                            v-align="top"
+                            h-align="right"
+                            border="1"><?php echo @$item[$itemID++];?></xls>
+                    </td>
+
+                    <!-- 6: Cuối -->
+                    <td class="right">
+                        <xls
+                            row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>"
+                            wrap-text="1"
+                            v-align="top"
+                            h-align="right"
+                            border="1"><?php echo @$item[$itemID++];?></xls>
+                    </td>
+
+                    <!-- 7: Điện năng <br>tiêu thụ<br>KWh -->
+                    <td class="right">
+                        <xls
+                            row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>"
+                            wrap-text="1"
+                            v-align="top"
+                            h-align="right"
+                            border="1"><?php echo @$item[$itemID++];?></xls>
+                    </td>
+
+                    <!-- 8: Đầu -->
+                    <td class="right">
+                        <xls
+                            row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>"
+                            wrap-text="1"
+                            v-align="top"
+                            h-align="right"
+                            border="1"><?php echo @$item[$itemID++];?></xls>
+                    </td>
+
+                    <!-- 9: Cuối -->
+                    <td class="right">
+                        <xls
+                            row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>"
+                            wrap-text="1"
+                            v-align="top"
+                            h-align="right"
+                            border="1"><?php echo @$item[$itemID++];?></xls>
+                    </td>
+
+
+                </tr>
+                <?php $row++;?>
+
+            <?php endforeach; // In thông tin báo cáo <Nội dung chính> ?>
+        </table>
+    </div><!-- End #container -->
+</div><!-- End report -->

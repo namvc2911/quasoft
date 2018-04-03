@@ -1,0 +1,122 @@
+<link rel="stylesheet" href="/css/extra/static/m173.css" />
+<script src="/js/extra/static/m173.js"></script>
+
+<?php
+define('M173_SELECT_SIZE' , '20');
+?>
+
+<div id="m173_tab">
+    <div class="m173_tab_element">
+        <div id="tabs_box">
+            <div class="navmenutab">
+                <ul>
+                	<li class="splash"></li>
+                    <li><a onclick="M173.getFilter('<?php echo Static_M173Controller::TAB_LOCATION;?>');" id="m173_tab_LOCATION" class="m173_tab" href="#" ><span >Khu vực & Thiết bị</span></a></li>
+
+                    <?php if(Qss_Lib_System::formActive('M702')):?>
+                        <li class="splash"></li>
+                        <li><a onclick="M173.getFilter('<?php echo Static_M173Controller::TAB_LINE;?>');" id="m173_tab_LINE" class="m173_tab" href="#" ><span >Dây chuyền</span></a></li>
+                    <?php endif;?>
+
+                    <?php if(Qss_Lib_System::formActive('M126')):?>
+                        <li class="splash"></li>
+                        <li><a onclick="M173.getFilter('<?php echo Static_M173Controller::TAB_COSTCENTER;?>');" id="m173_tab_COSTCENTER" class="m173_tab" href="#" ><span >Trung tâm chi phí</span></a></li>
+                    <?php endif;?>
+
+                    <?php if(Qss_Lib_System::fieldActive('ODanhSachThietBi', 'QuanLy')):?>
+                        <li class="splash"></li>
+                        <li><a onclick="M173.getFilter('<?php echo Static_M173Controller::TAB_MANAGER;?>');" id="m173_tab_MANAGER" class="m173_tab" href="#" ><span >Quản lý</span></a></li>
+                    <?php endif;?>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="clear"></div>
+
+<div id="view">
+    <div id="m173_wrapper">
+        <form id="m173_form">
+            <div id="hidden_box">
+                <input type="hidden" value="LOCATION" name="current" id="m173_current_tab" />
+            </div>
+
+            <div id="m173_header">
+                <div>
+                    Ngày di chuyển: <?php echo $this->views->Report->Datepicker('date', date('d-m-Y'));?>
+                    Giờ di chuyển: <input type="text" name="time" placeholder="hh:mm" value="<?php echo date('H:i');?>"/>
+                </div>
+            </div>
+
+            <div class="clear"></div>
+
+            <div id="m173_primary">
+                <!-- Thiết bị lấy từ -->
+                <div id="m173_from">
+                    <div id="m173_from_filter">
+                        <select id="m173_from_filter_select_box" name="fromid">
+
+                        </select>
+                    </div>
+
+                    <div id="m173_from_select">
+                        <select id="m173_from_select_dial_box" size="<?php echo M173_SELECT_SIZE;?>" multiple="multiple" name="fromvalue[]">
+                            <option value="0"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Các nút di chuyển thiết bị -->
+                <div id="m173_move">
+                    <div class="m173_move_button">
+                        <button onclick="M173.add()" class="btn-custom btn btn_main_top" type="button"> Chuyển </button>
+                    </div>
+
+                    <div class="m173_move_button">
+                        <button onclick="M173.add(1)" class="btn-custom btn btn_main_top"type="button"> Chuyển hết </button>
+                    </div>
+
+                    <div class="m173_move_button">
+                        <button onclick="M173.remove()" class="btn-custom btn btn_main_top"type="button"> Chuyển lại </button>
+                    </div>
+
+                    <div class="m173_move_button">
+                        <button onclick="M173.remove(1)" class="btn-custom btn btn_main_top" type="button"> Phục hồi </button>
+                    </div>
+                </div>
+
+                <!-- Thiết bị chuyển đến -->
+                <div id="m173_to">
+                    <div id="m173_to_filter">
+                        <select id="m173_to_filter_select_box" name="toid">
+
+                        </select>
+
+                        <?php if(Qss_Lib_System::fieldActive('ODanhSachThietBi', 'TrucThuoc')):?>
+                        <select id="m173_select_parent_equip" name="parent_equip" >
+
+                        </select>
+                        <?php endif;?>
+                    </div>
+
+
+
+                    <div id="m173_to_select">
+                        <select id="m173_to_select_dial_box" size="<?php echo M173_SELECT_SIZE;?>" multiple="multiple" name="tovalue[]">
+                            <option value="0"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clear"></div>
+
+            <div id="m173_footer">
+                <div id="m173_save">
+                	<button type="button" class="btn btn-custom" onclick="M173.save()"> Cập nhật </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

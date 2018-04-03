@@ -1,0 +1,503 @@
+
+
+<?php
+function printItemQty($qty, $uom, $colspan)
+{
+	return "<tr>
+		<td colspan=\"{$colspan}\"> 
+			<b>
+				<i>Số lượng sản phẩm : {$qty} {$uom}</i>
+			</b>
+		</td> 
+	</tr>";
+}
+
+$itemConfig  = $this->itemConfig;
+$attributes  = $this->attributes;
+$lines       = $this->lines; // line - số dòng
+$lotQty      = (double) ((is_numeric($this->lotQty) && $this->lotQty > 0) ? $this->lotQty : 1);
+$col         = 0;
+$oldValue    = $this->oldValue;
+$binConfig   = $this->binConfig;  // Trường hợp có lot hoặc serial
+$hasBin      = count((array)$this->binConfig);
+$zoneBinSort = $this->zoneBinSort; // Trường hợp chỉ không có lot hoặc serial
+$itemQty     = $itemConfig->itemQty;
+
+// Lay so lot cuoi cung duoc danh truoc do
+if ($itemConfig->lot) {
+	// $itemConfig->lotLength: Do dai ma lo
+	$itemConfig->lotLength = $itemConfig->lotLength ?
+	$itemConfig->lotLength :
+	Qss_Lib_Extra_Const::DEFAULT_LOT_LENGTH;
+
+	// $defaultLot: Lo mac dinh pre_lot + 00...0
+	$defaultLot = $itemConfig->preLot
+	. str_pad(0, $itemConfig->lotLength, '0', STR_PAD_LEFT);
+
+	// $lastLot: So lo cuoi cung duoc danh truoc do
+	$lastLot    = $this->lastLot ? $this->lastLot : '0';
+
+	// $oldLot: So lo cuoi cung dang so (da bo phan ky tu dau ma)
+	$oldLot     = $itemConfig->autoLot ?
+	(int) preg_replace('/' . $itemConfig->preLot . '/', '', $lastLot) : 0;
+}
+
+// Lay so serial cuoi cung duoc danh truoc do
+if ($itemConfig->serial) {
+	// $itemConfig->serialLength: Do dai ma serial
+	$itemConfig->serialLength = $itemConfig->serialLength ?
+	$itemConfig->serialLength :
+	Qss_Lib_Extra_Const::DEFAULT_SERIAL_LENGTH;
+
+	// $defaultSerial: serial mac dinh pre_serial + 00...0
+	$defaultSerial = $itemConfig->preSerial
+	. str_pad(0, $itemConfig->serialLength, '0', STR_PAD_LEFT);
+
+	// $lastSerial: So serial cuoi cung duoc danh truoc do
+	$lastSerial    = $this->lastSerial ? $this->lastSerial : '0';
+
+	// $oldSerial: So serial cuoi cung dang so (da bo phan ky tu dau ma)
+	$oldSerial     = $itemConfig->autoSerial ?
+	(int) preg_replace('/' . $itemConfig->preSerial . '/', '', $lastSerial) : 0;
+}
+?>
+
+
+<table
+	id="stock_status_table" class="border_table" width="100%"
+	cellpadding="0" cellspacing="0" border="1" style="text-align: center;">
+	<tr class="bggrey">
+	<?php if($itemConfig->serial || $itemConfig->lot):?>
+		<td>STT <input type="hidden" name="lines"
+			value="<?php echo $lines['lines']; ?>" /> <?php $col++; ?>
+		</td>
+		<?php endif;?>
+
+		<?php if ($itemConfig->serial): ?>
+		<td>Số serial <?php $col++; ?>
+		</td>
+		<?php endif; ?>
+
+		<?php if ($itemConfig->lot): ?>
+		<td>Số lô <?php $col++; ?>
+		</td>
+		<?php endif; ?>
+
+		<?php if ($itemConfig->lot || $itemConfig->serial): ?>
+		<td>Ngày nhận hàng <?php $col++; ?>
+		</td>
+
+		<td>Ngày sx <?php $col++; ?>
+		</td>
+
+		<td>Ngày hạn <?php $col++; ?>
+		</td>
+		<?php endif; ?>
+
+		<?php if ($attributes): ?>
+		<td>Thuộc tính <?php $col++; ?>
+		</td>
+		<?php endif; ?>
+
+
+		<?php if ($hasBin): ?>
+		<td>Bin <?php $col++; ?>
+		</td>
+		<?php endif; // hasBin ?>
+
+		<td>Số lượng <?php $col++; ?>
+		</td>
+
+		<?php if($hasBin && !$itemConfig->serial && !$itemConfig->lot):?>
+		<td class="width_100">&nbsp; <?php $col++; ?>
+		</td>
+		<?php endif;?>
+	</tr>
+
+
+	<!-- Tieu de: So Luong San Pham -->
+	<?php //echo printItemQty($itemQty, $itemConfig->itemUOM, $col);?>
+
+	<?php //if ($hasBin && ($itemConfig->serial || $itemConfig->lot)): ?>
+	<?php if ($hasBin || $itemConfig->serial || $itemConfig->lot): ?>
+	<?php
+	$j        = 0; // Xác định lô và mã nếu chúng không được đánh tự động
+	$decrease = $itemQty;
+	for ($i = 0; $i < $lines['lines']; $i++):
+
+	// Lay so luong tren moi dong
+	if ($decrease > $lines['defaultLineQty'])
+	{
+		$qty = (int) $lines['defaultLineQty'];
+	}
+	else
+	{
+		$qty = $decrease;
+	}
+	$decrease -= $lines['defaultLineQty'];
+	$decrease = ($decrease > 0) ? $decrease : 0;
+
+
+	/**
+	 *  Đánh lô
+	 */
+	if (isset($oldValue[$i]['SoLo']) && $oldValue[$i]['SoLo'])
+	{
+		//$newLot = $oldValue[$i]['SoLo'];
+		if ($itemConfig->lot && $itemConfig->autoLot)
+		{
+			if ($itemConfig->serial)
+			{
+				if ($i % $lotQty == 0)
+				{
+					// Sang lô mới.
+					$j = 0;
+
+					if (isset($tmpSpecifies))
+					{
+						$oldValue[$i]['SoLo'] = $tmpSpecifies;
+						$j = $tmpJindex;
+					}
+					while (isset($oldValue[$j]['SoLo']) && ($oldValue[$i]['SoLo'] == $oldValue[$j]['SoLo']))
+					{
+						$j++;
+					}
+
+					if (floor($i / $lotQty) == 0)
+					{
+						// Dòng đầu
+						$newLot = $oldValue[$i]['SoLo'];
+						$tmpOneLot = $newLot; // lotQty > lines : chỉ duy nhất một lô
+					}
+					else
+					{
+						// Các đòng sau
+						if (isset($oldValue[$j]['SoLo']) && ($oldValue[$j]['SoLo'] != $oldValue[$i]['SoLo']))
+						{
+							$newLot = $oldValue[$j]['SoLo'];
+							$tmpSpecifies = $oldValue[$j]['SoLo'];
+							$tmpJindex = $j;
+						}
+						else
+						{
+							$oldLot++;
+							$newLot = $itemConfig->preLot . str_pad($oldLot, $itemConfig->lotLength, '0', STR_PAD_LEFT);
+						}
+					}
+
+					$duplicateNewLot = $newLot; // lotQty < lines && lotQty > 1 , giá trị lập lại
+				}
+				else
+				{
+					// Tiếp tục lô nào đó.
+					if (floor($i / $lotQty) == 0)
+					{
+						// tiếp tục của dòng đầu
+						if ($lotQty < $lines['lines'])
+						{
+							$newLot = $oldValue[$i]['SoLo'];
+						} else
+						{
+							$newLot = $tmpOneLot;
+						}
+					}
+					else
+					{
+						// tiếp tục của các dòng sau
+						$newLot = $duplicateNewLot;
+					}
+				}
+			}
+			else
+			{
+				$newLot = $oldValue[$i]['SoLo'];
+			}
+		}
+		else
+		{
+			$newLot = $oldValue[$i]['SoLo'];
+		}
+	}
+	else
+	{
+		if ($itemConfig->lot && $itemConfig->autoLot)
+		{
+			if ($itemConfig->serial)
+			{
+				$oldLot = ($i % $lotQty == 0) ? ++$oldLot : $oldLot;
+			}
+			else
+			{
+				$oldLot++;
+			}
+			$newLot = $itemConfig->preLot . str_pad($oldLot, $itemConfig->lotLength, '0', STR_PAD_LEFT);
+		}
+		else
+		{
+			$newLot = isset($defaultLot) ? $defaultLot : '';
+		}
+	}
+
+	/**
+	 *  Đánh mã  ---------------------
+	 */
+	if (isset($oldValue[$i]['SoSerial']) && $oldValue[$i]['SoSerial'])
+	{
+		$newSerial = $oldValue[$i]['SoSerial'];
+	}
+	else
+	{
+		if ($itemConfig->serial && $itemConfig->autoSerial)
+		{
+			$oldSerial++;
+			$newSerial = $itemConfig->preSerial . str_pad($oldSerial, $itemConfig->serialLength, '0', STR_PAD_LEFT);
+		}
+		else
+		{
+			$newSerial = isset($defaultSerial) ? $defaultSerial : '';
+		}
+	}
+	?>
+
+
+	<tr>
+		<!-- STT -->
+	<?php if($itemConfig->serial || $itemConfig->lot):?>
+		<td><?php echo ($i + 1); // In ra số thứ tự?> <input type="hidden"
+			name="no[]" value="<?php echo ($i+1);?>" /> <input type="hidden"
+			name="ioidExists[]" value="<?php echo @(int)$oldValue[$i]['IOID'] ?>" />
+		</td>
+		<?php endif;?>
+
+		<!-- Serial -->
+		<?php if ($itemConfig->serial): ?>
+		<td><input type="text" name="serial[]"
+			value="<?php echo $newSerial; ?>" class="width_100" />
+		</td>
+		<?php endif; ?>
+
+		<!-- Lot -->
+		<?php if ($itemConfig->lot): ?>
+		<td><input type="text" name="lot[]" value="<?php echo $newLot; ?>"
+			class="width_100" />
+		</td>
+		<?php endif; ?>
+
+
+		<?php if ($itemConfig->lot || $itemConfig->serial): ?>
+		<!-- Ngay Nhan -->
+		<td><input type="text" name="receiveDate[]"
+			value="<?php echo date('d-m-Y'); ?>"
+			class="width_70  
+				   datepicker" />
+		</td>
+
+		<!-- Ngay sx -->
+		<td><input type="text" name="productionDate[]"
+			value="<?php echo date('d-m-Y'); ?>" class="width_70  datepicker" />
+		</td>
+
+		<!-- Ngay han -->
+		<td><input type="text" name="expiryDate[]"
+			value="<?php echo date('d-m-Y', strtotime('+ 1 years')); ?>"
+			class="width_70  
+				   datepicker" />
+		</td>
+		<?php endif; ?>
+
+		<!-- Thuoc tinh -->
+		<?php if ($attributes): // Nếu sản phẩm có thuộc tính?>
+		<td><?php echo $attributes; ?>
+		</td>
+		<?php endif; ?>
+
+		<?php //if ($itemConfig->serial || $itemConfig->lot): ?>
+		<?php if ($hasBin && ($itemConfig->serial || $itemConfig->lot)): ?>
+
+		<td><select name="bin[]" class="bin_<?php echo $i; ?>">
+				<option value="">Chọn bin</option>
+				<?php
+
+				foreach ($binConfig as $key => $value) {
+					$level = ($value->LEVEL > 0)?($value->LEVEL -1):0;
+					$binSelected = ($oldValue[$i]['Bin'] == $value->binCode) ? 'selected' : '';
+					echo "<option value='{$value->binCode}' {$binSelected}>  "
+					. str_repeat('&nbsp;&nbsp;',$level)
+					. ' - '
+					. "{$value->binCode} - {$value->binName} </option>";
+				}
+				?>
+		</select>
+		</td>
+		<?php endif; ?>
+
+
+		<?php /*else: ?>
+
+		<?php if ($hasBin): ?>
+		<td>
+		<input type="hidden"
+		name="bin[]"
+		value="<?php echo $binConfig->{$i}->binCode; ?>"/>
+		<?php echo $binConfig->{$i}->binCode; ?> - <?php echo $binConfig->{$i}->binName; ?>
+		</td>
+		<?php endif; ?>
+		<?php endif; */?>
+
+		<?php if($itemConfig->serial || $itemConfig->lot):?>
+		<td><input type="text" class="width_50 required" name="qty[]"
+			value="<?php echo $qty; //Số lượng?>"
+			<?php echo $lines['lineQtyAccess']; ?> />
+		</td>
+		<?php endif;?>
+	</tr>
+	<?php endfor; // Kết thúc loop dòng?>
+
+
+	<?php elseif($hasBin && !$itemConfig->serial && !$itemConfig->lot):?>
+
+	<?php $i = 0;?>
+	<?php if(count((array)$oldValue)):?>
+	<?php foreach ($oldValue as $val): ?>
+
+	<tr class="only-bin-marker-add-line">
+
+		<!-- BIN -->
+	<?php if ($hasBin): ?>
+		<td><select name="bin[]" class="bin_<?php echo $i; ?>"
+			style="width: 200px;">
+				<option value="">Chọn bin</option>
+				<?php if (isset($val['Bin'])): ?>
+				<?php foreach ($binConfig as $k => $v): ?>
+				<?php $level = ($v->LEVEL > 0)?($v->LEVEL -1):0;?>
+				<option value="<?php echo $v->binCode ?>"
+				<?php if ($val['Bin'] == $v->binCode) echo 'selected'; ?>>
+					<?php
+					echo str_repeat('&nbsp;&nbsp;',$level)
+					. ' - ' . $v->binCode . ' - ' . $v->binName;
+					?>
+				</option>
+				<?php endforeach; ?>
+				<?php endif; ?>
+		</select> <input type="hidden" name="ioidExists[]"
+			value="<?php echo @(int)$val['IOID'] ?>" />
+		</td>
+		<?php endif; ?>
+
+		<td><input type="text" class="width_50 line_item_qty required"
+			name="qty[]" value="<?php echo $val['SoLuong']; ?>"
+			onkeyup="countTotalQty()" />
+		</td>
+		<td><?php if($this->form->i_Status != 2):?>
+			<button type="button" class="btn-custom"
+				onclick="remove_bin_line(this)">Xóa</button> <?php endif;?>
+		</td>
+
+
+	</tr>
+	<?php $i++; ?>
+	<?php endforeach; // $oldStockStatus ?>
+	<?php else:?>
+	<tr class="only-bin-marker-add-line">
+		<td><select name="bin[]" class="bin_0" style="width: 200px;">
+				<option value="">Chọn bin</option>
+				<?php
+				foreach ($binConfig as $key => $value) {
+					$level = ($value->LEVEL > 0)?($value->LEVEL -1):0;
+					echo "<option value='{$value->binCode}' >  "
+					. str_repeat('&nbsp;&nbsp;',$level)
+					. ' - '
+					. "{$value->binCode} - {$value->binName} </option>";
+				}
+				?>
+		</select> <input type="hidden" name="ioidExists[]" value="0" />
+		</td>
+
+		<td><input type="text" class="width_50 line_item_qty required"
+			onkeyup="countTotalQty()" name="qty[]" value="0" />
+		</td>
+
+		<td><?php if($this->form->i_Status != 2):?>
+			<button type="button" class="btn-custom"
+				onclick="remove_bin_line(this)">Xóa</button> <?php endif;?>
+		</td>
+	</tr>
+	<?php endif;?>
+
+	<?php endif;?>
+
+	<!-- Tieu de: So Luong San Pham -->
+	<?php //echo printItemQty($itemQty, $itemConfig->itemUOM, $col);?>
+
+
+	<?php if($this->form->i_Status != 2):?>
+	<tr>
+		<td colspan="<?php echo $col;?>"><?php if($hasBin && !$itemConfig->serial && !$itemConfig->lot):?>
+			<button type="button" class="btn-custom" onclick="add_bin_line()">
+				Thêm</button> <?php endif;?>
+			<button type="button" class="btn-custom"
+				onclick="poAttributesTableSave()">Cập nhật</button>
+		</td>
+	</tr>
+	<?php endif;?>
+
+</table>
+	<?php if($this->form->i_Status != 2):?>
+<script>
+    jQuery(document).ready(function($) {
+        $('.datepicker').each(function() {
+            $(this).datepicker({dateFormat: "dd-mm-yy"});
+        });/* Datepicker*/
+    });
+	
+	<?php if($hasBin && !$itemConfig->serial && !$itemConfig->lot):?>
+	var add_line = 	'';
+	add_line += '<tr class="only-bin-marker-add-line">';
+	add_line += '<td>';
+	add_line += '<select name="bin[]" class="bin_0" style="width:200px;">';
+	add_line += '<option value=""> Chọn bin </option>';
+	<?php
+	foreach ($binConfig as $key => $value) :
+	$level = ($value->LEVEL > 0)?($value->LEVEL -1):0;
+	?>
+	add_line += '<option value="<?php echo $value->binCode ;?>" >';
+	add_line += '<?php echo str_repeat('&nbsp;&nbsp;',$level) 
+		. ' - '.$value->binCode 
+		. ' - '. $value->binName;?>';
+	add_line += '</option>';
+	<?php endforeach;?>
+	add_line += '</select>';
+	add_line += '<input type="hidden" name="ioidExists[]" value="0" />';
+	add_line += '</td>';
+	add_line += '<td>';
+	add_line += '<input type = "text" ';
+	add_line += 'class="width_50 line_item_qty required" onkeyup="countTotalQty()"' ;
+	add_line += 'name = "qty[]" ';
+	add_line += 'value = "0" /> ';
+	add_line += '</td> ';
+	add_line += '<td class="width_50">';
+	add_line += '<button type="button" class="btn-custom" onclick="remove_bin_line(this)"> Xóa </button>';
+	add_line += '</td> ';
+	add_line += '</tr> ';
+	
+	
+	function add_bin_line()
+	{
+		if($('.only-bin-marker-add-line').length)
+		{
+		$('.only-bin-marker-add-line').last().after(add_line);
+		}
+		else
+		{
+			$('#stock_status_table').find('tr').eq(0).after(add_line);
+		}
+	}
+	
+	function remove_bin_line(ele)
+	{
+		$(ele).parent().parent().remove();
+		countTotalQty();
+	}
+	<?php endif;?>
+</script>
+	<?php endif;?>

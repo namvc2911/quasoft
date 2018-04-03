@@ -1,0 +1,57 @@
+<script type="text/javascript">
+$('#container_m759mts_implement').highcharts({
+	chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Khối lượng sửa chữa năm <?php echo date('Y')?>'
+    },
+    xAxis: {
+        type: 'category'
+    },
+    yAxis: {
+        title: {
+            text: 'VNĐ'
+        }
+    },
+    legend: {
+        enabled: false
+    },
+    plotOptions: {
+        series: {
+            borderWidth: 0,
+            dataLabels: {
+                enabled: true,
+                format: '{point.y:,.0f}'
+            }
+        }
+    },
+
+    tooltip: {
+        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:,.0f}</b><br/>'
+    },
+
+    series: [{
+        name: 'Khu vực',
+        colorByPoint: true,
+        data: [
+        <?php $first = true;?>
+        <?php foreach ($this->countOut as $item):?>      
+         	<?php if(!$first):?>,<?php endif;?>
+	        {
+	            name: '<?php echo $item->Ten?>',
+	            y: <?php echo ($item->TongSo)?((int)($item->TongSo/1000)):0?>
+	        }
+        <?php $first = false;?>
+        <?php endforeach;?>
+        ]
+    }]
+	
+});
+
+</script>		
+
+<div id="container_m759mts_implement" style="width: 1000px; height: 300px;">
+
+</div>

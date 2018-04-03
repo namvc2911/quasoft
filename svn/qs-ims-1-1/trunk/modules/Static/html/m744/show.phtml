@@ -1,0 +1,277 @@
+<?php if(!isset($this->error)):?>
+<?php
+$solar = new Qss_Model_Calendar_Solar();
+
+?>
+
+
+<?php
+//$breakdown = Qss_Lib_Extra::returnObject($this->breakdown);
+$old       = '';
+$downtime  = array();
+$i         = '';
+$countColumnAdd = 0;
+$j         = 0;
+$timeEleWidth = 0;
+$columnTotal = array();
+$bg = '#EEEEEE';
+$excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+
+foreach ($this->breakdown as $bd)
+{
+	switch($this->period)
+	{
+		case 'D':
+			$i = @$bd->Ngay;
+			break;
+		case 'W':
+			$i = (string)$bd->Tuan.'.'.$bd->Nam;
+			break;
+		case 'M':
+			$i = (string)$bd->Thang.'.'.$bd->Nam;
+			break;
+		case 'Q':
+			$i = (string)$bd->Quy.'.'.$bd->Nam;
+			break;
+		case 'Y':
+			$i = $bd->Nam;
+			break;
+	}
+
+	$downtime[$bd->Ref_MaThietBi][$j]['MaThietBi']  = $bd->MaThietBi;
+	$downtime[$bd->Ref_MaThietBi][$j]['TenThietBi'] = $bd->TenThietBi;
+	$downtime[$bd->Ref_MaThietBi][$j][$i]           = $bd->ThoiGianDungMay;
+	$j++;
+
+}
+//echo '<pre>'; print_r($downtime);
+//echo '<pre>'; print_r($this->time); die;
+
+
+switch($this->period)
+{
+	case 'D':
+		$timeEleWidth = '80';
+		break;
+	case 'W':
+		$timeEleWidth = '100';
+		break;
+	case 'M':
+		$timeEleWidth = '80';
+		break;
+	case 'Q':
+		$timeEleWidth = '80';
+		break;
+	case 'Y':
+		$timeEleWidth = '50';
+		break;
+}
+$totalColumn = count((array)$this->time) + 3;
+
+
+
+//echo '<pre>'; print_r($this->time); die;
+?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="landscape">
+	<excel orientation="landscape" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+	<div id="head_print">
+	<?php echo $this->views->Common->Landscape()?>
+	<?php $row = 2;?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row?>" column="A"
+					column-merge="<?php echo $excel_col[$totalColumn]?>" font-size="14"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(1)?>
+				(<?php echo $this->_translate(2)?> <?php echo $this->startDate?> <?php echo $this->_translate(3)?>
+				<?php echo $this->endDate?>) </xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++?>
+
+	<div id="container">
+		<table cellpadding="0" cellspacing="0" class="border" border="1">
+			<tr class="bggrey">
+				<th width="60px;"><div style="width: 60px">
+						<xls row="<?php echo $row?>" column="<?php echo $excel_col[1]?>"
+							wrap-text="1" h-align="center" v-align="center" border="1"> <?php echo $this->_translate(4)?></xls>
+					</div>
+				</th>
+				<th width="120px;"><div style="width: 120px">
+						<xls row="<?php echo $row?>" column="<?php echo $excel_col[2]?>"
+							wrap-text="1" h-align="center" v-align="center" border="1"> <?php echo $this->_translate(5)?></xls>
+					</div>
+				</th>
+
+				<?php $currentColumn = 3;?>
+				<?php foreach($this->time as $time):?>
+				<th width="<?php echo $timeEleWidth?>px;">
+					<div style="width:<?php echo $timeEleWidth?>px;">
+						<xls row="<?php echo $row?>"
+							column="<?php echo $excel_col[$currentColumn]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1" repeat="1"
+							bgcolor="<?php echo $bg; ?>"> <?php echo $time['Display'];?></xls>
+					</div>
+				</th>
+				<?php $columnTotal[$currentColumn] = 0;?>
+				<?php $currentColumn++;?>
+				<?php endforeach;?>
+				<th width="60"><div style="width: 60px;">
+						<xls row="<?php echo $row?>"
+							column="<?php echo $excel_col[$currentColumn]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1"> <?php echo $this->_translate(7)?></xls>
+					</div>
+				</th>
+				<?php $columnTotal[$currentColumn] = 0;?>
+			</tr>
+			<?php $row++;?>
+
+			<?php $oldEq = '';?>
+
+			<?php foreach ($downtime as $dtx):?>
+			<?php foreach($dtx as $dt):?>
+			<?php $total = 0;?>
+			<tr>
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[1]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1"> <?php echo $dt['MaThietBi'];?></xls>
+				</td>
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[2]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1"> <?php echo $dt['TenThietBi'];?></xls>
+				</td>
+				<?php $currentColumn = 3;?>
+				<?php foreach($this->time as $time):?>
+				<?php
+				// gia tri
+				$cost = isset($dt[$time['Key']])?$dt[$time['Key']]:0;
+				$costFormat = isset($dt[$time['Key']])?$dt[$time['Key']]:0;
+				?>
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[$currentColumn]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $costFormat; $total += $cost;$colVal=$cost;?></xls>
+				</td>
+				<?php
+				$columnTotal[$currentColumn] = $columnTotal[$currentColumn]+$cost;
+				$key = $time['Key'];
+				if(isset($totalGroup[$key][$currentColumn]))
+				{
+					$totalGroup[$key][$currentColumn] += $cost;
+				}
+				else
+				{
+					$totalGroup[$key][$currentColumn] = $cost;
+				}
+				?>
+				<?php $currentColumn++;?>
+				<?php endforeach;?>
+				<?php endforeach;?>
+
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[$currentColumn]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $total;?></xls>
+				</td>
+				<?php $columnTotal[$currentColumn] = $columnTotal[$currentColumn]+$total?>
+			</tr>
+			<?php $row++;?>
+			<?php endforeach;?>
+
+			<tr>
+				<td class="center"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[1]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1">x</xls></td>
+				<td class="center"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[2]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1"> <?php echo $this->_translate(7)?></xls>
+				</td>
+				<?php $currentColumn = 3;?>
+				<?php foreach ($columnTotal as $val):?>
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[$currentColumn]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $val;?></xls>
+				</td>
+				<?php $currentColumn++;?>
+				<?php endforeach;?>
+			</tr>
+		</table>
+		<br />
+
+		<script>
+		<!--
+		$(document).ready(function() {
+			var chart;
+			chart = new Highcharts.Chart({
+		        chart: {
+		        	renderTo: 'Bieu_Do',
+			         plotBackgroundColor: null,
+			         plotBorderWidth: null,
+			         plotShadow: false
+		        },
+	            title: {
+	                text: '<?php echo $this->_translate(1)?> ',
+	                x: -20 //center
+	            },
+	            subtitle: {
+	                text: '',
+	                x: -20
+	            },
+	            xAxis: {
+	                categories: [
+	         	            <?php
+                                        $cate = '';
+                                        
+                                        foreach($this->time as $time)
+                                        {
+                                            $cate .= $cate?',':'';
+                                            $cate .= "'{$time['Display']}'";    
+                                        }
+                                        echo $cate;
+                                    ?>]
+	            },
+	            yAxis: {
+	                title: {
+	                    text: '<?php echo $this->_translate(8)?>'
+	                },
+	                plotLines: [{
+	                    value: 0,
+	                    width: 1,
+	                    color: '#808080'
+	                }]
+	            },
+	            tooltip: {
+	                valueSuffix: ' '
+	            },
+	            legend: {
+	                layout: 'vertical',
+	                align: 'center',
+	                verticalAlign: 'bottom',
+	                borderWidth: 0
+	            },
+	            series: [{
+	                name: '<?php echo $this->_translate(9)?>',
+	                data: [
+	   	            <?php $seriesData = 0?>
+	   	            <?php $last = array_pop($columnTotal)?>
+					<?php foreach ($columnTotal as $val):?>
+					<?php if($seriesData):?>
+						<?php echo ", $val";?>
+					<?php else:?>
+					<?php echo " $val"; $seriesData=1;?>
+					<?php endif;?>
+					<?php endforeach;?>
+		   	        ]
+	            }]
+		    });
+		});
+		-->
+		</script>
+
+		<div id="Bieu_Do" style="width: 95%; margin: 10px auto;"></div>
+	</div>
+</div>
+					<?php endif;?>

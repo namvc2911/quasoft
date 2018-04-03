@@ -1,0 +1,10 @@
+<?php $i = 0?>
+<?php $lang = Qss_Translation::getInstance()->getLanguage();?>
+<?php $lang = ($lang=='vn')?'':'_'.$lang;?>
+<?php foreach($this->allsteps as $step):?>
+		<li class="normal <?php if(!in_array($step->StepNo,$this->allow)):?>disabled<?php endif;?>"  
+			onclick="sendRequest('<?php echo $this->form->FormCode?>','<?php echo $this->ifids?>','<?php echo $this->deptids?>','<?php echo $step->StepNo?>','<?php echo $step->Mix?>')">
+			<span><?php echo $step->{"Name".$lang}?></span> 
+		</li>
+<?php $i++?>
+<?php endforeach;?>

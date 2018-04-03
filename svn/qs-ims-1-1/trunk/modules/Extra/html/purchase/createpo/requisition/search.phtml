@@ -1,0 +1,121 @@
+<script>
+<!--
+// js function
+//-->
+</script>
+<?php
+// cai dat
+$totalCol = 8;
+?>
+
+<table cellspacing="0" cellpadding="0" width="100%" class="borderX"
+	id="">
+	<tr class="bggrey center">
+		<th width="2%">
+			<!-- Chọn --> <input type="checkbox" class="checkbox width_50"
+			onclick="checkAllLine(this)" /></th>
+		<th width="8%">
+			<!-- Ngày yêu cầu --> <?php echo $this->_translate(1);?></th>
+		<th width="8%">
+			<!-- Ngày cần có --> <?php echo $this->_translate(2);?></th>
+		<th width="8%">
+			<!-- Mã mặt hàng --> <?php echo $this->_translate(3);?>
+		</th>
+		<th width="15%">
+			<!-- Tên mặt hàng --> <?php echo $this->_translate(4);?>
+		</th>
+		<th width="10%">
+			<!-- Thuộc tính --> <?php echo $this->_translate(5);?>
+		</th>
+		<th width="8%">
+			<!-- Đơn vị tính --> <?php echo $this->_translate(6);?>
+		</th>
+		<th width="8%">
+			<!-- Số lượng --> <?php echo $this->_translate(7);?>
+		</th>
+	</tr>
+
+	<?php if(count((array)$this->search)): // Kiem tra so luong dong tim kiem?>
+	<?php foreach ($this->search as $item): // Danh sach tim kiem?>
+
+	<?php
+	// so sanh ngay thang, lay mau canh bao thich hop cho dong
+	$lineColor   = '';
+	$compareDate = Qss_Lib_Date::compareTwoDate($item->NgayCanCo, date('d-m-Y'));
+	$disabled    = 'disabled'; // Chua su dung, in vao cac disabled_input
+	if($compareDate == 0)
+	{
+		$lineColor = 'bgorange';
+	}
+	elseif($compareDate == -1)
+	{
+		$lineColor = 'bgred';
+	}
+
+	// Neu da chon thi to mau luon
+	if($item->TranIOID)
+	{
+		$lineColor = 'bgyellow';
+		$disabled  = 'disabled';// Chua su dung, in vao cac disabled_input
+	}
+
+	$ngayCanCo = Qss_Lib_Date::mysqltodisplay($item->NgayCanCo);
+	?>
+
+	<tr class="search_line <?php echo $lineColor?>">
+		<td class="center">
+			<!-- Chọn --> <input type="checkbox" class="checkbox width_50"
+			onclick="checkLine(this)"
+	<?php if($item->TranIOID) echo 'checked disabled'?> /> <input
+			type="hidden" name="ifidArr[]" class="disabled_input"
+			value="<?php echo $item->IFID_M405?>" disabled /> <input
+			type="hidden" name="refItemCode[]" class="disabled_input"
+			value="<?php echo $item->Ref_MaSP?>" disabled /> <input type="hidden"
+			name="refAttributeCode[]" class="disabled_input"
+			value="<?php echo $item->Ref_ThuocTinh?>" disabled /> <input
+			type="hidden" name="itemCode[]" class="item_code disabled_input"
+			value="<?php echo $item->MaSP?>" disabled /> <input type="hidden"
+			name="itemUOM[]" class="item_uom disabled_input"
+			value="<?php echo $item->DonViTinh?>" disabled /> <input
+			type="hidden" name="attributeCode[]" class="disabled_input"
+			value="<?php echo $item->ThuocTinh;?>" disabled /> <input
+			type="hidden" name="qty[]" class="qty disabled_input"
+			value="<?php echo $item->SoLuong;?>" disabled /> <input type="hidden"
+			name="stackLine[]" class="disabled_input"
+			value="<?php echo $item->IOID;?>" disabled /> <input type="hidden"
+			name="price[]" class="disabled_input"
+			value="<?php echo $item->Price;?>" disabled /> <input type="hidden"
+			name="requiredReceiveDate[]"
+			class="required_receive_date disabled_input"
+			value="<?php echo $ngayCanCo;?>" disabled /> <input type="hidden"
+			class="line_color_class" value="<?php echo $lineColor;?>" />
+		</td>
+		<td class="center">
+			<!-- Ngày yêu cầu --> <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayYeuCau);?>
+		</td>
+		<td class="center">
+			<!-- Ngày cần có --> <?php echo $ngayCanCo;?></td>
+		<td class="left">
+			<!-- Mã mặt hàng --> <?php echo $item->MaSP?>
+		</td>
+		<td class="left">
+			<!-- Tên mặt hàng --> <?php echo $item->TenSP?>
+		</td>
+		<td class="<?php echo $item->ThuocTinh?'left':'center';?>">
+			<!-- Thuộc tính --> <?php echo $item->ThuocTinh?$item->ThuocTinh:'-'?>
+		</td>
+		<td class="left">
+			<!-- Đơn vị tính --> <?php echo $item->DonViTinh?>
+		</td>
+		<td class="right">
+			<!-- Số lượng --> <?php echo $item->SoLuong?>
+		</td>
+	</tr>
+	<?php endforeach;// Danh sach tim kiem ?>
+	<?php else: // Kiem tra so luong dong tim kiem?>
+	<tr class="bold center">
+		<td colspan="<?php echo $totalCol?>"><?php echo $this->_translate(8);?>
+		</td>
+	</tr>
+	<?php endif; // Kiem tra so luong dong tim kiem?>
+</table>

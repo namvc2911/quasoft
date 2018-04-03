@@ -1,0 +1,123 @@
+<form method="post" id="qss_form">
+	<input type="hidden" value="<?php echo $this->form->FormCode?>"
+		name="fid" />
+	<div id="horizontal-toolbar" class="horizontal-toolbar">
+		<div class="btn_main_top" title="Cập nhật"
+			onclick="formDuplicate(<?php echo $this->type?>)">
+			<a class="icon-32-apply"></a>
+		</div>
+		<div class="btn_main_top" title="Trở lại"
+			onclick="formBack(<?php echo $this->type?>)">
+			<a class="icon-32-back"></a>
+		</div>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<div id="item-actions">
+			<ul>
+				<li class="item-action active"><a href="#1"><span>Nhân đôi module</span>
+				</a>
+				</li>
+			</ul>
+		</div>
+		<table border="0" width="450">
+			<tr>
+				<td width="110"><?php echo $this->_translate(68)?>
+				</td>
+				<td width="338"><input type="text"
+					value="<?php echo $this->form->FormCode?>1" style="width: 200px;"
+					name="szCode" />
+				</td>
+			</tr>
+			<?php foreach ($this->languages as $lang):?>
+			<tr>
+				<td><?php echo $this->_translate(44)?> - <?php echo $lang->Name?>:</td>
+				<?php if($lang->Code == 'vn'):?>
+				<td><input type="text" value="<?php echo @$this->data->Name?> 1"
+					style="width: 200px;" name="szName" />
+				</td>
+				<?php else:?>
+				<td><input type="text" name="szName_<?php echo $lang->Code?>"
+					style="width: 200px;"
+					value="<?php echo @$this->data->{"Name_$lang->Code"}?> 1" />
+				</td>
+				<?php endif;?>
+			</tr>
+			<?php endforeach;?>
+			<tr>
+				<td><?php echo $this->_translate(53)?>
+				</td>
+				<td><input type="checkbox" value="1"
+				<?php if($this->form->b_Effected) echo 'checked';?>
+					name="bEffected" />
+				</td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(9)?>
+				</td>
+				<td><input type="checkbox" value="1"
+				<?php if($this->form->bSecure) echo 'checked';?>
+					name="bSecure" />
+				</td>
+			</tr>
+			<?php if($this->type == Qss_Lib_Const::FORM_TYPE_REPORT):?>
+			<tr>
+				<td><?php echo $this->_translate(40)?>
+				</td>
+				<td><input type="file" onchange="return uploadFile('epFile')"
+					name="epFile_file" id="epFile_file" size="40" /><input
+					type="hidden" name="epFile" id="epFile" />
+				</td>
+			</tr>
+			<?php endif;?>
+			<tr>
+				<td><?php echo $this->_translate(95)?>
+				</td>
+				<td><input type="text" value="<?php echo $this->form->sz_Class?>"
+					style="width: 200px;" name="szClass" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<hr /></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(122)?>
+				</td>
+				<td><input type="checkbox" name="DupConfig" value="1" checked>
+				</td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(55)?>
+				</td>
+				<td><input type="checkbox" name="DupRights" value="1" checked>
+				</td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(119)?>
+				</td>
+				<td><input type="checkbox" name="DupMenu" value="1" checked>
+				</td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(124)?>
+				</td>
+				<td><input type="checkbox" name="DupWorflow" value="1" checked
+					disabled>
+				</td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(96)?>
+				</td>
+				<td><input type="checkbox" name="DupDesign" value="1" checked>
+				</td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(120)?>
+				</td>
+				<td><input type="checkbox" name="DupDesign" value="1" checked>
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>

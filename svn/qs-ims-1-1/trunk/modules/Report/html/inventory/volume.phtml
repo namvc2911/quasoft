@@ -1,0 +1,188 @@
+<!--  @todo: fix bug chrome multiple select element -->
+<style>
+#item_dial_box {
+	overflow: hidden;
+}
+
+#select_item_box {
+	float: left;
+	width: 45%;
+}
+
+#select_item_box select {
+	width: 95%;
+}
+
+#button_box {
+	width: 10%;
+	float: left;
+}
+
+#button_box .btn-custom {
+	padding: 0px;
+	margin: 0px;
+	width: 90%;
+}
+
+#add_button {
+	margin-top: 40px;
+}
+
+#items_box {
+	float: left;
+	width: 45%;
+}
+
+#items_box select {
+	width: 95%;
+}
+
+#qss_report {
+	margin: 5px 0px;
+}
+</style>
+
+
+<script type="text/javascript">
+jQuery(document).ready(function($){
+    $('#group').change(function(){
+        changeSelectItem(this);
+    });
+});
+
+function printPreview()
+{
+	var date  = $('#date').val();
+	var items = $('#items_box select option').length;
+	var msg   = '';
+	$('#items_box select option').attr('selected','selected');
+
+	if(date == '' || date == '0000-00-00' || date == undefined)
+	{
+		msg  += '<?php echo $this->_translate(7);?>';
+	}
+
+	if(items == 0)
+	{
+		msg += '<?php echo $this->_translate(8);?>';
+	}
+	
+	if(msg != '')
+	{
+		qssAjax.alert(msg);
+		return;
+	}
+	else
+	{
+		/*
+		$('#report').submit(function() {
+	    window.open('', 'formpopup', 'statusbar=no,resizable=yes,scrollbars=yes, addressbar=no,maximize=yes');
+	    this.target = 'formpopup';
+		});
+		$('#report').submit();
+		*/
+		var url = sz_BaseUrl + '/report/inventory/volume1';
+		var data = $('#report').serialize();
+		qssAjax.getHtml(url, data, function(jreturn) {
+                        $('#print-area').html(jreturn);
+                        removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+		});
+	}
+}
+
+function changeSelectItem(ele)
+{
+//	var url = sz_BaseUrl + '/report/inventory/volume2';
+//	var data = {
+//			group:$(ele).val()
+//			};
+//	qssAjax.getHtml(url, data, function(jreturn) {
+//		$('#select_item_box select').html(jreturn);
+//	});
+}
+
+function addItem()
+{
+	var add       = $('#select_item_box select option:selected');
+	add.each(function(){
+		$('#items_box select').append('<option value="'+$(this).val()+'" groupmarker="'+$(this).attr('groupmarker')+'">'+$(this).text()+'</option>');
+		$(this).remove();
+	});
+}
+
+function removeItem()
+{
+	var remove = $('#items_box select option:selected');
+	remove.each(function(){
+                //optgroup[groupmarker="'+$(this).attr('groupmarker')+'"]
+		$('#select_item_box select ').prepend('<option value="'+$(this).val()+'" groupmarker="'+$(this).attr('groupmarker')+'">'+$(this).text()+'</option>');
+		$(this).remove();
+	});
+}
+
+</script>
+
+<div class="clear"></div>
+<div id="view">
+	<div class="line-hr">
+		<span><?php echo $this->_translate(1)?> </span>
+	</div>
+	<form id="report" method="post" action="">
+		<table class="detail">
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Ngày --> <?php echo $this->_translate(2)?> <span class="red">(*)</span>
+				</th>
+				<td><?php echo $this->views->Report->Datepicker('date',date('d-m-Y'));?>
+				</td>
+			</tr>
+
+			<?php if(Qss_Lib_System::fieldActive('OSanPham', 'NhomMatHang')):?>
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Nhóm mặt hàng --> <?php echo $this->_translate(4)?></th>
+				<td><?php
+				$id            = 'group';
+				$getFields     = array('num'=>2,
+                                       'objects'=>array('ONhomSanPham'=>array(
+                                                            'id'=>'IOID'
+                                                            ,'order'=>'TenNhom'
+                                                            ,'display1'=>'TenNhom'
+                                                            )) );
+                                                            ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+				</td>
+			</tr>
+			<?php endif;?>
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Mặt hàng --> <?php echo $this->_translate(3)?> <span
+					class="red">(*)</span></th>
+				<td>
+					<?php echo $this->views->Report->DialBox('items', $this->items);?>
+				</td>
+			</tr>
+
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Kho --> <?php echo $this->_translate(9)?></th>
+				<td><?php
+				$id            = 'warehouse';
+				$getFields     = array('num'=>2,
+                                       'objects'=>array('ODanhSachKho'=>array(
+                                                            'id'=>'IOID'
+                                                            ,'display1'=>'MaKho'
+                                                            ,'display2'=>'TenKho')) );
+                                                            ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+				</td>
+			</tr>
+		</table>
+	</form>
+	<p>
+	
+	
+	<hr>
+	<?php echo $this->views->Report->PrintToolbar();?>
+	<div id="print-content">
+		<div id="print-area"></div>
+	</div>
+</div>

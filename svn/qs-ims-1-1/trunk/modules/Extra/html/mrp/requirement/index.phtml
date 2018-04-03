@@ -1,0 +1,283 @@
+<?php
+/**
+ * PHP
+ */
+?>
+
+<?php
+/**
+ * CSS
+ */
+?>
+<link
+	rel="stylesheet" href="/css/button.css" type="text/css" />
+<style>
+<!--
+#content {
+	min-height: 10px;
+	max-height: 150px;
+	overflow: auto;
+}
+
+#old_content {
+	min-height: 10px;
+	max-height: 150px;
+	overflow: auto;
+}
+-->
+</style>
+
+<?php
+/**
+ * JS
+ */
+?>
+<script type="text/javascript">
+<!--
+
+// Hien thi theo phan trang va module
+function changeShowByPagniation()
+{
+	var url = sz_BaseUrl + '/extra/mrp/requirement/show'; 
+	var data = $('#filter_form').serialize();
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#content').html(jreturn);
+		changeNumberOfPage();
+		$('#save_button button').removeClass('hide');
+		showOldRequirement();
+		//changeShowByPagniation();
+	});
+}
+
+// Doi so trang 
+function changeNumberOfPage()
+{
+	var html = '';
+	var url = sz_BaseUrl + '/extra/mrp/requirement/page';
+	var data = $('#filter_form').serialize();
+	$('#page').val('Loading...');
+	
+	qssAjax.call(url, data, function(jreturn) {
+		jreturn.data.total = (jreturn.data.total > 0)?jreturn.data.total:1;
+		for(var i = 1; i <= jreturn.data.total; i++)
+		{
+			html += '<option value="'+i+'" ';
+			if(jreturn.data.page == i) html += 'selected';
+			html += ' >'+i+'</option>'
+		}
+		$('#page').html(html);
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+}
+
+// Danh dau chon mot dong
+function checkLine(ele)
+{
+	var finder = $(ele).parent().parent();
+
+	if($(ele).is(':checked'))
+	{
+		finder.find('.disabled_input').each(function(){
+			$(this).removeAttr('disabled');
+		});
+		finder.find('.checkbox').attr('checked', true);
+		finder.addClass('bgyellow');
+	}
+	else
+	{
+		finder.find('.disabled_input').each(function(){
+			$(this).attr('disabled', true);
+		});
+		finder.find('.checkbox').removeAttr('checked');
+		finder.removeClass('bgyellow');	
+	}
+}
+
+// Danh dau chon nhieu dong
+function checkAllLine(ele)
+{
+	var key = $(ele).val();
+	
+	if($(ele).is(':checked'))
+	{
+		$('.disabled_input_'+key).each(function(){
+			if($(this).parent().parent().attr('permission') == 1)
+			{
+				$(this).removeAttr('disabled');
+			}
+		});
+
+		$('.checkbox_'+key).each(function(){
+			if($(this).parent().parent().attr('permission') == 1)
+			{
+				$(this).attr('checked', true);
+			}
+			
+		});
+
+		$('.line_'+key).each(function(){
+			if($(this).attr('permission') == 1)
+			{
+				$(this).addClass('bgyellow');
+			}
+		});
+	}
+	else
+	{
+		$('.disabled_input_'+key).each(function(){
+			if($(this).parent().parent().attr('permission') == 1)
+			{
+				$(this).attr('disabled', true);
+			}
+		});
+
+		$('.checkbox_'+key).each(function(){
+			
+			if($(this).parent().parent().attr('permission') == 1)
+			{
+				$(this).removeAttr('checked');
+			}
+		});
+
+		$('.line_'+key).each(function(){
+			if($(this).attr('permission') == 1)
+			{
+				$(this).removeClass('bgyellow');
+			}
+			
+		});		
+	}
+}
+
+// Luu chi tiet yeu cau
+function saveRequirement()
+{
+	var ext = {ifid:$('#ifid').val()};
+	var data = $('#show_form').serialize() +  '&' + $.param(ext);
+	var url = sz_BaseUrl + '/extra/mrp/requirement/save'; 
+	qssAjax.call(url, data, function(jreturn){
+		if(jreturn.message != ''){
+			qssAjax.alert(jreturn.message);
+		}
+                rowSearch(224);
+		showOldRequirement();
+		changeShowByPagniation();
+	}, function(jreturn){
+		qssAjax.alert(jreturn.message);		
+	});
+}
+
+// Hient hi gia tri cu
+function showOldRequirement()
+{
+	var url = sz_BaseUrl + '/extra/mrp/requirement/old'; 
+	var data = $('#filter_form').serialize();
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#old_content').html(jreturn);
+	});
+}
+
+
+//Xoa dong
+function deleteLine(ioid)
+{
+	var data = {ifid:$('#ifid').val(), ioid:ioid};
+	var url = sz_BaseUrl + '/extra/mrp/requirement/delete'; 
+	qssAjax.call(url, data, function(jreturn){
+		if(jreturn.message != ''){
+			qssAjax.alert(jreturn.message);
+		}
+                rowSearch(224);
+		showOldRequirement();
+		changeShowByPagniation();
+	}, function(jreturn){
+		qssAjax.alert(jreturn.message);		
+	});
+}
+//-->
+</script>
+
+<?php
+/**
+ * General
+ */
+?>
+
+<!-- 
+#translate
+
+ -->
+<div
+	id="wrap">
+
+	<div id="old_content"></div>
+	<!-- end #old_content -->
+	<script type="text/javascript">showOldRequirement();</script>
+
+	<div id="filter" class="fl margin_top_5">
+		<form id="filter_form">
+			<input type="hidden" name="ifid" id="ifid"
+				value="<?php echo $this->ifid;?>" />
+
+			<div class="filter_item fl margin_left_5">
+			<?php echo $this->_translate(1);?>
+				: <select name="module" id="module" class="width_100"
+					onchange="changeShowByPagniation()">
+					<option value="M505" selected>
+					<?php echo $this->_translate(3);?>
+						- M505
+					</option>
+				</select>
+			</div>
+			<!-- end .filter_item -->
+
+			<div class="filter_item fl margin_left_5">
+			<?php echo $this->_translate(4);?>
+				: <select name="page" id="page" class="width_50"
+					onchange="changeShowByPagniation()">
+					<option value="1">1</option>
+				</select>
+			</div>
+			<!-- end .filter_item -->
+
+			<div class="filter_item fl margin_left_5">
+			<?php echo $this->_translate(5);?>
+				: <select name="display" id="display" class="width_50 "
+					onchange="changeShowByPagniation()">
+					<option value="5">5</option>
+					<option value="10" selected>10</option>
+					<option value="20">20</option>
+					<option value="50">50</option>
+					<option value="100">100</option>
+				</select>
+			</div>
+			<!-- end .filter_item -->
+
+			<div class="filter_item fl margin_left_5">
+				<button type="button" class="btn-custom"
+					onclick="changeShowByPagniation()">
+					<?php echo $this->_translate(6);?>
+				</button>
+			</div>
+			<!-- end .filter_item -->
+		</form>
+		<!-- end form #filterform -->
+	</div>
+	<!-- end #filter -->
+	<div class="clr">&nbsp;</div>
+
+	<div id="content" class="margin_top_5"></div>
+	<!-- end #content -->
+	<script type="text/javascript">changeShowByPagniation();</script>
+
+	<div id="save_button" class="margin_top_5" status="0">
+		<button type="button" class="btn-custom hide"
+			onclick="saveRequirement()">
+			<?php echo $this->_translate(12);?>
+		</button>
+	</div>
+	<!-- end #save_button -->
+
+</div>
+<!-- end #wrap -->

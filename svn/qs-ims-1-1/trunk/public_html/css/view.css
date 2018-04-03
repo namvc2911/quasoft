@@ -1,0 +1,132 @@
+.mainmenu
+{
+    BORDER-RIGHT: gray 2px;
+    BORDER-TOP: gray 2px;
+    BORDER-LEFT: gray 2px;
+    WIDTH: 70%;
+    BORDER-BOTTOM: gray 2px;
+   /* BACKGROUND-COLOR: gray;*/
+	height:25px
+}
+.mainmenu TD
+{
+    BORDER-RIGHT: whitesmoke 1px solid;
+    BORDER-TOP: whitesmoke 1px solid;
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 11px;
+    TEXT-TRANSFORM: uppercase;
+    BORDER-LEFT: whitesmoke 1px solid;
+    WIDTH: 17%;
+    COLOR: #255ba3;
+    BORDER-BOTTOM: whitesmoke 1px solid;
+    FONT-FAMILY: Tahoma;
+    HEIGHT: 25px;
+    /*BACKGROUND-COLOR: #e2e3de;*/
+    TEXT-ALIGN: center
+}
+.banner
+{
+    BORDER-RIGHT: darkgray 2px;
+    BORDER-TOP: darkgray 2px;
+    BORDER-LEFT: darkgray 2px;
+    WIDTH: 100%;
+    HEIGHT: 55px;
+
+}
+.banner TD
+{
+    /*BORDER-RIGHT: #255ba3 1px solid;
+    BORDER-LEFT: #255ba3 1px solid;*/
+    BORDER-TOP: whitesmoke 1px;
+    BORDER-BOTTOM: #255ba3 1px solid;
+    BACKGROUND-COLOR: white
+}
+.menu
+{
+    BORDER-RIGHT: medium none;
+    BORDER-TOP: medium none;
+    BORDER-LEFT: medium none;
+    BORDER-BOTTOM: medium none;
+    BACKGROUND-COLOR: #e7eaed
+}
+.menu TD
+{
+    BORDER-RIGHT: #255ba3 3px solid;
+    PADDING-RIGHT: 10px;
+    BORDER-TOP: #255ba3 3px solid;
+    PADDING-LEFT: 10px;
+    FONT-WEIGHT: 600;
+    FONT-SIZE: 12px;
+    BORDER-LEFT: #255ba3 3px solid;
+    COLOR: white;
+    LINE-HEIGHT: 18px;
+    BORDER-BOTTOM: #255ba3 3px solid;
+    FONT-FAMILY: Arial, 'Times New Roman', Verdana;
+    HEIGHT: 25px
+}
+.content
+{
+    BORDER-RIGHT: #255ba3 1px solid;
+    BORDER-TOP: #255ba3 1px solid;
+    BORDER-LEFT: #255ba3 1px solid;
+    BORDER-BOTTOM: #255ba3 1px solid;
+    BACKGROUND-COLOR: white
+}
+.content TH
+{
+    FONT-WEIGHT: bold;
+    FONT-SIZE: medium;
+    COLOR: #255ba3;
+    TEXT-INDENT: 15px;
+    HEIGHT: 35px;
+    TEXT-ALIGN: left
+}
+.footer
+{
+    BORDER-RIGHT: black;
+    BORDER-TOP: black;
+    BORDER-LEFT: black;
+    WIDTH: 780px;
+    BORDER-BOTTOM: black
+}
+.footer TD
+{
+    FONT-SIZE: 12px;
+    WIDTH: 100%;
+    FONT-FAMILY: Tahoma;
+    TEXT-ALIGN: center
+}
+.mainmenu TD A
+{
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 11px;
+    TEXT-TRANSFORM: uppercase;
+    COLOR: #255ba3;
+    FONT-FAMILY: Tahoma;
+    TEXT-DECORATION: none
+}
+.mainmenu TD A:hover
+{
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 11px;
+    TEXT-TRANSFORM: uppercase;
+    COLOR: mediumpurple;
+    FONT-FAMILY: Tahoma;
+    TEXT-DECORATION: underline
+}
+.menu TD A
+{
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 11px;
+    COLOR: white;
+    FONT-FAMILY: Verdana, Arial;
+    TEXT-DECORATION: none
+}
+.menu TD A:hover
+{
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 11px;
+    COLOR: peachpuff;
+    FONT-FAMILY: Verdana, Arial;
+    TEXT-DECORATION: underline
+}

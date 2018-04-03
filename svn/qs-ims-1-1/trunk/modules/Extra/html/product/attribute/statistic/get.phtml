@@ -1,0 +1,399 @@
+<style>
+<!--
+#wrap_movement {
+	font-family: Arial;
+	font-size: 11px;
+}
+
+.yellowBg {
+	background: #FFFF33;
+}
+
+.regBg {
+	background: red;
+}
+
+.select {
+	width: 142px;
+}
+-->
+</style>
+<link
+	rel="stylesheet" href="/css/button.css" type="text/css" />
+
+<?php
+$zoneAndBinFrom = $this->zoneAndBinFrom;
+$zoneAndBinTo   = $this->zoneAndBinTo;
+$serialLot      = $this->serialLot;
+$attributes     = $this->attributes;
+$oldValue       = $this->oldValue;
+
+?>
+
+<script>
+<!--
+
+	function removeSearchCondition()
+	{
+		$('#search_table input[type=text]').val('');
+		$('#search_table select[name="zoneFilter"], #search_table select[name="binFilter"]').val('');
+		movementSearch();
+	}
+
+	function movementSearch()
+	{
+		var data = $('#searchMovement').serialize();
+		var url  = sz_BaseUrl + '/extra/product/attribute/statistic/search';
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#movement_table').html(jreturn);
+			movementPage();
+		});
+	}
+
+	function movementPage()
+	{
+		var data = $('#searchMovement').serialize();
+		var url  = sz_BaseUrl + '/extra/product/attribute/statistic/page';
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#page').html(jreturn);
+		});
+	}
+
+	function movementChange()
+	{
+		var data = {
+				ifid:'<?php echo $this->ifid;?>'
+				,ioid:'<?php echo $this->ioid;?>'
+				}; 
+		var url  = sz_BaseUrl + '/extra/product/attribute/statistic/change';
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#movement_old').html(jreturn);
+		});
+	}
+
+	function movementSave()
+	{
+		var data = $('#movement').serialize();
+		var url = sz_BaseUrl + '/extra/product/attribute/statistic/save2'; 
+		var check = $('input[name*=ids]').val();
+		
+		if(check >0)
+		{
+			qssAjax.call(url, data, function(jreturn){
+						if(jreturn.message != ''){
+							qssAjax.alert(jreturn.message);
+						}
+						movementChange();
+						movementSearch();
+					}, function(jreturn){
+						qssAjax.alert(jreturn.message);
+			});
+		}
+		else
+		{
+			qssAjax.alert('Không có giá trị để cập nhật !');
+		}
+	}
+
+	function enableThisLine(ele)
+	{
+		if($(ele).is(':checked'))
+		{
+			$(ele).parent().parent().removeClass('regBg').addClass('yellowBg').find('.movementQty').removeAttr('disabled');
+			$(ele).parent().parent().find('input[type=hidden]').removeAttr('disabled');
+			$(ele).parent().parent().find('input[name*=check]').attr('value','1');
+			$(ele).parent().parent().find('select').removeAttr('disabled');
+		}
+		else
+		{
+			$(ele).parent().parent().find('input[name*=check]').attr('value','0');
+			if($(ele).parent().parent().find('input[name*=existsIOID]').val() != 0)
+			{
+				$(ele).parent().parent().removeClass('yellowBg').addClass('regBg').find('.movementQty').attr('readonly','readonly');
+				$(ele).parent().parent().find('select').attr('disabled','true');
+			}
+			else
+			{
+				$(ele).parent().parent().removeClass('yellowBg').find('.movementQty').attr('disabled','disabled');
+				$(ele).parent().parent().find('input[type=hidden]').attr('disabled',true);
+				$(ele).parent().parent().find('select').attr('disabled','true');
+			}
+			
+		}
+	}
+
+	function checkAllLines(ele)
+	{
+		if($(ele).is(':checked'))
+		{
+			$('#movement_table').find('tr').has('input[type=text]').removeClass('regBg').addClass('yellowBg')
+			.find('input[type=checkbox]').attr('checked','checked').parent().parent()
+			.find('.movementQty').removeAttr('disabled').parent().parent()
+			.find('input[type=hidden]').removeAttr('disabled');
+	
+			$('#movement_table').find('input[name*=check]').attr('value','1');
+			$('#movement_table').find('select').removeAttr('disabled');
+		}
+		else
+		{
+			// [name!*=existsIOID][name!*=check]
+			$('#movement_table').find('tr').has('input[type=text]').removeClass('yellowBg')
+			.find('input[type=checkbox]').removeAttr('checked').parent().parent()
+			.find('.movementQty').attr('disabled','disabled').parent().parent()
+			.find('input[type=hidden]').attr('disabled',true);
+	
+			$('#movement_table').find('input[name*=check]').attr('value','0');
+	
+			$('#movement_table').find('input[name*=existsIOID][value!=0]').parent().parent().addClass('movement_regBg')
+			.find('input[type=hidden],input[type=text]').removeAttr('disabled');
+			$('#movement_table').find('select').attr('disabled',true);
+		}
+	}
+	
+-->
+</script>
+
+<div id="wrap_movement">
+<?php if($serialLot->lot || $serialLot->serial || $zoneAndBinFrom['hasBin']):?>
+	<div class="line-hr">
+		<span>Xuất kho</span>
+	</div>
+	<br /> <br />
+
+	<table width="100%" cellpadding=0 cellspacing=0 border=1
+		class="center borderX" id="movement_old">
+		<tr class="bggrey">
+			<th>STT</th>
+
+			<th>Kho lấy hàng</th>
+
+			<?php if($serialLot->serial):?>
+			<th>Số serial</th>
+			<?php endif;?>
+
+			<?php if($serialLot->lot):?>
+			<th>Số lot</th>
+			<?php endif;?>
+
+			<?php if($serialLot->lot || $serialLot->serial):?>
+			<th>Ngày nhận</th>
+			<?php endif;?>
+
+			<?php if($serialLot->lot || $serialLot->serial):?>
+			<th>Ngày sx</th>
+			<?php endif;?>
+
+			<?php if($serialLot->lot || $serialLot->serial):?>
+			<th>Ngày hạn</th>
+			<?php endif;?>
+
+			<?php if($zoneAndBinFrom['hasBin']):?>
+			<th>Bin</th>
+			<?php endif;?>
+
+			<th>Kho nhận hàng</th>
+
+			<?php if($zoneAndBinTo['hasBin']):?>
+			<th>Bin</th>
+			<?php endif;?>
+
+			<?php if($attributes):?>
+			<th>Thuộc tính</th>
+			<?php endif;?>
+
+			<th>Số lượng</th>
+
+
+		</tr>
+		<?php $i=0;?>
+		<?php foreach ($oldValue as $val):?>
+		<tr>
+
+			<td><?php $i++;?> <?php echo $i;?>
+			</td>
+
+			<td><?php echo $val->KhoLayHang?>
+			</td>
+
+			<?php if($serialLot->serial):?>
+			<td><?php echo $val->SoSerial?>
+			</td>
+			<?php endif;?>
+
+			<?php if($serialLot->lot):?>
+			<td><?php echo $val->SoLo?>
+			</td>
+			<?php endif;?>
+
+
+			<?php if($serialLot->lot || $serialLot->serial):?>
+			<td><?php echo Qss_Lib_Date::mysqltodisplay($val->NgayNhan)?>
+			</td>
+			<?php endif;?>
+
+			<?php if($serialLot->lot || $serialLot->serial):?>
+			<td><?php echo Qss_Lib_Date::mysqltodisplay($val->NgaySX)?>
+			</td>
+			<?php endif;?>
+
+			<?php if($serialLot->lot || $serialLot->serial):?>
+			<td><?php echo Qss_Lib_Date::mysqltodisplay($val->NgayHan)?>
+			</td>
+			<?php endif;?>
+
+
+			<?php if($zoneAndBinFrom['hasBin']):?>
+			<td><?php echo $val->TuBin?>
+			</td>
+			<?php endif;?>
+
+			<td><?php echo $val->KhoNhanHang?></td>
+
+			<?php if($zoneAndBinTo['hasBin']):?>
+			<td><?php echo $val->DenBin?>
+			</td>
+			<?php endif;?>
+
+			<?php if($attributes):?>
+			<td><?php echo $val->MaThuocTinh?>
+			</td>
+			<?php endif;?>
+
+			<td><?php echo $val->SoLuong?>
+			</td>
+		</tr>
+		<?php endforeach;?>
+	</table>
+	<br />
+
+	<form id="searchMovement">
+		<input type="hidden" name="module" value="<?php echo $this->module;?>" />
+		<input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" />
+		<input type="hidden" name="ioid" value="<?php echo $this->ioid;?>" />
+
+		<table width="100%" cellpadding=0 cellspacing=0 id="search_table">
+		<?php if($serialLot->lot):?>
+			<tr>
+				<td>Lot bắt đầu:</td>
+				<td><input type="text" value="" name="beginLot" />
+				</td>
+				<td>Lot kết thúc:</td>
+				<td><input type="text" value="" name="endLot" /></td>
+			</tr>
+			<?php endif;?>
+
+			<?php if($serialLot->serial):?>
+			<tr>
+				<td>Serial bắt đầu:</td>
+				<td><input type="text" value="" name="beginSerial" />
+				</td>
+				<td>Serial kết thúc :</td>
+				<td><input type="text" value="" name="endSerial" /></td>
+			</tr>
+			<?php endif;?>
+
+			<tr>
+			<?php if($zoneAndBinFrom['hasBin']):?>
+				<td>Bin:</td>
+				<td><input type="hidden" name="binFilter"
+					value="<?php echo $this->stockInfo['FormBin'];?>" /> <?php echo $this->stockInfo['FromBin'];?>
+				</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<?php endif;?>
+			</tr>
+
+			<tr>
+				<td>Số trang hiển thị:</td>
+				<td><select name="perPage" onchange="movementSearch()">
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="5" selected>5</option>
+						<option value="10">10</option>
+						<option value="20">20</option>
+						<option value="50">50</option>
+						<option value="100">100</option>
+				</select>
+				</td>
+				<td>Chọn trang cần đến:</td>
+				<td><select id="page" name="page" onchange="movementSearch()">
+						<option value="1">1</option>
+				</select>
+				</td>
+			</tr>
+		</table>
+	</form>
+	<br />
+
+	<table>
+		<tr>
+			<td>
+				<button type="button" class="btn-custom" onclick="movementSearch()">
+					Tìm kiếm</button>
+				<button type="button" class="btn-custom" onclick="movementSave()">
+					Cập nhật</button>
+				<button type="button" class="btn-custom"
+					onclick="removeSearchCondition()">Xóa điều kiện</button>
+			</td>
+		</tr>
+	</table>
+	<br />
+
+	<form id="movement">
+		<input type="hidden" name="module" value="<?php echo $this->module;?>" />
+		<input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" />
+		<input type="hidden" name="ioid" value="<?php echo $this->ioid;?>" />
+		<input type="hidden" name="serialLot"
+			value='<?php echo serialize($serialLot);?>' /> <input type="hidden"
+			name="hasZone" value='<?php echo $zoneAndBinTo['hasZone'];?>' /> <input
+			type="hidden" name="hasBin"
+			value='<?php echo $zoneAndBinTo['hasBin'];?>' />
+
+		<table width="100%" cellpadding=0 cellspacing=0 border=1
+			class="center borderX" id="movement_table">
+			<tr class="bggrey">
+				<th>STT</th>
+
+				<th><input type="checkbox" name="checkAll" id="checkAll"
+					onclick="checkAllLines(this)" />
+				</th>
+
+				<th>Kho lấy hàng</th>
+
+				<?php if($serialLot->serial):?>
+				<th>Số serial</th>
+				<?php endif;?>
+
+				<?php if($serialLot->lot):?>
+				<th>Số lot</th>
+				<?php endif;?>
+
+				<?php if($zoneAndBinFrom['hasBin']):?>
+				<th>Bin</th>
+				<?php endif;?>
+
+				<th>Số lượng</th>
+
+				<th>Kho nhận hàng</th>
+
+				<?php if($zoneAndBinTo['hasBin']):?>
+				<th>Bin</th>
+				<?php endif;?>
+
+				<?php if($attributes):?>
+				<th>Thuộc tính</th>
+				<?php endif;?>
+
+				<th>Số lượng lấy</th>
+			</tr>
+		</table>
+	</form>
+
+	<?php else:?>
+	Sản phẩm "
+	<?php echo $serialLot->itemName;?>
+	" không quản lý theo serial hay lot. Trong kho "
+	<?php echo $serialLot->warehouse;?>
+	" không quản lý theo bin.
+	<?php endif;?>
+</div>

@@ -1,0 +1,5 @@
+<select onchange="rowSearch('<?php echo $this->form->FormCode?>');" style="width: 250px;" size="1"	name="filter_vaitro" id="filter_vaitro">
+	<option <?php if($this->vaitro == 1):?>selected<?php endif;?> value="1">Giao việc cho tôi</option>
+	<option <?php if($this->vaitro == 2):?>selected<?php endif;?> value="2">Nghiệm thu bởi tôi</option>
+	<option <?php if($this->vaitro == 0):?>selected<?php endif;?> value="0">Tất cả</option>
+</select>

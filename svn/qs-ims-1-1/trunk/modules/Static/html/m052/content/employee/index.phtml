@@ -1,0 +1,89 @@
+<!-- Hiển thị thông tin của nhân viên -->
+<script type="text/javascript">
+$(document).ready(function() {
+	$(".ui_box").hide();
+	$(".ui_box").first().fadeIn();
+	$(".tabs-menu a").click(function(event) {
+	        event.preventDefault();
+	        $(this).parent().addClass("active");
+	        $(this).parent().siblings().removeClass("active");
+	        var tab = $(this).attr("href");
+	        $(".ui_box").not(tab).css("display", "none");
+	        $(tab).find('fieldset').show();
+	        $(tab).fadeIn();
+	});
+	$(function() {
+		// Display the first tab content
+		// Set the first tab as start tab onload: if you want to set no start tab
+		// comment it.
+		// DisplayTabContent(10);
+		// get index of the clicked navigation item in the list
+		$("ul.tabslist_sub li a").click(
+				function() {
+					// if animation has finished: meaning size()==0 then allow for
+					// other clicks
+					var ifid = $('#ifid').val();
+					var deptid = $('#deptid').val();
+					if(ifid && ifid != 0){
+						if ($('div.tabscontent_container > div.tabcontent:animated')
+								.size() == 0) {
+							$("ul.tabslist_sub li").removeClass('current');
+							var $listItem = $(this).parent().addClass('current');
+							var objid = $(this).parent().attr('objid');
+							var fieldid = $(this).parent().attr('fieldid');
+							var vid = $(this).parent().attr('vid');
+							var ioid = $(this).parent().attr('ioid');
+							var html = $(this).children().html();
+							if (ifid && deptid && objid) {
+								DisplayTabContent(ifid, deptid, objid, fieldid, vid,
+										ioid, html);
+							}
+						}	
+					}
+				});
+		return false;
+	});
+});
+</script>
+<!-- Các tab trong phần thông tin nhân viên -->
+<div id="m052_nav">
+    <div class="navmenutab" id="einfo_maintain_plan_tab">
+        <ul>
+            <li class="splash"></li>
+            <li class=""><a href="#"
+                            onclick="einfo_show_maintain_plan_tab_for_location(1)"
+                            id="einfo_maintain_plan_tab_1" class="einfo_maintain_plan_tab"
+                            tab="1" objid="OCongViecBT"> <span>Thông tin chung
+				</span> </a>
+            </li>
+
+            <?php /*
+            <li class="splash"></li>
+
+            <li class=""><a href="#"
+                            onclick="einfo_show_maintain_plan_tab_for_location(2)"
+                            id="einfo_maintain_plan_tab_2" class="einfo_maintain_plan_tab"
+                            tab="2" objid="163"> <span>Quá trình đào tạo
+				</span> </a>
+            </li>
+            <li class="splash"></li>
+
+            <li class=""><a href="#"
+                            onclick="einfo_show_maintain_plan_tab_for_location(2)"
+                            id="einfo_maintain_plan_tab_2" class="einfo_maintain_plan_tab"
+                            tab="2" objid="163"> <span>Quá trình công tác
+				</span> </a>
+            </li>
+            */?>
+        </ul>
+    </div>
+</div>
+
+<div class="clear">&nbsp;</div>
+
+<!-- Hiển thị thông tin nhân viên theo các tab chọn -->
+<div id="m052_employee_detail">
+	<input type="hidden" id="ifid" value="<?php echo $this->ifid?>">
+	<input type="hidden" id="deptid" value="<?php echo $this->deptid?>">
+    <?php echo $this->main;?>
+</div>

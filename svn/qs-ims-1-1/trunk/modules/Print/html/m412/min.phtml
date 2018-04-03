@@ -1,0 +1,169 @@
+<?php
+$begin   = 0;
+$widths  = array(1, 6, 3, 2, 2, 2, 3, 3, 3, 3, 5);
+$fitHtml = Qss_Lib_Report::changeWidthToFitScreen($widths);
+$stt     = 1;
+?>
+
+<script>
+    function excelRender()
+    {
+        $('#report').submit();
+    }
+</script>
+
+<form id="report" method="get" action="/print/m412/minexcel">
+    <input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" />
+
+    <div class="portrait">
+        <excel
+            orientation="<?php echo Qss_Lib_Extra_Const::REPORT_ORIENTATION_PORTRAIT; ?>"
+            font-name="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_NAME; ?>"
+            font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_SIZE; ?>"
+            margin-left="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_LEFT; ?>"
+            margin-right="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_RIGHT; ?>"
+            margin-top="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_TOP; ?>"
+            margin-bottom="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_BOTTOM; ?>" />
+
+        <h1 class="center">
+            PHIẾU YÊU CẦU MUA VẬT TƯ <?php echo str_repeat('&nbsp;', 10);?> ĐN số: <?php echo $this->main->SoPhieu;?>
+        </h1>
+        <br/>
+
+
+        <table cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td class="bold" style="width: 50%;">
+                    <b>Người đề Nghị:</b> <?php echo $this->main->NguoiDeNghi;?>  <?php echo str_repeat('&nbsp;', 100);?> Ngày:<?php echo Qss_Lib_Date::mysqltodisplay($this->main->Ngay);?>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="bold" style="width: 50%;">
+                    Mục đích sử dụng: <?php echo $this->main->MucDich;?>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="bold" style="width: 50%;">
+                    <b>Kính gửi:</b> Phòng mua hàng - Công ty CP nhựa và MTX An Phát
+                </td>
+            </tr>
+
+            <tr>
+                <td class="" style="width: 50%;">
+                    Hiện nay, các nhà máy cần một số vật tư. Đề nghị lãnh đạo công ty xem xét và cho mua các vât tư, thiết bị cụ thể theo danh sách như sau:
+                </td>
+            </tr>
+        </table>
+        <br/>
+
+
+        <table cellpadding="0" cellspacing="0" border="0" class="border">
+            <tr class="bggrey">
+                <th rowspan="2" class="center" style="width: <?php echo $fitHtml[$begin++];?>px">STT</th>
+                <th rowspan="2" class="center" style="width: <?php echo $fitHtml[$begin++];?>px">Vật tư</th>
+                <th rowspan="2" class="center" style="width: <?php echo $fitHtml[$begin++];?>px">Xuất xứ/ hãng </th>
+                <th rowspan="2" class="center" style="width: <?php echo $fitHtml[$begin++];?>px">ĐVT</th>
+                <?php $startColGroup = $begin;?>
+                <th colspan="2" class="center" style="width: <?php echo $fitHtml[$begin++] + $fitHtml[$begin++];?>px">Số lượng</th>
+                <th rowspan="2" class="center" style="width: <?php echo $fitHtml[$begin++];?>px">Địa điểm giao</th>
+                <th rowspan="2" class="center" style="width: <?php echo $fitHtml[$begin++];?>px">Ngày vật tư về chậm nhất</th>
+                <th rowspan="2" class="center" style="width: <?php echo $fitHtml[$begin++];?>px">Kỹ thuật thực hiện</th>
+                <th rowspan="2" class="center" style="width: <?php echo $fitHtml[$begin++];?>px">Ngày hoàn thành công việc</th>
+                <th rowspan="2" class="center" style="width: <?php echo $fitHtml[$begin++];?>px">Ghi Chú</th>
+            </tr>
+
+            <tr class="bggrey">
+                <th class="center" style="width: <?php echo $fitHtml[$startColGroup++];?>px">Tồn kho tối thiểu</th>
+                <th class="center" style="width: <?php echo $fitHtml[$startColGroup];?>px">Lượng <br/>đề nghị</th>
+            </tr>
+
+            <?php foreach($this->sub as $item):?>
+                <tr class="">
+                    <td class="center" >
+                        <?php echo $stt++;?>
+                    </td>
+
+                    <td class="left" >
+                        <?php echo "{$item->MaSP} - {$item->TenSP}";?>
+                    </td>
+
+                    <td class="left" >
+                        <?php echo $item->XuatXu;?>
+                    </td>
+
+                    <td class="left" >
+                        <?php echo $item->DonViTinh;?>
+                    </td>
+
+                    <td class="right" >
+                        <?php echo Qss_Lib_Util::formatNumber($item->SLToiThieu);?>
+                    </td>
+
+                    <td class="right" >
+                        <?php echo Qss_Lib_Util::formatNumber($item->SoLuong);?>
+                    </td>
+
+                    <td class="left" >
+                        <?php echo $item->MaKho;?>
+                    </td>
+
+                    <td class="center" >
+                        <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayCanCo);?>
+                    </td>
+
+                    <td class="center" >
+                        &nbsp;
+                    </td>
+
+                    <td class="center" >
+                        &nbsp;
+                    </td>
+
+                    <td class="left" >
+                        <?php echo $item->MucDich;?>
+                    </td>
+                </tr>
+            <?php endforeach;?>
+        </table>
+
+        <br/>
+        <br/>
+
+        <table style="width: 100%" cellspacing="0" cellpadding="0">
+            <tr>
+                <td style="width: 40%;" class="center bold">NGƯỜI ĐỀ NGHỊ</td>
+                <td style="width: 30%;" class="center bold">PHÒNG KỸ THUẬT</td>
+                <td style="width: 40%;" class="center bold">LÃNH ĐẠO PHÊ DUYỆT</td>
+            </tr>
+
+            <tr class="bold">
+                <td style="width: 40%;" class="center">&nbsp;</td>
+                <td style="width: 30%;" class="center">&nbsp;</td>
+                <td style="width: 40%;" class="center">&nbsp;</td>
+            </tr>
+
+            <tr class="bold">
+                <td style="width: 40%;" class="center">&nbsp;</td>
+                <td style="width: 30%;" class="center">&nbsp;</td>
+                <td style="width: 40%;" class="center">&nbsp;</td>
+            </tr>
+
+            <tr class="bold">
+                <td style="width: 40%;" class="center">&nbsp;</td>
+                <td style="width: 30%;" class="center">&nbsp;</td>
+                <td style="width: 40%;" class="center">&nbsp;</td>
+            </tr>
+
+            <tr class="bold">
+                <td style="width: 40%;" class="center bold"><?php echo $this->main->NguoiDeNghi;?></td>
+                <td style="width: 30%;" class="center bold"><?php echo @$this->step2Appr->TitleName;?></td>
+                <td style="width: 40%;" class="center bold"><?php echo @$this->step3Appr->TitleName;?></td>
+            </tr>
+        </table>
+    </div>
+</form>
+
+
+

@@ -1,0 +1,132 @@
+.icon-QA  a.hideAC {display:none}
+.icon-QA:hover a.hideAC {display:block; text-indent:5000em; width:15px; border:none;
+background:url(/images/event/close.png) no-repeat 0px 0px; float:right; height:15px; position: absolute; top: 3px; right:3px}
+.icon-QA:hover a.hideAC:hover {background:url(/images/event/close.png) no-repeat 0px 0px #ccc}
+.icon-QA {padding:2px; position: relative; color: #000;overflow: hidden;border-bottom:1pt solid #bbb;border-left:1pt solid #bbb;border-right:1pt solid #f1f1f1;border-top:1pt solid #f1f1f1;}
+.icon-QA:hover{background-color: MintCream;;cursor: pointer;}
+.icon-QA-Active{background-color: MintCream;}
+.icon-QA div{float: left}
+.icon-QA div.icon{float: left;}
+.icon-QA div.default {height: 25px;width: 15%;}
+.icon-QA div.name{overflow: hidden;width: 80%; padding-left: 2px;display:inline-block;}
+/*.icon-QA a:hover {display:block; border:1pt solid #000; width:99%; height:25px;}*/
+/*.icon-QA img {display:block; border:1pt solid #FFF; }Cho xóa ảnh
+.icon-QA img:hover {display:block; border:1pt solid #000; }*/
+.icon-QA span {text-align: left;line-height: 25px;color: #000;}
+.icon-QA div.type_1 {background:url(/images/dashboad/equipment.png) no-repeat center 5px;height: 25px;width: 18px;}
+.icon-QA div.type_2 {background:url(/images/dashboad/77.png) no-repeat center 5px;height: 25px;width: 18px;}
+.icon-QA div.type_3 {background:url(/images/dashboad/46.png) no-repeat center 5px;height: 25px;width: 18px;}
+.icon-QA div.type_4 {background:url(/images/dashboad/691.png) no-repeat center 5px;height: 25px;width: 18px;}
+.icon-QA div.type_5 {background:url(/images/dashboad/11.png) no-repeat center 5px;height: 25px;width: 18px;}
+
+.icon-QA div.icon_M001 {background:url(/images/dashboad/87.png) no-repeat center 5px}/*currency*/
+.icon-QA div.icon_2 {background:url(/images/dashboad/2.png) no-repeat center 5px}
+.icon-QA div.icon_3 {background:url(/images/dashboad/3.png) no-repeat center 5px}
+.icon-QA div.icon_4 {background:url(/images/dashboad/4.png) no-repeat center 5px}
+.icon-QA div.icon_M002 {background:url(/images/dashboad/5.png) no-repeat center 5px}
+.icon-QA div.icon_M003 {background:url(/images/dashboad/6.png) no-repeat center 5px}
+.icon-QA div.icon_M004 {background:url(/images/dashboad/7.png) no-repeat center 5px}/*company*/
+.icon-QA div.icon_M005 {background:url(/images/dashboad/8.png) no-repeat center 5px}
+.icon-QA div.icon_M006 {background:url(/images/dashboad/9.png) no-repeat center 5px}
+.icon-QA div.icon_M007 {background:url(/images/dashboad/10.png) no-repeat center 5px}
+.icon-QA div.icon_13 {background:url(/images/dashboad/13.png) no-repeat center 5px}
+.icon-QA div.icon_M011 {background:url(/images/dashboad/15.png) no-repeat center 5px}
+.icon-QA div.icon_M010 {background:url(/images/dashboad/14.png) no-repeat center 5px}
+.icon-QA div.icon_M012 {background:url(/images/dashboad/16.png) no-repeat center 5px}/* Change profile */
+.icon-QA div.icon_M014 {background:url(/images/dashboad/18.png) no-repeat center 5px}
+.icon-QA div.icon_M015 {background:url(/images/dashboad/19.png) no-repeat center 5px}
+.icon-QA div.icon_M016 {background:url(/images/dashboad/20.png) no-repeat center 5px}
+.icon-QA div.icon_M017 {background:url(/images/dashboad/21.png) no-repeat center 5px}
+.icon-QA div.icon_M018 {background:url(/images/dashboad/22.png) no-repeat center 5px}
+.icon-QA div.icon_M101 {background:url(/images/dashboad/23.png) no-repeat center 5px}/*Citizen*/
+.icon-QA div.icon_M102 {background:url(/images/dashboad/24.png) no-repeat center 5px}/*UOM*/
+.icon-QA div.icon_M103 {background:url(/images/dashboad/25.png) no-repeat center 5px}/*Country*/
+.icon-QA div.icon_M104 {background:url(/images/dashboad/26.png) no-repeat center 5px}/*City/province*/
+.icon-QA div.icon_M805 {background:url(/images/dashboad/27.png) no-repeat center 5px}/*Project pharse*/
+.icon-QA div.icon_M115 {background:url(/images/dashboad/28.png) no-repeat center 5px}/*Scope of activities*/
+.icon-QA div.icon_M106 {background:url(/images/dashboad/29.png) no-repeat center 5px}/*Payment method*/
+.icon-QA div.icon_M107 {background:url(/images/dashboad/30.png) no-repeat center 5px}/*Weekly working calendar*/
+.icon-QA div.icon_M119 {background:url(/images/dashboad/31.png) no-repeat center 5px}/*Attributes table*/
+.icon-QA div.icon_M109 {background:url(/images/dashboad/32.png) no-repeat center 5px}/*Contacts*/
+.icon-QA div.icon_M405 {background:url(/images/dashboad/411.png) no-repeat center 5px}
+.icon-QA div.icon_M301 {background:url(/images/dashboad/126.png) no-repeat center 5px}
+.icon-QA div.icon_M311 {background:url(/images/dashboad/36.png) no-repeat center 5px}
+.icon-QA div.icon_M305 {background:url(/images/dashboad/38.png) no-repeat center 5px}/*Jobs*/
+.icon-QA div.icon_M307 {background:url(/images/dashboad/40.png) no-repeat center 5px}
+.icon-QA div.icon_M308 {background:url(/images/dashboad/41.png) no-repeat center 5px}
+.icon-QA div.icon_M303 {background:url(/images/dashboad/44.png) no-repeat center 5px} /*List of skill*/
+.icon-QA div.icon_M201 {background:url(/images/dashboad/46.png) no-repeat center 5px}
+.icon-QA div.icon_M111 {background:url(/images/dashboad/53.png) no-repeat center 5px}
+.icon-QA div.icon_M113 {background:url(/images/dashboad/55.png) no-repeat center 5px}/* Item */
+.icon-QA div.icon_M209 {background:url(/images/dashboad/57.png) no-repeat center 5px}
+.icon-QA div.icon_M802 {background:url(/images/dashboad/59.png) no-repeat center 5px}
+.icon-QA div.icon_M701 {background:url(/images/dashboad/151.png) no-repeat center 5px} /* Shifts */
+.icon-QA div.icon_M702 {background:url(/images/dashboad/64.png) no-repeat center 5px}/*List of equipment*/
+.icon-QA div.icon_M706 {background:url(/images/dashboad/411.png) no-repeat center 5px}
+.icon-QA div.icon_M116 {background:url(/images/dashboad/96.png) no-repeat center 5px}
+.icon-QA div.icon_M118 {background:url(/images/dashboad/69.png) no-repeat center 5px}/*Partner*/
+.icon-QA div.icon_M502 {background:url(/images/dashboad/72.png) no-repeat center 5px}/*Price policy*/
+.icon-QA div.icon_M503 {background:url(/images/dashboad/73.png) no-repeat center 5px}/* Discount campaigns */
+.icon-QA div.icon_M121 {background:url(/images/dashboad/74.png) no-repeat center 5px}/* Exchange rates*/
+.icon-QA div.icon_M210 {background:url(/images/dashboad/76.png) no-repeat center 5px}/* Fiscal year*/
+.icon-QA div.icon_M211 {background:url(/images/dashboad/77.png) no-repeat center 5px}
+.icon-QA div.icon_M328 {background:url(/images/dashboad/80.png) no-repeat center 5px}/* Training */
+.icon-QA div.icon_M314 {background:url(/images/dashboad/82.png) no-repeat center 5px}/* Relation */
+.icon-QA div.icon_M316 {background:url(/images/dashboad/83.png) no-repeat center 5px}/*Employees */
+.icon-QA div.icon_M317 {background:url(/images/dashboad/85.png) no-repeat center 5px}/*Time sheet */
+.icon-QA div.icon_M318 {background:url(/images/dashboad/86.png) no-repeat center 5px}/*Labor contract */
+.icon-QA div.icon_M319 {background:url(/images/dashboad/87.png) no-repeat center 5px}
+.icon-QA div.icon_M322 {background:url(/images/dashboad/90.png) no-repeat center 5px}
+.icon-QA div.icon_M323 {background:url(/images/dashboad/91.png) no-repeat center 5px}/* Health insurance */
+.icon-QA div.icon_M324 {background:url(/images/dashboad/92.png) no-repeat center 5px}
+.icon-QA div.icon_M330 {background:url(/images/dashboad/94.png) no-repeat center 5px}/* Recruitment */
+.icon-QA div.icon_M331 {background:url(/images/dashboad/95.png) no-repeat center 5px}
+.icon-QA div.icon_M326 {background:url(/images/dashboad/96.png) no-repeat center 5px}/* Salary calculate*/
+.icon-QA div.icon_M327 {background:url(/images/dashboad/97.png) no-repeat center 5px}/* Employee's salary*/
+.icon-QA div.icon_M401 {background:url(/images/dashboad/101.png) no-repeat center 5px}/*Purchase order */
+.icon-QA div.icon_M803 {background:url(/images/dashboad/111.png) no-repeat center 5px}/*Project */
+.icon-QA div.icon_M603 {background:url(/images/dashboad/115.png) no-repeat center 5px}/*Goods movement */
+.icon-QA div.icon_M602 {background:url(/images/dashboad/116.png) no-repeat center 5px}/*Warehouses */
+.icon-QA div.icon_M710 {background:url(/images/dashboad/117.png) no-repeat center 5px}/* Production order*/
+.icon-QA div.icon_M218 {background:url(/images/dashboad/120.png) no-repeat center 5px}
+.icon-QA div.icon_M217 {background:url(/images/dashboad/121.png) no-repeat center 5px}/* Budgets */
+.icon-QA div.icon_M216 {background:url(/images/dashboad/122.png) no-repeat center 5px}
+.icon-QA div.icon_M616 {background:url(/images/dashboad/126.png) no-repeat center 5px}
+.icon-QA div.icon_M806 {background:url(/images/dashboad/128.png) no-repeat center 5px}/* Project tasks */
+.icon-QA div.icon_M124 {background:url(/images/dashboad/133.png) no-repeat center 5px}/* Empty recycle bin */
+.icon-QA div.icon_M715 {background:url(/images/dashboad/134.png) no-repeat center 5px}/* Notification */
+.icon-QA div.icon_M714 {background:url(/images/dashboad/135.png) no-repeat center 5px}/* Maintenance task */
+.icon-QA div.icon_M220 {background:url(/images/dashboad/141.png) no-repeat center 5px}/* Payment out*/
+.icon-QA div.icon_M221 {background:url(/images/dashboad/142.png) no-repeat center 5px}/* Payment in*/
+.icon-QA div.icon_M110 {background:url(/images/dashboad/151.png) no-repeat center 5px}/* Daily working calendar*/
+.icon-QA div.icon_M720 {background:url(/images/dashboad/152.png) no-repeat center 5px}/* Locations*/
+.icon-QA div.icon_M759 {background:url(/images/dashboad/197.png) no-repeat center 5px}
+.icon-QA div.icon_M334 {background:url(/images/dashboad/203.png) no-repeat center 5px}
+.icon-QA div.icon_M728 {background:url(/images/dashboad/151.png) no-repeat center 5px}
+.icon-QA div.icon_M780 {background:url(/images/dashboad/115.png) no-repeat center 5px}
+
+
+.icon-QA div.alert{background:url(/images/dashboad/alert.png) no-repeat center 5px;}
+.icon-QA div.analyst{background:url(/images/dashboad/analyst.png) no-repeat center 5px;}
+.icon-QA div.calibrate{background:url(/images/dashboad/calibrate.png) no-repeat center 5px;}
+.icon-QA div.config{background:url(/images/dashboad/config.png) no-repeat center 5px;}
+.icon-QA div.dashboard{background:url(/images/dashboad/dashboard.png) no-repeat center 5px;}
+.icon-QA div.equipment{background:url(/images/dashboad/equipment.png) no-repeat center 5px;}
+.icon-QA div.failure{background:url(/images/dashboad/failure.png) no-repeat center 5px;}
+.icon-QA div.hrm{background:url(/images/dashboad/hrm.png) no-repeat center 5px;}
+.icon-QA div.inventory{background:url(/images/dashboad/inventory.png) no-repeat center 5px;}
+.icon-QA div.preventive{background:url(/images/dashboad/preventive.png) no-repeat center 5px;}
+.icon-QA div.production{background:url(/images/dashboad/production.png) no-repeat center 5px;}
+.icon-QA div.purchase{background:url(/images/dashboad/purchase.png) no-repeat center 5px;}
+.icon-QA div.service{background:url(/images/dashboad/service.png) no-repeat center 5px;}
+.icon-QA div.system{background:url(/images/dashboad/system.png) no-repeat center 5px;}
+.icon-QA div.workorder{background:url(/images/dashboad/workorder.png) no-repeat center 5px;}
+.icon-QA div.import{background:url(/images/dashboad/import.png) no-repeat center 5px;}
+.icon-QA div.calendar{background:url(/images/dashboad/calendar.png) no-repeat center 5px;}
+.icon-QA div.monitoring{background:url(/images/dashboad/monitoring.png) no-repeat center 5px;}
+.icon-QA div.accounting{background:url(/images/dashboad/accounting.png) no-repeat center 5px;}
+.icon-QA div.request{background:url(/images/dashboad/request.png) no-repeat center 5px;}
+.icon-QA div.document{background:url(/images/dashboad/document.png) no-repeat center 5px;}
+.icon-QA div.medical{background:url(/images/dashboad/medical.png) no-repeat center 5px;}
+.icon-QA div.training{background:url(/images/dashboad/training.png) no-repeat center 5px;}
+.icon-QA div.insurance{background:url(/images/dashboad/insurance.png) no-repeat center 5px;}

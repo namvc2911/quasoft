@@ -1,0 +1,207 @@
+#header-menu {
+	background-color: #333;
+	border-bottom: 3px solid #58a;
+	background: -webkit-linear-gradient(#333, #444, #333);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(#333, #444, #333);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(#333, #444, #333);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(#333, #444, #333); /* Standard syntax */
+}
+
+#header-menu div.logo {
+	float: left;
+	height: 100%;
+	width: 60px;
+	line-height: 35px;
+	padding-left: 30px;
+}
+
+#header-menu div.right {
+	float: left;
+	line-height: 28px;
+	padding-top: 2px;
+}
+
+#header-menu div>div.bar {
+	border-top: 1px solid #f1f1f1;
+	text-align: left;
+	border-left: 1px solid #f1f1f1;
+}
+
+#header-menu div>div.time {
+	float: left;
+	height: 24px;
+	width: 100%;
+	text-align: left;
+	line-height: 24px;
+	color: #444;
+}
+
+#header-menu ul li a.level1 {
+	height: 25px;
+	padding-left: 25px;
+	line-height: 25px;
+}
+
+#header-menu div.bar ul li a.level1 .mainmenu-hideborder {
+	display: none;
+}
+
+#header-menu .selected .mainmenu-hideborder {
+	background: none repeat scroll 0 0 #ccc;
+	display: block !important;
+	left: 0px;
+	right: 0px;
+	overflow: hidden;
+	position: absolute;
+	text-indent: 999px;
+	z-index: 666;
+	height: 5px;
+	top: 21px;
+	border-left: 1pt solid #5588aa;
+	border-right: 1pt solid #5588aa;
+}
+
+.ddsmoothmenu {
+	float: left;
+	height:26px;
+}
+
+.ddsmoothmenu ul {
+	z-index: 100;
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+.ddsmoothmenu li>ul {
+	border-top: 1px solid #778;
+}
+
+/*Top level list items*/
+.ddsmoothmenu ul li {
+	position: relative;
+	display: inline;
+	float: left;
+}
+
+/*Top level menu link items style*/
+.ddsmoothmenu ul>li>a {
+	display: block;
+	line-height:26px;
+	color: #444;
+	text-decoration: none;
+	padding-left: 10px;
+	padding-right: 10px;
+	border-left: 1px solid #f9f9f9;
+	border-right: 1px solid #f9f9f9;
+	
+}
+
+.ddsmoothmenu ul>li>ul>li a {
+	display: block;
+	background: #f1f1f1; /*background of menu items (default state)*/
+	color: #444;
+	padding: 8px 10px;
+	border-right: 1px solid #778;
+	border-left: 1px solid #778;
+	border-bottom: 1px solid #778;
+	text-decoration: none;
+}
+
+* html .ddsmoothmenu ul li a {
+	/*IE6 hack to get sub menu links to behave correctly*/
+	display: inline-block;
+}
+
+
+.ddsmoothmenu ul li a:hover {
+	background: linear-gradient(#eee,#fff,#eee);
+	border-left: 1px solid #778;
+	border-right: 1px solid #778;
+}
+
+.ddsmoothmenu ul li.downarrowclass {
+	background: url(/images/menu_close.png) !important;
+	position: absolute;
+	height: 16px;
+	width: 16px;
+	/*background of menu items during onmouseover (hover state)*/
+}
+
+
+/* sub menus */
+.ddsmoothmenu ul li ul {
+	position: absolute;
+	left: -3000px;
+	display: none; /*collapse all sub menus to begin with*/
+	visibility: hidden;
+}
+
+/*Sub level menu list items (alters style from Top level List Items)*/
+.ddsmoothmenu ul li ul li {
+	display: list-item;
+	float: none;
+}
+
+/*All subsequent sub menu levels vertical offset after 1st level sub menu */
+.ddsmoothmenu ul li ul li ul {
+	top: 0;
+}
+
+/* Sub level menu links style */
+.ddsmoothmenu ul li ul li a {
+	font: normal 12px Arial;
+	width: auto; /*width of sub menus*/
+	min-width: 200px;
+	padding: 5px;
+	margin: 0;
+	border-top-width: 0;
+	border-bottom: 1px solid gray;
+}
+
+/* Holly Hack for IE \*/
+* html .ddsmoothmenu {
+	height: 1%;
+} /*Holly Hack for IE7 and below*/
+
+/* ######### CSS classes applied to down and right arrow images  ######### */
+.downarrowclass {
+	position: absolute;
+	top: 4px;
+	right: 2px;
+	background: url(/images/tree_close.png) no-repeat;
+	height: 16px;
+	width: 16px;
+}
+
+.rightarrowclass {
+	position: absolute;
+	top: 6px;
+	right: 5px;
+}
+
+.leftarrowclass {
+	margin-right: 5px;
+}
+
+.ddsmoothmenu >ul>li:hover >ul{
+	display: block;
+	visibility:visible;
+	left: 0px;
+}
+.ddsmoothmenu >ul>li>ul>li:hover >ul{
+	display: block;
+	visibility:visible;
+	left: 100%;
+}
+.ddsmoothmenu ul li a.dropdown{
+padding-right:20px
+}
+.menuactive{
+	background: linear-gradient(#eee,#fff,#eee);
+	border-left: 1px solid #778;
+	border-right: 1px solid #778;
+}

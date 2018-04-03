@@ -1,0 +1,133 @@
+<style>
+#container {
+	
+}
+
+.import-bar {
+	margin: 5px 0px;
+	overflow: hidden;
+}
+
+.title {
+	font-weight: bold;
+}
+
+.process {
+	position: relative;
+	background: none repeat scroll 0 0 #ccc;
+	font-size: 10px;
+	line-height: 14px;
+	width: 300px;
+	font-weight: bold;
+}
+
+.process_bar {
+	background: #6DB03C;
+	width: 0px;
+}
+
+.process_percent {
+	position: absolute;
+	top: 0px;
+	left: 140px;
+}
+
+.total {
+	
+}
+
+.imported {
+	
+}
+
+.error-import {
+	
+}
+
+.error-log-title {
+	clear: both;
+}
+
+.error-log {
+	clear: both;
+	font-size: 10px;
+	line-height: 16px;
+	min-height: 16px;
+	max-height: 90px;
+	overflow: auto;
+	padding-top: 5px;
+	border-bottom: 1px #ccc solid;
+	border-top: 1px #ccc solid;
+}
+
+.process-element {
+	margin-left: 15px;
+	padding: 1px 0px;
+	min-width: 60px;
+}
+</style>
+<input type="hidden"
+	value="1" name="readay" />
+<div id="horizontal-toolbar" class="horizontal-toolbar">
+	<button id="btnUPDATE" type="button" class="btn btn_main_top" disabled
+		onclick="excelImport();">
+		<?php echo $this->_translate(39)?>
+	</button>
+	
+	<?php if(isset($this->object) && $this->object->i_IFID):?>
+	<button id="btnBACK" type="button" class="btn btn_main_top" disabled
+		onclick="objectBack('<?php echo $this->object->i_IFID?>',
+						'<?php echo $this->object->intDepartmentID?>',
+						'<?php echo $this->object->ObjectCode?>');">
+		<?php echo $this->_translate(39)?>
+	</button>
+	<?php endif;?>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<form method="post" id="qss_form">
+		<input type="hidden" id="ifid" name="ifid"
+			value="<?php echo (int )@$this->object->i_IFID?>" /> <input
+			type="hidden" id="deptid" name="deptid"
+			value="<?php echo (int )@$this->object->intDepartmentID?>" /> <input
+			type="hidden" id="objid" name="objid"
+			value="<?php echo @$this->object->ObjectCode?>" />
+		<p>
+		<?php if(isset($this->object) && $this->object->i_IFID):?>
+		<?php echo $this->object->sz_Name?>
+			<input type="hidden" name="fid" value="0" />
+		<?php elseif($this->fid != ''):?>
+			<input type="hidden" name="fid" value="<?php echo $this->fid?>" />
+		<?php else:?>
+		<?php $modules = $this->user->a_fGetAllModule() ?>
+		<select id="fid" name="fid" style="width: 300px;">
+			<option value="0">
+			<?php foreach($modules as $formofuser):?>
+			<?php if($formofuser->ExcelImport && !$formofuser->class && ($formofuser->Rights&4)):?>
+			
+			<option value="<?php echo $formofuser->FormCode;?>">
+			<?php echo $formofuser->Name;?>
+			<?php endif;?>
+			<?php endforeach;?>
+		
+		</select>
+		<?php endif;?>
+			&nbsp;&nbsp;<a onclick="downloadIMPO(1);" href="#"><?php echo $this->_translate(40)?>
+			</a> &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; <a onclick="downloadIMPO(2);" href="#"><?php echo $this->_translate(41)?>
+			</a>
+		</p>
+		<p>
+			<input type="file" id="excel_import_file" name="excel_import_file"
+				size="40" onchange="return uploadFile('excel_import');" /> 
+			<input type="hidden" id="excel_import" name="excel_import" value="" /> 
+			<input type="checkbox" id="ignore" name="ignore" value="1"> 
+			<label for="ignore"><?php echo $this->_translate(43)?> </label>
+			<input type="checkbox" id="checkall" name="checkall" value="1" checked> 
+			<label for="checkall"><?php echo $this->_translate(44)?> </label>
+		
+		<hr />
+		<div id="statement"></div>
+		<div id="container"></div>
+	</form>
+	<div id="qss_import"></div>
+</div>

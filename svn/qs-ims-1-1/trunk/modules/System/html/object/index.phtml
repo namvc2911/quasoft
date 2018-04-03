@@ -1,0 +1,78 @@
+<?php
+	$tempOrderType['ASC']  = 'Tăng dần';
+	$tempOrderType['DESC'] = 'Giảm dần';
+
+	$widths = array(0.5, 3, 3, 3, 2, 2, 2);
+	$widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+	$begin  = 0;
+
+	$stt = 0;
+?>
+
+<form id="qss_form" method="get"
+	onSubmit="rowObjectSearch(); return false;">
+	<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+		<button id="Insert" type="button" class="btn btn_main_top"  onClick="rowObjectInsert()">
+			<?php echo $this->_translate(12)?>
+		</button>
+
+		<button id="Fields" type="button" class="btn btn_main_top" disabled onClick="rowObjectField()">
+			<?php echo $this->_translate(122)?>
+		</button>
+
+		<button id="Update" type="button" class="btn btn_main_top" disabled onClick="rowObjectEdit()">
+			<?php echo $this->_translate(13)?>
+		</button>
+		<button id="Delete" type="button" class="btn btn_main_top" disabled onClick="rowObjectDelete()">
+			<?php echo $this->_translate(14)?>
+		</button>
+		<button id="Cancel" type="button" class="btn btn_main_top" onClick="deleteObjectTemplate()" class="btn btn_main_top" disabled>
+			Xóa template
+		</button>
+
+		<!--  <div id="btnUI" onClick="rowUIGroup()" title="UI box"
+			class="btn_main_top btn_disabled">
+			<a href="#" class="icon-32-css"></a>
+		</div>-->
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+	<?php echo $this->_translate(24)?>
+		: <input type="text" value="" style="width: 300px;" name="search" />
+		<div id="item-actions">
+			<ul>
+				<li class="item-action active"><a href="#"><span><?php echo $this->_translate(102)?>
+					</span>
+				</a>
+				</li>
+			</ul>
+		</div>
+		<div id="qss_object_list">
+
+
+			<table class="grid" cellspacing="0" style="">
+				<tr>
+					<th style="border-left: 1px solid rgb(204, 204, 204);border-bottom: 1px solid rgb(204, 204, 204); width: <?php echo $widths[$begin++];?>%">STT</th>
+					<th class="data" style="border-bottom: 1px solid rgb(204, 204, 204); width: <?php echo $widths[$begin++];?>%">Mã</th>
+					<th class="data" style="border-bottom: 1px solid rgb(204, 204, 204); width: <?php echo $widths[$begin++];?>%">Tên tiếng Việt</th>
+					<th class="data" style="border-bottom: 1px solid rgb(204, 204, 204); width: <?php echo $widths[$begin++];?>%">Tên tiếng Anh</th>
+					<th class="data" style="border-bottom: 1px solid rgb(204, 204, 204); width: <?php echo $widths[$begin++];?>%">Trường sắp xếp</th>
+					<th class="data" style="border-bottom: 1px solid rgb(204, 204, 204); width: <?php echo $widths[$begin++];?>%">Kiểu sắp xếp</th>
+                    <th class="data" style="border-bottom: 1px solid rgb(204, 204, 204); width: <?php echo $widths[$begin++];?>%">Forms</th>
+				</tr>
+
+				<?php foreach ($this->ObjectList as $item):?>
+					<tr id="<?php echo $item->ObjectCode;?>" class="" onclick="rowCLK(this)" rights="63">
+						<td class="nocount "><?php echo ++$stt;?></td>
+						<td class="data "><?php echo $item->ObjectCode;?></td>
+						<td class="data "><?php echo $item->SimpleObjectName;?></td>
+						<td class="data "><?php echo $item->ObjectName_en;?></td>
+						<td class="data "><?php echo $item->OrderField?$item->OrderField:'';?></td>
+						<td class="data "><?php echo $item->OrderType?$tempOrderType[strtoupper(trim($item->OrderType))]:'';?></td>
+                        <td class="data "><?php echo $item->FormCodes;?></td>
+					</tr>
+				<?php endforeach;?>
+			</table>
+		</div>
+	</div>
+</form>

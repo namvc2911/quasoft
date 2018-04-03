@@ -1,0 +1,169 @@
+<?php
+// Xu ly code php ngoai vong lap
+?>
+
+<?php // Phtml ?>
+
+<?php if($this->msg != ''):?>
+<div class="error">
+<?php echo $this->msg;?>
+</div>
+<?php endif;// msg co loi?>
+
+<form id="detail_mrp_form">
+	<input type="hidden" name="ifid"
+		value="<?php echo $this->params['ifid'];?>" /> <input type="hidden"
+		name="module" value="<?php echo $this->params['module'];?>" />
+
+	<fieldset>
+		<legend> Kế hoạch sản xuất </legend>
+		<div id="production_plan_show"
+			style="overflow: auto; min-height: 100px; max-height: 100px;">
+			<table cellspacing="0" cellpadding="0" border="1" id=""
+				class="borderX">
+				<tr class="bggrey">
+					<th class="center" width="5%">
+						<!-- Dây chuyền -->Dây chuyền <?php // echo $this->_translate(100);?>
+					</th>
+					<th class="center" width="10%">
+						<!-- Ngày -->Ngày BĐ <?php // echo $this->_translate(100);?>
+					</th>
+					<th class="center" width="10%">
+						<!-- Ngày -->Ngày KT <?php // echo $this->_translate(100);?>
+					</th>
+					<th class="center" width="10%">
+						<!-- Ngày -->Thời gian <?php // echo $this->_translate(100);?>
+					</th>
+					<th class="center" width="10%">
+						<!-- Mã mặt hàng -->Mã MH <?php // echo $this->_translate(100);?>
+					</th>
+					<th class="center" width="15%">
+						<!-- Tên mặt hàng -->Tên MH <?php // echo $this->_translate(100);?>
+					</th>
+					<th class="center" width="10%">
+						<!-- Cấu thành -->Thuộc tính <?php // echo $this->_translate(100);?>
+					</th>
+					<th class="center" width="15%">
+						<!-- Thuộc tính -->Thiết kế <?php // echo $this->_translate(100);?>
+					</th>
+					<th class="center" width="5%">
+						<!-- Đơn vị tính -->ĐVT <?php // echo $this->_translate(100);?>
+					</th>
+					<th class="center" width="5%">
+						<!-- Sản xuất -->SL <?php // echo $this->_translate(100);?>
+					</th>
+
+				</tr>
+
+				<?php foreach ($this->production as $item): // In danh sach?>
+				<tr>
+					<td class="">
+						<!-- Thong tin luu san xuat --> <input type="hidden"
+						name="proDayChuyen[]" value="<?php echo $item['DayChuyen'];?>" />
+						<!--<input type="hidden" name="proCa[]" value="<?php // echo $item['Ca'];?>"/>-->
+						<!--<input type="hidden" name="proCongDoan[]" value="<?php // echo $item['CongDoan'];?>"/>-->
+						<!--<input type="hidden" name="proDonViThucHien[]" value="<?php // echo $item['DonViThucHien'];?>"/>-->
+						<!--<input type="hidden" name="proNgay[]" value="<?php // echo $item['Ngay'];?>"/>-->
+						<input type="hidden" name="proMaSP[]"
+						value="<?php echo $item['MaSP'];?>" /> <input type="hidden"
+						name="proTenSP[]" value="<?php echo $item['TenSP'];?>" /> <input
+						type="hidden" name="proThuocTinh[]"
+						value="<?php echo $item['ThuocTinh'];?>" /> <input type="hidden"
+						name="proThietKe[]" value="<?php echo $item['ThietKe'];?>" /> <input
+						type="hidden" name="proDonViTinh[]"
+						value="<?php echo $item['DonViTinh'];?>" /> <input type="hidden"
+						name="proSoLuong[]" value="<?php echo $item['SoLuong'];?>" /> <input
+						type="hidden" name="proStart[]"
+						value="<?php echo $item['Ngay'];?>" /> <input type="hidden"
+						name="proEnd[]" value="<?php echo $item['Ngay'];?>" /> <input
+						type="hidden" name="proTime[]" value="0" /> <?php echo $item['DayChuyen']?>
+					</td>
+					<td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item['Ngay']);?>
+					</td>
+					<td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item['Ngay']);?>
+					</td>
+					<td class="center">
+						<!-- Thoi gian -->0</td>
+					<td class=""><?php echo $item['MaSP']?></td>
+					<td class=""><?php echo $item['TenSP']?></td>
+					<td class=""><?php echo $item['ThuocTinh']?></td>
+					<td class=""><?php echo $item['ThietKe']?></td>
+					<td class=""><?php echo $item['DonViTinh']?></td>
+					<td class="right"><?php echo $item['SoLuong']?></td>
+				</tr>
+				<?php endforeach; // Ket thuc in danh sach?>
+			</table>
+		</div>
+		<!-- end div#production_plan_show -->
+	</fieldset>
+
+	<fieldset>
+		<legend> Kế hoạch mua hàng </legend>
+		<div id="purchase_plan_show"
+			style="overflow: auto; min-height: 100px; max-height: 100px;">
+			<table cellspacing="0" cellpadding="0" border="1" id=""
+				class="borderX">
+				<tr class="bggrey">
+					<th class="center" width="15%">
+						<!-- Dây chuyền -->Ngày <?php // echo $this->_translate(100);?>
+					</th>
+					<th class="center" width="20%">
+						<!-- Ca -->Mã MH <?php // echo $this->_translate(100);?>
+					</th>
+					<th class="center" width="20%">
+						<!-- Ca -->Tên MH <?php // echo $this->_translate(100);?>
+					</th>
+					<th class="center" width="15%">
+						<!-- Ca -->Thuộc tính <?php // echo $this->_translate(100);?>
+					</th>
+					<th class="center" width="10%">
+						<!-- Ngày -->ĐVT <?php // echo $this->_translate(100);?>
+					</th>
+					<th class="center" width="10%">
+						<!-- Mã mặt hàng -->SL <?php // echo $this->_translate(100);?>
+					</th>
+					<th class="center" width="10%">
+						<!-- Tên mặt hàng -->Khấu trừ kho <?php // echo $this->_translate(100);?>
+					</th>
+				</tr>
+
+				<?php foreach ($this->purchase as $item): // In danh sach?>
+				<tr>
+					<td class="center">
+						<!-- Thong tin mua hang --> <input type="hidden" name="purNgay[]"
+						value="<?php echo $item['Ngay'];?>" /> <input type="hidden"
+						name="purMaSP[]" value="<?php echo $item['MaSP'];?>" /> <input
+						type="hidden" name="purTenSP[]"
+						value="<?php echo $item['TenSP'];?>" /> <input type="hidden"
+						name="purThuocTinh[]" value="<?php echo $item['ThuocTinh'];?>" />
+						<input type="hidden" name="purDonViTinh[]"
+						value="<?php echo $item['DonViTinh'];?>" /> <input type="hidden"
+						name="purSoLuong[]" value="<?php echo $item['SoLuong'];?>" /> <input
+						type="hidden" name="purKhauTruKho[]"
+						value="<?php echo $item['KhauTruKho'];?>" /> <?php echo Qss_Lib_Date::mysqltodisplay($item['Ngay']);?>
+					</td>
+					<td class=""><?php echo $item['MaSP']?></td>
+					<td class=""><?php echo $item['TenSP']?></td>
+					<td class=""><?php echo $item['ThuocTinh']?></td>
+					<td class=""><?php echo $item['DonViTinh']?></td>
+					<td class="right"><?php echo $item['SoLuong']?></td>
+					<td class="right"><?php echo $item['KhauTruKho']?></td>
+				</tr>
+				<?php endforeach; // Ket thuc in danh sach?>
+			</table>
+		</div>
+		<!-- end div#purchase_plan_show -->
+	</fieldset>
+</form>
+
+
+<div>
+
+	<button type="button"
+		class="btn-custom <?php if($this->msg != '') echo 'readonly disabled';?>"
+		onclick="saveMrp()" abc="1"
+		<?php if($this->msg != '') echo 'disabled';?>>
+		Lưu lại
+		<?php // echo $this->_translate(100);?>
+	</button>
+</div>

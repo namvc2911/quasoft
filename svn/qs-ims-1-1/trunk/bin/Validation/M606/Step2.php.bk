@@ -1,0 +1,102 @@
+<?php
+class Qss_Bin_Validation_M606_Step2 extends Qss_Lib_Warehouse_WValidation
+{
+	/**
+	 * 1. Danh sách nhận hàng còn trống ?
+	 * 2. Ngày chuyển hàn còn trống ?
+	 * 3. Đã cập nhật đủ bảng trạng thái lưu trữ chưa?
+	 * 4. Có thuộc tính nào bắt buộc mà chưa cập nhật hay không?
+	 */
+	public function onNext()
+	{
+		parent::init();
+		$model    		= new Qss_Model_Extra_Warehouse();
+		$product        = new Qss_Model_Extra_Products();
+		$danhSach 		= $this->_params->ODanhSachNhapKho;
+		
+		/**
+		 * Line?
+		 */ 
+		if(count((array)$danhSach) == 0) {
+			$this->setError();
+			$this->setMessage($this->_translate(1));
+		}
+				
+		/**
+		 * Attributes are required?
+		 */
+		$break             = '';
+		foreach ($danhSach as $value) {
+			$checkRequires = $product->checkAttributeRequires($value->MaMatHang);
+			if($break != $value->Ref_MaMatHang && !$value->ThuocTinh && $checkRequires)
+			{
+				$this->setError();
+				$this->setMessage("{$this->_translate(4)} {$value->MaMatHang} {$this->_translate(5)}");
+				$break = $value->Ref_MaMatHang;
+			}
+		}
+		
+		$capacity = $model->checkCapacity('M606', $this->_params->IFID_M606);
+		foreach ($capacity as $val)
+		{
+			$newQty = $val->NewQty + $val->HasQty;
+			switch ($val->Condition)
+			{
+				case 1: // Bin co san pham
+					if($val->BinCapacity && ($newQty > $val->BinCapacity) )
+					{
+						$this->setError();
+						$this->setMessage("{$val->BinCode} {$this->_translate(6)} ");
+					}
+				break;
+				
+				case 2: // Bin co don vi tinh
+					if($val->BinCapacity && ($newQty > $val->BinCapacity) )
+					{
+						$this->setError();
+						$this->setMessage("{$val->BinCode} {$this->_translate(6)} ");
+					}
+				break;
+				
+                                /*
+				case 3: // Zone co san pham
+					if($val->ZoneCapacity && ($newQty > $val->ZoneCapacity) )
+					{
+						$this->setError();
+						$this->setMessage("{$val->ZoneCode} {$this->_translate(6)} ");
+					}
+				break;
+				
+				case 4: // Zone co don vi tinh
+					if($val->ZoneCapacity && ($newQty > $val->ZoneCapacity) )
+					{
+						$this->setError();
+						$this->setMessage("{$val->ZoneCode} {$this->_translate(6)} ");
+					}
+				break;	
+                                 * 
+                                 */											
+			}
+		}
+
+	}
+	
+	/*
+	 * Create incoming
+	 */
+	public function next()
+	{
+		parent::init();
+		$field = array('MaMatHang', 'ThuocTinh', 'SoLuong', 'Ngay', 'DonGia','','','','SoPhieu','DonViTinh') ;
+		$insertFieldLabel = array('Partner'=>'MaDoiTac', 'Date'=>'Ngay', 
+								  'Item'=>'MaSP', 'Attr'=>'ThuocTinh', 
+								  'Qty'=>'SoLuong', 'Price'=>'DonGia',
+								  'Module'=>'Module', 'Des'=>'MoTa',
+                                                                    'UOM'=>'DonViTinh');
+		$this->insertIncomingOutgoing($field, $insertFieldLabel, 'OHangDoiNhap', 'ODanhSachNhapKho', 
+									  'ONhapKhoBaoTri' , 'M606', 'M610', '', false);
+	}
+
+	
+	
+}

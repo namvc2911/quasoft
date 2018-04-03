@@ -1,0 +1,382 @@
+<?php $excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);?>
+<?php
+// $widthArr   = array(1, 4, 5, 3, 2.5, 2.5, 2.5, 2.5, 2.5, 2, 2, 2, 2, 2, 3, 4);
+$htmlWidth  = array(40, 160, 120, 120, 120, 120, 120, 100, 100, 100, 100, 100, 80, 80, 80, 80, 80, 80, 120, 160);
+$totalCol   = count($htmlWidth);
+
+$excelWidth = array(8, 22, 18, 18, 18, 18, /*18,*/ 16, 16, 16, 16, 16, 13, 13, 13, 13, 13, 13, 18, 23);
+$row        = 1;
+$bg         = "#EEEEEE"; // Mau nen cua cot tieu de
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+    <input type="hidden" id="content" name="content" value="">
+    <input type="hidden" id="name" name="name" value="PROBLEM TRACKER">
+</form>
+
+<div class="landscape" style="font-size: 13px !important;">
+    <excel orientation="landscape" font-name="Times New Roman" font-size="12"
+           margin-left="0.5" margin-right="0.5" margin-top="0.75"
+           margin-bottom="0.75" />
+
+    <div id="head_print">
+        <?php  echo $this->views->Common->Landscape(); ?>
+
+        <?php $row++;?>
+        <h1 style="text-align: center;">
+            <xls row="<?php echo $row?>" column="A" column-merge="S" font-size="16" h-align="center" v-align="center" bold="1">PROBLEM TRACKER</xls>
+        </h1>
+        <br/>
+        <?php $row++;?>
+        <?php $row++;?>
+    </div>
+
+    <div id="container">
+        <table cellspacing="0" cellpadding="0" border="0" class="border" style="table-layout: fixed !important;">
+            <?php $begin = 0;?>
+            <tr class="bggrey">
+                <th class="center" style="width: <?php echo $htmlWidth[$begin];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$begin];?>px !important;<?php echo $htmlWidth[$begin];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12"
+                             column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center"
+                             v-align="center" bold="1" border="1" wrap-text="1">STT</xls>
+                    </div>
+                </th>
+
+                <!-- HẠNG MỤC TỒN TẠI VÀ CÁC SỰ CỐ -->
+                <th class="center" style="width: <?php echo $htmlWidth[$begin];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$begin];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12"
+                             column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center"
+                             v-align="center" bold="1" border="1" wrap-text="1">HẠNG MỤC TỒN TẠI VÀ CÁC SỰ CỐ</xls>
+                    </div>
+                </th>
+
+                <!-- NHÓM THIẾT BỊ -->
+                <th class="center" style="width: <?php echo $htmlWidth[$begin];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$begin];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12"
+                             column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center"
+                             v-align="center" bold="1" border="1" wrap-text="1">NHÓM THIẾT BỊ</xls>
+                    </div>
+                </th>
+
+                <th class="center" style="width: <?php echo $htmlWidth[$begin];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$begin];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12"
+                             column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center"
+                             v-align="center" bold="1" border="1" wrap-text="1">LOẠI THIẾT BỊ</xls>
+                    </div>
+                </th>
+
+                <th class="center" style="width: <?php echo $htmlWidth[$begin];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$begin];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12"
+                             column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center"
+                             v-align="center" bold="1" border="1" wrap-text="1">ĐƠN VỊ THỰC HIỆN</xls>
+                    </div>
+                </th>
+
+                <th class="center" style="width: <?php echo $htmlWidth[$begin];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$begin];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12"
+                             column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center"
+                             v-align="center" bold="1" border="1" wrap-text="1">TÌNH TRẠNG TỒN TẠI VÀ CÁC SỰ CỐ</xls>
+                    </div>
+                </th>
+
+                <!---
+                <th class="center" style="width: <?php echo $htmlWidth[$begin];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$begin];?>px !important;;">
+                        <xls row="<?php //echo $row?>" width="<?php //echo $excelWidth[$begin];?>" font-size="12"
+                             column="<?php //echo $excel_col[++$begin];?>" bgcolor="<?php //echo $bg;?>" h-align="center"
+                             v-align="center" bold="1" border="1" wrap-text="1">HỆ THỐNG</xls>
+                    </div>
+                </th>
+                -->
+
+                <th class="center" style="width: <?php echo $htmlWidth[$begin];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$begin];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12"
+                             column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center"
+                             v-align="center" bold="1" border="1" wrap-text="1">NGƯỜI PHÁT HIỆN</xls>
+                    </div>
+                </th>
+
+                <th class="center" style="width: <?php echo $htmlWidth[$begin];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$begin];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12"
+                             column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center"
+                             v-align="center" bold="1" border="1" wrap-text="1">NHÓM N.NHÂN</xls>
+                    </div>
+                </th>
+
+                <th class="center" style="width: <?php echo $htmlWidth[$begin];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$begin];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12"
+                             column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center"
+                             v-align="center" bold="1" border="1" wrap-text="1">NHÓM GIẢI PHÁP</xls>
+                    </div>
+                </th>
+
+                <th class="center" style="width: <?php echo $htmlWidth[$begin];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$begin];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12"
+                             column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center"
+                             v-align="center" bold="1" border="1" wrap-text="1">TRẠNG THÁI</xls>
+                    </div>
+                </th>
+
+                <th class="center" style="width: <?php echo $htmlWidth[$begin];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$begin];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12"
+                             column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center"
+                             v-align="center" bold="1" border="1" wrap-text="1">ƯU TIÊN</xls>
+                    </div>
+                </th>
+
+                <th class="center" style="width: <?php echo $htmlWidth[$begin];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$begin];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12"
+                             column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center"
+                             v-align="center" bold="1" border="1" wrap-text="1">NGÀY P.H</xls>
+                    </div>
+                </th>
+
+                <th class="center" style="width: <?php echo $htmlWidth[$begin];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$begin];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12"
+                             column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center"
+                             v-align="center" bold="1" border="1" wrap-text="1">NGÀY H.T</xls>
+                    </div>
+                </th>
+
+                <th class="center" style="width: <?php echo $htmlWidth[$begin];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$begin];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12"
+                             column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center"
+                             v-align="center" bold="1" border="1" wrap-text="1">DEAD TIME</xls>
+                    </div>
+                </th>
+
+                <th class="center" style="width: <?php echo $htmlWidth[$begin];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$begin];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12"
+                             column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center"
+                             v-align="center" bold="1" border="1" wrap-text="1">NT THI CÔNG</xls>
+                    </div>
+                </th>
+
+                <th class="center" style="width: <?php echo $htmlWidth[$begin];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$begin];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12"
+                             column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center"
+                             v-align="center" bold="1" border="1" wrap-text="1">NT SỬA CHỮA</xls>
+                    </div>
+                </th>
+
+                <th class="center" style="width: <?php echo $htmlWidth[$begin];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$begin];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12"
+                             column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center"
+                             v-align="center" bold="1" border="1" wrap-text="1">KIẾN NGHỊ</xls>
+                    </div>
+                </th>
+
+                <th class="center" style="width: <?php echo $htmlWidth[$begin];?>px !important;">
+                    <div class="center" style="<?php echo $htmlWidth[$begin];?>px !important;;">
+                        <xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="12"
+                             column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center"
+                             v-align="center" bold="1" border="1" wrap-text="1">NỘI DUNG CÔNG VIỆC SỬA CHỮA</xls>
+                    </div>
+                </th>
+
+            </tr>
+            <?php $row++;?>
+
+            <?php $stt = 0;?>
+            <?php foreach($this->report as $item):?>
+                <?php $begin = 0;?>
+                <tr>
+                    <!-- STT -->
+                    <td class="center">
+                        <div >
+                            <xls row="<?php echo $row?>" font-size="12"
+                                 column="<?php echo $excel_col[++$begin];?>" h-align="center"
+                                 v-align="center"  border="1" wrap-text="1"><?php echo ++$stt;?></xls>
+                        </div>
+                    </td>
+
+                    <!-- HẠNG MỤC TỒN TẠI VÀ CÁC SỰ CỐ - Tên thiết bị -->
+                    <td class="left">
+                        <div >
+                            <xls row="<?php echo $row?>" font-size="12"
+                                 column="<?php echo $excel_col[++$begin];?>" h-align="left"
+                                 v-align="center"  border="1" wrap-text="1"><?php echo @$item->TenThietBi;?></xls>
+                        </div>
+                    </td>
+
+                    <!-- Nhóm thiết bị -->
+                    <td class="left">
+                        <div >
+                            <xls row="<?php echo $row?>" font-size="12"
+                                 column="<?php echo $excel_col[++$begin];?>" h-align="left"
+                                 v-align="center"  border="1" wrap-text="1"><?php echo @$item->NhomThietBi;?></xls>
+                        </div>
+                    </td>
+
+                    <!-- Loại thiết bị -->
+                    <td class="left">
+                        <div >
+                            <xls row="<?php echo $row?>" font-size="12"
+                                 column="<?php echo $excel_col[++$begin];?>" h-align="left"
+                                 v-align="center"  border="1" wrap-text="1"><?php echo @$item->LoaiThietBi;?></xls>
+                        </div>
+                    </td>
+
+
+                    <!-- Đơn vị thực hiện -->
+                    <td class="left">
+                        <div >
+                            <xls row="<?php echo $row?>" font-size="12"
+                                 column="<?php echo $excel_col[++$begin];?>" h-align="left"
+                                 v-align="center"  border="1" wrap-text="1"><?php echo @$item->BenKyThuat;?></xls>
+                        </div>
+                    </td>
+
+                    <!-- TÌNH TRẠNG TỒN TẠI VÀ CÁC SỰ CỐ -->
+                    <td class="left">
+                        <div >
+                            <xls row="<?php echo $row?>" font-size="12"
+                                 column="<?php echo $excel_col[++$begin];?>" h-align="left"
+                                 v-align="center"  border="1" wrap-text="1"><?php echo @$item->MoTa;?></xls>
+                        </div>
+                    </td>
+
+                    <!--
+                    <!-- HỆ THỐNG
+                    <td class="left">
+                        <div >
+                            <xls row="<?php //echo $row?>" font-size="12"
+                                 column="<?php //echo $excel_col[++$begin];?>" h-align="left"
+                                 v-align="center"  border="1" wrap-text="1"><?php //echo @$item->NhomThietBi;?></xls>
+                        </div>
+                    </td>
+                    -->
+
+                    <!-- NGƯỜI PHÁT HIỆN -->
+                    <td class="left">
+                        <div >
+                            <xls row="<?php echo $row?>" font-size="12"
+                                 column="<?php echo $excel_col[++$begin];?>" h-align="left"
+                                 v-align="center"  border="1" wrap-text="1"><?php echo @$item->NguoiYeuCau;?></xls>
+                        </div>
+                    </td>
+
+                    <!-- NHÓM N.NHÂN -->
+                    <td class="left">
+                        <div >
+                            <xls row="<?php echo $row?>" font-size="12"
+                                 column="<?php echo $excel_col[++$begin];?>" h-align="left"
+                                 v-align="center"  border="1" wrap-text="1"><?php echo @$item->NhomNguyenNhan;?></xls>
+                        </div>
+                    </td>
+
+                    <!-- NHÓM GIẢI PHÁP -->
+                    <td class="left">
+                        <div >
+                            <xls row="<?php echo $row?>" font-size="12"
+                                 column="<?php echo $excel_col[++$begin];?>" h-align="left"
+                                 v-align="center"  border="1" wrap-text="1"><?php echo @$item->NhomGiaiPhap;?></xls>
+                        </div>
+                    </td>
+
+                    <!-- TRẠNG THÁI -->
+                    <td class="left">
+                        <div >
+                            <xls row="<?php echo $row?>" font-size="12"
+                                 column="<?php echo $excel_col[++$begin];?>" h-align="left"
+                                 v-align="center"  border="1" wrap-text="1"><?php echo @$item->Ref_TinhTrang;?></xls>
+                        </div>
+                    </td>
+
+                    <!-- ƯU TIÊN -->
+                    <td class="left">
+                        <div >
+                            <xls row="<?php echo $row?>" font-size="12"
+                                 column="<?php echo $excel_col[++$begin];?>" h-align="left"
+                                 v-align="center"  border="1" wrap-text="1"><?php echo @$item->MucDoUuTien;?></xls>
+                        </div>
+                    </td>
+
+                    <!-- NGÀY P.H -->
+                    <td class="center">
+                        <div >
+                            <xls row="<?php echo $row?>" font-size="12"
+                                 column="<?php echo $excel_col[++$begin];?>" h-align="center"
+                                 v-align="center"  border="1"
+                                 wrap-text="1"><?php echo Qss_Lib_Date::mysqltodisplay(@$item->Ngay);?></xls>
+                        </div>
+                    </td>
+
+                    <!-- NGÀY H.T -->
+                    <td class="center">
+                        <div >
+                            <xls row="<?php echo $row?>" font-size="12"
+                                 column="<?php echo $excel_col[++$begin];?>" h-align="center"
+                                 v-align="center"  border="1"
+                                 wrap-text="1"><?php echo Qss_Lib_Date::mysqltodisplay(@$item->NgayHoanThanh);?></xls>
+                        </div>
+                    </td>
+
+                    <!-- DEAD TIME -->
+                    <td class="center">
+                        <div >
+                            <xls row="<?php echo $row?>" font-size="12"
+                                 column="<?php echo $excel_col[++$begin];?>" h-align="center"
+                                 v-align="center"  border="1" wrap-text="1"><?php echo @(int)$item->SoNgayDungMay;?></xls>
+                        </div>
+                    </td>
+
+
+                    <!-- NT THI CÔNG -->
+                    <td class="left">
+                        <div >
+                            <xls row="<?php echo $row?>" font-size="12"
+                                 column="<?php echo $excel_col[++$begin];?>" h-align="left"
+                                 v-align="center"  border="1" wrap-text="1"><?php echo @$item->HangBaoHanh;?></xls>
+                        </div>
+                    </td>
+
+                    <!-- NT SỬA CHỮA -->
+                    <td class="left">
+                        <div >
+                            <xls row="<?php echo $row?>" font-size="12"
+                                 column="<?php echo $excel_col[++$begin];?>" h-align="left"
+                                 v-align="center"  border="1" wrap-text="1"><?php echo @$item->BenLienQuan;?></xls>
+                        </div>
+                    </td>
+
+                    <!-- Kiến nghị -->
+                    <td class="left">
+                        <div >
+                            <xls row="<?php echo $row?>" font-size="12"
+                                 column="<?php echo $excel_col[++$begin];?>" h-align="left"
+                                 v-align="center"  border="1" wrap-text="1"><?php echo @$item->YKienKhac;?></xls>
+                        </div>
+                    </td>
+
+                    <!-- NỘI DUNG CÔNG VIỆC SỬA CHỮA -->
+                    <td class="left">
+                        <div >
+                            <xls row="<?php echo $row?>" font-size="12"
+                                 column="<?php echo $excel_col[++$begin];?>" h-align="left"
+                                 v-align="center"  border="1" wrap-text="1"><?php echo @$item->XuLy;?></xls>
+                        </div>
+                    </td>
+                </tr>
+                <?php $row++;?>
+            <?php endforeach;?>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,34 @@
+<!-- Cột trái phần danh sách nhân viên trực thuộc phòng ban bộ phận -->
+<table id="m052_employee_table" class="border_table" cellspacing="0" cellpadding="0" border="0" style="width: 100%">
+    <thead>
+        <tr class="bggrey">
+            <th style="width: 10%"></th>
+            <th style="width: 40%">Mã nhân viên</th>
+            <th style="width: 50%">Tên nhân viên</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <?php $stt = 0;?>
+        <?php foreach($this->empls as $item):?>
+            <tr class="m052_employee_line" onclick="static_m052.showEmployeeDetail(this, '<?php echo $item->IOID;?>')">
+                <td class="break center"><?php echo ++$stt;?></td>
+                <td class="break left"><?php echo $item->MaNhanVien;?></td>
+                <td class="break left"><?php echo $item->TenNhanVien;?></td>
+            </tr>
+        <?php endforeach;?>
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function() {
+        var height = $('#m052_employee').height() - $('#m052_employee_table tr th').height();
+        $('#m052_employee_table').tableScroll({height:height,width:'99%'});
+
+        $('#m052_employee_total_page').text('<?php echo $this->totalPage;?>')
+        $('#m052_employee_count').text('<?php echo $this->count;?>');
+        $('#m052_employee_pageno').val('<?php echo $this->page;?>');
+        $('#m052_btnNEXT').attr('onclick', "$('#m052_employee_pageno').val('<?php echo @(int)$this->next;?>'); static_m052.loadEmployees();");
+        $('#m052_btnPREV').attr('onclick', "$('#m052_employee_pageno').val('<?php echo @(int)$this->prev;?>'); static_m052.loadEmployees();");
+    });
+</script>

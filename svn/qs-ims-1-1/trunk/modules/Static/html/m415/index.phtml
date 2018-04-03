@@ -1,0 +1,1875 @@
+<style type="text/css">
+/*
+body {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 62.5%;
+	margin: 20px;
+}
+*/
+.container {
+	width: auto;/*960px;*/
+	margin: 0 auto;
+	font-size: 12px;/*1.4em;*/
+}
+.steps {
+	background: #aaa;
+	/*padding: 1px 0;*/
+	overflow: hidden;
+}
+.steps ul, .steps li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.steps ul { float: left; }
+.steps li {
+	float: left;
+	width: auto;/*340px;*/
+}
+.steps li a {
+	display: block;
+	padding: 8px 20px;
+	background: #d0d0d0;
+	color: #000; /*#fff*/
+	line-height: 12px;/*1.5em;*/
+	text-decoration: none;
+	position: relative;
+}
+
+.steps li a .tick
+{
+    position:absolute;
+    display:none;
+}
+
+.steps li a .tick-1
+{
+    top: 6px;
+    left:3px;
+}
+
+.steps li a .tick-2, .steps li a .tick-3, .steps li a .tick-3, .steps li a .tick-4
+, .steps li a .tick-5, .steps li a .tick-6, .steps li a .tick-7, .steps li a .tick-8
+{
+    top: 6px;
+    left:33px;
+}
+
+
+.steps li a strong { font-size: 12px;/*2em;*/ }
+.steps li a:hover { background: #666; }
+.steps li.step, .steps li.step a {
+	position: relative;
+	z-index: 3;
+}
+
+.steps li.step-1, .steps li.step-1 a { z-index: 8; }
+.steps li.step-2, .steps li.step-2 a { z-index: 7; }
+.steps li.step-3, .steps li.step-3 a { z-index: 6; }
+.steps li.step-4, .steps li.step-4 a { z-index: 5; }
+.steps li.step-5, .steps li.step-5 a { z-index: 4; }
+.steps li.step-6, .steps li.step-6 a { z-index: 3; }
+.steps li.step-7, .steps li.step-7 a { z-index: 2; }
+.steps li.step-8, .steps li.step-8 a { z-index: 1; }
+
+
+.steps li.step-1 a
+, .steps li.step-2 a
+, .steps li.step-3 a
+, .steps li.step-4 a
+, .steps li.step-5 a
+, .steps li.step-6 a
+, .steps li.step-7 a
+, .steps li.step-8 a {
+	background: transparent url(/images/progress/step.png) center right no-repeat;
+	padding-right: 25px;
+}
+
+.steps li.step-2
+, .steps li.step-3 
+, .steps li.step-4
+, .steps li.step-5
+, .steps li.step-6
+, .steps li.step-7
+, .steps li.step-8 { 
+    margin-left: -30px; 
+}
+
+.steps li.step-2 a 
+, .steps li.step-3 a
+, .steps li.step-4 a
+, .steps li.step-5 a
+, .steps li.step-6 a 
+, .steps li.step-7 a{ 
+    padding-left: 50px; 
+}
+
+.steps li.step-8 a {
+	padding-left: 50px;
+	padding-right: 20px;
+    background-position: center left;
+}
+.steps li.step a:hover { background: transparent url(/images/progress/step_over.png) center right no-repeat; color: #fff;  }
+.steps li.step-8 a:hover { background-position: center left; }
+
+.step-1 .selected_step,
+.step-2 .selected_step,
+.step-3 .selected_step,
+.step-4 .selected_step,
+.step-5 .selected_step,
+.step-6 .selected_step,
+.step-7 .selected_step{ 
+    background: transparent url(/images/progress/step_over.png) center right no-repeat !important; 
+    color: #fff !important; 
+}
+
+.step-8 .selected_step { 
+    background:transparent url(/images/progress/step_over.png) center left no-repeat !important;
+    color: #fff !important; 
+}
+
+.little_padding
+{
+	padding: 2px 0px;
+}
+
+#M415_show
+{
+	position: relative;
+}
+
+#M415_edit_control
+{
+	background: #fafafb none repeat scroll 0 0;
+	border-top: 1px solid #111;
+	bottom: 0;
+	right: 0;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-right: 5px;
+	position: fixed;
+	width: 100%;
+}
+
+#M415_edit_wrap
+{
+	position: relative;
+}
+
+#M415_step_bar
+{
+	background: #fafafb none repeat scroll 0 0;
+	z-index: 100;
+	top: 60px;
+	left: 0px;;
+	padding-top: 5px;
+	padding-left: 12px;
+	position: fixed;
+	width: 100%;
+}
+
+#m816_view
+{
+	margin-bottom: 24px;
+}
+
+#m816_filter
+{
+	height: 24px;
+	line-height: 24px;
+	margin-right: 20px;
+}
+
+#m816_general_input
+{
+	/*display: table-cell;*/
+	vertical-align: middle;
+	height: 24px;
+	line-height: 24px;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+
+#m816_multi
+{
+	background-color: #ccc;
+	border: 1px solid #999;
+	bottom: 0;
+	height: 24px;
+	left: 112px;
+	margin-bottom: 0;
+	position: fixed;
+	right: 0;
+	line-height: 24px;
+	display: table-cell;
+	vertical-align: middle;
+	font-weight: bold;
+}
+
+input
+{
+	vertical-align:middle;
+}
+
+.m607_filter_box
+{
+	float: left;
+	display: inline;
+	line-height: 24px;
+	height: 24px;
+	padding-bottom: 5px;
+	vertical-align: middle;
+}
+.m607_filter_box_title
+{
+	min-width: 70px;
+	font-weight: bold;
+	float: left;
+}
+.m607_filter_box_dat
+{
+	min-width: 175px;
+	margin-right: 10px;
+	float: left;
+}
+.m607_filter_box_dat input[type="text"], .m607_filter_box_dat select
+{
+	width: 150px !important;
+}
+
+.m607_filter_box_dat #start, .m607_filter_box_dat #end
+{
+	width: 80px !important;
+}
+
+.m607_data table
+{
+	margin-top: 5px;;
+	margin-bottom: 10px;
+	padding-bottom: 10px;
+}
+</style>
+
+
+<!-- ================================================================================================================== -->
+<script>
+
+$(document).ready(function(){
+    // Hiển thị sessions list theo nhân viên khi khởi chạy
+	M415.showSessions();
+
+	// set datepicker
+	$('.datepicker').each(function () {
+		$(this).datepicker({dateFormat: "dd-mm-yy"});
+		$(this).attr('placeholder', 'dd-mm-yyyy');
+	});
+});
+
+var M415 = 
+{
+    // Tong so buoc cua phien xu ly
+    totalStep : 8,
+
+    rowIOExcel1 : function (ifid, deptid, objid)
+    {
+        var url = sz_BaseUrl + '/user/import/object';
+        var data = {ifid:ifid,objid:objid,deptid:deptid};
+
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#qss_combo').dialog('close');
+            $('#qss_combo').html(jreturn);
+            $('#qss_combo').dialog({ width: 800,height:400,close: function(){
+                M415.step6.show();
+            }});
+        });
+    },
+
+	// Excel: Thu moi chao gia
+	excelThuMoiChaoGia : function(partnerIOID)
+	{
+		var url      = sz_BaseUrl + '/static/M415/thumoichaogia';
+		var planIOID = parseInt($('#plan_ioid').val());
+
+		//alert(url+'?partnerioid='+partnerIOID+'&planioid='+planIOID); return;
+
+		window.open(url+'?partnerioid='+partnerIOID+'&popup=1&planioid='+planIOID,"");
+	},
+
+	// Excel: Danh muc mua hang <Danh muc thiet bi
+	excelDanhMucMuaHang : function()
+	{
+		var url      = sz_BaseUrl + '/static/M415/danhmucmuahang';
+		var planIOID = parseInt($('#plan_ioid').val());
+
+		window.open(url+'?popup=1&planioid='+planIOID,"");
+	},
+
+	// Excel: Bao cao de xuat <Danh muc thiet bi
+	excelBaoCaoDeXuat : function()
+	{
+		var url      = sz_BaseUrl + '/static/M415/baocaodexuat';
+		var planIOID = parseInt($('#plan_ioid').val());
+
+		window.open(url+'?popup=1&planioid='+planIOID,"");
+	},
+
+	// Excel: Ke hoach mua sam
+	excelKeHoachMuaSam : function()
+	{
+		var url      = sz_BaseUrl + '/static/M415/kehoachmuasam';
+		var planIOID = parseInt($('#plan_ioid').val());
+
+		window.open(url+'?popup=1&planioid='+planIOID,"");
+	},
+
+	// Excel: Ke hoach mua sam
+	excelDonDatHang : function(orderioid)
+	{
+		var url      = sz_BaseUrl + '/static/M415/dondathang';
+		var planIOID = parseInt($('#plan_ioid').val());
+
+		window.open(url+'?popup=1&planioid='+planIOID+'&orderioid='+orderioid,"");
+	},
+
+	excelPhuLucHopDong : function(orderioid)
+	{
+		var url      = sz_BaseUrl + '/static/M415/phuluchopdong';
+		var planIOID = parseInt($('#plan_ioid').val());
+
+		window.open(url+'?popup=1&planioid='+planIOID+'&orderioid='+orderioid,"");
+	},
+
+	excelDanhGiaNCC : function()
+	{
+		var url      = sz_BaseUrl + '/static/M415/danhgiancc';
+		var planIOID = parseInt($('#plan_ioid').val());
+
+		window.open(url+'?popup=1&planioid='+planIOID,"");
+	},
+
+	excelThongBaoXuLy : function()
+	{
+		var url      = sz_BaseUrl + '/static/M415/thongbaoxuly';
+		var planIOID = parseInt($('#plan_ioid').val());
+        var session  = $('#session_ifid').val();
+
+		window.open(url+'?popup=1&planioid='+planIOID+'&session='+session,"");
+	},
+
+
+	// Hiển thị các session mua hàng của nhân viên
+    showSessions : function ()
+    {
+    	var url  = sz_BaseUrl + '/static/M415/show';
+    	var data = {
+			start:$('#input_start_date').val()
+			, end:$('#input_end_date').val()
+			, page: $('#qss_form_pageno').val()
+			, perpage: $('#qss_form_perpage').val()
+		};
+
+    	qssAjax.getHtml(url, data, function(jreturn) {
+    		$('#M415_show').html(jreturn);
+    	}); 
+    },
+
+	// Tạo session xử lý mua hàng
+	createSession : function() {
+    	var url  = sz_BaseUrl + '/static/M415/save';
+    	var data = {};
+
+		qssAjax.call(url, data, function(jreturn) {
+			if(jreturn.message != '')
+			{
+				qssAjax.notice(jreturn.message);
+			}
+
+			// Chỉnh sửa lại session vừa tạo
+			if(jreturn.status)
+			{
+				M415.editSession(jreturn.status)
+			}
+		}, function(jreturn) {
+			qssAjax.alert(jreturn.message);
+		});
+	},
+
+	// Nhap yeu cau tu excel <lay lai cac yeu cau bang uid>, chi cho nhap khi chua lap ke hoach
+    importRequests : function(fid, deptid)
+    {
+	    if(!fid) fid = 'M412'; // Yeu cau mua sam
+
+		var url  = sz_BaseUrl + '/user/import/form';
+		var data = {fid:fid, deptid:deptid};
+		var step = parseInt($('#db_step_no').val());
+
+		if(step < 5 && step >= 1)
+		{
+			qssAjax.getHtml(url, data, function(jreturn) {
+				$('#M415_import_requests').html(jreturn);
+				$('#M415_import_requests').dialog({
+					width: 800
+					,height:400
+					, close: function() {
+						// Hiển thị lại những yêu cầu trong session sau khi luu cac yeu cau vao session
+						// M415.saveRequests();
+				    	M415.step1.index();
+				    	$(this).dialog('destroy');
+					}
+				});
+			});	 			
+		}
+		else
+		{
+			qssAjax.alert('Phiên xử lý đã lập xong kế hoạch mua sắm, không cho nhập thêm yêu cầu!');
+		}
+   
+    },		
+
+    importQuotations : function(fid, deptid)
+    {
+	    if(!fid) fid = 'M406'; 
+
+		var url  = sz_BaseUrl + '/user/import/form';
+		var data = {fid:fid, deptid:deptid};
+
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#M415_import_quotations').html(jreturn);
+			$('#M415_import_quotations').dialog({
+				width: 800
+				,height:400
+				, close: function() {
+					// Hiển thị lại những yêu cầu trong session sau khi luu cac yeu cau vao session
+					M415.loadStep(6);
+					$(this).dialog('destroy');
+				}
+			});
+		});	 			
+    },	    
+
+    // Luu cac yeu cau chua luu vao session vao session
+    saveRequests : function(sessionIFID)
+    {
+        if(!sessionIFID)
+        {
+        	sessionIFID = $('#session_ifid').val();
+        }
+
+		var url    = sz_BaseUrl + '/static/M415/saverequests';
+		var data   = $('#M405_request_compare_form').serialize() + '&sessionifid=' + sessionIFID;
+
+		qssAjax.call(url, data, function(jreturn) {
+			if(jreturn.message != '')
+			{
+				qssAjax.notice(jreturn.message);
+			}
+
+			// Hien thi lai step hien tai
+
+		}, function(jreturn) {
+			qssAjax.alert(jreturn.message);
+		});       
+    },	
+
+	// Chỉnh sửa một session
+	editSession : function(sessionIFID)
+	{
+    	var url  = sz_BaseUrl + '/static/M415/edit';
+    	var data = {'sessionifid': sessionIFID};
+    	
+    	qssAjax.getHtml(url, data, function(jreturn) {
+    		$('#M415_show').html(jreturn);
+    	}); 		
+	},  
+
+	deleteSession : function(sessionIFID)
+	{
+    	var url  = sz_BaseUrl + '/static/M415/delete';
+    	var data = {'sessionifid': sessionIFID};
+
+    	qssAjax.confirm('Bạn muốn xóa xử lý mua hàng này không?',function(){
+    		qssAjax.call(url, data, function(jreturn) {
+    			if(jreturn.message != '')
+    			{
+    				qssAjax.notice(jreturn.message);
+    			}
+    			M415.showSessions();
+    		}, function(jreturn) {
+    			qssAjax.alert(jreturn.message);
+    		});  
+    	});    		
+	}, 
+
+	reset : function(sessionIFID)
+	{
+    	if(!sessionIFID)
+        {
+        	sessionIFID = $('#session_ifid').val();
+        }		
+
+		var url    = sz_BaseUrl + '/static/M415/reset';
+		var data   = {'sessionifid':sessionIFID};	    
+
+    	qssAjax.confirm('Bạn có thực sự muốn làm lại không? Nếu làm lại các dữ liệu về kế hoạch, báo giá, đơn hàng đã tạo trước đó sẽ bị xóa đi.',function(){
+    		qssAjax.call(url, data, function(jreturn) {
+    			if(jreturn.message != '')
+    			{
+    				qssAjax.notice(jreturn.message);
+    			}
+    			M415.updateStep(1);
+    		}, function(jreturn) {
+    			qssAjax.alert(jreturn.message);
+    		});  
+    	});	
+	},
+
+	loadControl : function(stepTo, sessionIFID)
+	{
+		if(!sessionIFID)
+		{
+			sessionIFID = $('#session_ifid').val();
+		}
+
+    	var url  = sz_BaseUrl + '/static/M415/control';
+    	var data = {step:parseInt($('#db_step_no').val()), stepto:stepTo, sessionifid:sessionIFID};
+
+
+    	
+    	qssAjax.getHtml(url, data, function(jreturn) {
+    		$('#M415_edit_control').html(jreturn);
+    	}); 	    
+	},
+
+	// Load du lieu theo step hien thoi goi tai edit.phtml, sau khi load update lai tinh trang hien tai
+	loadStep : function(stepNo)
+	{
+	    if(!stepNo) stepNo = 1;
+
+	    var dbStepNo = parseInt($('#db_step_no').val());
+	    stepNo       = parseInt(stepNo);
+
+//	    if(stepNo > dbStepNo)
+//	    {
+//	    	qssAjax.notice('Bạn chưa đến bước này!');
+//	    	return;
+//	    }
+
+	    // Danh dau buoc hien tai;
+	    M415.markStep(dbStepNo);
+	    
+	    $('.steps li.step').each(function(){ $(this).find('a').removeClass('selected_step');});
+	    $('.steps li.step-'+ stepNo +' a').addClass('selected_step');
+
+	    switch(stepNo)
+	    {
+    	    case 1:
+	    	   M415.step1.index();
+    	    break;
+
+    	    case 2:
+ 	    	   M415.step2.index();
+     	    break;   
+
+    	    case 3:
+  	    	   M415.step3.index();
+      	    break;  
+
+    	    case 4:
+   	    	   M415.step4.index();
+       	    break;   
+
+    	    case 5:
+   	    	   M415.step5.index();
+       	    break;      
+
+    	    case 6:
+	    	   M415.step6.index();
+    	    break;   
+
+    	    case 7:
+ 	    	   M415.step7.index();
+     	    break;  
+
+    	    case 8:
+ 	    	   M415.step8.index();
+     	    break;     
+
+     	    default:
+     	    	M415.step1.index();
+     	    break;      	        	    
+	    }
+
+	    M415.loadControl(stepNo);
+
+	    // Cap nhat buoc dang lam viec vao the input
+	    M415.changeStep(stepNo);
+	},
+
+	// Ghi lai step chuyen den vao the input de load lai trang neu can
+	changeStep : function(toStep)
+	{
+        if(!toStep || toStep > M415.totalStep || toStep < 1)
+        {
+        	return;
+        }		
+
+		// Cap nhat lai gia tri step vao trong the input
+		$('#step_no').val(toStep);        
+	},
+
+	// Chuyen sang buoc tiep theo
+	next : function()
+	{
+	   var toStep   = parseInt($('#db_step_xu_ly').val()) + 1;
+	   var curStep  = parseInt($('#db_step_xu_ly').val());
+
+        var viewCurStep = parseInt($('#db_step_no').val());
+
+        if(viewCurStep != curStep)
+        {
+            M415.updateStep(toStep);
+            return;
+        }
+
+
+		if(curStep == 4)
+		{
+			toStep++; // bỏ qua bước chào giá
+		}
+
+       if(!toStep || toStep > (M415.totalStep+1) || toStep < 1)
+       {
+           return;
+       }
+       
+       if(curStep == 1)
+       {
+
+    	   M415.step1.onNext();
+       }
+       else if(curStep == 2) // Chuyen tu buoc 2
+       {
+           // Update vao don hang neu co chon
+           // Thong bao co muon bo qua buoc nay neu ko chon gi ca
+           // Chuyen sang buoc ket thuc neu du item <Ko quan tam so luong>, neu ko du chuyen sang buoc tiep theo
+           M415.step2.createOrder();
+       }
+       else if(curStep == 3)
+       {
+           // Update vao don hang neu co chon
+           // Thong bao co muon bo qua buoc nay neu ko chon gi ca
+           // Chuyen sang buoc ket thuc neu du item <Ko quan tam so luong>, neu ko du chuyen sang buoc tiep theo
+           M415.step3.createOrder();
+       }     
+       else if(curStep == 4)
+       {
+           M415.step4.onNext();
+       }  
+       else if(curStep ==  7)
+       {
+    	   M415.step7.createOrder3();
+       }
+	   else if(curStep == 8)
+	   {
+		   M415.updateStep(toStep);
+	   }
+       else
+       {
+    	   M415.updateStep(toStep);
+       }
+	},
+
+	// Chuyen ve buoc truoc do
+	back : function()
+	{
+	   var toStep = parseInt($('#db_step_no').val()) - 1;
+	   var curStep  = parseInt($('#db_step_no').val());
+
+		if(curStep == 6)
+		{
+			toStep--; // bo qua buoc chao gia
+		}
+
+
+       if(!toStep || toStep > M415.totalStep || toStep < 1)
+       {
+           return;
+       }		   
+
+       if(curStep == 1)
+       {
+    	   M415.step4.onBack();
+       }
+       else
+       {
+    	   M415.updateStep(toStep);
+       }
+	},	
+
+	// Chuyen tinh trạng của session <Ghi vao csdl>
+	updateStep : function(toStep, nextStep)
+	{
+        if(!toStep || toStep > M415.totalStep || toStep < 1)
+        {
+        	return;
+
+        }
+
+        if(nextStep == undefined)
+        {
+            nextStep = toStep;
+        }
+
+        nextStep     = nextStep < M415.totalStep?nextStep:M415.totalStep;
+        nextStep     = nextStep >= 1?nextStep:1;
+
+		var url      = sz_BaseUrl + '/static/M415/updatestep';
+		var data     = {'tostep':toStep, 'tostepxuly':nextStep , 'sessionifid':$('#session_ifid').val()};
+
+		qssAjax.call(url, data, function(jreturn) {
+			if(jreturn.message != '')
+			{
+				qssAjax.notice(jreturn.message);
+			}
+
+			// Cap nhat lai gia tri step vao trong the input, phai ghi truoc loadStep de hien thi thong bao dung
+			$('#db_step_no').val(toStep);
+            $('#db_step_xu_ly').val(nextStep);
+
+			M415.loadStep(toStep);
+		    M415.markStep(toStep);
+
+
+		}, function(jreturn) {
+			qssAjax.alert(jreturn.message);
+		});
+	},
+
+	//  Danh dau buoc hien tai (Buoc da duoc luu trong csdl)
+	markStep : function(toStep)
+	{
+        if(!toStep || toStep > M415.totalStep || toStep < 1)
+        {
+        	return;
+        }	
+		
+        $('.steps .tick').each(function(){ $(this).hide(); });
+        $('.steps .tick-'+parseInt(toStep)).show();   
+	},
+
+	/**
+	 * STEP1: Nhập yêu cầu
+	 */
+	 step1 : {
+		// Hien thi thong tin chinh cua step 1
+	    index : function(sessionIFID)
+	    {
+	    	if(!sessionIFID)
+	        {
+	        	sessionIFID = $('#session_ifid').val();
+	        }
+		    		    
+	    	var url  = sz_BaseUrl + '/static/M415/step1/index';
+	    	var data = {sessionifid:sessionIFID};
+	    	
+	    	qssAjax.getHtml(url, data, function(jreturn) {
+	    		$('#M415_edit_show').html(jreturn);
+	    	}); 	        
+	    },
+
+        saveRequests : function()
+        {
+            M415.saveRequests();
+            M415.loadStep(1);
+        },
+
+	    onNext : function()
+	    {
+	        var num       = $('.M415_request_no').length;
+	        var num2      = $('.M415_request_item').length;
+			var selected  = $('.cwpo_line_checkbok_val[value="1"]').length
+			var promise1  = [];
+
+	        if(selected == 0)
+	        {
+        	   qssAjax.alert('Yêu cầu mua sắm bắt buộc!');
+	        }
+	        else if(num2 == 0)
+	        {
+	        	qssAjax.alert('Danh mục mặt hàng yêu cầu mua sắm bắt buộc!');
+	        }
+	        else
+	        {
+				var p = M415.saveRequests();
+                promise1.push(p);
+
+				$.when.apply($, promise1).done(function(){
+					M415.updateStep(2, 2);
+				});
+	        }
+	    }, 	    
+
+	    // Xoa request chi o buoc 1
+	    delete: function(requestIFID, requestIOID, sessionIFID)
+	    {
+	    	if(!sessionIFID)
+	        {
+	        	sessionIFID = $('#session_ifid').val();
+	        }
+		    
+	        var url  = sz_BaseUrl + '/static/M415/step1/delete';
+	    	var data = {requestIFID:requestIFID, requestIOID:requestIOID, sessionIFID: sessionIFID};
+		    
+			qssAjax.call(url, data, function(jreturn) {
+				if(jreturn.message != '')
+				{
+					qssAjax.notice(jreturn.message);
+				}
+
+			    M415.loadStep(1);
+			}, function(jreturn) {
+				qssAjax.alert(jreturn.message);
+			}); 	        		    
+	    }
+	 },
+
+	/**
+	 * STEP2: Kiểm tra hợp đòng
+	 */
+	 step2 : {
+		// Hien thi thong tin chinh cua step 1
+	    index : function(sessionIFID)
+	    {
+	        if(!sessionIFID)
+	        {
+	        	sessionIFID = $('#session_ifid').val();
+	        }
+	        
+	    	var url  = sz_BaseUrl + '/static/M415/step2/index';
+	    	var data = {sessionifid:sessionIFID};
+	    	
+	    	qssAjax.getHtml(url, data, function(jreturn) {
+	    		$('#M415_edit_show').html(jreturn);
+	    	}); 	        
+	    },
+
+//		uncheckSame(ele)
+//		{
+//			var val = $(ele).fi
+//		},
+
+	    createOrder: function()
+	    {
+	    	var url        = sz_BaseUrl + '/static/M415/step2/createorder';
+        	var data       = $('#M415_agrrement').serialize() + '&sessionifid=' + parseInt($('#session_ifid').val());
+        	var data2      = common_url_to_array(data);
+        	var AllQtyZero = 1; 
+
+        	if(data2.itemioid === undefined)
+        	{
+            	qssAjax.alert('Bạn cần chọn ít nhất một mặt hàng để tạo đơn hàng!');	
+        	}
+        	else
+        	{
+            	for(i in data2.qty)
+            	{
+                	if(data2.qty[i] != 0)
+                	{
+                		AllQtyZero = 0;
+                	}
+            	}  
+
+            	if(AllQtyZero == 1)
+            	{
+                	qssAjax.alert('Bạn cần có ít nhất mặt hàng có số lượng lớn hơn 0 để tạo đơn hàng!');
+                	return;                	
+            	}    
+
+            	qssAjax.confirm('Bạn có thực sự muốn tạo đơn hàng từ hợp đồng nguyên tắc?',function(){
+            		qssAjax.call(url, data, function(jreturn) {
+            			if(jreturn.message != '')
+            			{
+            				qssAjax.notice(jreturn.message);
+            			}
+
+						M415.updateStep(8, 2);
+//            			// Tai lai buoc tiep theo
+//            			if(jreturn.status == 1)
+//            			{
+//            				M415.updateStep(8);
+//            			}
+//            			else
+//            			{
+//            				M415.updateStep(3);
+//            			}
+            		}, function(jreturn) {
+            			qssAjax.alert(jreturn.message);
+            		});
+            	});	            	      	
+        	}          	
+	    },
+
+        changeTotalAmount: function(ele)
+        {
+            var qty       = $(ele).val();
+            var unitprice = $(ele).parent().parent().find('.M415_agreement_unitprice').val();
+            var ret       = common_format_money(qty * unitprice);
+
+            $(ele).parent().parent().find('.M415_agreement_totalamount').text('').text(ret);
+        }	       
+	 },
+
+	/**
+	 * STEP3: Kiểm tra đơn hàng
+	 */
+	 step3 : {
+		// Hien thi thong tin chinh cua step 1
+	    index : function(sessionIFID)
+	    {
+	        if(!sessionIFID)
+	        {
+	        	sessionIFID = $('#session_ifid').val();
+	        }
+		    
+	    	var url  = sz_BaseUrl + '/static/M415/step3/index';
+	    	var data = {sessionifid:sessionIFID};
+	    	
+	    	qssAjax.getHtml(url, data, function(jreturn) {
+	    		$('#M415_edit_show').html(jreturn);
+	    	}); 	        
+	    },
+
+
+	    loadOrders2 : function(getBy)
+	    {
+    	   if(!getBy)
+    	   {
+        	   getBy = parseInt($('#M415_step3_option').val());
+    	   }
+
+    	   M415.step3.loadOrders(getBy);
+	    }, 
+
+	    loadOrders : function(getBy, sessionIFID, sessionDate)
+	    {
+		    // Lay theo loai nao <gia re nhat, thoi gian ngan nhat, gan nhat>
+	        if(getBy)
+	        {
+	        	// Luu lai vao cookie de sang phien khac van chon theo dieu kien nay
+	        	$.cookie("getOrdersBy", getBy);
+	        }
+	        else
+	        {
+		        if($.cookie("getOrdersBy"))
+		        {
+		            getBy = $.cookie("getOrdersBy");
+		        }
+		        else
+		        {
+			        getBy = 1;
+		        }
+	        }
+
+	        
+	        
+
+	        // Chuyen ve so int <so bi chuyen thanh string o day>
+	        getBy = parseInt(getBy);
+	        
+	        // IFID cua session can xu ly
+	        if(!sessionIFID)
+	        {
+	        	sessionIFID = $('#session_ifid').val();
+	        }	  
+
+	        // Ngay can cu lay gia
+	        if(!sessionDate)
+	        {
+	        	sessionDate = $('#session_date').val();
+	        }	             
+
+
+	    	switch(getBy)
+	    	{
+                case 1: // Don hang gan nhat
+                    M415.step3.getLastestOrders(sessionIFID, sessionDate);
+                break;
+
+                case 2: // Don hang gia thap nhat
+                    M415.step3.getCheapestOrders(sessionIFID, sessionDate);
+                break;     
+
+                case 3: // Don hang thoi gian giao ngan nhat
+                	M415.step3.getFastestOrders(sessionIFID, sessionDate);
+                break;       
+
+                default: // Don hang gan nhat
+                	M415.step3.getLastestOrders(sessionIFID, sessionDate);
+                break;                       
+	    	}
+	    },
+
+	    // Lấy các đơn hàng gần nhất
+	    getLastestOrders : function(sessionIFID, sessionDate)
+	    {
+	        if(!sessionIFID)
+	        {
+	        	sessionIFID = $('#session_ifid').val();
+	        }
+
+	        // Ngay can cu lay gia
+	        if(!sessionDate)
+	        {
+	        	sessionDate = $('#session_date').val();
+	        }		        
+		    
+	    	var url  = sz_BaseUrl + '/static/M415/step3/lastestorders';
+	    	var data = {sessionifid:sessionIFID, sessiondate:sessionDate, from_date: $('#from_date').val()};
+	    	
+	    	qssAjax.getHtml(url, data, function(jreturn) {
+	    		$('#M415_step3_show').html(jreturn);
+	    	});
+	    },
+
+	    // Lấy các đơn hàng rẻ nhất
+	    getCheapestOrders : function(sessionIFID, sessionDate)
+	    {
+	        if(!sessionIFID)
+	        {
+	        	sessionIFID = $('#session_ifid').val();
+	        }
+
+	        // Ngay can cu lay gia
+	        if(!sessionDate)
+	        {
+	        	sessionDate = $('#session_date').val();
+	        }		        
+		    
+	    	var url  = sz_BaseUrl + '/static/M415/step3/cheapestorders';
+	    	var data = {sessionifid:sessionIFID, sessiondate:sessionDate, from_date: $('#from_date').val()};
+	    	
+	    	qssAjax.getHtml(url, data, function(jreturn) {
+	    		$('#M415_step3_show').html(jreturn);
+	    	}); 
+	    },
+
+	    // Lấy các đơn hàng giao hàng nhanh nhất
+	    getFastestOrders : function(sessionIFID, sessionDate)
+	    {
+	        if(!sessionIFID)
+	        {
+	        	sessionIFID = $('#session_ifid').val();
+	        }
+
+	        // Ngay can cu lay gia
+	        if(!sessionDate)
+	        {
+	        	sessionDate = $('#session_date').val();
+	        }		        
+		    
+	    	var url  = sz_BaseUrl + '/static/M415/step3/fastestorders';
+	    	var data = {sessionifid:sessionIFID, sessiondate:sessionDate, from_date: $('#from_date').val()};
+	    	
+	    	qssAjax.getHtml(url, data, function(jreturn) {
+	    		$('#M415_step3_show').html(jreturn);
+	    	}); 
+	    },
+
+	    createOrder: function()
+	    {
+	    	var url        = sz_BaseUrl + '/static/M415/step3/createorder';
+        	var data       = $('#M415_order').serialize() + '&sessionifid=' + parseInt($('#session_ifid').val());
+        	var data2      = common_url_to_array(data);
+        	var AllQtyZero = 1;         	
+
+        	if(data2.itemioid == undefined)
+        	{
+            	qssAjax.alert('Bạn cần chọn ít nhất một mặt hàng để tạo đơn hàng!');	
+        	}
+        	else
+        	{
+            	for(i in data2.qty)
+            	{
+                	if(data2.qty[i] != 0)
+                	{
+                		AllQtyZero = 0;
+                	}
+            	}  
+
+            	if(AllQtyZero == 1)
+            	{
+                	qssAjax.alert('Bạn cần có ít nhất mặt hàng có số lượng lớn hơn 0 để tạo đơn hàng!');
+                	return;                	
+            	}    
+
+            	qssAjax.confirm('Bạn có thực sự muốn tạo đơn hàng từ đơn hàng trong sáu tháng gần đây?',function(){
+            		qssAjax.call(url, data, function(jreturn) {
+            			if(jreturn.message != '')
+            			{
+            				qssAjax.notice(jreturn.message);
+            			}
+
+						M415.updateStep(8, 3);
+//
+//            			// Tai lai buoc tiep theo
+//            			if(jreturn.status == 1)
+//            			{
+//            				M415.updateStep(8);
+//            			}
+//            			else
+//            			{
+//            				M415.updateStep(4);
+//            			}
+            		}, function(jreturn) {
+            			qssAjax.alert(jreturn.message);
+            		});
+            	});	            	      	
+        	}          	
+	    }
+	 },	
+
+    /**
+     * STEP4: Lập KHMS
+     */
+     step4 : {
+    	// Hien thi thong tin chinh cua step 1
+        index : function(sessionIFID, planIOID)
+        {
+	        if(!sessionIFID)
+	        {
+	        	sessionIFID = parseInt($('#session_ifid').val());
+	        }
+
+			if(!planIOID)
+			{
+				planIOID = parseInt($('#plan_ioid').val());
+			}
+            
+        	var url  = sz_BaseUrl + '/static/M415/step4/index';
+        	var data = {sessionifid:sessionIFID, planioid: planIOID};
+        	
+        	qssAjax.getHtml(url, data, function(jreturn) {
+        		$('#M415_edit_show').html(jreturn);
+				// M415.step4.loadQuotations();
+        	}); 	        
+        },
+
+        onBack : function()
+        {
+            var approved = parseInt($('#M415_plan_step').val());
+            var back     = true;
+
+            if(approved == 2)
+            {
+            	qssAjax.notice('Kế hoạch đã được duyệt, không thể quay lại!');
+            	back = false;                
+            }
+
+            if(back)
+            {
+                M415.updateStep(4, 4);
+            }
+            else
+            {
+            	return;
+            }            
+        }, 
+
+        onNext : function()
+        {
+            var saved    = parseInt($('#plan_ioid').val());
+            var approved = parseInt($('#M415_plan_step').val());
+            var next     = true;
+
+
+            if(saved == 0)
+            {
+            	qssAjax.alert('Kế hoạch chưa được lưu lại');
+            	next = false;
+            }
+
+            if(approved == 1)
+            {
+            	qssAjax.alert('Kế hoạch chưa được duyệt');
+            	next = false;                
+            }
+
+            if(next)
+            {
+                M415.updateStep(6, 6);
+            }
+            else
+            {
+            	return;
+            }
+        },
+
+		removeQuote : function(refMaNCC)
+		{
+			$('.M415_step5_supplier[supplier='+refMaNCC+']').remove();
+		},
+
+        savePlan : function()
+        {
+        	var url   = sz_BaseUrl + '/static/M415/step4/saveplan';
+        	var data  = $('#M415_step4_plan_form').serialize() + '&sessionifid='
+				+ parseInt($('#session_ifid').val()) + '&planioid=' + parseInt($('#plan_ioid').val());
+        	var data2 = common_url_to_array(data);
+        	var AllQtyZero = 1; 
+        	var alertMess  = '';
+
+        	if(data2.itemioid == undefined)
+        	{
+        		alertMess += 'Bạn cần chọn ít nhất một mặt hàng để lập kế hoạch!\n';
+        	}
+        	else
+        	{
+            	for(i in data2.qty)
+            	{
+                	if(data2.qty[i] != 0)
+                	{
+                		AllQtyZero = 0;
+                	}
+            	}  
+
+            	if(AllQtyZero == 1)
+            	{
+            		alertMess += 'Bạn cần có ít nhất mặt hàng có số lượng lớn hơn 0 để lập kế hoạch!\n';
+            	}          	
+        	}
+
+            if(alertMess != '')
+            {
+            	qssAjax.alert(alertMess);
+            }
+
+        	qssAjax.confirm('Bạn có thực sự muốn tạo kế hoạch này?',function(){
+        		qssAjax.call(url, data, function(jreturn) {
+        			if(jreturn.message != '')
+        			{
+        				qssAjax.notice(jreturn.message);
+        			}
+
+        			// Load lai step hien tai
+        			M415.loadStep(4);
+
+        		    // Cap nhat lai ioid cua plan tren input
+        		    $('#plan_ioid').val(jreturn.status);
+        		}, function(jreturn) {
+        			qssAjax.alert(jreturn.message);
+        		});
+        	});            
+        },
+
+        // Duyet ke hoach
+        approvePlan : function()
+        {
+        	var url   = sz_BaseUrl + '/static/M415/step4/approveplan';
+        	var data  = $('#M415_step4_plan_form').serialize() + '&sessionifid=' + parseInt($('#session_ifid').val()) + '&planioid=' + parseInt($('#plan_ioid').val());
+            
+        	qssAjax.confirm('Bạn có thực sự muốn duyệt kế hoạch này?',function(){
+        		qssAjax.call(url, data, function(jreturn) {
+        			if(jreturn.message != '')
+        			{
+        				qssAjax.notice(jreturn.message);
+        			}
+        		    
+        			// Load lai step hien tai
+        			M415.loadStep(4);
+        			
+        		}, function(jreturn) {
+        			qssAjax.alert(jreturn.message);
+        		});
+        	});  
+        },
+
+        deletePlan : function(sessionIFID)
+        {
+        	if(!sessionIFID)
+            {
+            	sessionIFID = $('#session_ifid').val();
+            }		
+
+    		var url    = sz_BaseUrl + '/static/M415/reset';
+    		var data   = {'sessionifid':sessionIFID};	    
+
+        	qssAjax.confirm('Bạn có thực sự muốn xóa kế hoạch? Nếu xóa kế hoạch thì các báo giá, đơn hàng theo kế hoạch đã tạo trước đó sẽ bị xóa đi.',function(){
+        		qssAjax.call(url, data, function(jreturn) {
+        			if(jreturn.message != '')
+        			{
+        				qssAjax.notice(jreturn.message);
+        			}
+        			
+        		    // Cap nhat lai ioid cua plan tren input
+        		    $('#plan_ioid').val(0);
+        			
+        			M415.updateStep(4);
+        		}, function(jreturn) {
+        			qssAjax.alert(jreturn.message);
+        		});  
+        	});	
+        },
+
+		loadQuotations : function(sessionIFID)
+		{
+			if(!sessionIFID)
+			{
+				sessionIFID = $('#session_ifid').val();
+			}
+
+			var url  = sz_BaseUrl + '/static/M415/step4/quotation';
+			var data = {sessionifid:sessionIFID};
+
+			qssAjax.getHtml(url, data, function(jreturn) {
+				$('#M415_plan_quotation').html(jreturn);
+			});
+		},
+
+		showAddQuotationScreen : function(sessionIFID)
+		{
+			if(!sessionIFID)
+			{
+				sessionIFID = $('#session_ifid').val();
+			}
+
+			var url  = sz_BaseUrl + '/static/M415/step4/quotation1';
+			var data = {sessionifid:sessionIFID};
+
+			qssAjax.getHtml(url, data, function(jreturn) {
+				$('#M411_step5_add_quotation').html(jreturn);
+				$('#M411_step5_add_quotation').dialog({width: 800, height: 400});
+			});
+		},
+
+		createQuotation : function()
+		{
+			var url  = sz_BaseUrl + '/static/M415/step4/createquoation';
+			var data = $('#M415_step5_quotation1_form').serialize();
+
+
+			var selectedVal  = parseInt($('#M415_step5_control #partnerioid option:selected').val());
+			var selectedText = $('#M415_step5_control #partnerioid  option:selected').text();
+			var html         = '';
+			var exists       = $('.M415_step5_supplier[supplier="'+selectedVal+'"]').length;
+
+			if(exists != 0)
+			{
+				qssAjax.alert('Đã thêm chào giá cho nhà cung cấp trước đó.');
+				return;
+			}
+
+			if(selectedVal != 0 && exists == 0)
+			{
+				html += '<tr class="M415_step5_supplier" supplier="'+selectedVal+'" saved="0">';
+				html += '<td class="bold left">'+ selectedText;
+				html += '<input type="hidden" name="supplier[]" value="'+selectedVal+'" />';
+				html += '<input type="hidden" name="supplier_saved[]" value="0" />';
+				html += '</td>';
+				html += '<td class="center little_padding"><button type="button" class="btn btn-disabled" disabled> Thư mời chào giá </button></td>';
+				html += '<td class="center little_padding"><button type="button" onclick="M415.step4.removeQuote('+selectedVal+')" class="btn btn-custom"> Xóa chào giá </button></td>';
+				html += '</tr>';
+				$('#m415_quotation_storage table').append(html);
+			}
+		}
+     },	
+
+    /**
+     * STEP5: Chào giá
+     */
+     step5 : {
+    	// Hien thi thong tin chinh cua step 1
+        index : function(sessionIFID, planIOID)
+        {
+	        if(!sessionIFID)
+	        {
+	        	sessionIFID = $('#session_ifid').val();
+	        }
+
+	        if(!planIOID)
+	        {
+	        	planIOID = $('#plan_ioid').val();
+	        }	        
+            
+        	var url  = sz_BaseUrl + '/static/M415/step5/index';
+        	var data = {sessionifid:sessionIFID};
+        	
+        	qssAjax.getHtml(url, data, function(jreturn) {
+        		$('#M415_edit_show').html(jreturn);
+        	}); 	        
+        },
+
+        showAddQuotationScreen : function(sessionIFID)
+        {
+	        if(!sessionIFID)
+	        {
+	        	sessionIFID = $('#session_ifid').val();
+	        }
+            
+        	var url  = sz_BaseUrl + '/static/M415/step5/quotation';
+        	var data = {sessionifid:sessionIFID};
+        	
+        	qssAjax.getHtml(url, data, function(jreturn) {
+        		$('#M411_step5_add_quotation').html(jreturn);
+        		$('#M411_step5_add_quotation').dialog({width: 800, height: 400});
+        	}); 
+        },
+
+        createQuotation : function()
+        {
+        	var url  = sz_BaseUrl + '/static/M415/step5/createquoation';
+        	var data = $('#M415_step5_quotation1_form').serialize();
+
+        	qssAjax.confirm('Bạn có thực sự muốn thêm chào giá này?',function(){
+        		qssAjax.call(url, data, function(jreturn) {
+        			if(jreturn.message != '')
+        			{
+        				qssAjax.notice(jreturn.message);
+        			}
+        		    
+        			// Load lai step hien tai
+        			M415.loadStep(5);
+        			
+        		}, function(jreturn) {
+        			qssAjax.alert(jreturn.message);
+        		});
+        	});              
+        }
+     },    
+
+     /**
+      * STEP6: Nhập báo giá
+      */
+      step6 : {
+     	// Hien thi thong tin chinh cua step 1
+         index : function(sessionIFID, partnerIOID,planIOID)
+         {
+ 	        if(!sessionIFID)
+	        {
+	        	sessionIFID = $('#session_ifid').val();
+	        }
+
+ 	        if(!partnerIOID)
+	        {
+ 	        	partnerIOID = $('#partnerioid2').val();
+	        }
+
+			 if(!planIOID)
+			 {
+				 planIOID = $('#plan_ioid').val();
+			 }
+
+			 var url  = sz_BaseUrl + '/static/M415/step6/index';
+        	 var data = {sessionifid:sessionIFID, partnerioid:partnerIOID, planioid: planIOID};
+        	
+        	qssAjax.getHtml(url, data, function(jreturn) {
+        		$('#M415_edit_show').html(jreturn);
+
+        		// Hien thi danh sach bao gia
+        		M415.step6.show();
+        	}); 	        
+         },
+
+         // Hien thi man hinh them bao gia
+         show : function(sessionIFID, partnerIOID, planIOID)
+         {
+ 	        if(!sessionIFID)
+	        {
+	        	sessionIFID = $('#session_ifid').val();
+	        }
+
+ 	        if(!partnerIOID)
+	        {
+ 	        	partnerIOID = $('#partnerioid2').val();
+	        }
+
+			if(!planIOID)
+			{
+				planIOID = $('#plan_ioid').val();
+			}
+
+             
+         	var url  = sz_BaseUrl + '/static/M415/step6/show';
+        	var data = {sessionifid:sessionIFID, partnerioid:partnerIOID, planioid:planIOID};
+        	
+        	qssAjax.getHtml(url, data, function(jreturn) {
+        		$('#M415_step6_show').html(jreturn);
+        	}); 
+         },
+
+         save : function()
+         {
+         	var url  = sz_BaseUrl + '/static/M415/step6/save';
+        	var data = $('#M415_step6_quotation_form').serialize() ;
+            
+        	qssAjax.confirm('Bạn có thực sự muốn lưu lại?',function(){
+        		qssAjax.call(url, data, function(jreturn) {
+        			if(jreturn.message != '')
+        			{
+        				qssAjax.notice(jreturn.message);
+        			}
+        		    
+        			// Load lai step hien tai
+        			M415.step6.show();
+        			
+        		}, function(jreturn) {
+        			qssAjax.alert(jreturn.message);
+        		});
+        	}); 
+         },
+
+		 validSupplier : function(ele, refSupplier)
+		 {
+			 if($(ele).is(':checked'))
+			 {
+				$('.Supplier_'+refSupplier).val(1);
+			 }
+			 else
+			 {
+				 $('.Supplier_'+refSupplier).val(0);
+			 }
+		 },
+
+		 validSupplier2 : function()
+		 {
+			 var supplier = 0;
+			 var pass     = 0;
+
+			$('.Invalid_Supplier').each(function(){
+				supplier  = parseInt($(this).attr('supplier'));
+				pass      = 0;
+				passQty   = $('.Supplier_'+supplier+'[value="0"]').length;
+
+				if(passQty == 0)
+				{
+					$(this).attr('checked', true);
+				}
+			});
+		 }
+
+      },     
+
+      /**
+       * STEP7: So sánh báo giá
+       */
+       step7 : {
+    	    // Hien thi thong tin chinh cua step 1
+            index : function(sessionIFID, planIOID)
+            {
+                if(!sessionIFID)
+                {
+                	sessionIFID = $('#session_ifid').val();
+                }
+
+				if(!planIOID)
+				{
+					planIOID = $('#plan_ioid').val();
+				}
+
+				var url  = sz_BaseUrl + '/static/M415/step7/index';
+            	var data = {sessionifid:sessionIFID, planioid:planIOID};
+            	
+            	qssAjax.getHtml(url, data, function(jreturn) {
+            		$('#M415_edit_show').html(jreturn);
+
+					M415.step7.compare();
+            	});                 
+            },
+
+            compare : function(sessionIFID, planIOID)
+            {
+                if(!sessionIFID)
+                {
+                	sessionIFID = $('#session_ifid').val();
+                }
+                
+                if(!planIOID)
+                {
+                	planIOID = $('#plan_ioid').val();
+                }	        
+                
+                var url  = sz_BaseUrl + '/static/M415/step7/compare';
+                var data = $('#M415_compare_cond').serialize() + '&sessionifid='+sessionIFID + '&planioid='+planIOID;
+                
+                qssAjax.getHtml(url, data, function(jreturn) {
+                	$('#M415_compare_show').html(jreturn);
+                });                   
+            },
+            
+
+            checkAllOnePartner : function(ele, formID)
+            {
+                var no_check; 
+                formID = parseInt(formID);
+
+                $('.M415_partner_check_all').each(function(){
+                    var tempVal = parseInt($(this).val());
+                    if(formID != tempVal)
+                    {
+                        $(this).prop('checked', false);
+                        $('.table_line_disabled_'+tempVal).each(function(){ $(this).attr('disabled', true); });
+                        $('.marker_'+tempVal).removeClass('marker_check');
+                        $('.checkbox_'+tempVal).removeAttr('checked');
+                    }
+                });
+
+                if($(ele).is(':checked'))
+                {
+                  $('.table_line_disabled_'+formID).each(function(){ $(this).removeAttr('disabled'); });
+                  $('.marker_'+formID).each(function(){
+                      no_check = $(this).attr('no_check');
+                      if(no_check != 1)
+                      {
+                      	$(this).addClass('marker_check');
+                      }
+                  	
+                  });
+                  $('.checkbox_'+formID).attr('checked', true);
+                }
+                else
+                {
+                  $('.table_line_disabled_'+formID).each(function(){ $(this).attr('disabled', true); });
+                  $('.marker_'+formID).removeClass('marker_check');
+                  $('.checkbox_'+formID).removeAttr('checked');
+                }             
+            },
+
+            checkCompareQuotationLine : function(ele, formID, line)
+            {
+            	formID = parseInt(formID);
+            	line   = parseInt(line);
+
+                $('.M415_step7_compare_line').each(function(){
+                    var tempVal  = parseInt($(this).attr('partner'));
+                    var tempLine = parseInt($(this).attr('line'));
+
+                    if(formID != tempVal && line == tempLine)
+                    {
+                        if($(this).is(':checked'))
+                        {
+                            $(this).prop('checked', false);
+                            $('.table_line_disabled_'+tempVal+'_'+line).each(function(){ $(this).attr('disabled', true); });
+                            $('.marker_'+tempVal+'_'+line).removeClass('marker_check');
+                        }
+                    }
+                });
+            	
+                
+                if($(ele).is(':checked'))
+                {
+                    $('.table_line_disabled_'+formID+'_'+line).each(function(){ $(this).removeAttr('disabled'); });
+                    $('.marker_'+formID+'_'+line).addClass('marker_check');
+                }
+                else
+                {
+                    $('.table_line_disabled_'+formID+'_'+line).each(function(){ $(this).attr('disabled', true); });
+                    $('.marker_'+formID+'_'+line).removeClass('marker_check');
+                }            
+            },
+
+            changeTotalAmountInCompareQuotation: function(ele, formID, line)
+            {
+                var qty       = $(ele).val();
+                var unitprice = $('.M415_step7_compare_quotation_unitprice_'+formID+'_'+line).val();
+                var ret       = common_format_money(qty * unitprice);
+
+                $(ele).parent().parent().find('.M415_step7_compare_quotation_totalamount_'+formID+'_'+line).text('').text(ret);
+            },
+
+		  	/**
+			 *  Lưu so sánh báo giá
+			 */
+		  	saveCompare : function()
+			{
+				var url   = sz_BaseUrl + '/static/M415/step7/savecompare';
+				var data  = $('#M415_compare_list, #M415_compare_cond').serialize() + '&sessionifid=' + parseInt($('#session_ifid').val());
+				var data2 = common_url_to_array(data);
+
+				if(data2.itemioid2 == undefined)
+				{
+					qssAjax.alert('Bạn cần chọn ít nhất một mặt hàng để tạo đơn hàng!');
+					return;
+				}
+
+				if(data2.itemioid == undefined)
+				{
+					qssAjax.alert('Chưa có kế hoạch mua sắm!');
+					return;
+				}
+
+				qssAjax.confirm('Bạn muốn lưu lại so sánh báo giá không?',function(){
+					qssAjax.call(url, data, function(jreturn) {
+						if(jreturn.message != '')
+						{
+							qssAjax.notice(jreturn.message);
+						}
+					}, function(jreturn) {
+						qssAjax.alert(jreturn.message);
+					});
+				});
+			},
+
+            // Tao don hang tu so sanh bao gia
+            createOrder3 : function()
+            {
+            	var url   = sz_BaseUrl + '/static/M415/step7/createorder';
+            	var data  = $('#M415_compare_list, #M415_compare_cond').serialize() + '&sessionifid=' + parseInt($('#session_ifid').val());
+            	var data2 = common_url_to_array(data);
+            	var i = 0;
+            	var AllQtyZero = 1; 
+
+            	if(data2.itemioid2 == undefined)
+            	{
+                	qssAjax.alert('Bạn cần chọn ít nhất một mặt hàng để tạo đơn hàng!');
+                	return;
+            	}
+
+            	if(data2.itemioid == undefined)
+            	{
+                	qssAjax.alert('Chưa có kế hoạch mua sắm!');
+                	return;
+            	}
+
+            	qssAjax.confirm('Bạn muốn tạo đơn hàng từ so sánh không?',function(){
+            		qssAjax.call(url, data, function(jreturn) {
+            			if(jreturn.message != '')
+            			{
+            				qssAjax.notice(jreturn.message);
+            			}
+
+            			M415.updateStep(8);
+            		}, function(jreturn) {
+            			qssAjax.alert(jreturn.message);
+            		});
+            	});
+
+            }            
+       },  
+
+       /**
+        * STEP8: Kết thúc
+        */
+        step8 : {
+       	// Hien thi thong tin chinh cua step 1
+           index : function(sessionIFID)
+           {
+               if(!sessionIFID)
+               {
+               	sessionIFID = $('#session_ifid').val();
+               }       
+                       
+                var url  = sz_BaseUrl + '/static/M415/step8/index';
+                var data = {sessionifid:sessionIFID};
+                
+                qssAjax.getHtml(url, data, function(jreturn) {
+                	$('#M415_edit_show').html(jreturn);
+                }); 	        
+           },
+
+           approve : function(ifid)
+           {
+           	var url   = sz_BaseUrl + '/static/M415/step8/approve';
+           	var data  = {ifid:ifid, sessionifid:parseInt($('#session_ifid').val()), planioid:parseInt($('#plan_ioid').val())};
+               
+           	qssAjax.confirm('Bạn có thực sự muốn đặt hàng?',function(){
+           		qssAjax.call(url, data, function(jreturn) {
+           			if(jreturn.message != '')
+           			{
+           				qssAjax.notice(jreturn.message);
+           			}
+           		    
+           			// Load lai step hien tai
+           			M415.loadStep(8);
+           			
+           		}, function(jreturn) {
+           			qssAjax.alert(jreturn.message);
+           		});
+           	});  
+           },    
+
+           updateOrder : function(formID, line)
+           {
+               var url  = sz_BaseUrl + '/static/M415/step8/updateorder';
+               var data = $('#'+formID).serialize() + '&line=' + line;        
+                      
+               	qssAjax.confirm('Bạn có muốn cập nhật đơn hàng này không?',function(){
+            		qssAjax.call(url, data, function(jreturn) {
+            			if(jreturn.message != '')
+            			{
+            				qssAjax.notice(jreturn.message);
+            			}
+    
+            			M415.loadStep(8);
+            		}, function(jreturn) {
+            			qssAjax.alert(jreturn.message);
+            		});
+            	});
+           }       
+        }            	  
+}
+</script>
+
+<!-- ================================================================================================================== -->
+
+<div class="clear"></div>
+
+<div class="m816_general_input" id="m816_general_input">
+
+	<div class="m607_filter">
+
+		<div class="m607_filter_box">
+			<div class="m607_filter_box_title">
+				Từ ngày:
+			</div>
+
+			<div class="m607_filter_box_dat">
+				<input type="text" class="datepicker" id="input_start_date" name="start" value="<?php echo $this->sdate;?>">
+			</div>
+		</div>
+
+		<div class="m607_filter_box">
+			<div class="m607_filter_box_title">
+				 Đến ngày:
+			</div>
+
+			<div class="m607_filter_box_dat">
+				<input type="text" class="datepicker" id="input_end_date" name="end" value="<?php echo $this->edate;?>">
+			</div>
+		</div>
+
+		<div class="m607_filter_box">
+			<button id="btnSAVE" type="button" onclick="M415.showSessions()" class="btn_main_top btn"> Lọc </button>
+			<button onclick="M415.createSession();" class="btn btn-custom" type="button"> Thêm phiên xử lý </button>
+		</div>
+	</div>
+
+	<div class="clear"></div>
+</div>
+
+<div class="clear"></div>
+
+<div id="view">
+
+
+	<div id="M415_wrap">
+		<!-- Hien thi danh sách session xử lý mua hàng của nhân viên -->
+		<!-- Chỉnh sửa một session -->
+		<div id="M415_show"></div>
+		<!-- end #M415_sessions_list -->
+
+		<div id="M415_import_requests"></div>
+
+	</div>
+	<!-- end #M415_wrap -->
+
+
+</div>
+<!-- end #view -->
+
+
+
+</div>
+<br/>
+<br/>
+<br/>
+
+<div id="qss_combo"></div>

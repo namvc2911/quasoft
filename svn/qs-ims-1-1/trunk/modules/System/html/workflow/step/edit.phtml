@@ -1,0 +1,546 @@
+<style type="text/css" media="screen">
+<!--
+.tag-container {
+	position: relative !important;
+}
+
+.group_title {
+	padding-left: 16px;
+	background: url('/images/tree_open.png') no-repeat left 2px;
+	text-align: left;
+	color: red !important;
+	cursor: pointer;
+}
+
+.step_document {
+	padding: 5px 0px;
+	float: left;
+	width: 50%;
+}
+
+.step_activity {
+	padding: 5px 0px;
+	float: right;
+	width: 50%;
+}
+
+.step_add_document select,.step_add_activity select {
+	width: 50%;
+}
+
+.step_show_document select,.step_show_activity select {
+	width: 95%;
+}
+-->
+</style>
+<script>
+function addDocumentStep()
+{
+	/**
+	* Thêm hồ sơ 
+	*/
+	var value  = $('#document').val();
+	var add = true;
+
+	if(value)
+	{
+		$('#document_list option').each(function(){
+			if($(this).val() == value){
+				qssAjax.alert('Tài liệu đã tồn tại!');
+				add = false;
+			}
+		});
+	}
+	else
+	{
+		add = false;
+		qssAjax.alert('Bạn phải chọn một tài liệu!');
+	}
+	if(add){
+		var option = $('#document option[value="'+value+'"]').html();
+		$('#document_list').append("<option value='"+ value +"'>"+option+"</option>");
+	}
+	
+}
+function deleteDocumentStep()
+{
+	/**
+	* Xóa hồ sơ 
+	*/
+	var value  = $('#document_list').val();
+	$('#document_list option[value="'+value+'"]').remove();
+	
+}
+function addActivityStep()
+{
+	/**
+	* Thêm công việc
+	*/
+	var value  = $('#activity').val();
+	var add = true;
+	if(value)
+	{
+		$('#activity_list option').each(function(){
+			if($(this).val() == value){
+				qssAjax.alert('Công việc đã tồn tại!');
+				add = false;
+			}
+		});
+	}
+	else
+	{
+		add = false;
+		qssAjax.alert('Bạn phải chọn một công việc!');
+	}
+	if(add){
+		var option = $('#activity option[value="'+value+'"]').html();
+		$('#activity_list').append("<option value='"+ value +"'>"+option+"</option>");
+	}
+}
+function deleteActivityStep(){
+	/**
+	* Xóa công việc
+	*/
+	var value  = $('#activity_list').val();
+	if(value == ''){
+		qssAjax.alert('Hãy chọn tài liệu để xóa');
+		return false;
+	}
+	//delete
+	$('#activity_list option[value="'+value+'"]').remove();
+	
+}
+
+function checkAll(ele)
+{
+	$(ele).find('input').each(function(){
+		if($(this).is(':checked')){
+			$(this).removeAttr('checked');
+		}
+		else{
+			$(this).attr('checked',true);
+		}
+	});
+}
+function checkAllCol(objid,type)
+{
+	$('.'+type+'_'+objid).each(function(){
+		if($(this).is(':checked')){
+			$(this).removeAttr('checked');
+		}
+		else{
+			$(this).attr('checked',true);
+		}
+	});
+}
+function Toggle(cl){
+	$('.'+cl).toggle();
+}
+function customStepRights(wfid,sid,groupid){
+	var url = sz_BaseUrl + '/system/workflow/step/custom';
+	var data = {groupid:groupid,sid:sid,wfid:wfid};
+	qssAjax.getHtml(url, data, function(jreturn) {
+		if(jreturn!=''){
+			$('#qss_dialog').html(jreturn);
+			$('#qss_dialog').dialog({ });	
+		}
+	});
+}
+</script>
+<form method="post" id="qss_form">
+	<input type="hidden" value="<?php echo $this->step->intStepID?>"
+		name="SID" /><input type="hidden" value="<?php echo $this->wfid?>"
+		name="WFID" />
+	<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+
+		<button id="btnSAVEBACK" type="button" class="btn btn_main_top" onclick="workflowStepSave(<?php echo $this->wfid?>)" id="Insert">
+			<?php echo $this->_translate(35)?>
+		</button>
+
+		<button id="btnSAVE" type="button" class="btn btn_main_top" onclick="workflowStepSave(<?php echo $this->wfid?>, 1)" id="Insert">
+			<?php echo $this->_translate(34)?>
+		</button>
+
+		<button type="button" class="btn btn_main_top" onclick="workflowStepBack(<?php echo $this->wfid?>)" id="back">
+			<?php echo $this->_translate(32)?>
+		</button>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<div id="item-actions">
+			<ul>
+				<li class="item-action active"><a href="#1"><span><?php echo $this->_translate(136)?>
+					</span> </a></li>
+			</ul>
+		</div>
+		<table border="0" width="382" class="detail">
+			<tr>
+				<th width="112"><?php echo $this->_translate(27)?></th>
+				<td width="254"><input type="text"
+					value="<?php echo $this->step->intStepNo?>" style="width: 100px;"
+					name="intStepNo" /></td>
+			</tr>
+			<tr>
+				<th width="112"><?php echo $this->_translate(5)?></th>
+				<td width="254"><input type="text"
+					value="<?php echo $this->step->intOrderNo?>" style="width: 100px;"
+					name="intOrderNo" /></td>
+			</tr>
+			<?php foreach ($this->languages as $language):?>
+			<tr>
+				<th><?php echo $this->_translate(44)?> - <?php echo $language->Name?>:</th>
+				<?php if($language->Code == 'vn'):?>
+				<td><input width="200" value="<?php echo @$this->data->Name?>"
+					name="szName" /></td>
+					<?php else:?>
+				<td><input width="200"
+					value="<?php echo @$this->data->{"Name_$language->Code"}?>"
+					name="szName_<?php echo $language->Code?>" /></td>
+					<?php endif;?>
+			</tr>
+			<?php endforeach;?>
+			<tr>
+				<th valign="top"><?php echo $this->_translate(64)?></th>
+				<td><textarea name="szDesc" cols="60" rows="7" id="szDesc">
+				<?php echo $this->step->szStepDesc?>
+					</textarea></td>
+			</tr>
+			<tr>
+				<th><?php echo $this->_translate(89)?></th>
+				<td><input type="text" value="<?php echo $this->step->szNextStep?>"
+					style="width: 100px;" name="szNextStep" /></td>
+			</tr>
+			<tr>
+				<th><?php echo $this->_translate(88)?></th>
+				<td><input type="text" value="<?php echo $this->step->szBackStep?>"
+					style="width: 100px;" name="szBackStep" /></td>
+			</tr>
+			<tr>
+				<th>Các bước thao tác nhanh</th>
+				<td><input type="text" value="<?php echo $this->step->szQuickStep?>"
+					style="width: 100px;" name="szQuickStep" /></td>
+			</tr>
+			<tr>
+				<th>Yêu cầu nhập lý do</th>
+				<td><input type="checkbox" <?php if($this->step->Mix):?>checked<?php endif;?>
+					name="Mix" value="1"/></td>
+			</tr>
+			<tr>
+				<th>Lớp màu</th>
+				<td><input type="text" value="<?php echo $this->step->szColor?>"
+					style="width: 100px;" name="szColor" /></td>
+			</tr>
+			<tr>
+				<th>Kiểu</th>
+				<td><input id="intStepType0" type="radio" name="intStepType"
+					value="0" <?php if($this->step->intStepType == 0) echo 'checked'?>>
+					<label for="intStepType0">Không cần phê duyệt</label><br> <input
+					id="intStepType1" type="radio" name="intStepType" value="1"
+					<?php if($this->step->intStepType == 1) echo 'checked'?>> <label
+					for="intStepType1">Phê duyệt tuần tự</label><br> <input
+					id="intStepType2" type="radio" name="intStepType" value="2"
+					<?php if($this->step->intStepType == 2) echo 'checked'?>> <label
+					for="intStepType2">Tất cả được duyệt</label><br> <input
+					id="intStepType3" type="radio" name="intStepType" value="3"
+					<?php if($this->step->intStepType == 3) echo 'checked'?>> <label
+					for="intStepType3">Phê duyệt cuối cùng</label><br> <input
+					id="intStepType4" type="radio" name="intStepType" value="4"
+					<?php if($this->step->intStepType == 4) echo 'checked'?>> <label
+					for="intStepType4">Phê duyệt bất kỳ</label>
+				</td>
+			</tr>
+			<?php if($this->step->intStepID):?>
+			<tr>
+				<th>Phê Duyệt</th>
+				<td>
+					<table>
+						<tr>
+							<td>No.</td>
+							<td>Name</td>
+							<td>Condition</td>
+							<td><a href="#1"
+								onclick="editApprover(0,<?php echo $this->step->intStepID?>,<?php echo $this->wfid?>)">
+									Thêm cấp phê duyệt </a></td>
+						</tr>
+						<?php foreach ($this->approvers as $item):?>
+						<tr>
+							<td><?php echo $item->OrderNo?></td>
+							<td><?php echo $item->Name?></td>
+							<td><?php echo $item->Condition?></td>
+							<td><a href="#1"
+								onclick="editApprover(<?php echo $item->SAID?>,<?php echo $item->SID?>,<?php echo $this->wfid?>)">
+									Sửa </a></td>
+						</tr>
+						<?php endforeach;?>
+					</table>
+				</td>
+			</tr>
+			<?php endif;?>
+			<tr>
+				<th>Quyền cơ bản</th>
+				<td>
+					<table>
+						<tr>
+							<td>&nbsp;</td>
+							<td><?php echo $this->_translate(2)?></td>
+							<td><?php echo $this->_translate(137)?></td>
+							<td><?php echo $this->_translate(13)?></td>
+							<td><?php echo $this->_translate(3)?></td>
+						</tr>
+						<tr ondblclick="checkAll(this);" class="green">
+							<td><?php echo $this->form->sz_Name?></td>
+							<td><input type="checkbox"
+								name="C_FormRights" <?php if($this->step->FormRights & 1) echo 'checked';?>/></td>
+							<td><input type="checkbox"
+								name="R_FormRights" <?php if($this->step->FormRights & 2) echo 'checked';?>/></td>
+							<td><input type="checkbox" name="U_FormRights"
+							<?php if($this->step->FormRights & 4) echo 'checked';?> /></td>
+							<td><input type="checkbox" name="D_FormRights"
+							<?php if($this->step->FormRights & 8) echo 'checked';?> /></td>
+						</tr>
+						<?php foreach ($this->objectrights as $item):?>
+						<tr ondblclick="checkAll(this);">
+							<td><?php echo $item->ObjectName?></td>
+							<td><input type="checkbox"
+								name="C_ObjectRights_<?php echo $item->ObjectCode?>"
+								<?php if($item->ObjectRights & 1) echo 'checked';?> /></td>
+							<td><input type="checkbox"
+								name="R_ObjectRights_<?php echo $item->ObjectCode?>"
+								<?php if($item->ObjectRights & 2) echo 'checked';?> /></td>
+							<td><input type="checkbox"
+								name="U_ObjectRights_<?php echo $item->ObjectCode?>"
+								<?php if($item->ObjectRights & 4) echo 'checked';?> /></td>
+							<td><input type="checkbox"
+								name="D_ObjectRights_<?php echo $item->ObjectCode?>"
+								<?php if($item->ObjectRights & 8) echo 'checked';?> /></td>
+						</tr>
+						<?php endforeach;?>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td>
+					<div class="step_document">
+						<div class="step_add_document">
+							<span>Hồ sơ :</span> <span> <select name="document" id="document">
+									<option value=""></option>
+									<?php foreach ($this->documenttypes as $item):?>
+									<option value="<?php echo $item->DTID?>">
+									<?php echo $item->Code?>
+										-
+										<?php echo $item->Type?>
+									</option>
+									<?php endforeach;?>
+							</select> </span> <span><button type="button"
+									onclick="addDocumentStep()" class="btn-custom">Thêm hồ sơ</button>
+							</span>
+						</div>
+						<!-- end .step_add_document -->
+
+						<div class="step_show_document">
+							<span> <select name="document_list[]" id="document_list"
+								size="10" multiple="multiple">
+								<?php foreach ($this->documents as $item):?>
+									<option value="<?php echo $item->DTID?>">
+									<?php echo $item->Code?>
+										-
+										<?php echo $item->Type?>
+									</option>
+									<?php endforeach;?>
+							</select> </span>
+						</div>
+						<!-- end .step_show_document -->
+
+						<div class="step_delete_document">
+							<span>
+								<button type="button" onclick="deleteDocumentStep()"
+									class="btn-custom">Xóa hồ sơ</button> </span>
+						</div>
+						<!-- end .step_delete_event -->
+					</div> <!-- end .step_document -->
+
+					<div class="step_activity">
+						<div class="step_add_activity">
+							<span>Công việc :</span> <span> <select name="activity"
+								id="activity">
+									<option value=""></option>
+									<!--  <option value="<?php echo $item->ETID?>"><?php echo $item->Name?></option>-->
+									<?php foreach ($this->activitytype as $item):?>
+									<option value="<?php echo $item->TypeID?>">
+									<?php echo $item->TypeName?>
+									</option>
+									<?php endforeach;?>
+							</select> </span> <span><button onclick="addActivityStep()"
+									type="button" class="btn-custom">Thêm công việc</button> </span>
+						</div>
+						<!-- end .step_add_activity -->
+
+						<div class="step_show_activity">
+							<span> <select name="activity_list[]" id="activity_list"
+								size="10" multiple="multiple">
+								<?php foreach ($this->activities as $item):?>
+									<option value="<?php echo $item->TypeID?>">
+									<?php echo $item->TypeName?>
+									</option>
+									<?php endforeach;?>
+							</select> </span>
+						</div>
+						<!-- end .step_show_activity -->
+
+
+						<div class="step_delete_activity">
+							<span>
+								<button onclick="deleteActivityStep()" type="button"
+									class="btn-custom">Xóa công việc</button> </span>
+						</div>
+						<!-- end .step_delete_activity -->
+					</div> <!-- end .step_activity -->
+				</td>
+			</tr>
+			<tr>
+				<th valign="top"><?php echo $this->_translate(4)?></th>
+				<td>
+					<table style="background-color: #fff; width: auto; border: 1px solid">
+						<tr>
+							<th>Nhóm</th>
+							<th>Thêm</th>
+							<th>Đọc</th>
+							<th>Sửa</th>
+							<th>Xóa</th>
+							<th>Chuyển tới bước này</th>
+							<th>Chuyển về bước này</th>
+							<th>Riêng tư</th>
+						</tr>
+						<?php foreach ($this->groups as $item):?>
+						<tr>
+							<td><label for="group_<?php echo $item->GroupID?>"><?php echo $item->GroupName?>
+							</label></td>
+							<td class="center" width="50px"><input type="checkbox" value="1"
+								id="group_<?php echo $item->GroupID?>_c"
+								name="group_<?php echo $item->GroupID?>_c"
+								<?php if($item->Rights&1) echo 'checked';?>></td>
+							<td class="center" width="50px"><input type="checkbox" value="1"
+								id="group_<?php echo $item->GroupID?>_r"
+								name="group_<?php echo $item->GroupID?>_r"
+								<?php if($item->Rights&2) echo 'checked';?>></td>
+							<td class="center" width="50px"><input type="checkbox" value="1"
+								id="group_<?php echo $item->GroupID?>_u"
+								name="group_<?php echo $item->GroupID?>_u"
+								<?php if($item->Rights&4) echo 'checked';?>></td>
+							<td class="center" width="50px"><input type="checkbox" value="1"
+								id="group_<?php echo $item->GroupID?>_d"
+								name="group_<?php echo $item->GroupID?>_d"
+								<?php if($item->Rights&8) echo 'checked';?>></td>
+							<td class="center" width="50px"><input type="checkbox" value="1"
+								id="group_<?php echo $item->GroupID?>_s"
+								name="group_<?php echo $item->GroupID?>_s"
+								<?php if($item->Rights&16) echo 'checked';?>></td>
+							<td class="center" width="50px"><input type="checkbox" value="1"
+								id="group_<?php echo $item->GroupID?>_b"
+								name="group_<?php echo $item->GroupID?>_b"
+								<?php if($item->Rights&32) echo 'checked';?>></td>
+							<td class="center" width="50px">
+								<?php if($this->step->intStepID):?>
+									<a href="#" onclick="customStepRights(<?php echo $this->wfid?>,<?php echo $this->step->intStepID?>,<?php echo $item->GroupID?>)">Sửa</a>
+								<?php else:?>
+									&nbsp;
+								<?php endif;?>	
+								</td>
+						</tr>
+						<?php endforeach;?>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<th valign="top"><?php echo $this->_translate(55,'Quyền:')?></th>
+				<td>
+					<table>
+						<tr>
+							<td align="center"><?php echo $this->_translate(103)?></td>
+							<td align="center"><?php echo $this->_translate(137)?></td>
+							<td align="center"><?php echo $this->_translate(13)?></td>
+							<td align="center"><?php echo $this->_translate(130)?></td>
+						</tr>
+						<?php $objid = 0;?>
+						<?php $groupid = 0;?>
+						<?php foreach ($this->fields as $field):?>
+						<?php if($objid !== $field->ObjectCode):?>
+						<tr class="step_rights">
+							<th colspan="4">
+								<hr />
+							</th>
+						</tr>
+						<tr class="step_rights">
+							<th><?php echo $field->objectname?>:</th>
+							<td align="center"><input type="checkbox"
+								onclick="checkAllCol('<?php echo $field->ObjectCode?>','c');" /></td>
+							<td align="center"><input type="checkbox"
+								onclick="checkAllCol('<?php echo $field->ObjectCode?>','r');" /></td>
+							<td align="center"><input type="checkbox"
+								onclick="checkAllCol('<?php echo $field->ObjectCode?>','u');" /></td>
+						</tr>
+						<tr class="step_rights">
+							<th colspan="4">
+								<hr />
+							</th>
+						</tr>
+						<?php endif;?>
+						<tr class="step_rights">
+							<td><?php echo $field->FieldName?>:</td>
+							<td align="center"><input type="checkbox"
+								class="c_<?php echo $field->ObjectCode?>"
+								name="C_<?php echo $field->ObjectCode?>_<?php echo $field->FieldCode?>"
+								<?php if($field->Rights & 1) echo 'checked';?> /></td>
+							<td align="center"><input type="checkbox"
+								class="r_<?php echo $field->ObjectCode?>"
+								name="R_<?php echo $field->ObjectCode?>_<?php echo $field->FieldCode?>"
+								<?php if($field->Rights & 2) echo 'checked';?> /></td>
+							<td align="center"><input type="checkbox"
+								class="u_<?php echo $field->ObjectCode?>"
+								name="U_<?php echo $field->ObjectCode?>_<?php echo $field->FieldCode?>"
+								<?php if($field->Rights & 4) echo 'checked';?> /></td>
+						</tr>
+						<?php $objid = $field->ObjectCode;?>
+						<?php endforeach;?>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<div class="line-hr">
+			<span>Sự kiện</span>
+		</div>
+		<?php
+		$className = 'Qss_Bin_Validation_'.$this->form->FormCode.'_Step'.$this->step->intStepNo;
+		?>
+		<?php if(class_exists($className)):?>
+		<?php $ref = new ReflectionClass($className); ?>
+		<?php $method = $ref->getMethod('onAlert');?>
+		<?php if($method->class == $className):?>
+		<h4>Cảnh báo</h4>
+		<?php echo $method->getDocComment()?>
+		<?php endif;?>
+
+		<?php $method = $ref->getMethod('onNext');?>
+		<?php if($method->class == $className):?>
+		<h4>Kiểm tra dữ liệu khi chuyển đến</h4>
+		<?php echo $method->getDocComment()?>
+		<?php endif;?>
+		<?php $method = $ref->getMethod('onBack');?>
+		<?php if($method->class == $className):?>
+		<h4>Kiểm tra dữ liệu khi chuyển về</h4>
+		<?php echo $method->getDocComment()?>
+		<?php endif;?>
+		<?php $method = $ref->getMethod('next');?>
+		<?php if($method->class == $className):?>
+		<h4>Sau khi chuyển đến</h4>
+		<?php echo $method->getDocComment()?>
+		<?php endif;?>
+		<?php $method = $ref->getMethod('back');?>
+		<?php if($method->class == $className):?>
+		<h4>Sau khi chuyển về</h4>
+		<?php echo $method->getDocComment()?>
+		<?php endif;?>
+		<?php endif;?>
+	</div>
+</form>

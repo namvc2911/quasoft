@@ -1,0 +1,139 @@
+<script type="text/javascript">
+    function printPreview() {
+        common_selectDialBox('equipments');
+        var url = sz_BaseUrl + '/static/m189/show';
+        var data = $('#report').serialize();
+        qssAjax.getHtml(url, data, function (jreturn) {
+            $('#print-area').html(jreturn);
+            removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+        });
+    }
+
+    function removePrintToolbarDisabled() {
+        $('.pt-button').each(function () {
+            $(this).prop('disabled', false);
+        });
+    }
+
+    function selectDialBox($id) {
+        $('#' + $id + ' option').attr('selected', 'selected');
+    }
+</script>
+
+<div class="clear"></div>
+<div id="view">
+    <div class="line-hr">
+        <span> In tem thiết bị </span>
+    </div>
+
+    <form id="report" method="get" action="/static/m189/show">
+        <table class="detail">
+
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Thiết bị <span class="bold red">(*)</span>:
+                </th>
+
+                <td>
+                    <?php echo $this->views->Report->DialBox('equipments', $this->equipments);?>
+                </td>
+            </tr>
+
+            <?php /*
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Số hàng trên 1 trang:
+                </th>
+
+                <td>
+                    <input type="text" name="numOfRow" id="numOfRow" value="5" />
+                </td>
+            </tr>
+            */?>
+
+            <?php /*
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Số cột:
+                </th>
+
+                <td>
+                    <input type="text" name="numOfColumn" id="numOfColumn" value="2" />
+                </td>
+            </tr>
+            */?>
+
+            <?php /*
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Bỏ ô:
+                </th>
+
+                <td>
+                    <input type="text" name="exclueCell" id="exclueCell" value="" placeholder="ex: 1 hoặc 1, 2..."/>
+                    <span style="width: 50px; display: inline-block; font-weight: bold">Trang: </span>
+                    <input type="text" name="excluePage" id="excluePage" value="" placeholder="ex: 1 hoặc 1, 2..."/>
+                    <span class="bold red">  (*) Lưu ý: 5 hàng trên 1 trang </span>
+                </td>
+            </tr>
+            */?>
+
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Đường viền (px):
+                </th>
+
+                <td>
+                    <input type="text" name="border" id="border" value="3" />
+                </td>
+            </tr>
+
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Lề trong (px):
+                </th>
+
+                <td>
+                    <input type="text" name="padding" id="padding" value="5" />
+                </td>
+            </tr>
+
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Lề ngoài (px):
+                </th>
+
+                <td>
+                    <input type="text" name="margin" id="margin" value="5" />
+                </td>
+            </tr>
+
+            <?php /*
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Chiều in:
+                </th>
+
+                <td>
+                    <input type="radio" name="direction" class="direction"  id="direction_portrait" value="0" checked />
+                    <label for="direction_portrait"> Chiều dọc </label>
+
+                    <input type="radio" name="direction" class="direction"  id="direction_landscape" value="1" />
+                    <label for="direction_landscape"> Chiều ngang </label>
+                </td>
+            </tr>
+            */?>
+        </table>
+    </form>
+
+
+    <hr/>
+        <div id="print-toolbar">
+            <button type="button" onclick="printPreview()" class="btn-custom" id="pt-showreport">Xem báo cáo</button>
+            <button type="button" class="btn-custom pt-button" onclick="printPage()">In html</button>
+        </div>
+
+        <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>

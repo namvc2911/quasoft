@@ -1,0 +1,84 @@
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+	<div id="btnINSERT" onClick="rowInsert()"
+		title="<?php echo $this->_translate(12,'Tạo mới')?>"
+		class="btn_main_top">
+		<a class="icon-32-new" href="#!"></a>
+	</div>
+	<div id="btnEDIT" title="<?php echo $this->_translate(13,'Sửa đổi')?>"
+		onClick="rowEdit()" class="btn_main_top btn_disabled">
+		<a class="icon-32-edit" href="#!"></a>
+	</div>
+	<div id="btnDELETE" title="<?php echo $this->_translate(14,'Xóa')?>"
+		onClick="rowDelete()" class="btn_main_top btn_disabled">
+		<a class="icon-32-delete" href="#!"></a>
+	</div>
+	<div class="icon-32_separator"></div>
+	<div class="btn_main_top" onclick="rowSearch();"
+		title="<?php echo $this->_translate(23,'Làm mới dữ liệu')?>"
+		id="btnREFRESH">
+		<a href="#!" class="icon-32-refresh"></a>
+	</div>
+	<div class="btn_main_top" onclick="showSearch();"
+		title="<?php echo $this->_translate(24,'Tìm kiếm')?>" id="btnSEARCH">
+		<a href="#!" class="icon-32-search"></a>
+	</div>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div style="display: none" class="clearfix" id="div-search">
+		<form onsubmit="rowSearch(); return false;" method="post"
+			name="filter_form" id="form_bash_filter">
+			<div class="clearfix">
+				<div class="label">
+					<span>Tên</span> <span>Kết chuyển từ mô đun</span> <span>Kết chuyển
+						tới mô đun</span>
+				</div>
+				<div class="element">
+					<span><input type="text" value="<?php echo @$this->filters[1]?>"
+						name="filter_1" /> </span> <span> <select style="width: 150px;"
+						name="filter_4">
+							<option value=""></option>
+							<?php foreach ($this->forms as $item):?>
+							<?php if(!$item->class):?>
+							<option
+							<?php if(@$this->filters[4] == $item->FID) echo 'selected'?>
+								value="<?php echo $item->FID?>">
+								<?php echo $item->Name?>
+							</option>
+							<?php endif;?>
+							<?php endforeach;?>
+					</select> </span> <span> <select style="width: 150px;"
+						name="filter_5">
+							<option value=""></option>
+							<?php foreach ($this->forms as $item):?>
+							<?php if(!$item->class):?>
+							<option
+							<?php if(@$this->filters[5] == $item->FID) echo 'selected'?>
+								value="<?php echo $item->FID?>">
+								<?php echo $item->Name?>
+							</option>
+							<?php endif;?>
+							<?php endforeach;?>
+					</select> </span>
+				</div>
+			</div>
+		</form>
+		<div class="fl">
+			<div onclick="rowSearch(50);" class="btn-custom">Tìm kiếm</div>
+			<div onclick="rowCleanSearch();" class="btn-custom">Xóa điều kiện</div>
+		</div>
+	</div>
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#1"><span>Kết chuyển tự động</span>
+			</a></li>
+			<li class="item-action"><a onclick="rowBashFields()" href="#!"><span>Thuộc
+						tính kết chuyển</span> </a></li>
+			<li class="item-action"><a onclick="rowBashHistory()" href="#!"><span>Lịch
+						sử</span> </a></li>
+		</ul>
+	</div>
+	<div id="qss_form">
+		<?php echo $this->listview?>
+	</div>
+</div>

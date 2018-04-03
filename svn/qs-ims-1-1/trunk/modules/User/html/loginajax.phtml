@@ -1,0 +1,89 @@
+<style>
+<!--
+.message{
+	height:20px;
+}
+-->
+</style>
+<script type="text/javascript">
+<!--
+	function ajaxLogin(){
+		var username = document.getElementById('epUserID').value;
+		var password = document.getElementById('epPassWord').value;
+		if(username == '' || password == ''){
+			qssAjax.alert('<?php echo $this->_translate(6)?>');
+			return;
+		}
+		var url = sz_BaseUrl + '/user/index/ajax/login';
+		var data = $('#login_form').serialize();
+		qssAjax.call(url, data, function(jreturn) {
+			$('#qss_login').dialog('close');
+		}, function(jreturn) {
+			$('.err_msg').text(jreturn.message);
+		});
+	}
+//-->
+</script>
+		<div class="topbox">
+			<div class="message">
+				<span class="err_msg center red bold"><?php if($this->err == 'ERR_AUTHENTICATE') echo $this->_translate(8); elseif($this->err == 'ERR_SESSION') echo $this->_translate(9);?>
+				</span>
+			</div>
+		</div>
+		<form action="login" id="login_form" method="POST"
+			onsubmit="return doLogin();">
+					<table>
+						<tr>
+							<td width="38%"><?php echo $this->_translate(2)?></td>
+							<td><input type="text" class="field" id="epUserID"
+								name="epUserID" size="20" value=""></td>
+						</tr>
+						<tr>
+							<td><?php echo $this->_translate(3)?></td>
+							<td><input type="password" class="field" id="epPassWord"
+								name="epPassWord" value="" size="20" maxlength="32"></td>
+						</tr>
+						<tr>
+							<td><?php echo $this->_translate(5)?></td>
+							<td><?php echo $this->views->Common->TreeCombo($this->departments,'epDepartmentID',$this->deptid,1,'style="width:180px;"')?></td>
+						</tr>
+						<tr>
+							<td><?php echo $this->_translate(7)?></td>
+							<td><select id="epLanguage" name="epLanguage" style="width:180px">
+									<!--<option <?php if($this->lang == 'vn') echo 'selected';?> value="vn">Tiếng việt</option>
+-->
+							<?php foreach ($this->languages as $language):?>
+									<option
+									<?php if($this->lang == $language->Code) echo 'selected';?>
+										value="<?php echo $language->Code?>">
+										<?php echo $language->Name?>
+									</option>
+									<?php endforeach;?>
+							</select></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><input id="epSavePassword" class="checkbox" type="checkbox"
+								name="epSavePassword" value="1" />&nbsp;&nbsp;&nbsp;<label
+								for="epSavePassword"><?php echo $this->_translate(4)?> </label>
+							</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td colspan="2" align="center">
+							<button class="btn" type="button" onclick="ajaxLogin()">
+									<?php echo $this->_translate(1)?>
+								</button>
+							<button class="btn" type="button" onclick="logout()">
+									Thoát
+								</button></td>
+						</tr>
+					</table>
+					<p>&nbsp;</p>
+		</form>
+<script>
+document.getElementById('epUserID').focus();
+</script>

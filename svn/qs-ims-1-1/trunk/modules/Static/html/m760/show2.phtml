@@ -1,0 +1,24 @@
+<script type="text/javascript">
+    <!--
+    $(document).ready(function(){
+        $('#items_box select option').each(function()
+        {
+            $('#select_item_box select option[value='+$(this).val()+']').remove();
+        });
+    });
+    //-->
+</script>
+
+<?php foreach ($this->items as $group):?>
+    <optgroup label="<?php echo $group['TenNhom']?>"
+              groupmarker="<?php echo $group['RefNhom']?>">
+        <?php foreach ($group['SanPham'] as $item):?>
+            <option value="<?php echo $item['Ref'] ?>"
+                    groupmarker="<?php echo $group['RefNhom']?>">
+                <?php echo $item['Code']?>
+                -
+                <?php echo $item['Name']?>
+            </option>
+        <?php endforeach;?>
+    </optgroup>
+<?php endforeach;?>

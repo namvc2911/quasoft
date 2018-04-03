@@ -1,0 +1,84 @@
+<script>
+    var m705_copy_equip = {
+        save : function()
+        {
+            var url  = sz_BaseUrl + '/button/m705/copy/equip/save';
+            var data = $('#m705_copy_equip_form').serialize();
+
+            qssAjax.confirm('Bạn có muốn nhân đôi thiết bị hay không?',function(){
+                qssAjax.call(url, data, function(jreturn) {
+                    if(jreturn.message != '')
+                    {
+                        qssAjax.notice(jreturn.message);
+                    }
+
+                }, function(jreturn) {
+                    qssAjax.alert(jreturn.message);
+                });
+            });
+        }
+    };
+
+    $(document).ready(function(){
+//        $('#checkbox_CauTrucThietBi').click(function(){
+//           if($(this).is(':checked'))
+//           {
+//               $('#checkbox_DanhSachPhuTung').removeAttr('disabled');
+//               $('#checkbox_ChuKyHieuChuan').removeAttr('disabled');
+//           }
+//           else
+//           {
+//               $('#checkbox_DanhSachPhuTung').removeAttr('checked')
+//               $('#checkbox_DanhSachPhuTung').attr('disabled', true);
+//
+//               $('#checkbox_ChuKyHieuChuan').removeAttr('checked')
+//               $('#checkbox_ChuKyHieuChuan').attr('disabled', true);
+//           }
+//        });
+    });
+</script>
+
+<div id="m705_copy_equip_wrap">
+    <form id="m705_copy_equip_form">
+
+        <input type="hidden" name="ifid" value="<?php echo $this->ifid;?>">
+
+        <div class="select_object">
+            <div>
+                <input type="checkbox" onclick="" id="checkbox_CauTrucThietBi" name="CauTruc" checked/>
+                <label for="checkbox_CauTrucThietBi">Cấu trúc thiết bị</label>
+            </div>
+
+
+
+            <div>
+                <input type="checkbox" onclick="" id="checkbox_DiemDo" name="DiemDo" checked/>
+                <label for="checkbox_DiemDo">Điểm đo</label>
+            </div>
+
+            <div>
+                <input type="checkbox" onclick="" id="checkbox_DacTinhKyThuat" name="DacTinh" checked/>
+                <label for="checkbox_DacTinhKyThuat">Đặc tính kỹ thuật</label>
+            </div>
+
+            <div>
+                <input type="checkbox" onclick="" id="checkbox_BaoHiemThietBi" name="BaoHiem" checked/>
+                <label for="checkbox_BaoHiemThietBi">Bảo hiểm thiết bị</label>
+            </div>
+        </div>
+
+        <div class="clear"></div>
+
+        <div class="select_data">
+            <div class="data_box">
+
+            </div>
+        </div>
+
+        <div class="clear"></div>
+
+        <div class="fl">
+            <button type="button" class="btn-custom" onclick="m705_copy_equip.save()">Nhân đôi</button>
+        </div>
+    </form>
+</div>

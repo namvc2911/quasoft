@@ -1,0 +1,111 @@
+<?php
+/**
+ * *****************************************************************************
+ * Thong So Thiet Bi
+ * *****************************************************************************
+ */
+?>
+
+<div class="ui_box">
+
+	<?php if($this->thongso)://Public active thong so?>
+	<div id="" class="ui_box_s100">
+		<div style="float: left; width: 100%;position: relative;">
+			<div class="ui_box_line" id="einfo-tab3-tech-table">
+				<table cellpadding="0" cellspacing="0" class="border_table"
+					border="0" style="width: 100%;">
+					<tr class="bggrey center">
+						<th style="width: 30%"><?php echo $this->_translate(33); //Chỉ số      ?>
+						</th>
+						<th style="width: 10%"><?php echo $this->_translate(38); //Đơn vị tính     ?>
+						</th>
+						<th style="width: 10%"><?php echo $this->_translate(34); //Giá trị      ?>
+						</th>
+						<th style="width: 10%"><?php echo $this->_translate(35); //Giá trị nhỏ nhất      ?>
+						</th>
+						<th style="width: 10%"><?php echo $this->_translate(36); //Giá trị lớn nhất      ?>
+						</th>
+						<th style="width: 30%"><?php echo $this->_translate(37); //Ghi chú     ?>
+						</th>
+					</tr>
+
+					<?php $i = 0; ?>
+					<?php foreach ($this->tech as $t):?>
+					<tr>
+						<td><?php echo $t->ChiSo; ?>
+						</td>
+
+						<td><?php echo $t->DonViTinh; ?>
+						</td>
+
+						<td><?php echo $t->GiaTri; ?>
+						</td>
+
+						<td><?php echo $t->GiaTriNN; ?>
+						</td>
+
+						<td><?php echo $t->GiaTriLN; ?>
+						</td>
+
+						<td style="position: relative;"><?php echo $t->GhiChu; ?>
+
+							<div class="einfo_technote_edit_control" style="display: none;">
+
+								<div class="einfo_delete_eq"
+									onclick="var ioid = []; ioid[0] = <?php echo $t->IOID; ?>; deleteObject(eq_ifid_global, deptid, tech_note_obj, ioid, function(){einfo_load_tab_for_equip(tab_global);});">
+								</div>
+
+								<div class="einfo_edit_eq"
+									onclick="popupObjectEdit(eq_ifid_global, deptid, tech_note_obj, <?php echo $t->IOID; ?>, {});">
+								</div>
+							</div>
+						</td>
+					</tr>
+					<?php $i++; ?>
+					<?php endforeach; ?>
+
+					<!-- Hien Thi Dong Trang Neu Dong In Ra Nho Hon 10 -->
+					<?php if ($i < 10): ?>
+					<?php for ($j = $i; $j < 10; $j++):?>
+					<tr>
+						<td class="center">&nbsp;</td>
+						<td class="left">&nbsp;</td>
+						<td class="left">&nbsp;</td>
+						<td class="left ">&nbsp;</td>
+						<td class="left">&nbsp;</td>
+						<td class="left">&nbsp;</td>
+					</tr>
+					<?php endfor; ?>
+					<?php endif; ?>
+				</table>
+				<div class="round-button">
+				    <a class="round-button-circle" href="#" onclick="popupObjectInsert(eq_ifid_global, deptid, tech_note_obj, {}, function(){einfo_load_tab_for_equip(tab_global);});">+</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<?php endif;?>
+	<?php if($this->dactinh):?>
+		<?php //$reloadjs = sprintf();?>
+		<?php echo $this->views->Object->ODacTinhThietBi($this->eqIFID,'einfo_load_tab_for_equip(2)')?>
+		<?php for ($m = 0; $m < 20; $m++):?>
+			&nbsp;
+		<?php endfor;?>
+		<button class="btn-custom" type="button" onclick="save()">Cập nhật</button>(ctrl + S)
+	<?php endif;?>
+	
+</div>
+
+<script>
+	$('.einfo_technote_edit_control').each(function() {
+		$(this).hide();
+	});
+	$('#einfo-tab3-tech-table tr').hover(function() {
+		$(this).addClass('marker');
+		$(this).find('.einfo_technote_edit_control').show();
+	}
+	, function() {
+		$(this).removeClass('marker');
+		$(this).find('.einfo_technote_edit_control').hide();
+	});
+</script>

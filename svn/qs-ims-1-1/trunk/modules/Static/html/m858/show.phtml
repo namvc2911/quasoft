@@ -1,0 +1,141 @@
+<?php $stt = 0; ?>
+<style>
+    .dot
+    {
+        border-bottom: 1px #000000 dotted;
+    }
+
+    .span_name
+    {
+        display: inline-block;
+        width: 250px;
+    }
+
+    .span_time
+    {
+        display: inline-block;
+        width: 35px;
+    }
+
+    .span_checbox
+    {
+        display: inline-block;
+        width: 15px;
+    }
+
+    .m858_font
+    {
+        font: "Times New Roman" !important;
+        font-size: 12px !important;
+    }
+
+</style>
+
+<div class="portrait">
+    <!-- REPORT TITLE -->
+    <div id="head_print">
+        <?php echo $this->views->Common->Portrait() ?>
+        <h2 class="center">BIÊN BẢN XÁC NHẬN BẢO TRÌ, BẢO DƯỠNG</h2>
+    </div><!-- end div#head_print -->
+    <br/>
+
+    <div id="container" class="m858_font">
+        <p class="bold">&nbsp;&nbsp;1. Thành phần tham gia :</p>
+        <p>1.1&nbsp;&nbsp;<b>Đại diện Chủ đầu tư : <?php echo $this->investor;?></b></p>
+        <?php foreach ($this->representativeInvestor as $item):?>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;- Ông (Bà) :	<span class=" span_name"><?php echo $item[0];?></span>	Chức vụ : <span class=" span_name"><?php echo $item[1];?></span></p>
+        <?php endforeach;?>
+
+        <p>1.2&nbsp;&nbsp;<b>Đại diện đơn vị bảo trì, bảo dưỡng : Cty Cổ Phần Đầu tư Xây Dựng SDM.</b></p>
+        <?php foreach ($this->representativeTech as $item):?>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;- Ông (Bà) :	<span class=" span_name"><?php echo $item[0];?></span>	Chức vụ : <span class=" span_name"><?php echo $item[1];?></span></p>
+        <?php endforeach;?>
+
+        <p>1.3&nbsp;&nbsp;<b>Đại diện đơn vị liên quan: <span class="dot span_name"><?php echo $this->otherCompany;?></span></b></p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;- Ông (Bà) :	<span class=" span_name"><?php echo @$this->representativeOther1->HoTen;?></span>	Chức vụ : <span class=" span_name"><?php echo @$this->representativeOther1->ChucDanh;?></span></p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;- Ông (Bà) :	<span class=" span_name"><?php echo @$this->representativeOther2->HoTen;?></span>	Chức vụ : <span class=" span_name"><?php echo @$this->representativeOther2->ChucDanh;?></span></p>
+        <br/>
+
+        <p class="bold">&nbsp;&nbsp;2. Thời gian tiến hành:</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;● Bắt đầu &nbsp;:	<span class="dot span_time"></span> h <span class="dot span_time"></span> ngày <span class="dot span_time center"><?php echo ($this->mStart)?$this->mStart->format('d'):'';?></span> tháng <span class="dot span_time center"><?php echo ($this->mStart)?$this->mStart->format('m'):'';?></span> năm <?php echo ($this->mStart)?$this->mStart->format('Y'):'';?></p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;● Kết thúc :	<span class="dot span_time"></span> h <span class="dot span_time"></span> ngày <span class="dot span_time center"><?php echo ($this->mEnd)?$this->mEnd->format('d'):'';?></span> tháng <span class="dot span_time center"><?php echo ($this->mEnd)?$this->mEnd->format('m'):'';?></span> năm <?php echo ($this->mEnd)?$this->mEnd->format('Y'):'';?></p>
+        <p>Tại : Nhà để xe ga quốc nội- Cảng HKQT Tân Sơn Nhất.</p>
+
+        <br/>
+        <p class="bold">&nbsp;&nbsp;3. Đánh giá hạng mục bảo trì, bảo dưỡng.</p>
+        <p>3.1&nbsp;&nbsp;<b>Tài liệu ban đầu</b></p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;- Căn cứ vào hợp động vận hành, bảo dưỡng.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;- Căn cứ vào qui trình vận hành bảo dưỡng hệ thống cơ điện.</p>
+
+        <p>3.2&nbsp;&nbsp;<b>Đối tượng bảo dưỡng.</b></p>
+        <br/>
+        <table  cellpadding="0" cellspacing="0" border="1" class="border" style="">
+            <tr class="bggrey">
+                <th style="width: 10%">STT </th>
+                <th style="width: 25%">Tên thiết bị  </th>
+                <th style="width: 15%">Loại thiết bị  </th>
+                <th style="width: 15%">Mã thiết bị  </th>
+                <th style="width: 15%">Khu vực lắp đặt  </th>
+                <th style="width: 20%">Ghi chú  </th>
+            </tr>
+
+            <?php foreach ($this->orders as $item):?>
+            <tr>
+                <td class="center"><?php echo ++$stt;            ?></td>
+                <td class="left">  <?php echo $item->TenThietBi; ?></td>
+                <td class="left">  <?php echo $item->LoaiThietBi;?></td>
+                <td class="left">  <?php echo $item->MaThietBi;  ?></td>
+                <td class="left">  <?php echo $item->MaKhuVuc;   ?></td>
+                <td class="left">  <?php echo '';//$item->GhiChu;?></td>
+            </tr>
+            <?php endforeach;?>
+        </table>
+        <br/>
+
+        <p>3.3&nbsp;&nbsp;<b>Loại bảo dưỡng.</b></p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;Định kỳ: &nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 20px;">&#9633;</span>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="dot span_time"></span> Ngày &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="dot span_time"></span> Tháng</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;Khác (nêu rõ) : &nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 20px;">&#9633;</span> </p>
+        <p class="dot">&nbsp</p>
+        <p class="dot">&nbsp</p>
+        <br/>
+
+        <p>3.4&nbsp;&nbsp;<b>Đánh giá chất lượng sau khi bảo trì, bảo dưỡng .</b></p>
+        <p class="dot">&nbsp <?php echo ($this->existsQC && $this->allPass)?'Đạt':'';?></p>
+        <p class="dot">&nbsp</p>
+        <p class="dot">&nbsp</p>
+        <br/>
+
+        <p>3.5&nbsp;&nbsp;<b>Các ý kiến khác (nếu có).</b></p>
+        <p class="dot">&nbsp</p>
+        <p class="dot">&nbsp</p>
+        <p class="dot">&nbsp</p>
+        <p class="dot">&nbsp</p>
+
+        <br/>
+        <p class="bold">&nbsp;&nbsp;4. Kết luận :</p>
+        <p class="dot">&nbsp</p>
+        <p class="dot">&nbsp</p>
+        <p class="dot">&nbsp</p>
+        <p>Biên bản được lập thành 2 bản. Mỗi bên giữ 1 bản có giá trị pháp lý như  nhau.</p>
+        <br/>
+
+        <table>
+            <tr>
+                <td class="center" style="width:33%;" >
+                    <b>Phê duyệt của CĐT</b> <br/>
+                    (Ký, ghi rõ họ tên)
+                </td>
+                <td class="center" style="width:33%;">
+                    <b>Đại diện đơn vị VH-BD</b> <br/>
+                    (Ký, ghi rõ họ tên)
+                </td>
+                <td class="center" style="width:33%;">
+                    <b>Đại diện đơn vị liên quan</b> <br/>
+                    (Ký, ghi rõ họ tên)
+                </td>
+            </tr>
+        </table>
+    </div>
+</div><!-- END REPORT -->
+
+

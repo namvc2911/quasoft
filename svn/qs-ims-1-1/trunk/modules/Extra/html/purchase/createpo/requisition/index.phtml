@@ -1,0 +1,467 @@
+<link rel="stylesheet" href="/css/button.css" type="text/css" />
+<style>
+#coming {
+	overflow: auto;
+	min-height: 10px;
+	max-height: 210px;
+}
+
+#order {
+	overflow: auto;
+	min-height: 10px;
+	max-height: 210px;
+}
+</style>
+
+<script>
+<!--
+// js function
+
+jQuery(document).ready(function($){
+  	$('.datepicker').each(function(){ $(this).datepicker({ dateFormat: "dd-mm-yy" }); });/* Datepicker*/
+});
+
+
+// get document no
+function getDocumentNo()
+{
+	var retval = '';
+	var url = sz_BaseUrl + '/extra/purchase/createpo/requisition/documentno';
+	var data = {fid: $('#fid').val(),ifid: $('#ifid').val()};
+	$('#document_no').val('Loading...');
+	
+	qssAjax.call(url, data, function(jreturn) {	
+		$('#document_no').val(jreturn.data.docNo);
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+}
+/*// Remove
+// delete line
+function deleteShipmentLine(lineIOID)
+{
+	var ifid = $('#ifid').val();
+	var insertModule = $('#insert_module').val();
+	var insertObject = $('#insert_object').val();
+	var data = {
+				ifid:ifid, 
+				lineIOID:lineIOID,
+				module:insertModule,
+				insertModule:insertModule,
+				insertObject:insertObject
+	};
+	var url = sz_BaseUrl + '/extra/purchase/createpo/requisition/delete'; 
+	qssAjax.call(url, data, function(jreturn){
+		if(jreturn.message != ''){
+			qssAjax.alert(jreturn.message);
+		}
+		getOrderLine();
+		filterItem();
+		rowSearch(101);
+	}, function(jreturn){
+		qssAjax.alert(jreturn.message);		
+	});
+}
+*/
+
+/*// Remove
+// Line
+function getOrderLine()
+{
+	$('#order_content').html('Loading...')
+	ifid = $('#ifid').val();
+	var data = {ifid:ifid};
+	var url = sz_BaseUrl + '/extra/purchase/createpo/requisition/line'; 
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#order_content').html(jreturn);
+	});
+}
+*/
+
+// Loc san pham theo dieu kien
+function filterItem()
+{
+	var ngaybd = $('#start').val();
+	var ngaykt = $('#end').val();
+
+	var firstValue = ngaybd.split('-');
+	var secondValue = ngaykt.split('-');
+	var firstDate=new Date();
+	firstDate.setFullYear(firstValue[2],(firstValue[1] - 1 ),firstValue[0]);
+	var secondDate=new Date();
+	secondDate.setFullYear(secondValue[2],(secondValue[1] - 1 ),secondValue[0]);     
+
+	if (ngaybd && ngaykt && (firstDate > secondDate) )
+	{
+		qssAjax.alert('<?php echo $this->_translate(32)?>');
+		return;
+	}
+	
+	$('#coming_content').html('Loading...')
+	var data = $('.search_filter').serialize();
+	var url = sz_BaseUrl + '/extra/purchase/createpo/requisition/search'; 
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#coming_content').html(jreturn);
+		updatePageNumber();
+	});
+}
+
+// Cap nhat chuyen hang
+function saveOrder()
+{
+	var tmpDateVal, itemCode, itemUOM, itemQty, finder, msg = '', confirmMsg = '', next = true;
+	var orderDate = $('#order_date').val();
+	var requiredDate = $('#required_date').val();
+	var partner = $('#partner').val();
+	var documentNo = $('#document_no').val();
+	var countCheckedLine = $('.checkbox:checked:not(:disabled)').length;
+	var tmpDate = new Date();
+	var firstValue  = orderDate.split('-');
+	var secondValue = requiredDate.split('-');
+	var firstDate   = new Date();
+	firstDate.setFullYear(firstValue[2],(firstValue[1] - 1 ),firstValue[0]);
+	var secondDate  = new Date();
+	secondDate.setFullYear(secondValue[2],(secondValue[1] - 1 ),secondValue[0]);     
+
+	if(documentNo == '')
+	{
+		msg += '<?php echo $this->_translate(43);?>\n';
+	}
+	
+	if(partner == '')
+	{
+		msg += '<?php echo $this->_translate(42);?>\n';
+	}	
+	
+	if(orderDate == '')
+	{
+		msg += '<?php echo $this->_translate(40);?>\n';
+	}
+
+	if(requiredDate == '')
+	{
+		msg += '<?php echo $this->_translate(41);?>\n';
+	}
+
+	if(orderDate != '' && requiredDate != '' && firstDate > secondDate)
+	{
+		msg += '<?php echo $this->_translate(39);?>\n';
+	}
+
+	if(countCheckedLine <= 0)
+	{
+		msg += '<?php echo $this->_translate(31);?>\n';
+	}
+	else
+	{
+		$('.required_receive_date:not(:disabled)').each(function(){
+			tmpDateVal = $(this).val().split('-');
+			finder     = $(this).parent();
+			itemCode   = finder.find('.item_code').val();
+			itemUOM   = finder.find('.item_uom').val();
+			itemQty   = finder.find('.qty').val();
+			tmpDate.setFullYear(tmpDateVal[2],(tmpDateVal[1] - 1 ),tmpDateVal[0]);
+
+			if(tmpDate < secondDate)
+			{
+				confirmMsg += '<?php echo $this->_translate(51);?> \"'+itemCode+'\" ' +
+						'<?php echo $this->_translate(52);?>  ' + itemQty + ' ' +
+						itemUOM +' <?php echo $this->_translate(53);?>  '+ $(this).val() +' \n';
+			}
+		});
+	}
+	
+	
+	if(msg != '')
+	{
+		qssAjax.alert(msg);
+		return;
+	}
+
+	if(confirmMsg != '')
+	{
+		confirmMsg += '<?php echo $this->_translate(54);?>';
+		qssAjax.confirm(confirmMsg,function(){
+			var data = $('#main_obj_form, #show_form, .line_no').serialize();
+			var url = sz_BaseUrl + '/extra/purchase/createpo/requisition/save'; 
+			qssAjax.call(url, data, function(jreturn){
+				if(jreturn.message != ''){
+					qssAjax.alert(jreturn.message);
+				}
+				//filterItem();
+				//getOrderLine();
+				rowSearch(101);
+				$('#qss_trace').dialog('close');
+			}, function(jreturn){
+				qssAjax.alert(jreturn.message);		
+			});
+		},function(){
+			$('#required_date').datepicker("show");
+		});
+	}
+	else{
+		var data = $('#main_obj_form, #show_form, .line_no').serialize();
+		var url = sz_BaseUrl + '/extra/purchase/createpo/requisition/save'; 
+		qssAjax.call(url, data, function(jreturn){
+			if(jreturn.message != ''){
+				qssAjax.alert(jreturn.message);
+			}
+			//filterItem();
+			//getOrderLine();
+			rowSearch(101);
+			$('#qss_trace').dialog('close');
+		}, function(jreturn){
+			qssAjax.alert(jreturn.message);		
+		});
+	}
+}
+
+// Cap nhat so trang
+function updatePageNumber()
+{
+	var html = '';
+	var url = sz_BaseUrl + '/extra/purchase/createpo/requisition/page';
+	var data = $('.search_filter').serialize();
+	$('#page_filter').val('Loading...');
+	
+	qssAjax.call(url, data, function(jreturn) {
+		jreturn.data.totalPage = (jreturn.data.totalPage > 0)?jreturn.data.totalPage:1;
+		for(var i = 1; i <= jreturn.data.totalPage; i++)
+		{
+			html += '<option value="'+i+'" ';
+			if(jreturn.data.page == i) html += 'selected';
+			html += ' >'+i+'</option>'
+		}
+		$('#page_filter').html(html);
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+}
+
+// check one line
+function checkLine(ele)
+{
+	var finder = $(ele).parent().parent();
+	var lineColor = finder.find('.line_color_class').val(); // line color class
+	
+	if($(ele).is(':checked'))
+	{
+		// To mau canh bao
+		if(lineColor != '') {
+			finder.removeClass(lineColor);
+		}
+		finder.addClass('bgyellow');
+		finder.find('.disabled_input').each(function(){ $(this).removeAttr('disabled'); });
+	}
+	else
+	{
+		// To mau canh bao
+		if(lineColor != '') {
+			finder.addClass(lineColor);
+		}
+		finder.removeClass('bgyellow');	
+		finder.find('.disabled_input').each(function(){ $(this).attr('disabled', true); });	
+	}
+}
+
+// check all line
+function checkAllLine(ele)
+{
+	var lineColor;
+	var finder;
+
+	if($(ele).is(':checked'))
+	{
+		$('.checkbox:not(:checked)').each(function()
+		{
+			finder    = $(this).parent().parent();
+			lineColor = finder.find('.line_color_class').val();
+			if(lineColor != ''){ finder.removeClass(lineColor);}
+			
+			finder.addClass('bgyellow');
+			finder.find('.disabled_input').each(function(){ $(this).removeAttr('disabled'); });
+			$(this).attr('checked',true);
+		});
+	}
+	else
+	{
+		$('.checkbox:checked:not(:disabled)').each(function()
+		{
+			finder    = $(this).parent().parent();
+			lineColor = finder.find('.line_color_class').val();
+			if(lineColor != '') { finder.addClass(lineColor); } 
+			
+			finder.removeClass('bgyellow');
+			finder.find('.disabled_input').each(function(){ $(this).attr('disabled', true); });
+			$(this).removeAttr('checked');
+		});		
+	}
+}
+//-->
+</script>
+
+<div
+	id="wrapper">
+	<div id="main_object">
+		<form id="main_obj_form">
+			<fieldset>
+				<legend>
+				<?php echo $this->_translate(44);?>
+				</legend>
+				<table cellspacing="0" cellpadding="0" border="0" id="" class="">
+					<!-- so don hang -->
+					<tr>
+						<th><?php echo $this->_translate(45)?></th>
+						<td><input type="text" name="documentNo" id="document_no"
+							class="main width_150" value="<?php echo $this->docNo;?>" /> <span
+							class="red bold">(*)</span>
+							<button type="button" class="btn-custom"
+								onclick="getDocumentNo()">
+								<?php echo $this->_translate(46);?>
+							</button>
+						</td>
+
+						<!-- nha cung cap -->
+						<th><?php echo $this->_translate(47)?></th>
+						<td><select name="partner" id="partner" class="main width_150">
+								<option value="">
+								<?php echo $this->_translate(48)?>
+								</option>
+								<?php foreach ($this->partner as $item):?>
+								<option value="<?php echo $item->MaDoiTac?>">
+								<?php echo $item->MaDoiTac?>
+									-
+									<?php echo $item->TenDoiTac?>
+								</option>
+								<?php endforeach;?>
+						</select> <span class="red bold">(*)</span>
+						</td>
+					</tr>
+
+					<!-- ngay dat hang -->
+					<tr>
+						<th><?php echo $this->_translate(49)?></th>
+						<td><input type="text" name="orderDate" id="order_date"
+							class="main width_100 datepicker"
+							value="<?php echo date('d-m-Y');?>" /> <span class="red bold">(*)</span>
+						</td>
+
+						<!-- ngay yeu cau -->
+						<th><?php echo $this->_translate(50)?></th>
+						<td><input type="text" name="requiredDate" id="required_date"
+							class="main width_100 datepicker"
+							value="<?php echo date('d-m-Y');?>" /> <span class="red bold">(*)</span>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</form>
+		<!-- end form#main_obj_form -->
+	</div>
+	<!-- end #main_object -->
+
+	<?php /* // Remove?>
+	<div id="order">
+	<fieldset>
+	<legend>  <?php echo $this->_translate(33);?>  </legend>
+	<div id="order_content">
+
+	</div><!-- end order_content -->
+	<script>getOrderLine();</script>
+	</fieldset>
+	</div><!-- end #order -->
+	<?php */?>
+
+	<div id="create_order">
+		<form id="create_form">
+			<input type="hidden" name="ifid" id="ifid"
+				value="<?php echo $this->form->i_IFID;?>" /> <input type="hidden"
+				name="fid" id="fid" value="<?php echo $this->form->FormCode;?>" />
+
+			<fieldset>
+				<legend>
+				<?php echo $this->_translate(27);?>
+				</legend>
+				<table cellspacing="0" cellpadding="0" width="100%" class="left"
+					id="">
+					<tr>
+						<th>
+							<!-- Từ ngày --> <?php echo $this->_translate(23)?>:</th>
+						<td>
+							<!-- Từ ngày --> <input type="text" name="fromDateFilter"
+							id="start" class="datepicker width_200 search_filter" value="" />
+						</td>
+
+						<th>
+							<!-- Đến ngày --> <?php echo $this->_translate(20)?>:</th>
+						<td>
+							<!-- Đến ngày --> <input type="text" name="toDateFilter" id="end"
+							class="datepicker width_200 search_filter" value="" />
+							<button type="button" class="btn-custom" onclick="filterItem()">
+							<?php echo $this->_translate(29);?>
+							</button>
+						</td>
+					</tr>
+
+				</table>
+
+
+			</fieldset>
+		</form>
+		<!-- end #create_form -->
+	</div>
+	<!-- end #create_order -->
+
+	<div>
+		<form id="pagination_form">
+			<!-- Trang -->
+		<?php echo $this->_translate(3)?>
+			: <select name="pageFilter" id="page_filter"
+				class="width_50 search_filter" onchange="filterItem()">
+				<option value="1">1</option>
+			</select>
+
+			<!-- Hiển thị -->
+			<?php echo $this->_translate(4)?>
+			: <select name="perpageFilter" id="perpage_filter"
+				class="width_50 search_filter" onchange="filterItem()">
+				<option value="5">5</option>
+				<option value="10" selected>10</option>
+				<option value="20">20</option>
+				<option value="50">50</option>
+				<option value="100">100</option>
+			</select>
+
+			<button type="button" class="btn-custom" onclick="saveOrder()">
+			<?php echo $this->_translate(17);?>
+			</button>
+		</form>
+		<!-- end form#pagination_form -->
+	</div>
+	<!-- noname -->
+
+	<div id="coming" class="margin_top_5">
+		<div class="margin_top_5">
+			<form id="show_form">
+				<input type="hidden" name="ifid" class=""
+					value="<?php echo $this->form->i_IFID;?>" /> <input type="hidden"
+					name="fid" class="search_filter"
+					value="<?php echo $this->form->FormCode;?>" />
+				<fieldset>
+					<legend>
+					<?php echo $this->_translate(28);?>
+					</legend>
+					<div id="coming_content"></div>
+					<!-- end #coming_content -->
+					<script>filterItem();</script>
+				</fieldset>
+			</form>
+			<!-- end form#show_form -->
+		</div>
+		<!-- noname -->
+	</div>
+	<!-- end #coming -->
+
+
+</div>
+<!-- end #wrapper -->

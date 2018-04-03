@@ -1,0 +1,10 @@
+<div class="fl">
+    <div class="fr">
+        <select onchange="rowFObjectSearch('M504',0,'<?php echo $this->refifid?>');" style="width: 250px;" size="1" name="filter_khuvucbanhang" id="filter_khuvucbanhang">
+        	<option value="0">--- Chọn văn phòng ---</option>
+        	<?php foreach ($this->phases as $item):?>
+				<option <?php if($item->IOID == $this->selected):?>selected<?php endif;?> value="<?php echo $item->IOID?>"><?php echo $item->Ten?></option>
+			<?php endforeach;?>
+        </select>
+    </div>
+</div>

@@ -1,0 +1,180 @@
+
+<script type="text/javascript">
+    <!--
+//     $(document).ready(function(){
+// 	    $('#line').change(function () {
+// 	        var url = sz_BaseUrl + '/report/maintenance/oee/analysis3?line='+$(this).val();
+// 	        $('#tag_equipment').tagSuggest({
+// 	            url: url,
+// 	            delay: 500,
+// 	            matchClass:'tag-module',
+// 	            callback: search_module
+// 	        });
+//     	});
+//     });
+//     function search_module(workingTags,id)
+//     {
+//     	$('#equipment').val(id);
+//     	$('#tag_equipment').val(workingTags);
+//     }
+    //-->
+ </script>
+
+<script>
+function printPreview(){
+	var ngaybd = $('#start').val();
+	var ngaykt = $('#end').val();
+	var line   = $('#line').val();
+	var item   = $('#item').val();
+
+	if(ngaybd == '' || ngaykt == '' || line == '' || item == '')	{ 
+		qssAjax.alert('<?php echo $this->_translate(1)?>');
+		return;
+	}
+
+	var firstValue = ngaybd.split('-');
+	var secondValue = ngaykt.split('-');
+	 var firstDate=new Date();
+	 firstDate.setFullYear(firstValue[2],(firstValue[1] - 1 ),firstValue[0]);
+	 var secondDate=new Date();
+	 secondDate.setFullYear(secondValue[2],(secondValue[1] - 1 ),secondValue[0]);     
+
+	 if (firstDate > secondDate)
+	 {
+		qssAjax.alert('<?php echo $this->_translate(2)?>');
+		return;
+	 }
+
+	/*
+	$('#report').submit(function() {
+        window.open('', 'formpopup', 'statusbar=no,resizable=yes,scrollbars=yes, addressbar=no,maximize=yes');
+        this.target = 'formpopup';
+    });
+	$('#report').submit();
+	*/
+	
+	var url = sz_BaseUrl + '/static/m739/show';
+	var data = $('#report').serialize();
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#print-area').html(jreturn);
+                removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+	});
+	
+	 
+}
+
+function changeItem()
+{
+	var bom  = $('select#item option:selected').attr('bomattr');
+	var qty  = $('select#item option:selected').attr('qtyattr');
+	var item = $('select#item option:selected').attr('itemattr');
+	
+	$('#BOM').val(bom);
+	$('#qtyPerHour').val(qty);
+	$('#itemCode').val(item);
+}
+
+$(document).ready(function(){
+	$('#line').change(function()
+	{
+		var line = $('#line option:selected').text();
+		var ngaybd = $('#start').val();
+		var ngaykt = $('#end').val();		
+		var url  = sz_BaseUrl + '/static/m739/show1';
+		var data = {
+				line:$(this).val()
+				,start: ngaybd
+				,end: ngaykt
+				};
+		
+		$('#lineName').val(line);
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#select_item').html(jreturn);
+		}); 
+	});	
+	$('#line').change();
+});
+</script>
+
+<div class="clear"></div>
+<div id="view">
+	<div class="line-hr">
+		<span><?php echo $this->_translate(3)?> </span>
+	</div>
+	<form id="report" method="post"
+		action="/report/maintenance/oee/analysis1">
+		<table class="detail">
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Ngày bắt đầu --> <?php echo $this->_translate(4)?></th>
+				<td><?php echo $this->views->Report->Datepicker('start', '01-'.date('m').'-'.date('Y'));?><span
+					class="bold red">(*)</span></td>
+			</tr>
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Ngày kết thúc --> <?php echo $this->_translate(5)?></th>
+				<td><?php echo $this->views->Report->Datepicker('end', date('d-m-Y'));?><span
+					class="bold red">(*)</span></td>
+			</tr>
+
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Dây chuyền --> <?php echo $this->_translate(6)?></th>
+				<td>
+				<select id="line" name="line">
+					<option value="0"> ---  ---</option>
+					<?php foreach ($this->thietbi as $item):?>
+						<option value="<?php echo $item->IOID?>"><?php echo $item->MaThietBi?> - <?php echo $item->TenThietBi?></option>
+					<?php endforeach;?>
+				</select>
+				<span
+					class="bold red">(*)</span> <input type="hidden" name="lineName"
+					id="lineName" value="" />
+				</td>
+			</tr>
+			<!-- <tr> -->
+			<!--<th width="20%" class="report-param-label"><?php echo $this->_translate(10)?></th>-->
+			<!-- 	<td> -->
+
+			<?php
+			//                 $id            = 'equipment';
+			//                 $getDataObject = array('ODanhSachThietBi'=>array('MaThietBi', 'LoaiThietBi'));
+			//                 $getFields     = array('num'=>2,
+			//                                        'objects'=>array('ODanhSachThietBi'=>array(
+			//                                                                 'id'=>'IOID'
+			//                                                                 ,'display1'=>'MaThietBi'
+			//                                                                 ,'display2'=>'LoaiThietBi')) );
+			//             ?>
+			<?php //echo $this->views->Report->ListBox($id, $getDataObject,$getFields);?>
+			<!-- 	</td> -->
+			<!-- </tr> -->
+
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Mặt hàng --> <?php echo $this->_translate(7)?></th>
+				<td id="select_item"><select id="item" name="item">
+						<option value="">
+							---
+							<?php echo $this->_translate(8)?>
+							---
+						</option>
+				</select> <span class="bold red">(*)</span> <input type="hidden"
+					name="workingCalendar" value="0" /> <input type="hidden" name="BOM"
+					id="BOM" value="0" /> <input type="hidden" name="qtyPerHour"
+					id="qtyPerHour" value="0" /> <input type="hidden" name="itemCode"
+					id="itemCode" value="" />
+				</td>
+			</tr>
+
+
+		</table>
+	</form>
+	<p>
+	
+	
+	<hr>
+	<?php echo $this->views->Report->PrintToolbar();?>
+	<div id="print-content">
+		<div id="print-area"></div>
+	</div>
+</div>

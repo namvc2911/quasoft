@@ -1,0 +1,422 @@
+<?php
+function rowspan($num)
+{
+	return ($num>1)?"rowspan=\"{$num}\"":'';
+}
+
+function rowmerge($num)
+{
+	$temp = $num - 1;
+	return ($num>1)?"row-merge=\"{$temp}\"":'';
+}
+
+
+//echo '<pre>';
+//print_r($this->report);
+//die;
+?>
+
+<?php
+$excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg = "#EEEEEE";
+$row = 2;
+$totalColumn = 14;
+$widths  = array(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1);
+$fix     = Qss_Lib_Report::changeWidthToFitScreen($widths, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+$eFix    = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($widths, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE)
+
+?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="landscape">
+	<excel orientation="landscape" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+	<div id="head_print">
+	<?php echo $this->views->Common->Landscape() ?>
+
+		<center>
+			<h2>
+				<xls row="<?php echo $row?>" column="A"
+					column-merge="<?php echo $excel_col[$totalColumn]?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(1)?>
+				( <?php echo $this->_translate(2)?> <?php echo $this->start?> <?php echo $this->_translate(3)?>
+				<?php echo $this->end?>) </xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++ ?>
+
+
+	<div id="container">
+		<table cellspacing="0" cellpadding="0" border="1" id="" class="border">
+		<?php $begin = 0; ?>
+			<tr class="bggrey">
+				<th width="<?php echo $fix[$begin];?>px"><div style="width: <?php echo $fix[$begin];?>px;">
+						<xls row="<?php echo $row?>" width="<?php echo $eFix[$begin];?>"
+							column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(4)?></xls>
+					</div></th>
+				<th width="<?php echo $fix[$begin];?>px"><div style="width: <?php echo $fix[$begin];?>px;">
+						<xls row="<?php echo $row?>" width="<?php echo $eFix[$begin];?>"
+							column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(5)?></xls>
+					</div></th>
+				<th width="<?php echo $fix[$begin];?>px"><div style="width: <?php echo $fix[$begin];?>px;">
+						<xls row="<?php echo $row?>" width="<?php echo $eFix[$begin];?>"
+							column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(16)?></xls>
+					</div></th>
+				<th width="<?php echo $fix[$begin];?>px"><div style="width: <?php echo $fix[$begin];?>px;">
+						<xls row="<?php echo $row?>" width="<?php echo $eFix[$begin];?>"
+							column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(14)?></xls>
+					</div></th>
+				<th width="<?php echo $fix[$begin];?>px"><div style="width: <?php echo $fix[$begin];?>px;">
+						<xls row="<?php echo $row?>" width="<?php echo $eFix[$begin];?>"
+							column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(15)?></xls>
+					</div></th>
+				<th width="<?php echo $fix[$begin];?>px"><div style="width: <?php echo $fix[$begin];?>px;">
+						<xls row="<?php echo $row?>" width="<?php echo $eFix[$begin];?>"
+							column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(8)?></xls>
+					</div></th>
+				<th width="<?php echo $fix[$begin];?>px"><div style="width: <?php echo $fix[$begin];?>px;">
+						<xls row="<?php echo $row?>" width="<?php echo $eFix[$begin];?>"
+							column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(6)?></xls>
+					</div></th>
+				<th width="<?php echo $fix[$begin];?>px"><div style="width: <?php echo $fix[$begin];?>px;">
+						<xls row="<?php echo $row?>" width="<?php echo $eFix[$begin];?>"
+							column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(7)?></xls>
+					</div></th>
+				<th width="<?php echo $fix[$begin];?>px"><div style="width: <?php echo $fix[$begin];?>px;">
+						<xls row="<?php echo $row?>" width="<?php echo $eFix[$begin];?>"
+							column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(9)?></xls>
+					</div></th>
+				<th width="<?php echo $fix[$begin];?>px"><div style="width: <?php echo $fix[$begin];?>px;">
+						<xls row="<?php echo $row?>" width="<?php echo $eFix[$begin];?>"
+							column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(10)?></xls>
+					</div></th>
+				<!-- <th width="80px"><div style="width:80px;"><xls row="<?php echo $row?>"  width="10" column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="center" v-align="center" border="1" bold="1"><?php echo $this->_translate(19)?></xls></div></th>-->
+				<th width="<?php echo $fix[$begin];?>px"><div style="width: <?php echo $fix[$begin];?>px;">
+						<xls row="<?php echo $row?>" width="<?php echo $eFix[$begin];?>"
+							column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(11)?></xls>
+					</div></th>
+
+				<!-- Thêm giờ -->
+				<th width="<?php echo $fix[$begin];?>px"><div style="width: <?php echo $fix[$begin];?>px;">
+						<xls row="<?php echo $row?>" width="<?php echo $eFix[$begin];?>"
+							 column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+							 h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(20)?></xls>
+					</div></th>
+
+				<!-- Phát sinh -->
+				<th width="<?php echo $fix[$begin];?>px"><div style="width: <?php echo $fix[$begin];?>px;">
+						<xls row="<?php echo $row?>" width="<?php echo $eFix[$begin];?>"
+							 column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+							 h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(21)?></xls>
+					</div></th>
+
+
+				<th width="<?php echo $fix[$begin];?>px"><div style="width: <?php echo $fix[$begin];?>px;">
+						<xls row="<?php echo $row?>" width="<?php echo $eFix[$begin];?>"
+							column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(12)?></xls>
+					</div></th>
+			</tr>
+			<?php $row++?>
+
+
+			<?php $material  = 0;?>
+			<?php $sparepart = 0;?>
+			<?php $service = 0;?>
+			<?php $worker    = 0;?>
+			<?php $total     = 0;?>
+			<?php $other     = 0;?>
+			<?php $overtime     = 0;?>
+			<?php foreach ($this->report as $val): // in report?>
+			<?php $begin = 0; ?>
+			<tr>
+				<td class="left" <?php echo rowspan($val['Group1']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val['Group1']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $val['Code']?></xls>
+				</td>
+				<td class="left" <?php echo rowspan($val['Group1']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val['Group1']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $val['Name']?></xls>
+				</td>
+				<?php $mark1 = 2; ?>
+
+				<!-- In dong dau tien -->
+				<?php foreach($val['Detail'] as $val2):?>
+				<td class="left" <?php echo rowspan($val2['Group2']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val2['Group2']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo ($val2['Type'] == 1)?$this->_translate(17):$this->_translate(18);?></xls>
+				</td>
+				<td class="left" <?php echo rowspan($val2['Group2']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val2['Group2']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $val2['No']?></xls>
+				</td>
+				<td class="center" <?php echo rowspan($val2['Group2']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val2['Group2']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo Qss_Lib_Date::mysqltodisplay($val2['Date'])?></xls>
+				</td>
+				<td class="center <?php echo $val2['Class']?>"
+				<?php echo rowspan($val2['Group2']);?>><xls row="<?php echo $row?>"
+					<?php echo rowmerge($val2['Group2']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $val2['Step']?></xls>
+				</td>
+				<td class="left" <?php echo rowspan($val2['Group2']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val2['Group2']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $val2['MType']?$val2['MType']:$this->aliasForBType;?></xls>
+				</td>
+				<td class="left" <?php echo rowspan($val2['Group2']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val2['Group2']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $val2['Priority'];?></xls>
+				</td>
+				<td class="right" <?php echo rowspan($val2['Group2']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val2['Group2']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($val2['MaterialCost'], $this->defaultCurrency); $material += $val2['MaterialCost'];?></xls>
+				</td>
+				<?php $mark2 = 9;?>
+
+				<?php //$sparepartCost = isset($val2['EmployeeCost'][0]['Cost'])?$val2['EmployeeCost'][0]['Cost']:0;?>
+				<!--                <td class="left" ><xls row="<?php echo $row?>"  column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="left" v-align="center" border="1"><?php echo @$val2['SparePart'][0]['Name'];?> </xls></td>-->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($val2['EmployeeCost'], $this->defaultCurrency); $worker+= $val2['EmployeeCost'];?>
+					</xls></td>
+
+				<td class="right" <?php echo rowspan($val2['Group2']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val2['Group2']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($val2['ServiceCost'], $this->defaultCurrency); $service+=$val2['ServiceCost'];?></xls>
+				</td>
+
+
+
+				<td class="right" <?php echo rowspan($val2['Group2']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val2['Group2']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($val2['OvertimeCost'], $this->defaultCurrency); $overtime+=$val2['OvertimeCost'];?></xls>
+				</td>
+
+
+				<td class="right" <?php echo rowspan($val2['Group2']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val2['Group2']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($val2['OtherCost'], $this->defaultCurrency); $other+=$val2['OtherCost'];?></xls>
+				</td>
+
+					<td class="right" <?php echo rowspan($val['Group1']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val['Group1']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($val['Total'], $this->defaultCurrency); $total += $val['Total'];?></xls>
+				</td>
+				<?php break;?>
+				<?php endforeach;?>
+
+			</tr>
+			<?php $row++ ?>
+
+
+			<?php /*if(isset($val2['SparePart'])):?>
+			<?php $break3 = true; ?>
+			<?php foreach($val2['SparePart'] as $item):?>
+			<?php if($break3) {$break3=false; continue; }?>
+			<?php $mark22 = $mark2 + 1;?>
+			<tr>
+			<td class="left" ><xls row="<?php echo $row?>"  column="<?php echo $excel_col[$mark22]?>"  wrap-text="1" h-align="left" v-align="center" border="1"><?php echo $item['Name'];?></xls></td>
+			<td class="right" ><xls row="<?php echo $row?>"  column="<?php echo $excel_col[++$mark22]?>"  wrap-text="1" h-align="right" v-align="center" border="1"><?php echo Qss_Lib_Util::formatMoney($item['Cost'], $this->defaultCurrency); $sparepart+=$item['Cost'];?></xls></td>
+			</tr>
+			<?php $row++ ?>
+			<?php endforeach;?>
+			<?php endif;*/?>
+
+			<?php $break = true; ?>
+			<?php foreach($val['Detail'] as $val2):?>
+			<?php if($break) {$break=false; continue; }?>
+			<?php $begin = $mark1?>
+			<tr>
+				<td class="left" <?php echo rowspan($val2['Group2']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val2['Group2']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo ($val2['Type'] == 1)?$this->_translate(17):$this->_translate(18);?></xls>
+				</td>
+				<td class="left" <?php echo rowspan($val2['Group2']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val2['Group2']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $val2['No']?></xls>
+				</td>
+				<td class="center" <?php echo rowspan($val2['Group2']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val2['Group2']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo Qss_Lib_Date::mysqltodisplay($val2['Date'])?></xls>
+				</td>
+				<td class="center <?php echo $val2['Class']?>"
+				<?php echo rowspan($val2['Group2']);?>><xls row="<?php echo $row?>"
+					<?php echo rowmerge($val2['Group2']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $val2['Step']?></xls>
+				</td>
+				<td class="left" <?php echo rowspan($val2['Group2']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val2['Group2']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $val2['MType']?$val2['MType']:$this->aliasForBType;?></xls>
+				</td>
+				<td class="left" <?php echo rowspan($val2['Group2']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val2['Group2']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $val2['Priority'];?></xls>
+				</td>
+				<td class="right" <?php echo rowspan($val2['Group2']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val2['Group2']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($val2['MaterialCost'], $this->defaultCurrency); $material+=$val2['MaterialCost'];?></xls>
+				</td>
+
+
+				<!--                <?php //$sparepartCost = isset($val2['SparePart'][0]['Cost'])?$val2['SparePart'][0]['Cost']:0;?>
+                <td class="left" ><xls row="<?php echo $row?>"  column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="left" v-align="center" border="1"><?php echo @$val2['SparePart'][0]['Name'];?> </xls></td>-->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($val2['EmployeeCost'], $this->defaultCurrency); $worker+=$val2['EmployeeCost'];?></xls>
+				</td>
+
+				<td class="right" <?php echo rowspan($val2['Group2']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val2['Group2']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($val2['ServiceCost'], $this->defaultCurrency); $service+=$val2['ServiceCost'];?></xls>
+				</td>
+
+
+				<td class="right" <?php echo rowspan($val2['Group2']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val2['Group2']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($val2['OvertimeCost'], $this->defaultCurrency); $overtime+=$val2['OvertimeCost'];?></xls>
+				</td>
+
+				<td class="right" <?php echo rowspan($val2['Group2']);?>><xls
+						row="<?php echo $row?>" <?php echo rowmerge($val2['Group2']);?>
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($val2['OtherCost'], $this->defaultCurrency); $other+=$val2['OtherCost'];?></xls>
+				</td>
+			</tr>
+			<?php $row++ ?>
+
+			<?php /*if(isset($val2['SparePart'])):?>
+			<?php $break2 = true; ?>
+			<?php foreach($val2['SparePart'] as $item):?>
+			<?php if($break2) {$break2=false; continue; }?>
+			<?php $mark23 = $mark2 + 1;?>
+			<tr>
+			<td class="left" ><xls row="<?php echo $row?>"  column="<?php echo $excel_col[$mark23]?>"  wrap-text="1" h-align="left" v-align="center" border="1"><?php echo $item['Name'];?></xls></td>
+			<td class="right" ><xls row="<?php echo $row?>"  column="<?php echo $excel_col[++$mark23]?>"  wrap-text="1" h-align="right" v-align="center" border="1"><?php echo Qss_Lib_Util::formatMoney($item['Cost'], $this->defaultCurrency); $sparepart+=$item['Cost'];?></xls></td>
+			</tr>
+			<?php $row++ ?>
+			<?php endforeach;?>
+			<?php endif;*/?>
+			<?php endforeach;?>
+
+
+			<?php /* if($val['Group1'] > 1):?>
+			<?php $begin = 0; ?>
+			<tr>
+			<td class="center">&nbsp;<xls row="<?php echo $row?>"   column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="center" v-align="center" border="1"></td></xls>
+			<td class="center">&nbsp;<xls row="<?php echo $row?>"   column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="center" v-align="center" border="1"></xls></td>
+			<td class="center">&nbsp;<xls row="<?php echo $row?>"   column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="center" v-align="center" border="1"></xls></td>
+			<td class="center">&nbsp;<xls row="<?php echo $row?>"   column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="center" v-align="center" border="1"></xls></td>
+			<td class="center">&nbsp;<xls row="<?php echo $row?>"   column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="center" v-align="center" border="1"></xls></td>
+			<td class="center">&nbsp;<xls row="<?php echo $row?>"   column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="center" v-align="center" border="1"></xls></td>
+			<td class="center">&nbsp;<xls row="<?php echo $row?>"   column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="center" v-align="center" border="1"></xls></td>
+			<td class="center">&nbsp;<xls row="<?php echo $row?>"   column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="center" v-align="center" border="1"></xls></td>
+			<td class="right">&nbsp;<xls row="<?php echo $row?>"   column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="right" v-align="center" border="1"></xls></td>
+			<td class="right">&nbsp;<xls row="<?php echo $row?>"   column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="right" v-align="center" border="1"></xls></td>
+			<td class="right">&nbsp;<xls row="<?php echo $row?>"   column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="right" v-align="center" border="1"></xls></td>
+			<td class="right">&nbsp;<xls row="<?php echo $row?>"   column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="right" v-align="center" border="1"></xls></td>
+			<td class="right">&nbsp;<xls row="<?php echo $row?>"   column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="right" v-align="center" border="1"></xls></td>
+			</tr>
+			<?php $row++ ?>
+			<?php endif; */?>
+
+			<?php endforeach;// Ket thuc in report?>
+
+
+			<?php $begin = 0; ?>
+			<tr>
+				<td class="center"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $this->_translate(13)?>
+				
+				</td>
+				</xls>
+				<td class="center"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1">x</xls></td>
+				<td class="center"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1">x</xls></td>
+				<td class="center"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1">x</xls></td>
+				<td class="center"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1">x</xls></td>
+				<td class="center"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1">x</xls></td>
+				<td class="center"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1">x</xls></td>
+				<td class="center"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1">x</xls></td>
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($material, $this->defaultCurrency);?></xls>
+				</td>
+				<!--                    <td class="center"><xls row="<?php echo $row?>"   column="<?php echo $excel_col[++$begin]?>"  wrap-text="1" h-align="center" v-align="center" border="1">x</xls></td>-->
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($worker, $this->defaultCurrency);?></xls>
+				</td>
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($service, $this->defaultCurrency);?></xls>
+				</td>
+
+				<td class="right"><xls row="<?php echo $row?>"
+									   column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+									   h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($overtime, $this->defaultCurrency);?></xls>
+				</td>
+
+				<td class="right"><xls row="<?php echo $row?>"
+									   column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+									   h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($other, $this->defaultCurrency);?></xls>
+				</td>
+
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($total, $this->defaultCurrency);?></xls>
+				</td>
+			</tr>
+			<?php $row++ ?>
+		</table>
+	</div>
+</div>

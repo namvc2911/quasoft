@@ -1,0 +1,27 @@
+<div id="portrait-company-header">
+	<div class="overflow">
+
+		<div class="fl bold">
+			CÔNG TY CỔ PHẦN VIGLACERA TIÊN SƠN<BR>
+
+
+            <p style="padding-left: 20px;"><b><?php echo mb_strtoupper($this->CongTy, 'UTF-8');?></b></p>
+		</div>
+
+		<div class="fr">
+			<?php if(isset($this->ini['bieumau'])):?>
+				<?php echo $this->ini['bieumau'];?>
+			<?php endif;?>
+
+			<?php if(isset($this->ini['ngaybanhanh']) && isset($this->ini['bieumau'])):?>
+				,
+			<?php endif;?>
+
+			<?php if(isset($this->ini['ngaybanhanh'])):?>
+				<?php echo $this->ini['ngaybanhanh'];?>
+			<?php endif;?>
+		</div>
+	</div>
+</div>
+<br/>
+<div class="clear">&nbsp;</div>

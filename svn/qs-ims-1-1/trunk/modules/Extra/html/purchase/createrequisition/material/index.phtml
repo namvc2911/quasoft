@@ -1,0 +1,182 @@
+<link rel="stylesheet" href="/css/button.css" />
+<script
+	type="text/javascript" src="/js/common.js"></script>
+<script>
+	var fid    = 'M716';
+	var ifid   = '<?php echo $this->ifid;?>';
+	var deptid = 1;
+	var objid  = 'ODSNhuCauMuaHang';
+	jQuery(document).ready(function($){
+		// Hien thi datepicker
+		$('.datepicker').each(function(){ $(this).datepicker({ dateFormat: "dd-mm-yy" }); });/* Datepicker*/
+		
+		// Tim kiem 
+		create_requisition_search();
+		
+		// Hien thi gia tri cu
+		create_requisition_old();
+	});
+	
+	
+	/**
+	 * Kiem tra dieu kien tim kiem
+	 */
+	function create_requisition_validate_datefilter()
+	{
+		var start = $('#create_requisition_start').val();
+		var end   = $('#create_requisition_end').val();
+		var err   = '';
+		
+		err += common_checkEmpty(start, '<?php echo $this->_translate(1);?>');
+		err += common_checkEmpty(end, '<?php echo $this->_translate(2);?>');
+		err += common_compareStartAndEnd(start, end);
+		return err;
+	}
+	
+	function create_requisition_validate_requisition_line()
+	{
+		var requisition = $('#create_requisition_search_dialbox option').length;
+		var err         = '';
+		
+		err += common_checkEmpty(requisition, '<?php echo $this->_translate(5);?>');
+		return err;
+	}
+	
+	/**
+	 * Tim kiem nhu cau vat tu trong khoang thoi gian (dong chinh)
+	 */
+	function create_requisition_search()
+	{
+		var err = create_requisition_validate_datefilter();
+		
+		// check valid params
+		if(err)
+		{
+			qssAjax.alert(err);
+			return;
+		}
+		else
+		{
+			var data = $('#create_requisition_filter_form').serialize();
+			var url = sz_BaseUrl + '/extra/purchase/createrequisition/material/search'; 
+			qssAjax.getHtml(url, data, function(jreturn) {
+				$('#create_requisition_search_form').html(jreturn);
+			});
+		}
+	}	
+	
+	function create_requisition_old()
+	{
+		var data = {ifid:ifid};
+		var url = sz_BaseUrl + '/extra/purchase/createrequisition/material/old'; 
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#create_requisition_result').html(jreturn);
+		});
+	}
+	
+	/**
+	 * Tim kiem nhu cau vat tu trong khoang thoi gian (chi tiet)
+	 */
+	function create_requisition_result()
+	{
+		// Chon tat ca dong cua select box
+		common_selectDialBox('create_requisition_search_dialbox');
+
+//		// Kiem tra co nhu cau vat tu
+//		var err = create_requisition_validate_requisition_line();
+//
+//		// check valid params
+//		if(err)
+//		{
+//			qssAjax.alert(err);
+//			return;
+//		}
+//		else
+//		{
+			var data = $('#create_requisition_filter_form, #create_requisition_search_dialbox').serialize();
+			var url = sz_BaseUrl + '/extra/purchase/createrequisition/material/result'; 
+			qssAjax.getHtml(url, data, function(jreturn) {
+				$('#create_requisition_result').html(jreturn);
+			});
+//		}
+	}
+	
+	/**
+	 * Luu lai ket qua
+	 */
+	function create_requisition_save()
+	{
+		var exists = $('#create_requisition_exists_data').val();
+		if(exists == 1)
+		{
+			qssAjax.confirm('<?php echo $this->_translate(6);?>', function(){
+				var data = $('#create_requisition_search_form,#create_requisition_filter_form, #create_requisition_result_form').serialize();
+				var url = sz_BaseUrl + '/extra/purchase/createrequisition/material/save'; 
+				qssAjax.call(url, data, function(jreturn){
+					if(jreturn.message != ''){
+						qssAjax.alert(jreturn.message);
+					}
+					rowObjectSearch(ifid, deptid, objid);
+				}, function(jreturn){
+					qssAjax.alert(jreturn.message);		
+				});	
+			});
+		}
+		else
+		{
+			var data = $('#create_requisition_filter_form, #create_requisition_result_form').serialize();
+			var url = sz_BaseUrl + '/extra/purchase/createrequisition/material/save'; 
+			qssAjax.call(url, data, function(jreturn){
+				if(jreturn.message != ''){
+					qssAjax.alert(jreturn.message);
+				}
+				rowObjectSearch(ifid, deptid, objid);
+			}, function(jreturn){
+				qssAjax.alert(jreturn.message);		
+			});				
+		}
+	}
+</script>
+
+<div
+	id="create_requisition_wrap">
+	<div id="create_requisition_filter">
+		<form id="create_requisition_filter_form">
+			<label> <?php echo $this->_translate(1);//Từ ngày?> </label> <input
+				type="text" class="datepicker" id="create_requisition_start"
+				name="start" value="<?php echo date('01-m-Y');?>" /> <label> <?php echo $this->_translate(2);//Đến ngày?>
+			</label> <input type="text" class="datepicker"
+				id="create_requisition_end" name="end"
+				value="<?php echo date('t-m-Y');?>" />
+
+			<!-- hidden params -->
+			<input type="hidden" id="create_requisition_ifid" name="ifid"
+				value="<?php echo $this->ifid;?>" /> <input type="hidden"
+				id="create_requisition_exists_data" name="exists"
+				value="<?php echo $this->oldData;?>" />
+			<button type="button" class="btn-custom"
+				onclick="create_requisition_search()">
+				<?php echo $this->_translate(3);//Tìm?>
+			</button>
+		</form>
+		<!-- end form#create_requisition_filter_form -->
+	</div>
+	<!-- end #create_requisition_filter -->
+
+	<div id="create_requisition_search" class="margin_top_10">
+		<div>
+			<label>Nhu cầu vật tư:</label>
+		</div>
+		<form id="create_requisition_search_form">
+		<?php //echo $this->views->Report->DialBox('create_requisition_search_dialbox', array());?>
+		</form>
+	</div>
+	<!-- end #create_requisition_search -->
+
+	<div id="create_requisition_result" class="margin_top_10"></div>
+	<!-- end #create_requisition_result -->
+</div>
+<!-- end #create_requisition_wrap -->
+
+
+

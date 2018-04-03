@@ -1,0 +1,61 @@
+<form id="qss_form" method="get"
+	onSubmit="rowGroupSearch(); return false;">
+	<input name="Action" type="hidden" value="insert"> <input name="type"
+		type="hidden" value="<?php
+	echo $this->type?>">
+	<div id="horizontal-toolbar" class="horizontal-toolbar">
+		<button type="button" class="btn btn_main_top"
+			onClick="rowGroupInsert()">
+			<?php echo $this->_translate(12)?>
+		</button>
+		
+		<button type="button" class="btn btn_main_top" disabled
+			onClick="rowGroupEdit()">
+			<?php echo $this->_translate(13)?>
+		</button>
+		
+		<button type="button" class="btn btn_main_top" disabled
+			onClick="rowGroupDelete()">
+			<?php echo $this->_translate(14)?>
+		</button>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<div id="qss_list">
+			<table cellspacing="0" class="grid" id="grid">
+				<thead>
+					<tr style="border-bottom: 1px solid rgb(204, 204, 204);">
+						<th style="border-left: 1px solid rgb(204, 204, 204); "><?php echo $this->_translate(27)?>
+						</th>
+						<th ><?php echo $this->_translate(1)?>
+						</th>
+						<th ><?php echo $this->_translate(2)?>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php $i=0;?>
+				<?php $j=0;?>
+				<?php $dept = 0?>
+                <?php $ik = 0;?>
+
+				<?php foreach ($this->data as $item):?>
+					<?php $j++;?>
+                    <?php $ik++;?>
+
+					<tr rights="10" class="<?php echo ($ik%2==0)?'bglightblue':'';?>" ondblclick="rowGroupEdit(); return false;" onclick="rowCLK(this);"
+						id="<?php echo $item->GroupID?>">
+						<td class="nocount" value="<?php echo $i?>"><?php echo $j?>
+						</td>
+						<td class="data"><?php echo $item->GroupName?>
+						</td>
+						<td class="data"><?php echo $item->Description?>
+						</td>
+					</tr>
+					<?php endforeach;?>
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+</form>

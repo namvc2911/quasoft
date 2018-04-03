@@ -1,0 +1,47 @@
+<form method="post" id="qss_form">
+	<input type="hidden" value="<?php echo (int)@$this->data->UIGID?>"
+		name="uigid" />
+	<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+		<button id="btnSAVE" type="button" class="btn btn_main_top" onclick="UIGroupSave('<?php echo $this->objid?>')">
+			<?php echo $this->_translate(34)?>
+		</button>
+		<button type="button" class="btn btn_main_top" onclick="UIGroupBack('<?php echo $this->objid?>')">
+			<?php echo $this->_translate(32)?>
+		</button>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<div id="item-actions">
+			<ul>
+				<li class="item-action active"><a href="#1"><span><?php echo $this->_translate(124)?>
+					</span>
+				</a>
+				</li>
+			</ul>
+		</div>
+		<table border="0" width="450">
+			<tr>
+				<td><?php echo $this->_translate(44)?>
+				</td>
+				<td><input type="text" value="<?php echo @$this->data->GroupNo?>"
+					style="width: 100px;" name="intGroupNo" />
+				</td>
+			</tr>
+			<?php foreach ($this->languages as $lang):?>
+			<tr>
+				<td><?php echo $this->_translate(64)?> - <?php echo $lang->Name?>:</td>
+				<?php if($lang->Code == 'vn'):?>
+				<td><input type="text" value="<?php echo @$this->data->Name?>"
+					style="width: 200px;" name="szName" />
+				</td>
+				<?php else:?>
+				<td><input type="text" name="szName_<?php echo $lang->Code?>"
+					style="width: 200px;"
+					value="<?php echo @$this->data->{"Name_$lang->Code"}?>" />
+				</td>
+				<?php endif;?>
+			</tr>
+			<?php endforeach;?>
+		</table>
+	</div>
+</form>

@@ -1,0 +1,112 @@
+<script>
+$(document).ready(function(){
+    // Hiển thị sessions list theo nhân viên khi khởi chạy
+	M415.loadStep(<?php echo $this->session->Buoc;?>); 
+});
+</script>
+
+<!-- ================================================================================================================== -->
+
+
+
+
+
+
+<div id="M415_edit_wrap">
+
+
+    <div class="overflow" id="M415_step_bar">
+        <!-- Session ID -->
+        <input type="hidden" name="session_ifid" id="session_ifid" value="<?php echo $this->session->IFID_M415;?>" />
+
+        <!-- Plan ID -->
+        <input type="hidden" name="plan_ioid" id="plan_ioid" value="<?php echo @(int)$this->session->Ref_SoKeHoach;?>" />
+
+        <!-- Current Step No -->
+        <input type="hidden" name="step_no" id="step_no" value="<?php echo $this->session->Buoc;?>" />
+
+        <!-- Step No -->
+        <input type="hidden" name="db_step_no" id="db_step_no" value="<?php echo $this->session->Buoc;?>" />
+
+        <!-- Step Xu Ly -->
+        <input type="hidden" name="db_step_no" id="db_step_xu_ly" value="<?php echo $this->session->BuocXuLy;?>" />
+
+        <!-- Session date -->
+        <input type="hidden" name="session_date" id="session_date" value="<?php echo $this->session->Ngay;?>" />
+
+
+
+        <!-- Steps -->
+        <div id="M415_steps" class="fl">
+
+            <?php /*?>
+               <a href="#" onclick="M415.loadStep(1)"> Nhập yêu cầu </a>
+            >> <a href="#" onclick="M415.loadStep(2)"> Hợp đồng nguyên tắc </a>
+            >> <a href="#" onclick="M415.loadStep(3)"> Kiểm tra đơn hàng </a>
+            >> <a href="#" onclick="M415.loadStep(4)"> Lập KHMS </a>
+            >> <a href="#" onclick="M415.loadStep(5)"> Chào giá </a>
+            >> <a href="#" onclick="M415.loadStep(6)"> Nhập báo giá </a>
+            >> <a href="#" onclick="M415.loadStep(7)"> So sánh báo giá </a>
+            >> <a href="#" onclick="M415.loadStep(8)"> Kết thúc </a>
+            <?php */?>
+
+            <div class="container">
+                <div class="steps">
+                    <ul>
+                        <li class="step step-1">
+                            <a href="#" onclick="M415.loadStep(1)"><img src="/images/progress/tick.png" class="tick tick-1"/> <strong>Nhập yêu cầu</strong> </a>
+                        </li>
+                        <li class="step step-2">
+                            <a href="#" onclick="M415.loadStep(2)"><img src="/images/progress/tick.png" class="tick tick-2"/> <strong>Hợp đồng nguyên tắc</strong> </a>
+                        </li>
+                        <li class="step step-3">
+                            <a href="#" onclick="M415.loadStep(3)"><img src="/images/progress/tick.png" class="tick tick-3"/> <strong>Kiểm tra đơn hàng</strong> </a>
+                        </li>
+                        <li class="step step-4">
+                            <a href="#" onclick="M415.loadStep(4)"><img src="/images/progress/tick.png" class="tick tick-4"/> <strong>Lập KHMS</strong> </a>
+                        </li>
+
+                        <?php // bo qua buoc chao gia
+
+                        /*
+                        <li class="step step-5">
+                            <a href="#" onclick="M415.loadStep(5)"><img src="/images/progress/tick.png" class="tick tick-5"/> <strong>Chào giá</strong> </a>
+                        </li>
+                        */?>
+
+
+                        <li class="step step-6">
+                            <a href="#" onclick="M415.loadStep(6)"><img src="/images/progress/tick.png" class="tick tick-6"/> <strong>Nhập báo giá</strong> </a>
+                        </li>
+                        <li class="step step-7">
+                            <a href="#" onclick="M415.loadStep(7)"><img src="/images/progress/tick.png" class="tick tick-7"/> <strong>So sánh báo giá</strong> </a>
+                        </li>
+                        <li class="step step-8">
+                            <a href="#" onclick="M415.loadStep(8)"><img src="/images/progress/tick.png" class="tick tick-8"/> <strong>Đơn hàng</strong></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    
+    <div class="clear"></div>
+    <br/>
+
+
+    <div id="M415_edit_show">
+    
+    </div><!-- end #M415_edit_show -->
+    
+    <br/>
+    
+
+    
+</div><!-- end #M415_edit_wrap -->
+
+<!-- Trở lại màn hinh chính -->
+<div id="M415_edit_control" class=""></div>
+<br/><br/><br/>
+        

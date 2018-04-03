@@ -1,0 +1,104 @@
+<style>
+    #m602_serial_show_table
+    {
+        height: 255px;
+        overflow: auto;
+        margin-top: 5px;
+    }
+</style>
+
+<script>
+    M602_SERIAL = {
+        create : function()
+        {
+            var url  = sz_BaseUrl + '/button/m602/serial/show';
+            var data = $('#m602_config').serialize();
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#m602_serial_show').html(jreturn);
+            });
+        },
+
+        save : function()
+        {
+            var data = $('#m602_change_serial, #m602_config').serialize();
+            var url  = sz_BaseUrl + '/button/m602/serial/save';
+
+            qssAjax.confirm('Bạn muốn lưu thông tin serial?', function(){
+                qssAjax.call(url, data, function(jreturn) {
+                    if(jreturn.message != '')
+                    {
+                        qssAjax.alert(jreturn.message);
+                    }
+
+                    M602_SERIAL.create();
+                    rowObjectSearch('<?php echo $this->ifid;?>','<?php echo $this->deptid;?>','OThuocTinhChiTiet');
+                    $('#qss_trace').dialog('close');
+
+                }, function(jreturn) {
+                    qssAjax.alert(jreturn.message);
+                });
+            });
+        }
+    };
+</script>
+
+<div>
+    <?php if(!$this->data->QuanLyTheoMa):?>
+        <span class="bold red">Mặt hàng không hỗ trợ đánh serial!</span>
+        <?php die;?>
+    <?php endif;?>
+
+
+    <div>
+        <form id="m602_config">
+            <input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" />
+
+            <table cellspacing="0" cellpadding="0" border="0" style="width: 70%; table-layout: fixed">
+                <tr>
+                    <td class="left bold" style="width: 20%;">Ký tự đầu mã:</td>
+                    <td class="left" style="width: 30%;">
+                        <input type="text" size="18" name="prefix" value="<?php echo $this->data->KyTuDauMa;?>" />
+                    </td>
+
+                    <td class="left bold" style="width: 30%;">Đánh mã tự động:</td>
+                    <td class="left" style="width: 10%;">
+                        <input type="checkbox" name="auto" value="1" <?php echo $this->data->QuanLyTheoMa?'checked':'';?> />
+                    </td>
+
+                    <td class="left" style="width: 10%;">
+                        <button type="button" class="btn_main_top btn" onclick="M602_SERIAL.create();">Tạo</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="left bold">Độ dài mã:</td>
+                    <td class="left">
+                        <input type="text" size="18" name="length" value="<?php echo $this->data->DoDaiMa;?>" />
+                    </td>
+
+                    <td class="left bold">Bỏ qua serial đã đánh:</td>
+                    <td class="left">
+                        <input type="checkbox" name="reject" value="1"/>
+                    </td>
+                    <td>&nbsp;</td>
+                </tr>
+
+                <tr>
+                    <td colspan="5">
+                        (<span class="bold">Kho:</span>  <span class="red"><?php echo $this->data->Kho;?> </span>-
+                        <span class="bold">Mã sản phẩm:</span>  <span class="red"><?php echo $this->data->MaSanPham;?> </span>-
+                        <span class="bold">Tên sản phẩm:</span> <span class="red"><?php echo $this->data->TenSanPham;?></span> -
+                        <span class="bold">Đơn vị tính:</span> <span class="red"><?php echo $this->data->DonViTinh;?></span>)
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div class="clear"></div>
+
+    <div id="m602_serial_show">
+
+    </div>
+</div>

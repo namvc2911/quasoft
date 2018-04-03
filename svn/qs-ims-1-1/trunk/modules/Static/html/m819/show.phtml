@@ -1,0 +1,549 @@
+<?php
+$excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$row       = 2;
+$totalCol  = 8;
+$stt = 1;
+$widthPx = array(1,3);
+for( $k = 0; $k< 7; $k++) // tÃ­nh sá»‘ cá»™t
+{
+	$widthPx[] = 10/7;
+}
+$widthEx   = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($widthPx);
+$widthPx   = Qss_Lib_Report::changeWidthToFitScreen($widthPx);
+$subTitle       = array();
+$subTitleStr    = '';
+?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="landscape">
+	<excel orientation="landscape" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+
+	<div id="head_print">
+	<?php echo $this->views->Common->Landscape() ?>
+	<?php if ($this->monthStart == $this->monthEnd):?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(4).$this->monthStart.$this->_translate(5).$this->year ?></xls>
+			</h2>
+		</center>
+	<?php else: ?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(4 ).$this->monthStart.$this->_translate(6).$this->monthEnd.$this->_translate(5).$this->year ?></xls>
+			</h2>
+		</center>
+	<?php endif;?>
+	<?php $row++ ?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $subTitleStr ?></xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++ ?>
+	<div id="container">
+		<table width="" cellpadding="0" cellspacing="0" class="border" border="1">
+			<tr class="bggrey center">
+			<?php $begin = 0; ?>
+				<th rowspan="2" width="<?php echo $widthPx[$begin];?>px">
+					<!-- STT --> 
+					<xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"  row-merge="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(2) ?></xls>
+				</th>
+
+				<th rowspan="2" width="<?php echo $widthPx[$begin];?>px">
+					<!-- TÃªn Ä‘Æ¡n vá»‹ tiÃªu thá»¥ nÆ°á»›c --> 
+					<xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"  row-merge="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(3) ?></xls>
+				</th>
+				<th colspan="7">
+					<!-- Cá»™t tá»•ng sá»‘ theo dÃ²ng --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1" column-merge="<?php echo $excel_col[$begin + 6];?>"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(14)?></xls>
+				</th>
+			</tr>
+			<?php $row++?>
+			<tr>
+				<?php $begin =2?>
+				<th>
+					<!-- Tá»•ng khá»‘i lÆ°á»£ng tá»«ng dÃ²ng --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(7) ?></xls>
+				</th>				
+				<th>
+					<!-- Tá»•ng ThÃ nh tiá»�n tá»«ng dÃ²ng  --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(8) ?></xls>
+				</th>				
+				<th>
+					<!-- Tá»•ng GiÃ¡ trá»‹ trÆ°á»›c thuáº¿ theo tá»«ng dÃ²ng --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(9) ?></xls>
+				</th>				
+				<th>
+					<!-- Tá»•ng PhÃ­ nÆ°á»›c tháº£i(20%) theo tá»«ng dÃ²ng --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(10) ?></xls>
+				</th>				
+				<th>
+					<!-- Tá»•ng Cá»™ng(chÆ°a tÃ­nh VAT theo tá»«ng dÃ²ng --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(11) ?></xls>
+				</th>				
+				<th>
+					<!-- Tá»•ng Thuáº¿ VAT (5%)tá»«ng dÃ²ng --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(12) ?></xls>
+				</th>				
+				<th>
+					<!-- Tá»•ng Cá»™ng cÃ³ thuáº¿ VAT theo tá»«ng dÃ²ng --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(13) ?></xls>
+				</th>
+			</tr>
+			<?php $row++ ?>
+			<?php $begin = 0;?>
+			<?php $i = 0;?>
+			<?php $weightGroup = array();//sá»‘ lÆ°á»£ng?>
+			<?php $moneyBeforeTaxGroup = array();//tiá»�n trÆ°á»›c thuáº¿?>
+			<?php $sumAllMoneyBeforeTax = 0;//tá»•ng khá»‘i lÆ°á»£ng á»Ÿ dÃ²ng tá»•ng cá»™ng?>
+			<?php $sumAllWeight = 0;//tá»•ng tiá»�n trÆ°á»›c thuáº¿ á»Ÿ dÃ²ng tá»•ng cá»™ng?>
+			<?php foreach ($this->list as $list):?>
+				<!-- Th1: CÃ´ng tÆ¡ cÃ³ level =1 (lÃ  cÃ´ng tá»Ÿ tá»•ng cá»§a 1 nhÃ³m) -->
+				<?php if($list->level == 1):?>
+					<?php $begin = 0;?>
+					<?php $i++?>
+					<?php $count = 0;?>
+					<tr>
+						<!-- STT -->
+						<td class=" right bold">
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="center" v-align="center" border="1" bold="1"> <?php echo $stt ?></xls>
+						</td>
+						<?php $stt++;?>
+						<!-- Don Vi -->
+						<td class = "bold">
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1" bold="1"> <?php echo $list->CapDen ?></xls>
+						</td>
+						<?php $dataMeter = @$this->data[$list->IOID] ?>
+						<?php $bill = $dataMeter?$dataMeter->SoHoaDon:0?>
+						<?php if($bill == 0):?>
+							<?php $bill = "-";//náº¿u khÃ´ng cÃ³ HÃ³a Ä‘Æ¡n thÃ¬ in ra - á»Ÿ bÃ¡o cÃ¡o?>
+						<?php endif;?>
+						<?php $weightGroup[$i]= $dataMeter?$dataMeter->ChiSoCongToNuoc:0?>
+						<?php $moneyBeforeTaxGroup[$i] = $dataMeter?$dataMeter->TongTienCongToNuoc:0?>
+						<!-- Sá»‘ hÃ³a Ä‘Æ¡n -->
+						<td class = "center bold">
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="center" v-align="center" border="1" bold="1"> <?php echo $bill;?></xls>
+						</td>
+						<!-- Sá»‘ lÆ°á»£ng cá»§a Ä‘Æ¡n vá»‹ -->
+						<td class = "right bold">
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="right" v-align="center" border="1" bold="1"> <?php echo Qss_Lib_Util::formatInteger($weightGroup[$i]); ?></xls>
+						</td>
+						<?php $sumAllWeight += $weightGroup[$i];//cá»™ng khá»‘i lÆ°á»£ng vÃ o tá»•ng khá»‘i lÆ°á»£ng?>
+						<!-- tiá»�n trÆ°á»›c thuáº¿ -->
+						<td class = "right bold">
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="right" v-align="center" border="1" bold="1"> <?php echo Qss_Lib_Util::formatInteger($moneyBeforeTaxGroup[$i]); ?></xls>
+						</td>
+						<?php $sumAllMoneyBeforeTax += $moneyBeforeTaxGroup[$i];// cá»™ng vÃ o tá»•ng tiá»�n trÆ°á»›c thuáº¿ á»Ÿ dÃ²ng tá»•ng cá»™ng?>
+						<!-- PhÃ­ nÆ°á»›c tháº£i = 20% tiá»�n trÆ°á»›c thuáº¿ -->
+						<?php $moneyWasteWaterGroup = $moneyBeforeTaxGroup[$i] * 0.2;?>
+						<td class = "right bold">
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="right" v-align="center" border="1" bold="1"> <?php echo Qss_Lib_Util::formatInteger($moneyWasteWaterGroup);?></xls>
+						</td>
+						<!-- Tá»•ng tiá»�n(chÆ°a cÃ³ VAT) = tiá»�n trÆ°á»›c thuáº¿ + phÃ­ nÆ°á»›c tháº£i-->
+						<?php $moneyNoVATGroup = $moneyBeforeTaxGroup[$i] + $moneyWasteWaterGroup?>
+						<td class = "right bold">
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="right" v-align="center" border="1" bold="1"> <?php echo Qss_Lib_Util::formatInteger($moneyNoVATGroup); ?></xls>
+						</td>
+						<!-- tiá»�n thuáº¿ VAT = 5% tiá»�n trÆ°á»›c thuáº¿ -->
+						<?php $moneyVATGroup = $moneyBeforeTaxGroup[$i] * 0.05;?>
+						<td class = "right bold">
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="right" v-align="center" border="1" bold="1"> <?php echo Qss_Lib_Util::formatInteger($moneyVATGroup); ?></xls>
+						</td>
+						<!-- Tá»•ng tiá»�n tÃ­nh cáº£ VAT = tá»•ng tiá»�n chÆ°a cÃ³ VAT + VAT -->
+						<?php $moneyHaveVATGroup = $moneyNoVATGroup + $moneyVATGroup;?>
+						<td class = "right bold">
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="right" v-align="center" border="1" bold="1"> <?php echo Qss_Lib_Util::formatInteger($moneyHaveVATGroup); ?></xls>
+						</td>
+						<?php $i++?>
+						<?php $row++?>
+					</tr>
+
+					
+				<!-- Th2: CÃ´ng tÆ¡ lÃ  level 2(cÃ´ng tÆ¡ lÃ  thÃ nh viÃªn cá»§a nhÃ³m) -->
+				<?php elseif ($list->level == 2):?>
+					<?php $count ++;?>
+					<?php $dataMeter = @$this->data[$list->IOID] ?>
+					<!-- th2.1: count = 1 thÃ¬ lÆ°u sá»‘ liá»‡u cá»§a thÃ nh viÃªn sá»‘ 1 láº¡i -->
+					<?php if($count == 1)://náº¿u thÃ nh viÃªn Ä‘áº§u tiÃªn thÃ¬ lÆ°u sá»‘ liá»‡u cá»§a thÃ nh viÃªn sá»‘ 1 láº¡i. Náº¿u nhÃ³m cÃ³ hÆ¡n 2 thÃ nh viÃªn thÃ¬ má»›i in?>
+						<?php $addressMemberNo1 = "";//Cáº¥p Ä‘áº¿n cá»§a thÃ nh viÃªn 1?>
+						<?php $billMemberNo1 = $weightMemberNo1 = $moneyBeforeTaxMemberNo1 = $moneyWasteWaterMemberNo1 = $moneyNoVATMemberNo1 = $moneyVATMemberNo1 = $moneyHaveVATMemberNo1 = 0;?>
+						<?php $addressMemberNo1 = $list->CapDen;?>
+						<?php $billMemberNo1 = $dataMeter?$dataMeter->SoHoaDon:0;//hÃ³a Ä‘Æ¡n?>
+						<?php if($billMemberNo1 == 0):?>
+							<?php $billMemberNo1 = "-";?>
+						<?php endif;?>
+						<?php $weightMemberNo1 = $dataMeter?$dataMeter->ChiSoCongToNuoc:0;//sá»‘ lÆ°á»£ng?>
+						<?php $moneyBeforeTaxMemberNo1 = $dataMeter?$dataMeter->TongTienCongToNuoc:0;//tiá»�n trÆ°á»›c thuáº¿?>
+						<?php $moneyWasteWaterMemberNo1 = $moneyBeforeTaxMemberNo1 * 0.2;//phÃ­ nÆ°á»›c tháº£i?>
+						<?php $moneyNoVATMemberNo1 = $moneyBeforeTaxMemberNo1 + $moneyWasteWaterMemberNo1;//tá»•ng tiá»�n chÆ°a cÃ³ VAT?>
+						<?php $moneyVATMemberNo1 = $moneyBeforeTaxMemberNo1 * 0.05;//tiá»�n thuáº¿ VAT?>
+						<?php $moneyHaveVATMemberNo1 = $moneyNoVATMemberNo1 + $moneyVATMemberNo1;//tá»•ng tiá»�n cÃ³ cáº£ VAT?>
+					<!-- th2: count = 2 in dá»¯ liá»‡u cá»§a cáº£ 2 vÃ  1 -->
+					<?php elseif ($count == 2):?>
+						<!-- in thÃ nh viÃªn sá»‘ 1 -->
+						<tr>
+							<?php $begin = 0;?>
+							<!-- STT -->
+							<td >
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="center" v-align="left" border="1"></xls>
+							</td>
+							<!-- Don Vi -->
+							<td >
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="left" v-align="center" border="1"> <?php echo $addressMemberNo1; ?></xls>
+							</td>
+							<!-- Sá»‘ hÃ³a Ä‘Æ¡n -->
+							<td class = "center">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="center" v-align="center" border="1"> <?php echo $billMemberNo1;?></xls>
+							</td>
+							<!-- Sá»‘ lÆ°á»£ng cá»§a Ä‘Æ¡n vá»‹ -->
+							<td class = "right">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1" > <?php echo Qss_Lib_Util::formatInteger($weightMemberNo1); ?></xls>
+							</td>
+							<!-- tiá»�n trÆ°á»›c thuáº¿ -->
+							<td class = "right">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatInteger($moneyBeforeTaxMemberNo1); ?></xls>
+							</td>
+							<!-- PhÃ­ nÆ°á»›c tháº£i = 20% tiá»�n trÆ°á»›c thuáº¿ -->
+							<td class = "right">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatInteger($moneyWasteWaterMemberNo1);?></xls>
+							</td>
+							<!-- Tá»•ng tiá»�n(chÆ°a cÃ³ VAT)-->
+							<td class = "right">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatInteger($moneyNoVATMemberNo1); ?></xls>
+							</td>
+							<!-- tiá»�n thuáº¿ VAT = 5% tiá»�n trÆ°á»›c thuáº¿ -->
+							<td class = "right">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatInteger($moneyVATMemberNo1); ?></xls>
+							</td>
+							<!-- Tá»•ng tiá»�n tÃ­nh cáº£ VAT = tá»•ng tiá»�n chÆ°a cÃ³ VAT + VAT -->
+							<td class = "right">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatInteger($moneyHaveVATMemberNo1); ?></xls>
+							</td>
+							<?php $row++?>
+							<?php $begin=0;?>
+						</tr>
+						
+						<!-- in thÃ nh viÃªn sá»‘ 2 -->
+						<?php $count++;//tÄƒng thÃ nh viÃªn trong nhÃ³m lÃªn 1?>
+						<tr>
+							<?php $weight = 0;//sá»‘ lÆ°á»£ng cá»§a thÃ nh viÃªn level 2?>
+							<?php $moneyBeforeTax = 0;//tiá»�n trÆ°á»›c thuáº¿ cá»§a level 2?>
+							<?php $moneyWasteWater = 0;//tiá»�n phÃ­ nÆ°á»›c tháº£i cá»§a level 2?>
+							<?php $moneyNoVAT = 0;//tiá»�n chÆ°a cÃ³ VAT cá»§a thÃ nh viÃªn level 2?>
+							<?php $moneyVAT = 0;//tiá»�n VAT cá»§a thÃ nh viÃªn level 2?>
+							<?php $moneyHaveVAT = 0;//tiá»�n cÃ³ VAT cá»§a thÃ nh viÃªn level 2?>
+							<?php $begin = 0;?>
+							<!-- STT -->
+							<td >
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="center" v-align="center" border="1"></xls>
+							</td>
+							<!-- Don Vi -->
+							<td >
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="left" v-align="center" border="1"> <?php echo $list->CapDen ?></xls>
+							</td>
+							<?php $dataMeter = @$this->data[$list->IOID] ?>
+							<?php $bill = $dataMeter?$dataMeter->SoHoaDon:0?>
+							<?php if($bill == 0):?>
+								<?php $bill = "-";//náº¿u khÃ´ng cÃ³ HÃ³a Ä‘Æ¡n thÃ¬ in ra - á»Ÿ bÃ¡o cÃ¡o?>
+							<?php endif;?>
+							<?php $weight= $dataMeter?$dataMeter->ChiSoCongToNuoc:0?>
+							<?php $moneyBeforeTax = $dataMeter?$dataMeter->TongTienCongToNuoc:0?>
+							<!-- Sá»‘ hÃ³a Ä‘Æ¡n -->
+							<td class = "center">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="center" v-align="center" border="1" > <?php echo $bill;?></xls>
+							</td>
+							<!-- Sá»‘ lÆ°á»£ng cá»§a Ä‘Æ¡n vá»‹ -->
+							<td class = "right">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatInteger($weight); ?></xls>
+							</td>
+							<!-- tiá»�n trÆ°á»›c thuáº¿ -->
+							<td class = "right">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatInteger($moneyBeforeTax); ?></xls>
+							</td>
+							<!-- PhÃ­ nÆ°á»›c tháº£i = 20% tiá»�n trÆ°á»›c thuáº¿ -->
+							<?php $moneyWasteWater = $moneyBeforeTax*0.2;?>
+							<td class = "right">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatInteger($moneyWasteWater);?></xls>
+							</td>
+							<!-- Tá»•ng tiá»�n(chÆ°a cÃ³ VAT) = tiá»�n trÆ°á»›c thuáº¿ + phÃ­ nÆ°á»›c tháº£i-->
+							<?php $moneyNoVAT = $moneyBeforeTax + $moneyWasteWater?>
+							<td class = "right">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatInteger($moneyNoVAT); ?></xls>
+							</td>
+							<!-- tiá»�n thuáº¿ VAT = 5% tiá»�n trÆ°á»›c thuáº¿ -->
+							<?php $moneyVAT = $moneyBeforeTax * 0.05;?>
+							<td class = "right">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatInteger($moneyVAT); ?></xls>
+							</td>
+							<!-- Tá»•ng tiá»�n tÃ­nh cáº£ VAT = tá»•ng tiá»�n chÆ°a cÃ³ VAT + VAT -->
+							<?php $moneyHaveVAT = $moneyNoVAT + $moneyVAT;?>
+							<td class = "right">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatInteger($moneyHaveVAT); ?></xls>
+							</td>
+							<?php $row++?>
+							<?php $begin=0;?>
+						</tr>
+					<?php elseif ($count >= 3):?>
+						<!--  in chÃ­nh nÃ³ -->
+						<?php $count++;//tÄƒng thÃ nh viÃªn trong nhÃ³m lÃªn 1?>
+						<tr>
+							<?php $weight = 0;//sá»‘ lÆ°á»£ng cá»§a thÃ nh viÃªn level 2?>
+							<?php $moneyBeforeTax = 0;//tiá»�n trÆ°á»›c thuáº¿ cá»§a level 2?>
+							<?php $moneyWasteWater = 0;//tiá»�n phÃ­ nÆ°á»›c tháº£i cá»§a level 2?>
+							<?php $moneyNoVAT = 0;//tiá»�n chÆ°a cÃ³ VAT cá»§a thÃ nh viÃªn level 2?>
+							<?php $moneyVAT = 0;//tiá»�n VAT cá»§a thÃ nh viÃªn level 2?>
+							<?php $moneyHaveVAT = 0;//tiá»�n cÃ³ VAT cá»§a thÃ nh viÃªn level 2?>
+							<?php $begin = 0;?>
+							<!-- STT -->
+							<td >
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="center" v-align="center" border="1"></xls>
+							</td>
+							<!-- Don Vi -->
+							<td >
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="left" v-align="center" border="1"> <?php echo $list->CapDen ?></xls>
+							</td>
+							<?php $dataMeter = @$this->data[$list->IOID] ?>
+							<?php $bill = $dataMeter?$dataMeter->SoHoaDon:0?>
+							<?php if($bill == 0):?>
+								<?php $bill = "-";//náº¿u khÃ´ng cÃ³ HÃ³a Ä‘Æ¡n thÃ¬ in ra - á»Ÿ bÃ¡o cÃ¡o?>
+							<?php endif;?>
+							<?php $weight= $dataMeter?$dataMeter->ChiSoCongToNuoc:0?>
+							<?php $moneyBeforeTax = $dataMeter?$dataMeter->TongTienCongToNuoc:0?>
+							<!-- Sá»‘ hÃ³a Ä‘Æ¡n -->
+							<td class = "center">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="center" v-align="center" border="1"> <?php echo $bill;?></xls>
+							</td>
+							<!-- Sá»‘ lÆ°á»£ng cá»§a Ä‘Æ¡n vá»‹ -->
+							<td class = "right">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatInteger($weight); ?></xls>
+							</td>
+							<!-- tiá»�n trÆ°á»›c thuáº¿ -->
+							<td class = "right">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatInteger($moneyBeforeTax); ?></xls>
+							</td>
+							<!-- PhÃ­ nÆ°á»›c tháº£i = 20% tiá»�n trÆ°á»›c thuáº¿ -->
+							<?php $moneyWasteWater = $moneyBeforeTax*0.2;?>
+							<td class = "right">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="right" border="1"> <?php echo Qss_Lib_Util::formatInteger($moneyWasteWater);?></xls>
+							</td>
+							<!-- Tá»•ng tiá»�n(chÆ°a cÃ³ VAT) = tiá»�n trÆ°á»›c thuáº¿ + phÃ­ nÆ°á»›c tháº£i-->
+							<?php $moneyNoVAT = $moneyBeforeTax + $moneyWasteWater?>
+							<td class = "right">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatInteger($moneyNoVAT); ?></xls>
+							</td>
+							<!-- tiá»�n thuáº¿ VAT = 5% tiá»�n trÆ°á»›c thuáº¿ -->
+							<?php $moneyVAT = $moneyBeforeTax * 0.05;?>
+							<td class = "right">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1" > <?php echo Qss_Lib_Util::formatInteger($moneyVAT); ?></xls>
+							</td>
+							<!-- Tá»•ng tiá»�n tÃ­nh cáº£ VAT = tá»•ng tiá»�n chÆ°a cÃ³ VAT + VAT -->
+							<?php $moneyHaveVAT = $moneyNoVAT + $moneyVAT;?>
+							<td class = "right">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1" > <?php echo Qss_Lib_Util::formatInteger($moneyHaveVAT); ?></xls>
+							</td>
+							<?php $row++?>
+							<?php $begin=0;?>
+						</tr>
+					<?php endif;?>
+				<?php endif;?>
+			<?php endforeach; ?>
+			<!-- DÃ²ng tá»•ng cá»™ng -->
+			<tr>
+				<?php $begin = 0;?>
+				<td class = "center bold" colspan="2">
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1" column-merge="<?php echo $excel_col[$begin+1];?>"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(14); ?></xls>
+				</td>
+				<!-- Sá»‘ hÃ³a Ä‘Æ¡n -->
+				<td class = "right bold">
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[$begin+2] ?>" wrap-text="1"
+						h-align="right" v-align="center" border="1" bold="1"></xls>
+				</td>
+				<?php $begin += 2?>
+				<!-- Tá»•ng sá»‘ lÆ°á»£ng -->
+				<td class = "right bold">
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="right" v-align="center" border="1" bold="1"> <?php echo Qss_Lib_Util::formatInteger($sumAllWeight); ?></xls>
+				</td>
+				<!-- Tá»•ng tiá»�n trÆ°á»›c thuáº¿ -->
+				<td class = "right bold">
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="right" v-align="center" border="1" bold="1"> <?php echo Qss_Lib_Util::formatInteger($sumAllMoneyBeforeTax); ?></xls>
+				</td>
+				<!-- Tá»•ng PhÃ­ nÆ°á»›c tháº£i -->
+				<?php $sumAllMoneyWasteWater = $sumAllMoneyBeforeTax * 0.2;?>
+				<td class = "right bold">
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="right" v-align="center" border="1" bold="1"> <?php echo Qss_Lib_Util::formatInteger($sumAllMoneyWasteWater); ?></xls>
+				</td>
+				<!-- Tá»•ng Tiá»�n chÆ°a cÃ³ VAT -->
+				<?php $sumAllMoneyNoVAT = $sumAllMoneyBeforeTax + $sumAllMoneyWasteWater;?>
+				<td class = "right bold">
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="right" v-align="center" border="1" bold="1"> <?php echo Qss_Lib_Util::formatInteger($sumAllMoneyNoVAT); ?></xls>
+				</td>
+				<!-- Tá»•ng thuáº¿ VAT -->
+				<?php $sumAllVAT = $sumAllMoneyBeforeTax * 0.05;?>
+				<td class = "right bold">
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="right" v-align="center" border="1" bold="1"> <?php echo Qss_Lib_Util::formatInteger($sumAllVAT); ?></xls>
+				</td>
+				<!-- Tá»•ng tiá»�n tÃ­nh cáº£ VAT -->
+				<?php $sumAllHaveVAT = $sumAllMoneyNoVAT + $sumAllVAT;?>
+				<td class = "right bold">
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="right" v-align="center" border="1" bold="1"> <?php echo Qss_Lib_Util::formatInteger($sumAllHaveVAT); ?></xls>
+				</td>
+			</tr>
+			<?php $begin = 0?>
+			<?php $row += 2;?>
+		</table>
+		<table style="margin-top: 20px">
+        	<tr class="center">
+	            <th  class="center" style="width: 45%;">
+	                <xls
+	                    row="<?php echo $row?>"
+	                    column="<?php echo $excel_col[2]?>"
+	                    wrap-text="1"
+	                    v-align="center"
+	                    h-align="center"
+	                    bold="1">LẬP BIỂU</xls>
+	
+	            </th>
+	
+				<th class="center">
+	                <xls
+	                    row="<?php echo $row?>"
+	                    column="<?php echo $excel_col[5]?>"
+	                    wrap-text="1"
+	                    v-align="center"
+	                    h-align="center"
+	                    bold="1">QUẢN ĐỐC</xls>
+	            </th>
+	
+	            <th class="center">
+	                <xls
+	                    row="<?php echo $row?>"
+	                    column="<?php echo $excel_col[8]?>"
+	                    wrap-text="1"
+	                    v-align="center"
+	                    h-align="center"
+	                    bold="1">PHÒNG CƠ ĐIỆN VI TÍNH</xls>
+	            </th>
+	        </tr>
+   		 </table>
+	</div>
+	</div>
+</div>

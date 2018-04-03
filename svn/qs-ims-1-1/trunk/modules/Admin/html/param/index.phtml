@@ -1,0 +1,30 @@
+<div id="horizontal-toolbar" class="horizontal-toolbar">
+	<div id="btnEDIT" onClick="rowParamEdit()"
+		title="<?php echo $this->_translate(13,'Sửa đổi')?>"
+		class="btn_main_top btn_disabled">
+		<a class="icon-32-edit" href="#1"></a>
+	</div>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#1"><span><?php echo $this->_translate(67,'Cấu hình tham số')?>
+				</span> </a></li>
+		</ul>
+	</div>
+	<table class="grid">
+		<tr>
+			<th><?php echo $this->_translate(68,'Mã')?></th>
+			<th><?php echo $this->_translate(69,'Giá trị')?></th>
+			<th><?php echo $this->_translate(64,'Mô tả')?></th>
+		</tr>
+		<?php foreach($this->params as $param):?>
+		<tr id="<?php echo $param->PID?>" onclick="rowCLK(this);">
+			<td><?php echo $param->PID?></td>
+			<td><?php echo $param->Value?></td>
+			<td><?php echo $param->Description?></td>
+		</tr>
+		<?php endforeach;?>
+	</table>
+</div>

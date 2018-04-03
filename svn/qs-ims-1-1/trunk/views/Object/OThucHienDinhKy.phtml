@@ -1,0 +1,439 @@
+<table cellspacing="0" class="detail grid_edit tablescroll_body" id="grid" style="width:40%">
+	<tr>
+		<th class="left">Bộ phận</th>
+		<th class="left">Loại bảo trì</th>
+		<th>&nbsp;</th>
+	</tr>
+	
+	<?php foreach ($this->data as $item):?>
+	<tr status="0" objid="OThucHienDinhKy" ifid="<?php echo $this->ifid?>" edit="0" id="<?php echo $item->AIOID?>" deptid="1" rights="5">
+		<td width="20%" dwidth="200" refresh="0" reffieldid="LoaiBaoTri" refobjid="OBaoTriDinhKy" reffid="M724" inputtype="3" id="LoaiBaoTri" name="OThucHienDinhKy_LoaiBaoTri" class="data bold" cache="1">
+			<?php if($item->BoPhan):?>(<?php echo $item->BoPhan?>)<?php endif;?>&nbsp;&nbsp;&nbsp;
+			<input id="combo_LoaiBaoTri" type="hidden" value="<?php echo $item->PIOID?>">
+		</td>
+		<td><?php echo $item->LoaiBaoTri?></td>
+		<td dwidth="50" refresh="0" reffieldid="" refobjid="" reffid="" inputtype="9" id="Chon" name="OThucHienDinhKy_Chon" class="data center" cache="1"><input type="checkbox" <?php if($item->Chon):?> checked<?php endif;?>></td>
+	</tr>
+	<?php endforeach;?>
+</table>
+<p>&nbsp;</p>
+<script>
+$("tr").on('change',function() {
+	edit = true;
+	if(edit && $(this).attr('edit') != 1){
+		$(this).attr('edit',1);
+	}
+});
+</script>
+<script>
+function cellTree(el) {
+	if(!edit){
+		$('#qss_object_tree').val($(el).parent().parent().attr('id'));
+		rowObjectSearch($(el).parent().parent().attr('ifid'),$(el).parent().parent().attr('deptid'),$(el).parent().parent().attr('objid'));
+	}
+}
+
+function editAllRow(){
+	var promise = [];
+	var el = $('.grid_edit').find('tr').eq(1);
+	if($(el).attr('rights') & 4){
+		$(el).children('td').each(function(){
+			var p = editCell(this);
+			promise.push(p);
+		});
+	}
+	$.when.apply($, promise).done(function(){
+		$('.grid_edit').find('tr').each(function(){
+			if($(this).attr('id') !== undefined && $(this).index() > 1){
+				editRow(this);
+			}
+		});
+	});
+}
+function editSelectedRow(){
+	if(row != null){
+		editRow(row);
+	}
+	else{
+		if($('.grid_selected').length){
+			var promise = [];
+			var el = $('.grid_selected').first();
+			if($(el).attr('rights') & 4){
+				$(el).children('td').each(function(){
+					var p = editCell(this);
+					promise.push(p);
+				});
+			}
+			$.when.apply($, promise).done(function(){
+				$('.grid_selected').each(function(idx){
+					if($(this).attr('id') !== undefined && idx > 0){
+						editRow(this);
+					}
+				});
+			});
+		}
+	}
+}
+function editRow(el){
+	if($(el).attr('rights') & 4){
+		$(el).children('td').each(function(){
+			editCell(this);
+		});
+	}
+}
+function insertRow(){
+	var row = $('.grid_edit').find('tr:last');
+	if($(row).index() == 0){
+		retunr;
+	}
+	if($(row).attr('id')==0 && $(row).attr('edit') == -1){
+		$(row).attr('edit',0)
+		var newrow = row;
+	}
+	else{
+		var newrow = $(row).clone().insertAfter(row);
+		$(newrow).on('change',function() {
+			if(edit && $(this).attr('edit') != 1){
+				$(this).attr('edit',1);
+			}
+		});
+	}
+	$(newrow).attr('id',0);
+	$(newrow).attr('rights',5);
+	$(newrow).find('td').each(function(){
+		$(this).attr('readonly',$('.th_'+$(this).attr('id')).attr('readonly'));
+		//neu co custom button thì cho hien thi luon
+		if($(this).find('button').length == 0){
+			$(this).text('');	
+		}
+		else{
+			$(this).find('button.custom-button-field').prop('disabled',true);
+		}
+		$(this).removeAttr('value');
+		if($(this).hasClass('col-checked')){
+			$(this).removeClass('col-checked');	
+			$(this).addClass('col-unchecked');
+		}
+	});
+	$(newrow).find('.nocount').text('*');
+	editRow(newrow);
+}
+function displayRow(row){
+	$(row).children('td').each(function(){
+		displayCell(this);
+	});
+}
+function cancelRow(){
+	var tr = $('.grid_edit').find('tr:last');
+	rowObjectSearch($(tr).attr('ifid'),$(tr).attr('deptid'),$(tr).attr('objid'));
+}
+function editCell(cell){
+	if($(cell).is('[readonly]')){
+		return;
+	}
+	if($(cell).hasClass('nocount')){
+		return;
+	}
+	var width = $(cell).width() - 2;
+	var height = $(cell).height() - 2;
+	var text = $(cell).text();
+	$(cell).text('');
+	var inputtype = parseInt($(cell).attr('inputtype'));
+	switch(inputtype ){
+	case 1:
+	case 2:
+		var ctrl = $('<textarea/>').addClass('editor');
+		$(cell).append(ctrl);
+		ctrl.css('height',height);
+		ctrl.css('width','99%');
+		$(ctrl).val(qssAjax.br2nl(text));
+		$(ctrl).focus();
+		break;
+	case 9:
+		//$(cell).text('');
+		var checked = $(cell).hasClass('col-checked');
+		var ctrl = $('<input/>').attr({ type: 'checkbox'});
+		if(checked){
+			$(ctrl).attr('checked',true);
+			}
+		$(cell).append(ctrl);
+		break;
+	case 8:
+		//$(cell).text('');
+		var ctrl = $('<input/>').css('height',height-2)
+								.addClass('editor');
+		$(cell).append(ctrl);
+		$(ctrl).datepicker();
+		$(ctrl).datepicker('option', {dateFormat: 'dd-mm-yy',showOn:'focus'});
+		$(ctrl).val(text);
+		//$(ctrl).datepicker('show');
+		ctrl.css('width','95%');
+		$('#ui-datepicker-div').click(function(event){
+			//grid_editing = true;
+			event.stopPropagation();
+		});
+		break;
+	case 5:
+		var ctrl = $('<select/>').addClass('combo');
+		$(ctrl).attr('id','combo_' + $(cell).attr('id'))
+									.css('height',height);
+		$(cell).append(ctrl);
+		ctrl.css('width','99%');
+		var url = sz_BaseUrl + '/user/field/option';
+		var tr = $(cell).parent();
+		var data = {fieldid:$(cell).attr('id'),selected:$(cell).attr('value')};
+		data['ifid'] = $(tr).attr('ifid');
+		data['deptid'] = $(tr).attr('deptid');
+		data['objid'] = $(tr).attr('objid');
+		data['ioid'] = $(tr).attr('id');
+		$(tr).find('td').each(function(){
+			data[$(this).attr('name')] = $(this).attr('value');
+		});
+		var option = null;
+		if($(cell).attr('cache') == 1){
+			option = combo['combo_'+$(cell).attr('id')];
+		}
+		if(option != null && option !== undefined){
+			$(cell).find('#combo_' + $(cell).attr('id')).html(option);
+			$(cell).find('#combo_' + $(cell).attr('id')).val($(cell).attr('value'));
+		}
+		else{
+			return qssAjax.getHtml(url, data, function(jreturn) {
+				$(cell).find('#combo_' + $(cell).attr('id')).html(jreturn);
+				combo['combo_'+$(cell).attr('id')] = jreturn;
+			});
+		}
+		$(ctrl).change(function(){
+			var val = $(this).val();
+			$(cell).attr('value',val);
+			if ($(cell).attr('refresh') == 1) {
+				refresh($(cell).parent()[0]);
+			}
+		});
+		$(ctrl).focus();
+		break;	
+	case 3:
+		var ctrl = $('<select/>').addClass('combo');
+		$(ctrl).attr('id','combo_' + $(cell).attr('id'))
+									.css('height',height);
+		$(cell).append(ctrl);
+		ctrl.css('width','99%');
+		var url = sz_BaseUrl + '/user/field/option';
+		var tr = $(cell).parent();
+		var data = {fieldid:$(cell).attr('id'),selected:$(cell).attr('value')};
+		data['ifid'] = $(tr).attr('ifid');
+		data['deptid'] = $(tr).attr('deptid');
+		data['objid'] = $(tr).attr('objid');
+		data['ioid'] = $(tr).attr('id');
+		$(tr).find('td').each(function(){
+			data[$(this).attr('name')] = $(this).attr('value');
+		});
+		var option = null;
+		if($(cell).attr('cache') == 1){
+			option = combo['combo_'+$(cell).attr('id')];
+		}
+		if(option != null && option !== undefined){
+			$(cell).find('#combo_' + $(cell).attr('id')).html(option);
+			$(cell).find('#combo_' + $(cell).attr('id')).val($(cell).attr('value'));
+		}
+		else{
+			return qssAjax.getHtml(url, data, function(jreturn) {
+				$(cell).find('#combo_' + $(cell).attr('id')).html(jreturn);
+				combo['combo_'+$(cell).attr('id')] = jreturn;
+			});
+		}
+		$(ctrl).change(function(){
+			var val = $(this).val();
+			$(cell).attr('value',val);
+			if ($(cell).attr('refresh') == 1) {
+				refresh($(cell).parent()[0]);
+			}
+		});
+		$(ctrl).focus();
+		break;
+	case 4:
+		var ctrl = $('<textarea/>').addClass('lookup');
+		var parent = $('<div/>').addClass('tag-div');
+		$(parent).append(ctrl);
+		$(cell).append(parent);
+		$(ctrl).attr('id','lookup_' + $(cell).attr('id')+'_'+$(cell).parent().index())
+									.css('height',height)
+									.css('width',width);
+		$(ctrl).val(text);
+		$(ctrl).focus();
+		var tr = $(cell).parent();
+		var data = {ifid:$(tr).attr('ifid'),deptid:$(tr).attr('deptid'),objid:$(tr).attr('objid'),ioid:$(tr).attr('id')};
+		$(tr).find('td').each(function(){
+			data[$(this).attr('name')] = $(this).attr('value');
+		});
+		data = $.param(data);
+		$(function () {
+			var url = sz_BaseUrl + '/user/field/tag?fieldid='+$(cell).attr('id');
+			$(cell).find('#lookup_' + $(cell).attr('id')+'_'+$(cell).parent().index()).tagSuggest({
+		        url: url,
+		        data: data,
+		        delay: 200,
+		        separator : '*',
+		        tagContainer: 'div',
+		        callback: selecting,
+		        element: '#lookup_' + $(cell).attr('id')+'_'+$(cell).parent().index()
+		    });
+		});
+		break;
+	case 11:
+		//popupSelect(cell);
+		break;
+	case 12:
+		//popupGridAttr(cell);
+		break;	
+	case 6:
+		$(cell).file(function(inp) {
+			inp.id = inp.name = 'myFileInput';
+			
+			/* Upload file by ajax */
+			disabledLayout();
+			$.ajaxFileUpload({
+				url : sz_BaseUrl + '/user/field/uploadpicture',
+				secureuri : false,
+				fileElementId : inp,
+				dataType : 'json',
+				success : function(data, status) {
+					/* Upload file successfully */
+					if (data.error) {
+						qssAjax.alert(data.message);
+						enabledLayout();
+					} else {
+						$(cell).attr('value',data.image);
+						$(cell).find('img').remove();
+						var ctrl = $('<img/>').attr('src','/user/field/tmp?file='+data.image)
+												.attr('width',$(cell).attr('dwidth'));
+						$(cell).append(ctrl);
+						enabledLayout();
+					}
+				},
+				error : function(data, status, e) {
+					/* If upload error */
+					qssAjax.alert(e);
+				}
+			});
+		});
+		break;
+	case 7:
+		$(cell).file(function(inp) {
+			inp.id = inp.name = 'myFileInput';
+			
+			/* Upload file by ajax */
+			disabledLayout();
+			$.ajaxFileUpload({
+				url : sz_BaseUrl + '/user/field/uploadfile',
+				secureuri : false,
+				fileElementId : inp,
+				dataType : 'json',
+				success : function(data, status) {
+					/* Upload file successfully */
+					if (data.error) {
+						qssAjax.alert(data.message);
+						enabledLayout();
+					} else {
+						$(cell).attr('value',data.image);
+						$(cell).find('a').remove();
+						$(cell).text('');
+						var ctrl = $('<a/>').attr('target','new')
+												.attr('href','/user/field/tmp?file='+data.image);
+						$(ctrl).text('tải về');
+						$(cell).append(ctrl);
+						enabledLayout();
+					}
+				},
+				error : function(data, status, e) {
+					/* If upload error */
+					qssAjax.alert(e);
+				}
+			});
+		});
+	break;
+	}
+}
+function displayCell(cell){
+	if($(cell).hasClass('nocount')){
+		return;
+	}
+	if ($("#ui-datepicker-div").is(":visible") && $("#ui-datepicker-div").html() != "") {
+		$(cell).find('input').datepicker('hide');
+	}
+	if($(cell).is('[readonly]') || $(cell).attr('inputtype') == 7 || $(cell).attr('inputtype') == 6){
+		return;
+	}
+	var text = $(cell).find('textarea').val();
+	var val = $(cell).find('input').val();
+	var check = '';
+	if(!text && $(cell).attr('inputtype') != 9){
+		text = $(cell).find('input').val();
+	}	
+	if($(cell).attr('inputtype') == 9){	
+		if($(cell).find('input').attr("checked")){
+			check = 1;
+			}
+		else{
+			check = 0;
+			}
+	}
+	if($(cell).attr('inputtype') == 3 || $(cell).attr('inputtype') == 5){
+		$(cell).attr('value',val);
+		
+	}
+	else if($(cell).attr('inputtype') != 4){
+		$(cell).attr('value',(check != '')?check:((text || $(cell).attr('inputtype') == 11 || $(cell).attr('inputtype') == 12)?text:''));
+	}
+}
+function save(){
+	//esc = false;
+	edit = false;
+	var promise = [];
+	$('.grid_edit').find('tr').each(function(){
+		if($(this).attr('edit') == 1){
+			var p = saveRow(this);
+			promise.push(p);
+		}
+	});
+	$.when.apply($, promise).done(function(){
+		if(!edit){
+			var tr = $('.grid_edit').find('tr:last');
+			if($(tr).attr('ifid') != '' && $(tr).attr('ifid') !== undefined){
+				<?php if($this->reloadjs):?>
+					<?php echo $this->reloadjs?>
+				<?php else:?>
+					rowObjectSearch($(tr).attr('ifid'),$(tr).attr('deptid'),$(tr).attr('objid'));
+				<?php endif;?>
+			}
+		}
+	});
+	
+}
+function saveRow(tr)
+{
+	displayRow(tr);
+	var data = {ifid:$(tr).attr('ifid'),deptid:$(tr).attr('deptid'),objid:$(tr).attr('objid'),ioid:$(tr).attr('id')};
+	$(tr).find('td').each(function(){
+		data[$(this).attr('name')] = $(this).attr('value');
+		}
+	);
+	var url = sz_BaseUrl + '/user/object/save';
+	return qssAjax.call(url, data, function(jreturn) {
+		$(tr).attr('edit',0);
+		if(jreturn.message != ''){
+			qssAjax.alert(jreturn.message);
+		}
+	}, function(jreturn) {
+		//esc = true;
+		edit=true;
+		qssAjax.alert(jreturn.message,function(){
+			var rcell = $(tr).find('td[name="'+jreturn.status+'"]');
+			if($(rcell).length){
+				$(rcell).children().focus();
+				$($(rcell).children()[0]).focus();
+			}
+		});
+	});
+}
+</script>

@@ -1,0 +1,181 @@
+<script>
+    $(document).ready(function(){
+        $('#edate').keypress(function (e) {
+            if (e.which == 13) {
+                loadElectric();
+                return false;    //<---- Add this line
+            }
+        });
+
+        $('#edate').change(function ()
+        {
+            loadElectric();
+        });
+    });
+</script>
+
+<div class="box_das2">
+    <div class="inside_das2 inside_das1" id="">
+        <div class="dash_box_heading">
+            <div class="" >
+
+                <div class="fl" >
+                    ĐIỆN NĂNG TIÊU THỤ CÁC ĐƠN VỊ THEO CA NGÀY
+                </div>
+
+                <div class="fr" style="">
+                    <?php echo $this->views->Report->Datepicker('edate', $this->date);?>
+                </div>
+            </div>
+        </div>
+
+        <div style="clear: both; width: 100%">
+
+        </div>
+<!--        <div>-->
+<!--            ĐIỆN NĂNG TIÊU THỤ CÁC ĐƠN VỊ THEO CA NGÀY --><?php //echo $this->date;?>
+<!--        </div>-->
+
+        <div style="clear: both; border-top: 1px #cccccc dotted; padding-top: 5px;" class="dash_box_content">
+            <table class="grid">
+                <tr>
+                    <th  style="width: <?php echo 100/8.0;?>%;"> Ngày </th>
+                    <th  style="width: <?php echo 100/8.0;?>%;"> Ca </th>
+                    <th  style="width: <?php echo 100/8.0;?>%;"> Tuyển 1 </th>
+                    <th  style="width: <?php echo 100/8.0;?>%;"> Tuyển 2 </th>
+                    <th  style="width: <?php echo 100/8.0;?>%;"> Tuyển 3 </th>
+                    <th  style="width: <?php echo 100/8.0;?>%;"> Bến 1 </th>
+                    <th  style="width: <?php echo 100/8.0;?>%;"> Bến 2 </th>
+                    <th  style="width: <?php echo 100/8.0;?>%;"> Môi trường </th>
+                </tr>
+
+                <?php foreach($this->data as $date=>$item):?>
+                    <tr>
+                        <td rowspan="4" class="center">
+                            <?php echo Qss_Lib_Date::mysqltodisplay($date);?>
+                        </td>
+
+                        <td class="center">
+                            1
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA1']['TT1']);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA1']['TT2']);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA1']['TT3']);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA1']['KB1']);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA1']['KB2']);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA1']['PMT']);?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="center">
+                            2
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA2']['TT1']);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA2']['TT2']);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA2']['TT3']);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA2']['KB1']);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA2']['KB2']);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA2']['PMT']);?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="center">
+                            3
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA3']['TT1']);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA3']['TT2']);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA3']['TT3']);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA3']['KB1']);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA3']['KB2']);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA3']['PMT']);?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="center">
+                            Tổng
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA1']['TT1'] + @(double)$item['CA2']['TT1'] +@(double)$item['CA3']['TT1']);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA1']['TT2'] + @(double)$item['CA2']['TT2'] +@(double)$item['CA3']['TT2']);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA1']['TT3'] + @(double)$item['CA2']['TT3'] +@(double)$item['CA3']['TT3']);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA1']['KB1'] + @(double)$item['CA2']['KB1'] +@(double)$item['CA3']['KB1']);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA1']['KB2'] + @(double)$item['CA2']['KB2'] +@(double)$item['CA3']['KB2']);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo Qss_Lib_Util::formatNumber(@(double)$item['CA1']['PMT'] + @(double)$item['CA2']['PMT'] +@(double)$item['CA3']['PMT']);?>
+                        </td>
+                    </tr>
+
+                <?php endforeach; ?>
+            </table>
+        </div>
+    </div>
+</div>

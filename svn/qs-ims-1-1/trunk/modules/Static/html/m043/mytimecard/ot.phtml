@@ -1,0 +1,109 @@
+<form id="filter_mytimecard_ot">
+    <div class="fr">
+        <span class="bold">Năm: </span>
+        <input type="text" value="<?php echo $this->year;?>" size="18" name="year" placeholder="yyyy"/>
+        <button type="button" class="btn" onclick="Static_M043.showTimeCard('OT');" > Xem </button>
+    </div>
+
+    <div class="clear"></div>
+    <br/>
+</form>
+
+<div id="m043_consume_ot">
+    <div>
+        <div class="fl m043_timecard_leave_title bold">
+            <label>Tổng số giờ trong tuần:</label>
+        </div>
+
+        <div class="fr bold m043_timecard_leave_content">
+            <?php echo @$this->total->SoGioTrongTuan?$this->total->SoGioTrongTuan:'0.00';?>
+        </div>
+
+        <div class="clear">&nbsp;</div>
+    </div>
+
+    <div>
+        <div class="fl m043_timecard_leave_title bold">
+            <label>Tổng số giờ trong tháng:</label>
+        </div>
+
+        <div class="fr bold m043_timecard_leave_content">
+            <?php echo @$this->total->SoGioTrongThang?$this->total->SoGioTrongThang:'0.00';?>
+        </div>
+
+        <div class="clear">&nbsp;</div>
+    </div>
+
+    <div>
+        <div class="fl m043_timecard_leave_title bold">
+            <label>Tổng số giờ trong năm:</label>
+        </div>
+
+        <div class="fr bold m043_timecard_leave_content">
+            <?php echo @$this->total->SoGioTrongNam?$this->total->SoGioTrongNam:'0.00';?>
+        </div>
+
+        <div class="clear">&nbsp;</div>
+    </div>
+
+    <hr/>
+    <br/>
+
+    <?php if(count($this->data)):?>
+
+        <?php foreach ($this->data as $item):?>
+            <div>
+                <div class="fl m043_timecard_leave_title">
+                    <label>Loại tăng ca:</label>
+                </div>
+
+                <div class="fr bold m043_timecard_leave_content">
+                    <?php echo $item->LoaiTangCa;?>
+                </div>
+
+                <div class="clear">&nbsp;</div>
+            </div>
+
+            <div>
+                <div class="fl m043_timecard_leave_title">
+                    <label>Trong tuần (giờ):</label>
+                </div>
+
+                <div class="fr m043_timecard_leave_content">
+                    <?php echo $item->SoGioTrongTuan?$item->SoGioTrongTuan:'0.00';?>
+                </div>
+
+                <div class="clear">&nbsp;</div>
+            </div>
+
+            <div>
+                <div class="fl m043_timecard_leave_title">
+                    <label>Trong tháng (giờ):</label>
+                </div>
+
+                <div class="fr m043_timecard_leave_content">
+                    <?php echo $item->SoGioTrongThang?$item->SoGioTrongThang:'0.00';?>
+                </div>
+
+                <div class="clear">&nbsp;</div>
+            </div>
+
+            <div>
+                <div class="fl m043_timecard_leave_title">
+                    <label>Trong năm (giờ):</label>
+                </div>
+
+                <div class="fr m043_timecard_leave_content">
+                    <?php echo $item->SoGioTrongNam?$item->SoGioTrongNam:'0.00';?>
+                </div>
+
+                <div class="clear">&nbsp;</div>
+            </div>
+
+            <hr/>
+            <br/>
+        <?php endforeach;?>
+    <?php endif;?>
+
+
+</div>

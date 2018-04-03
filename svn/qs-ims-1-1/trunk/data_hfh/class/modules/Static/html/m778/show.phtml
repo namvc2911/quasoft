@@ -1,0 +1,94 @@
+
+<div class="portrait">
+    <!-- REPORT TITLE -->
+	<div id="head_print">
+		<?php echo $this->views->Common->Portrait() ?>
+        <?php //echo $this->views->Common->Legal() ?>
+        <h2 class="center">EQUIPMENT RECORD CARD / LÝ LỊCH MÁY</h2>
+	</div><!-- end div#head_print -->
+    <br/>
+
+    <!-- REPORT DATA -->
+    <div id="container">
+        <!-- General -->
+        <table cellpadding="0" cellspacing="0" border="1" class="border" style="">
+            <tr class="bggrey">
+                <th colspan="3" class="left">
+                    Name of equipment: <?php echo @$this->eq->TenThietBi;?>
+                </th>
+                <th  class="left">
+                    Manufacture: <?php echo @$this->eq->XuatXu;?>
+                </th>
+            </tr>
+
+            <tr class="bggrey">
+                <th class="left">
+                    Recv. Date: <?php echo @$this->eq->NgayDuaVaoSuDung;?>
+                </th>
+                <th class="left">
+                    Serial/Type: <?php echo @$this->eq->MaThietBi;?>
+                </th>
+
+                <th class="left">
+                    MTS: <?php echo @$this->eq->MaTaiSan;?>
+                </th>
+
+                <th class="left">
+                    Location: <?php echo @$this->eq->MaKhuVuc;?>
+                </th>
+            </tr>
+        </table><!-- end table.border -->
+
+        <br>
+        <br>
+
+        <table cellpadding="0" cellspacing="0" border="1" class="border" style="">
+            <tr class="bggrey">
+                <th style="width: 10%;">Date</th>
+                <th style="width: 60%;">Work has been done</th>
+                <th style="width: 30%;">Remark</th>
+            </tr>
+
+            <?php foreach($this->report as $item):?>
+            <tr>
+                <td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item->NgayBatDau); ?></td>
+                <td class="left"><?php echo $item->MoTa;?></td>
+                <td class="left"><?php echo $item->TinhTrangSauBaoTri;?></td>
+            </tr>
+            <?php endforeach;?>
+        </table>
+    </div><!-- end div#container -->
+</div><!-- END REPORT -->
+
+<script>
+    $(document).ready(function () {
+        if(common_get_url_parameter('eq'))
+        {
+            $('#eq').val(common_get_url_parameter('eq'));
+            $('#eq_tag').val(common_get_url_parameter('eq_tag'));
+        }
+
+        if(common_get_url_parameter('start'))
+        {
+            $('#start').val(common_get_url_parameter('start'));
+        }
+
+        if(common_get_url_parameter('end'))
+        {
+            $('#end').val(common_get_url_parameter('end'));
+        }
+
+        if(common_get_url_parameter('location'))
+        {
+            $('#location').val(common_get_url_parameter('location'));
+        }
+
+        if(common_get_url_parameter('type'))
+        {
+            $('#type').val(common_get_url_parameter('type'));
+        }
+
+        history.pushState(null, null, '/static/m778/');
+    });
+</script>
+

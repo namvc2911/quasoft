@@ -1,0 +1,25 @@
+<?php foreach ($this->forms as $item):?>
+	<p>
+		<span class="notify_user_name"><?php echo $item->UserName?>
+		</span>
+		<?php echo $this->_translate(1)?>
+		<a
+			onclick="openModule('<?php echo $item->FCode?>','/user/form/edit?ifid=<?php echo $item->IFID?>&deptid=<?php echo $item->DepartmentID?>');"
+			href="#1"><?php echo $item->Name?>
+		</a>
+	</p>
+	<p>
+		<span class="notify_time"><?php if($item->LastModify):?>
+		<?php echo date('d-m-Y',$item->LastModify)?> <?php echo $this->_translate(2)?>
+		<?php echo date('H:i',$item->LastModify)?>
+		<?php else:?>
+		<?php echo date('d-m-Y',$item->SDate)?> <?php echo $this->_translate(2)?>
+		<?php echo date('H:i',$item->SDate)?>
+		<?php endif;?>
+		</span>
+	</p>
+	<p>
+	<?php echo nl2br($item->ErrorMessage)?>
+	</p>
+	<hr>	
+<?php endforeach;?>

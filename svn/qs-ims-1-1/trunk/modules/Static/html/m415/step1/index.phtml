@@ -1,0 +1,181 @@
+<?php
+    $oldRequest      = '';
+    $requestWidthArr = array(1,4,4,2,2,2,2,2);
+    $totalCols       = 8;
+    $width           = 1200;
+    $padding         = 2;
+    $fit             = Qss_Lib_Report::changeWidthToFitScreen2($requestWidthArr, $width, $padding)
+?>
+
+
+<div id="M415_step1_wrap">
+    <div id="M415_step1_control">
+    
+        <?php if(!isset($_SESSION['M415Step']) || $_SESSION['M415Step'] == 1):?>
+            <button type="button" class="btn btn-custom" onclick="M415.importRequests();" id="M415_step1_btn_import_requests"> Import từ excel </button>
+        <?php else:?>
+            <button type="button" class="btn btn-custom btn-disabled" id="M415_step1_btn_import_requests" disabled> Import từ excel </button>
+        <?php endif;?>
+    </div><!-- end #M415_step1_control -->
+    <br/>
+
+    <div id="M415_step1_show">
+        <div id="M405_request_wrap">
+        
+            <form id="M405_request_compare_form">
+                <table class="border_table" cellpadding="0" cellspacing="0" border="0" style="width:<?php echo $width;?>px">
+                    <?php $begin = 0; ?>
+                
+                    <!-- Title -->
+                    <tr class="bggrey">
+                        <!-- STT -->
+                        <th style="width:<?php echo $fit[$begin++];?>px;">
+                            <?php // echo $this->_translate(1);?>
+
+
+                            <?php if(isset($_SESSION['M415Step']) && $_SESSION['M415Step'] == 1):?>
+                                <input type="checkbox" onclick="common_check_all_table_line(this, '.cwpo_line_checkbok', '.cwpo_line_checkbok_val')"/>
+                            <?php endif;?>
+                        </th>
+            
+                        <!-- Mã mặt hàng -->
+                        <th style="width:<?php echo $fit[$begin++];?>px;">
+                            <?php echo $this->_translate(2);?>
+                        </th>
+            
+                        <!-- Tên mặt hàng -->
+                        <th style="width:<?php echo $fit[$begin++];?>px;">
+                            <?php echo $this->_translate(3);?>
+                        </th>
+            
+                        <!-- ĐVT -->
+                        <th style="width:<?php echo $fit[$begin++];?>px;">
+                            <?php echo $this->_translate(4);?>
+                        </th>
+            
+                        <!-- Số lượng yêu cầu -->
+                        <th style="width:<?php echo $fit[$begin++];?>px;">
+                            <?php echo $this->_translate(5);?>
+                        </th>
+
+                        <?php /*
+                        <!-- Lập KHMS -->
+                        <th style="width:<?php echo $fit[$begin++];?>px;">
+                            <?php echo $this->_translate(6);?>
+                        </th>
+
+                        <!-- Đặt hàng -->
+                        <th style="width:<?php echo $fit[$begin++];?>px;">
+                            <?php echo $this->_translate(8);?>
+                        </th>
+
+                        <!-- Còn lại -->
+                        <th style="width:<?php echo $fit[$begin++];?>px;">
+                            <?php echo $this->_translate(10);?>
+                        </th>
+                        */?>
+                    </tr>
+            
+                    <!-- Data -->
+                    <?php foreach($this->requests as $item):?>
+                        <?php
+                        if($_SESSION['M415Step'] != 1 && $item->Chon != 1)
+                        {
+                            continue;
+                        }
+                        ?>
+
+
+                        <!-- GROUP TITLE: Số phiêu/Request no -->
+                        <?php if($oldRequest != $item->RequestIOID):?>
+                        <?php $no = 0;?>
+                        <tr class="bggrey">
+                            <td class="center <?php echo $item->Chon?'marker_check':'';?>">
+                                <input type="checkbox" class="cwpo_line_checkbok " onclick="common_check_table_line(this, '.cwpo_line_checkbok_val')" <?php echo $item->Chon?'checked':'';?>
+                                    <?php echo (!isset($_SESSION['M415Step']) || $_SESSION['M415Step'] != 1)?'disabled':'';?>>
+                                <input type="hidden" class="table_line_disabled cwpo_line_checkbok_val" name="CheckBox[]"  value="<?php echo $item->Chon?'1':'';?>" <?php echo (!isset($_SESSION['M415Step']) || $_SESSION['M415Step'] != 1)?'disabled':'';?>>
+                                <input class="table_line_disabled" type="hidden" value="<?php echo $item->RequestIOID;?>" name="RequestIOID[]" <?php echo (!isset($_SESSION['M415Step']) || $_SESSION['M415Step'] != 1)?'disabled':'';?>>
+                                <input class="table_line_disabled" type="hidden" value="<?php echo $item->RequestIFID;?>" name="RequestIFID[]" <?php echo (!isset($_SESSION['M415Step']) || $_SESSION['M415Step'] != 1)?'disabled':'';?>>
+                                <input class="table_line_disabled" type="hidden" value="<?php echo $item->SessionLineIOID;?>" name="SessionLineIOID[]" <?php echo (!isset($_SESSION['M415Step']) || $_SESSION['M415Step'] != 1)?'disabled':'';?>>
+
+                            </td>
+
+                            <td colspan="<?php echo $totalCols - 1;?>" class="large_td left M415_request_no <?php echo $item->Chon?'marker_check':'';?>" style="padding-left:2px;  vertical-align: middle; "  >
+                                 <?php echo $item->SoPhieu;?>
+
+                                <!-- Button: Xóa yêu cầu -->
+                                <?php if(!isset($_SESSION['M415Step']) || $_SESSION['M415Step'] == 1):?>
+                                    &nbsp;&nbsp;&nbsp;<a href="#1" onclick="popupWindowFormEdit(<?php echo $item->RequestIFID;?>,<?php echo $this->deptid;?>, {}, function(){ M415.step1.index();})">Sửa</a>
+                                <?php endif;?>
+
+                                <!-- Button: Xóa yêu cầu -->
+                                <?php if(!isset($_SESSION['M415Step']) || $_SESSION['M415Step'] == 1):?>
+                                    &nbsp;&nbsp;&nbsp;<a href="#1" onclick="M415.step1.delete(<?php echo $item->RequestIFID;?>, <?php echo $item->RequestIOID;?>)"><?php echo $this->_translate(13);?></a>
+                                <?php endif;?>
+                                
+                                
+                            </td>
+                        </tr>
+                        <?php endif;?>
+                        <?php $oldRequest = $item->RequestIOID;?>
+            
+            
+                        <tr common_no_check="1">
+                            <!-- STT -->
+                            <td class="center M415_request_item">
+                                <?php echo ++$no;?>
+                                <input type="hidden" name="requests[]" value="<?php echo $item->RequestIOID?>" />
+                                <input type="hidden" name="rest[<?php echo $item->RequestIOID;?>][<?php echo $item->Ref_MaSP;?>]" value="<?php echo $item->SoLuong;?>" />
+
+
+                            </td>
+            
+                            <!-- Mã mặt hàng -->
+                            <td class="left">
+                                <?php echo $item->MaSP;?>
+                            </td>
+            
+                            <!-- Tên mặt hàng -->
+                            <td class="left">
+                                <?php echo $item->TenSP;?>
+                            </td>
+            
+                            <!-- ĐVT -->
+                            <td class="left">
+                                <?php echo $item->DonViTinh;?>
+                            </td>
+            
+                            <!-- Số lượng yêu cầu -->
+                            <td class="right">
+                                <?php echo $item->SoLuong;?>
+                            </td>
+
+                            <?php /*
+                            <!-- Lập KHMS -->
+                            <td class="right">
+                                <?php echo $item->Planed;?>
+                            </td>
+
+                            <!-- Đặt hàng -->
+                            <td class="right">
+                                <?php echo $item->Ordered;?>
+                            </td>
+
+                            <!-- Còn lại -->
+                            <td class="right">
+                                <?php echo $item->ConLai;?>
+                            </td>
+                            */?>
+                          
+                        </tr>
+                    <?php endforeach;?>
+                </table>
+            </form>
+            
+        </div><!-- END #M405_request_wrap -->
+        
+        <div class="clear"></div>        
+    </div><!-- end #M415_step1_show -->
+    
+    <div id="M415_step1_excel"></div>
+</div><!-- end #M415_step1_wrap -->

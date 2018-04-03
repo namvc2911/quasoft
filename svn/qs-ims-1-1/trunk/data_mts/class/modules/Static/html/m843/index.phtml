@@ -1,0 +1,88 @@
+<script>
+    function printPreview()
+    {
+    	var url  = sz_BaseUrl + '/static/m843/show';
+        var type = $('#type').val();
+        if(type=='dien'){
+        	url  = sz_BaseUrl + '/static/m843/dien';
+        }
+        else if(type=='nangapluc'){
+        	url  = sz_BaseUrl + '/static/m843/nangapluc';
+        }
+        var data = $('#report').serialize();
+
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#print-area').html(jreturn);
+            removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+        });
+    }
+
+    function excelReport()
+    {
+        $('#report').submit();
+    }
+
+    function removePrintToolbarDisabled()
+    {
+        $('.pt-button').each(function(){
+            $(this).prop('disabled',false);
+        });
+    }
+</script>
+
+
+
+<div class="clear"></div>
+<div id="view">
+    <div class="line-hr">
+        <span>
+            <?php echo Qss_Lib_System::getReportTitle('M843');?>
+        </span>
+    </div>
+
+    <form id="report" method="get" action="/static/m843/excel">
+        <table class="detail">
+        	<tr>
+
+                <th width="20%" class="report-param-label">
+                    Loại báo cáo
+                </th>
+                <td>
+                    <select name="type" id="type" style="width: 200px">
+                    	<option value="">Tất cả thiết bị</option>
+                    	<option value="nangapluc">Thiết chịu áp lực và thiết bị nâng</option>
+                    	<option value="dien">Thiết bị điện</option>
+                    </select>
+                </td>
+            </tr>
+            
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Năm
+                </th>
+                <td>
+                    <?php echo $this->views->Report->SelectYear('year');?>
+                </td>
+            </tr>
+
+            <tr>
+                <th width="20%" class="report-param-label">Khu vực
+                </th>
+                <td>
+                    <?php
+                    $id        = 'location';
+                    $getFields = array('num'=>3, 'objects'=>array('OKhuVuc'=>array('id'=>'IOID','display1'=>'MaKhuVuc','display2'=>'Ten')));
+                    ?>
+                    <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <p>
+
+    <hr>
+    <?php echo $this->views->Report->PrintToolbar();?>
+    <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>

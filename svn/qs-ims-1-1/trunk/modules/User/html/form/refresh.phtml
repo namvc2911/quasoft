@@ -1,0 +1,99 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	$(".ui_box").hide();
+	$(".ui_box").first().fadeIn();
+	$(".tabs-menu a").click(function(event) {
+	        event.preventDefault();
+	        $(this).parent().addClass("active");
+	        $(this).parent().siblings().removeClass("active");
+	        var tab = $(this).attr("href");
+	        $(".ui_box").not(tab).css("display", "none");
+	        $(tab).find('fieldset').show();
+	        $(tab).fadeIn();
+	});
+	$('.datepicker').each(function(){
+		$(this).datepicker({ 
+			dateFormat: "dd-mm-yy" ,
+			onClose: function(dateText, inst) { 
+		        $(this).attr("readonly", false);
+		    },
+		    beforeShow: function(input, inst) {
+		        $(this).attr("readonly", true);
+		    }
+	    });
+	});
+	if(<?php echo $this->form->i_IFID?> == 0){
+		$('#tabs_sub').css('opacity',0.5);
+	}
+	$(function() {
+		// Display the first tab content
+		// Set the first tab as start tab onload: if you want to set no start tab
+		// comment it.
+		// DisplayTabContent(10);
+		// get index of the clicked navigation item in the list
+		$("ul.tabslist_sub li a").click(
+				function() {
+					// if animation has finished: meaning size()==0 then allow for
+					// other clicks
+					var ifid = $('#ifid').val();
+					var deptid = $('#deptid').val();
+					if(ifid && ifid != 0){
+						if ($('div.tabscontent_container > div.tabcontent:animated')
+								.size() == 0) {
+							$("ul.tabslist_sub li").removeClass('current');
+							var $listItem = $(this).parent().addClass('current');
+							var objid = $(this).parent().attr('objid');
+							var fieldid = $(this).parent().attr('fieldid');
+							var vid = $(this).parent().attr('vid');
+							var ioid = $(this).parent().attr('ioid');
+							var html = $(this).children().html();
+							if (ifid && deptid && objid) {
+								DisplayTabContent(ifid, deptid, objid, fieldid, vid,
+										ioid, html);
+							}
+						}	
+					}
+				});
+		return false;
+	});
+	$('#qss_form').find('fieldset').each(function(){
+		$(this).children('legend:first').click(function(){
+			$(this).parent().find('.ui_box_line').toggle();	
+			$(this).parent().find('.element').toggle();
+		});
+	});
+	$('input.integer').number( true, 0 );
+	$('input.decimal').each(function(){
+		var decimals		= (typeof $(this).attr('precision') !== 'undefined' ) ? $(this).attr('precision') : 2;
+		$(this).number( true, decimals);
+	});
+	$('input.money').each(function(){
+		var thousands_sep	= (typeof $(this).attr('thousandssep') !== 'undefined') ? $(this).attr('thousandssep') : thousands_sep;
+		var dec_point		= (typeof $(this).attr('decpoint') !== 'undefined') ? $(this).attr('decpoint') : dec_point;
+		var decimals		= (typeof $(this).attr('precision') !== 'undefined' ) ? $(this).attr('precision') : decimals;
+		$(this).number( true, decimals,dec_point,thousands_sep);
+	});
+	<?php foreach ($this->subobjects as $k=>$v):?>
+	<?php if($v->bPublic & 1):?>
+		$('#<?php echo $k?>').hide();
+		$('#<?php echo $k?>').prev().hide();
+	<?php else:?>
+		$('#<?php echo $k?>').show();
+		$('#<?php echo $k?>').prev().show();
+	<?php endif;?>
+	<?php endforeach;?>
+	
+	<?php $fields = $this->form->o_fGetMainObject()->loadFields()?>
+	<?php foreach ($fields as $field):?>
+		<?php if( (($field->bGrid & 4) && !$this->mobile) || (($field->bGrid & 8) && $this->mobile)) :?>
+			$('.<?php echo $field->ObjectCode?>_<?php echo $field->FieldCode?>').hide();
+		<?php endif;?>
+	<?php endforeach;?>
+	$('fieldset').each(function(){
+		if($(this).find('.ui_box_line:visible').length == 0){
+			$(this).hide();
+		}
+	});
+});
+</script>
+<?php echo $this->content?>

@@ -1,0 +1,170 @@
+<?php $excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);?>
+<?php $bg = "#EEEEEE";?>
+<?php $no = 1;?>
+
+<?php
+$excel_col   = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg          = "#EEEEEE";
+$row         = 2;
+$totalColumn = 7;
+$columnWidth = array(3, 5, 2, 2, 2);
+$excelWidth  = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($columnWidth);
+$fitScreen   = Qss_Lib_Report::changeWidthToFitScreen($columnWidth);
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="portrait">
+	<excel orientation="portrait" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+	<div id="head_print">
+
+        <div>
+            <div class="overflow" style=" overflow: hidden; width: 100%">
+                <div class="fl center" style="width: 40%">
+                    <xls row="<?php echo $row?>" column="A" column-merge="B" font-size="11" h-align="center" v-align="center" >ĐỘI BẢO TRÌ SỮA CHỮA & XÂY DỰNG</xls>
+
+                </div>
+
+                <div class="fr center" style="width: 50%">
+                    <p style="font-size: 16px; line-height: 18px;">
+                        <b>
+                            <xls row="<?php echo $row?>" column="C" column-merge="E" font-size="16" h-align="center" v-align="center" bold="1">CÔNG TY CỔ PHẦN ĐẦU TƯ NƯỚC SẠCH SÔNG ĐÀ</xls>
+                        </b>
+                    </p>
+                    <xls row="<?php echo ($row + 1)?>" column="C" column-merge="E" font-size="11" h-align="center" v-align="center"  >Xóm Vật Lại, xã Phú Minh, huyện Kỳ Sơn, tỉnh Hòa Bình; </xls>
+                    <br/>
+                    <xls row="<?php echo ($row + 2)?>" column="C" column-merge="E" font-size="11" h-align="center" v-align="center"  >Điện thoại: 0218.3.840.152-0218.3.840.148; Fax 0218.3.840.148; </xls>
+                    <br/>
+                </div>
+
+                <?php $row = $row + 2;?>
+            </div>
+        </div>
+        <?php $row++;?>
+        <?php $row++;?>
+        <br/>
+
+		<center>
+			<h2>
+				<xls row="<?php echo $row?>" column="A"
+					column-merge="<?php echo $excel_col[6]?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center">KẾ HOẠCH VẬT TƯ (TỪ NGÀY <?php echo $this->start?> ĐẾN NGÀY <?php echo $this->end?>)</xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++?>
+
+	<div id="container">
+		<table cellspacing="0" cellpadding="0" border="" id="" class="border">
+
+		<?php $begin = 0; ?>
+			<tr class="bggrey">
+				<!-- Mã vật tư -->
+				<th style="width:<?php echo $fitScreen[$begin]?>px;" ><xls
+						row="<?php echo $row?>" width="<?php echo $excelWidth[$begin]?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1" repeat="1" bgcolor="<?php echo $bg; ?>">
+						<?php echo $this->_translate(13);?></xls>
+				</th>
+
+				<!-- Tên vật tư -->
+				<th style="width:<?php echo $fitScreen[$begin]?>px;" ><xls
+						row="<?php echo $row?>" width="<?php echo $excelWidth[$begin]?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1" repeat="1" bgcolor="<?php echo $bg; ?>">
+						<?php echo $this->_translate(14);?></xls>
+				</th>
+
+				<!-- Đơn vị tính -->
+				<th style="width:<?php echo $fitScreen[$begin]?>px;" ><xls
+						row="<?php echo $row?>" width="<?php echo $excelWidth[$begin]?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1" repeat="1" bgcolor="<?php echo $bg; ?>">
+						<?php echo $this->_translate(15);?></xls>
+				</th>
+
+				<!-- Số lượng -->
+				<th style="width:<?php echo $fitScreen[$begin]?>px;" ><xls
+						row="<?php echo $row?>" width="<?php echo $excelWidth[$begin]?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1" repeat="1" bgcolor="<?php echo $bg; ?>">
+						<?php echo $this->_translate(16);?></xls>
+				</th>
+
+				<!-- Tồn kho -->
+				<th style="width:<?php echo $fitScreen[$begin]?>px;" ><xls
+						row="<?php echo $row?>" width="<?php echo $excelWidth[$begin]?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1" repeat="1" bgcolor="<?php echo $bg; ?>">
+						<?php echo $this->_translate(17);?></xls>
+				</th>
+			</tr>
+			<?php $row++?>
+
+
+			<?php foreach($this->print as $refVatTu=>$item): // in thiet bi theo vat tu ?>
+                <?php $begin = 0; ?>
+                <tr>
+                    <!-- Mã vật tư -->
+                    <td class="left" valign="top"><xls row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+                            h-align="left" v-align="top" border="1"> <?php echo $item->MaVatTu;?></xls>
+                    </td>
+
+                    <!-- Tên vật tư -->
+                    <td class="left" valign="top"><xls row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+                            h-align="left" v-align="top" border="1"> <?php echo $item->TenVatTu;?></xls>
+                    </td>
+
+                    <!-- Đơn vị tính -->
+                    <td class="left" valign="top"><xls row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+                            h-align="left" v-align="top" border="1"> <?php echo $item->DonViTinh;?></xls>
+                    </td>
+
+                    <!-- Số lượng -->
+                    <td class="right" valign="top"><xls row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+                            h-align="right" v-align="top" border="1"> <?php echo Qss_Lib_Util::formatNumber($item->SoLuong);?></xls>
+                    </td>
+
+                    <!-- Don vi tinh -->
+                    <td class="right" valign="top"><xls row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+                            h-align="right" v-align="top" border="1"> <?php echo Qss_Lib_Util::formatNumber(@$this->inventory[$refVatTu]);?></xls>
+                    </td>
+                </tr>
+                <?php $row++?>
+			<?php endforeach; // in thiet bi theo vat tu ?>
+		</table>
+	</div>
+
+    <br/>
+
+
+    <table cellpadding="0" cellspacing="0" border="0">
+
+        <tr>
+            <td style="width:33%;" class="center bold"></td>
+            <td style="width:33%;" class="center bold"></td>
+            <td style="width:33%;" class="center bold">Hòa Bình, ngày.....tháng.....năm..... </td>
+        </tr>
+
+        <tr>
+            <td style="width:33%;" class="center bold">ĐỘI BTSC&XD </td>
+            <td style="width:33%;" class="center bold">BAN KỸ THUẬT</td>
+            <td style="width:33%;" class="center bold">LÃNH ĐẠO DUYỆT</td>
+        </tr>
+    </table>
+
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+</div>

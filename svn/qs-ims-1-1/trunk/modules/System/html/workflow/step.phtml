@@ -1,0 +1,74 @@
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+	<button ID="Insert" type="button" class="btn btn_main_top" onClick="rowWorkflowStepInsert(<?php echo $this->wfid?>)">
+		<?php echo $this->_translate(12)?>
+	</button>
+	<button ID="Update" type="button" class="btn btn_main_top" disabled onClick="rowWorkflowStepEdit(<?php echo $this->wfid?>)">
+		<?php echo $this->_translate(13)?>
+	</button>
+	<button ID="Delete" type="button" class="btn btn_main_top" disabled onClick="rowWorkflowStepDelete()">
+		<?php echo $this->_translate(14)?>
+	</button>
+	<button type="button" class="btn btn_main_top" onclick="rowWorkflowStepBack('<?php echo $this->fid?>')">
+		<?php echo $this->_translate(32)?>
+	</button>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#1"><span><?php echo $this->_translate(136)?>
+				</span> </a></li>
+		</ul>
+	</div>
+
+	<div>
+		<?php
+		$type = array();
+		$type[0] = 'Không cần phê duyệt';
+		$type[1] = 'Phê duyệt tuần tự';
+		$type[2] = 'Tất cả được duyệt';
+		$type[3] = 'Phê duyệt cuối cùng';
+		$type[4] = 'Phê duyệt bất kỳ';
+		
+		$import    = array();
+		$import[0] = '-';
+		$import[1] = 'Yêu cầu lý do';
+
+		$widths = array(0.5, 5, 5, 2, 2, 2, 2, 2, 2, 4, 4);
+		$widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+		$begin  = 0;
+		?>
+
+		<table class="grid" cellspacing="0" style="">
+			<tr>
+				<th style="width: <?php echo $widths[$begin++];?>%">ID</th>
+				<th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Tên tiếng Việt</th>
+				<th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Tên tiếng Anh</th>
+				<th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Bước/ID</th>
+				<th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Sắp xếp</th>
+				<th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Bước sau</th>
+				<th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Bước trước</th>
+                <th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Thao tác nhanh</th>
+				<th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Yêu cầu<br/> nhập lý do</th>
+				<th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Lớp màu</th>
+				<th class="data" style="width: <?php echo $widths[$begin++];?>% !important;">Kiểu</th>
+			</tr>
+
+			<?php foreach ($this->steps as $item):?>
+				<tr id="<?php echo $item->SID;?>" class="" onclick="rowCLK(this)" rights="63">
+					<td class="nocount "><?php echo $item->SID;?></td>
+					<td class="data "><?php echo $item->Name;?></td>
+					<td class="data "><?php echo $item->Name_en;?></td>
+					<td class="data center"><?php echo $item->StepNo;?></td>
+					<td class="data center"><?php echo $item->OrderNo;?></td>
+					<td class="data "><?php echo $item->NextStep;?></td>
+					<td class="data "><?php echo $item->BackStep;?></td>
+                    <td class="data "><?php echo $item->QuickStep;?></td>
+					<td class="data center"><?php echo @$import[$item->Mix];?></td>
+					<td class="data center <?php echo $item->Color;?>"><?php echo $item->Color;?></td>
+					<td class="data center"><?php echo @$type[$item->StepType];?></td>
+				</tr>
+			<?php endforeach;?>
+		</table>
+	</div>
+</div>

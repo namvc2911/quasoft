@@ -1,0 +1,78 @@
+<div id="horizontal-toolbar" class="horizontal-toolbar">
+	<button id="btnSAVE" type="button" class="btn btn_main_top"
+			onclick="changeProfile()">
+			<?php echo $this->_translate(34)?>
+		</button>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<form id="qss_form" method="post">
+		<table class="detail">
+			<tr>
+				<th width="110"><?php echo $this->_translate(48,'Tên người sử dụng')?>
+				</th>
+				<td width="338"><input value="<?php echo $this->user->szUserName?>"
+					style="width: 300px;" name="szName" /></td>
+			</tr>
+			<tr>
+				<th><?php echo $this->_translate(70,'Mật khẩu mới')?></th>
+				<td><input type="password" style="width: 200px;"
+					name="szNewPassWord" /></td>
+			</tr>
+			<tr>
+				<th><?php echo $this->_translate(71)?></th>
+				<td><input type="password" style="width: 200px;" name="szRePassWord" />
+				</td>
+			</tr>
+			<tr>
+				<th><?php echo $this->_translate(52,'E-Mail')?></th>
+				<td><input value="<?php echo $this->user->szEMail?>"
+					style="width: 200px;" name="szEMail" /></td>
+			</tr>
+
+			<tr>
+				<th><?php echo $this->_translate(100,'Điện thoại')?></th>
+				<td><input value="<?php echo $this->user->szMobile?>"
+					style="width: 200px;" name="szMobile" /></td>
+			</tr>
+			<tr>
+				<th><?php echo $this->_translate(5)?></th>
+				<td><select style="width: 200px;" name="intMenuID">
+						<option value="0">
+						<?php echo $this->_translate(6)?>
+						</option>
+						<?php foreach ($this->menus as $item):?>
+						<option value="<?php echo $item->ID?>"
+						<?php if($this->user->intMenuID == $item->ID):?> selected
+						<?php endif;?>>
+							<?php echo $item->Name?>
+						</option>
+						<?php endforeach;?>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<th>Hiển thị trang chủ máy tính</th>
+				<td>
+					<?php foreach ($this->blocklist as $item):?>
+						<?php if(!$item->Mobile):?>
+							<input type="checkbox" name="arrBlock[]" value="<?php echo $item->URID ;?>" id="block_<?php echo $item->URID ;?>" <?php if($item->checked):?> checked <?php endif;?>>
+							<label for="block_<?php echo $item->URID ;?>"><?php echo $item->Name;?> - <?php echo $item->FName;?></label> <br/>
+						<?php endif;?>
+					<?php endforeach;?>
+				</td>
+			</tr>
+			<tr>
+				<th>Hiển thị trang chủ điện thoại</th>
+				<td>
+					<?php foreach ($this->blocklist as $item):?>
+						<?php if($item->Mobile):?>
+							<input type="checkbox" name="arrBlock[]" value="<?php echo $item->URID ;?>" id="block_<?php echo $item->URID ;?>" <?php if($item->checked):?> checked <?php endif;?>>
+							<label for="block_<?php echo $item->URID ;?>"><?php echo $item->Name;?> - <?php echo $item->FName;?></label> <br/>
+						<?php endif;?>
+					<?php endforeach;?>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>

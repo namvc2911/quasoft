@@ -1,0 +1,66 @@
+<?php $totalCol = 7;?>
+<table cellspacing="0" cellpadding="0" width="100%" class="borderX"
+	id="">
+	<tr class="bggrey center">
+		<th width="8%">
+			<!-- Mã mặt hàng --> <?php echo $this->_translate(6);?>
+		</th>
+		<th width="15%">
+			<!-- Tên mặt hàng --> <?php echo $this->_translate(7);?>
+		</th>
+		<th width="10%">
+			<!-- Thuộc tính --> <?php echo $this->_translate(8);?>
+		</th>
+		<th width="8%">
+			<!-- Đơn vị tính --> <?php echo $this->_translate(10);?>
+		</th>
+		<th width="8%">
+			<!-- Số lượng --> <?php echo $this->_translate(11);?>
+		</th>
+		<th width="8%">
+			<!-- Dòng đơn hàng --> <?php echo $this->_translate(35);?>
+		</th>
+		<th width="8%">
+			<!--  --> &nbsp;</th>
+	</tr>
+
+	<?php if(count((array)$this->line)):?>
+	<?php foreach ($this->line as $item):?>
+	<tr class="">
+		<td>
+			<!-- Mã mặt hàng --> <?php echo $item->MaSP;?>
+		</td>
+		<td>
+			<!-- Tên mặt hàng --> <?php echo $item->TenSP;?>
+		</td>
+		<td>
+			<!-- Thuộc tính --> <?php echo $item->ThuocTinh;?>
+		</td>
+		<td>
+			<!-- Đơn vị tính --> <?php echo $item->DonViTinh;?>
+		</td>
+		<td class="right">
+			<!-- Số lượng --> <?php echo $item->SoLuong;?>
+		</td>
+		<td class="left">
+			<!-- Dòng đơn hàng --> <?php echo $item->DongDonHang;?>
+		</td>
+		<td class="center"><?php if($this->unlock):?> <!-- Xóa -->
+			<button type="button"
+				onclick="deleteShipmentLine(<?php echo $item->IOID?>)"
+				class="button_like_anchor red">
+				<?php echo $this->_translate(34);?>
+			</button>
+		</td>
+		<?php else:?>
+		-
+		<?php endif;?>
+	</tr>
+	<?php endforeach;?>
+	<?php else:?>
+	<tr class="center">
+		<td colspan="<?php echo $totalCol?>"><?php echo $this->_translate(36);?>
+		</td>
+	</tr>
+	<?php endif;?>
+</table>

@@ -1,0 +1,19 @@
+
+<div class="fl">
+    <?php if(Qss_Lib_System::fieldActive('OPhieuBaoTri','NguoiThucHien')):?>
+    <div class="fr">
+        <?php echo $this->views->Extra->Employees($this->form,$this->selectedEmployeeID,$this->selectedEmployeeText);?>
+    </div>
+	<?php endif;?>
+    <div class="fr">
+        <?php echo $this->views->Extra->MaintainType($this->form,$this->selectedMaintainType);?>
+    </div>
+    <div class="fr">
+        <?php echo $this->views->Extra->Location($this->form,$this->selected);?>
+    </div>
+	<?php if(Qss_Lib_System::fieldActive('OPhieuBaoTri','MaDVBT')):?>
+    <div class="fr">
+        <?php echo $this->views->Extra->Workcenter($this->form,$this->selectedWorkcenter);?>
+    </div>
+    <?php endif;?>
+</div>

@@ -1,0 +1,77 @@
+<?php
+
+?>
+
+<script>
+	function printPreview()
+	{
+		var url = sz_BaseUrl + '/report/inventory/bin1';
+		var data = $('#report').serialize();
+		qssAjax.getHtml(url, data, function(jreturn) {
+				$('#print-area').html(jreturn);
+				removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+		});
+	}
+</script>
+
+<div>
+	<div class="clear"></div>
+	<div id="view">
+		<div class="line-hr">
+			<span><?php echo $this->_translate(20) ?> </span>
+		</div>
+		<form id="report" method="get" action="/report/inventory/history1">
+			<table class="detail">
+				<tr>
+					<th width="20%" class="report-param-label"><?php echo $this->_translate(21) ?>:</th>
+					<td><?php
+					$id = 'warehouse';
+					$getFields = array('num' => 2,
+							'objects' => array('ODanhSachKho' => array(
+									'id' => 'IFID_M601'
+									, 'display1' => 'MaKho'
+									, 'display2' => 'TenKho')));
+									?> <?php echo $this->views->Report->ComboBox($id, $getFields); ?>
+					</td>
+				</tr>
+
+				<tr>
+					<th width="20%" class="report-param-label"><?php echo $this->_translate(22) ?>:</th>
+					<td><?php
+					$id = 'bin';
+					$getDataObject = array('OBin'=>array('MaBin', 'TenBin'));
+					$getFields     = array('num'=>2,
+											   'objects'=>array('OBin'=>array(
+																		'id'=>'IOID'
+																		,'display1'=>'MaBin'
+																		,'display2'=>'TenBin')) );
+																		$getLookupFilter = array( 0=>array('id'=>'warehouse'
+																		, 'refField'=>array('OBin'=>'IFID_M601')
+																		, 'required'=>1));
+																		?> <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields, $getLookupFilter); ?>
+					</td>
+				</tr>
+
+				<tr>
+					<th width="20%" class="report-param-label"><?php echo $this->_translate(23) ?>:</th>
+					<td><?php
+					$id = 'item';
+					$getDataObject = array('OSanPham'=>array('MaSanPham', 'TenSanPham'));
+					$getFields = array('num' => 2,
+							'objects' => array('OSanPham' => array(
+									'id' => 'IOID'
+									, 'order' => 'MaSanPham'
+									, 'display1' => 'MaSanPham'
+									, 'display2' => 'TenSanPham')));
+									?> <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields); ?>
+					</td>
+				</tr>
+			</table>
+		</form>
+		<hr>
+		<?php echo $this->views->Report->PrintToolbar(); ?>
+		<div id="print-content">
+			<div id="print-area"></div>
+		</div>
+	</div>
+</div>

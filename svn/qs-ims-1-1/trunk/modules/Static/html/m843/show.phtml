@@ -1,0 +1,92 @@
+<?php
+$widths = array(571, 3029, 1729, 1671, 1786, 1971, 1729, 1800);
+$widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+$stt    = 0;
+?>
+
+<div class="landscape">
+    <!-- REPORT TITLE -->
+	<div id="head_print">
+		<?php echo $this->views->Common->Landscape() ?>
+        <?php //echo $this->views->Common->Legal() ?>
+        <h2 class="center">LIST OF INSPECTION EQUIPMENT</h2>
+        <h2 class="center">DANH MỤC THIẾT BỊ KIỂM ĐỊNH</h2>
+	</div><!-- end div#head_print -->
+    <br/>
+
+    <!-- REPORT DATA -->
+    <div id="container">
+        <!-- General -->
+
+        <div class="fr italic bold" style="padding-right: 90px;">
+            Year/Năm: <?php echo $this->start?date('Y', strtotime($this->start)):'';?>
+        </div>
+
+        <table cellpadding="0" cellspacing="0" border="1" class="border" style="">
+            <?php $begin = 0;?>
+            <tr class="bggrey">
+                <th style="width:<?php echo $widths[$begin++];?>%">STT<br>No</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Tên Thiết Bị<br>Equipment Name</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Mã Số Thiết Bị<br>Code</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Nơi Lắp Đặt<br>Location</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Số Hợp Đồng<br>Contract No</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Cơ Quan Kiểm Định<br>Inspection Organization</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Ngày Kiểm Định<br>Date Of Inspection</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Chu Kỳ Kiểm Định<br>Inspection Recycle</th>
+            </tr>
+
+            <?php foreach($this->report as $key=>$items):?>
+                <?php $first   = true;?>
+                <?php $count   = count($items);?>
+                <?php $rowspan = '';?>
+                <?php if($count > 1){ $rowspan = 'rowspan="'.$count.'"'; };?>
+                <?php foreach ($items as $item):?>
+
+                    <tr>
+                        <td class="center"><?php echo ++$stt;?></td>
+                        <td class="left"><?php echo $item->TenThietBi;?></td>
+                        <td class="left"><?php echo $item->MaThietBi;?></td>
+                        <td class="left"><?php echo $item->TenKhuVuc;?></td>
+                        <td class="left"><?php echo $item->SoHopDong;?></td>
+                        <td class="left"><?php echo $item->TenDoiTac;?></td>
+
+                        <?php if($first):?>
+                            <td class="center" <?php echo $rowspan;?>>
+                                <?php echo Qss_Lib_Date::mysqltodisplay($item->Ngay);?>
+                            </td>
+
+                            <td class="center" <?php echo $rowspan;?>>
+                                <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayKiemDinhTiepTheo);?>
+                            </td>
+                        <?php endif;?>
+                    </tr>
+
+                    <?php $first = false;?>
+                <?php endforeach;?>
+            <?php endforeach;?>
+        </table>
+        <br/>
+        <br/>
+
+        <p class="fl bold" style="margin-left: 40px;"> Prepared by chief engineer    </p>
+
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+        <p>
+        <p class="fl bold" style="margin-left: 40px;"> F.MAN.01.04     </p>
+        <p class="fr bold" style="margin-right: 40px;"> Page/ Trang : ……/…….. </p>
+        <br/>
+
+        <p class="fl bold" style="margin-left: 40px;">10/07/2009</p>
+        </p>
+    </div><!-- end div#container -->
+</div><!-- END REPORT -->
+
+

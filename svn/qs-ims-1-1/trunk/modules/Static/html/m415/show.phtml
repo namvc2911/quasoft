@@ -1,0 +1,66 @@
+<?php 
+    $sessionIndex = 0; // Thứ tự của session
+?>
+
+<!-- ================================================================================================================== -->
+
+<div id="M415_show_wrap">
+    <div class="fr">
+        Trang:
+        <a onclick="$('#qss_form_pageno').val('<?php echo $this->prev;?>'); M415.showSessions();" href="#" class="bold" title="Trang trước">&lt;&lt;</a>
+        <input value="<?php echo $this->page;?>" style="width: 20px !important; text-align: center;" onchange="M415.showSessions();" id="qss_form_pageno">/<?php echo $this->totalPage;?>
+        <a onclick="$('#qss_form_pageno').val('<?php echo $this->next;?>'); M415.showSessions();" href="#" class="bold" title="Trang sau">&gt;&gt;</a>
+        Hiển thị:
+        <select onchange="M415.showSessions();" style="width: 100;" id="qss_form_perpage">
+            <option <?php echo ($this->perpage == 10)?'selected':'';?> value="10">10</option>
+            <option <?php echo ($this->perpage == 20)?'selected':'';?> value="20">20</option>
+            <option <?php echo ($this->perpage == 50)?'selected':'';?> value="50">50</option>
+            <option <?php echo ($this->perpage == 100)?'selected':'';?> value="100">100</option>
+        </select>
+    </div>
+
+
+    <div class="clear"></div>
+
+    <div id="M415_sessions_table">
+        <!-- Session mua hàng theo nhân viên -->
+        <table 
+            class="border_table" 
+            cellpadding="0" 
+            cellspacing="0" 
+            border="0" 
+            style="table-layout: fixed; width:auto;">
+            
+            <!-- Tiêu đề bảng session mua hàng -->
+            <tr>
+                <th style="width: 50px;"> STT </th>
+                <th style="width: 150px;"> Ngày </th>
+                <th style="width: 150px;"> Yêu cầu </th>
+                <th style="width: 150px;"> Kế hoạch </th>
+                <th style="width: 150px;"> Báo giá </th>
+                <th style="width: 150px;"> Đơn hàng </th>
+                <th style="width: 150px;"> Tình trạng </th>
+                <th style="width: 80px;"> Sửa </th>
+                <th style="width: 80px;"> Xóa </th>
+            </tr>
+        
+            <!-- Nội dung bảng session mua hàng -->
+            <?php foreach($this->sessions as $session):?>
+                <tr>
+                    <td class="center"> <?php echo ++$sessionIndex;?> </td>
+                    <td class="center"> <?php echo Qss_Lib_Date::mysqltodisplay($session->Ngay);?> </td>
+                    <td class="left"> <?php echo $session->CacPhieuYeuCau;?></td>
+                    <td class="left"> <?php echo $session->SoKeHoach;?></td>
+                    <td class="left"> <?php echo $session->CacBaoGia;?></td>
+                    <td class="left"> <?php echo $session->CacDonMuaHang;?></td>
+                    <td class="center"> <?php echo Static_M415Controller::$M415_STEP[$session->Buoc];?></td>
+                    <td class="center little_padding"> <button onclick="M415.editSession(<?php echo $session->IFID_M415;?>)" type="button" class="btn btn-custom" > Sửa </button> </td>
+                    <td class="center little_padding"> <button onclick="M415.deleteSession(<?php echo $session->IFID_M415;?>)" type="button" class="btn btn-custom"> Xóa </button> </td>
+                </tr>    
+            <?php endforeach;?>
+        </table>
+    </div><!-- end #session_table -->
+</div><!-- end #M415_show_wrap -->
+<br/>
+<br/>
+<br/>

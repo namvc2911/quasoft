@@ -1,0 +1,371 @@
+<?php
+$excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$row       = 2;
+$totalCol  = 8;
+$monthStart = $this->monthStart;
+$monthEnd = $this->monthEnd;
+$widthPx = array(1,3);
+$rows = $monthEnd - $monthStart + 1;// lấy số tháng
+for($k = 0;$k<($rows*2 + 2);$k++) // tính số cột
+{
+	$widthPx[] = 10/($rows*2 + 2);
+}
+$widthEx   = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($widthPx);
+$widthPx   = Qss_Lib_Report::changeWidthToFitScreen($widthPx);
+$subTitle       = array();
+$subTitleStr    = '';
+?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="landscape">
+	<excel orientation="landscape" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+
+	<div id="head_print">
+	<?php echo $this->views->Common->Landscape() ?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(8).$this->year ?></xls>
+			</h2>
+		</center>
+		<?php $row++ ?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $subTitleStr ?></xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++ ?>
+	<div id="container">
+		<table width="" cellpadding="0" cellspacing="0" class="border" border="1">
+			<tr class="bggrey center">
+			<?php $begin = 0; ?>
+				<th rowspan="2" width="<?php echo $widthPx[$begin];?>px">
+					<!-- STT --> 
+					<xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1" row-merge="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(2) ?></xls>
+				</th>
+				<th rowspan="2" width="<?php echo $widthPx[$begin];?>px">
+					<!-- Tên đơn vị tiêu thụ nước --> 
+					<xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1" row-merge="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(3) ?></xls>
+				</th>
+				<?php for ($month = $monthStart;$month <= $monthEnd;$month++):?>
+				<th colspan="2">
+					<!-- Các tháng 1, tháng 2, tháng 3 ... --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"  column-merge="<?php echo $excel_col[$begin+1];?>"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(9) ?> <?php echo $month?></xls>
+				</th>
+				<?php $begin++?>
+				<?php endfor;?>
+				<th colspan="2">
+					<!-- Cột tổng số theo dòng --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"  column-merge="<?php echo $excel_col[$begin+1];?>"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(21)?></xls>
+				</th>
+			</tr>	
+			<?php $row++;?>		
+			<tr>
+				<?php $begin = 2?>
+				<?php for ($month = $monthStart; $month <= $monthEnd; $month++):?>
+				<th>
+					<!-- Số lượng theo từng tháng --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(22) ?></xls>
+				</th>				
+				<th>
+					<!-- Thành tiền theo từng tháng --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(24) ?></xls>
+				</th>
+				<?php endfor;?>
+				<th>
+					<!-- Tổng khối lượng từng dòng --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(22) ?></xls>
+				</th>				
+				<th>
+					<!-- Tổng Thành tiền từng dòng  --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(24) ?></xls>
+				</th>
+				<?php $begin = 0;?>
+				<?php $row++;?>
+			</tr>
+			<?php $stt = 1;?>
+			<?php $sumWeightByRow = 0;//tổng số lượng từng dòng?>
+			<?php $sumMoneyByRow = 0;//tổng tiền từng dòng?>
+			<?php $sumWeightGroup = array();//số lượng từng tháng của đơn vị?>
+			<?php $sumMoneyGroup = array();//thành tiền của từng tháng của đơn vị?>
+			<?php $sumWeightGroupByCol = array();//tổng số lượng từng tháng của tất cả các đơn vị?>
+			<?php $sumMoneyGroupByCol = array();//tổng tiền từng tháng của tất cả các đơn vị?>
+			<!-- Khởi tạo các giá trị của tổng khối lượng, tổng tiền từng tháng theo cột-->
+			<?php for ($month = $monthStart; $month <= $monthEnd; $month++):?>
+				<?php $sumWeightGroupByCol[$month] = 0;//tổng khối lượng tưng tháng theo cột?>
+				<?php $sumMoneyGroupByCol[$month] = 0;//tổng tiền từng tháng theo cột?>
+			<?php endfor;?>
+			<?php $sumAllMoney = 0;//tổng tiền ở cột tổng cộng dòng tổng cộng?>
+			<?php $sumAllWeight = 0 ;//tỏng số lượng ở cột tổng cộng, dòng tổng cộng?>
+			<?php $group = 0?>
+			<?php foreach ($this->list as $list):?>
+				<!-- Th1 chưa có Đơn vị hoặc sang Đơn vị khác -->
+				<?php if($group != $list->Ref_DonVi):?>
+					<!-- In số liệu của đơn vị -->
+					<tr>
+						<td class="right bold">
+							<!-- STT --> 
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="center" v-align="center" border="1" bold="1"> <?php echo $stt; ?></xls>
+						</td>
+						<?php $stt++?>
+						<td class="left bold">
+							<!-- Tên cấp đến --> 
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1" bold="1"> <?php echo $list->DonVi; ?></xls>
+						</td>
+						<?php $dataByGroup = @$this->dataSumByGroup[$list->Ref_DonVi];?>
+						<?php $dataSum = @$this->dataSum[$list->Ref_DonVi];?>
+						<?php for($month = $monthStart; $month <= $monthEnd; $month++):?>
+							<?php $dataMetterByGroup = @$dataByGroup[$month]?>
+							<!-- Số lượng trong tháng -->
+							<td class="right bold"> 
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1" bold="1"> <?php echo Qss_Lib_Util::formatInteger($dataMetterByGroup?$dataMetterByGroup['SoLuong']:0);?></xls>
+							</td>
+							<?php $sumWeightGroupByCol[$month] += $dataMetterByGroup?$dataMetterByGroup['SoLuong']:0?>
+							<!-- thành tiền trong tháng --> 
+							<td class="right bold">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1" bold="1"> <?php echo Qss_Lib_Util::formatInteger((int)$dataMetterByGroup['ThanhTien']); ?></xls>
+							</td>
+							<?php $sumMoneyGroupByCol[$month] += $dataMetterByGroup?$dataMetterByGroup['ThanhTien']:0?>
+						<?php endfor;?>
+						<!-- Tổng số lượng của đơn vị -->
+						<td class="right bold"> 
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="right" v-align="center" border="1" bold="1"> <?php echo Qss_Lib_Util::formatInteger((int)$dataSum['SoLuong']);?></xls>
+						</td>
+						<!-- Tổng tiền của đơn vị --> 
+						<td class="right bold">
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="right" v-align="center" border="1" bold="1"> <?php echo Qss_Lib_Util::formatInteger((int)$dataSum['ThanhTien']); ?></xls>
+						</td>
+						<?php $begin = 0;?>
+						<?php $row++;?>
+					</tr>
+					<?php $count = count(@$this->data[$list->Ref_DonVi]);?>
+					<!-- Kiểm tra $count > 1 thì in các công tơ con -->
+					<?php if($count > 1):?>
+						<!-- In dữ liệu Cấp đến đầu tiên của đơn vị -->
+						<?php $dataGroup = @$this->data[$list->Ref_DonVi];?>
+						<?php $dataMetter = @$dataGroup[$list->IOID]?>
+						<tr>
+							<td>
+								<!-- STT --> 
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="center" v-align="center" border="1" ></xls>
+							</td>
+							<td class="left">
+								<!-- Tên cấp đến --> 
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="left" v-align="center" border="1" > <?php echo $list->CapDen; ?></xls>
+							</td>
+							<?php for($month = $monthStart; $month <= $monthEnd; $month++):?>
+								<?php $dataMonth = @$dataMetter[$month];?>
+								<!-- Số lượng trong tháng -->
+								<td class="right"> 
+									<xls row="<?php echo $row ?>"
+										column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+										h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatInteger($dataMonth?$dataMonth->SoLuong:0);?></xls>
+								</td>
+								<?php $sumWeightByRow += $dataMonth?$dataMonth->SoLuong:0;?>
+								<?php //$sumWeightGroupByCol[$month] += $dataMonth?$dataMonth->SoLuong:0;?>
+								<!-- thành tiền trong tháng --> 
+								<td class="right">
+									<xls row="<?php echo $row ?>"
+										column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+										h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatInteger($dataMonth?$dataMonth->ThanhTien:0); ?></xls>
+								</td>
+								<?php $sumMoneyByRow += $dataMonth?$dataMonth->ThanhTien:0;?>
+								<?php //$sumMoneyGroupByCol[$month] += $dataMonth?$dataMonth->ThanhTien:0?>
+							<?php endfor;?>
+							<!-- Tổng số lượng của đơn vị -->
+								<td class="right"> 
+									<xls row="<?php echo $row ?>"
+										column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+										h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatInteger($sumWeightByRow);?></xls>
+								</td>
+								<?php $sumWeightByRow = 0;//khởi tạo lại tổng khối lượng theo dòng?>
+								<!-- Tổng tiền của đơn vị --> 
+								<td class="right">
+									<xls row="<?php echo $row ?>"
+										column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+										h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatInteger($sumMoneyByRow); ?></xls>
+								</td>
+								<?php $sumMoneyByRow = 0;//khởi tạo lại tổng thành tiền theo từng dòng?>
+								<?php $row++?>
+								<?php $begin=0;?>
+						</tr>
+					<?php endif;?>
+				<!-- Th2: cùng Đơnvị với Cấp đến trước nó -->
+				<?php elseif ($group == $list->Ref_DonVi):?>
+					<?php $dataGroup = @$this->data[$list->Ref_DonVi];?>
+					<?php $dataMetter = @$dataGroup[$list->IOID]?>
+					<!-- in dữ liệu của cấp đến -->
+					<tr>
+						<?php $begin = 0?>
+						<td class="">
+							<!-- STT --> 
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="center" v-align="center" border="1" ></xls>
+						</td>
+						<td class="left">
+							<!-- Tên cấp đến --> 
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="left" v-align="center" border="1" > <?php echo $list->CapDen; ?></xls>
+						</td>
+						<?php for($month = $monthStart; $month <= $monthEnd; $month++):?>
+						<?php $dataMonth = @$dataMetter[$month]?>
+							<!-- Số lượng trong tháng -->
+							<td class="right"> 
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1" > <?php echo Qss_Lib_Util::formatInteger($dataMonth?$dataMonth->SoLuong:0);?></xls>
+							</td>
+							<?php $sumWeightByRow += $dataMonth?$dataMonth->SoLuong:0;?>
+							<?php //$sumWeightGroupByCol[$month] += $dataMonth?$dataMonth->SoLuong:0?>
+							<!-- thành tiền trong tháng --> 
+							<td class="right">
+								<xls row="<?php echo $row ?>"
+									column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+									h-align="right" v-align="center" border="1" > <?php echo Qss_Lib_Util::formatInteger($dataMonth?$dataMonth->ThanhTien:0); ?></xls>
+							</td>
+							<?php $sumMoneyByRow += $dataMonth?$dataMonth->ThanhTien:0;?>
+							<?php //$sumMoneyGroupByCol[$month] += $dataMonth?$dataMonth->ThanhTien:0;?>
+						<?php endfor;?>
+						<!-- Số lượng của đơn vị -->
+						<td class="right"> 
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="right" v-align="center" border="1" > <?php echo Qss_Lib_Util::formatInteger($sumWeightByRow);?></xls>
+						</td>
+						<?php $sumWeightByRow = 0;//khởi tạo lại tổng số lượng theo từng dòng ?>
+						<!-- thành tiền của đơn vị --> 
+						<td class="right">
+							<xls row="<?php echo $row ?>"
+								column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+								h-align="right" v-align="center" border="1" > <?php echo Qss_Lib_Util::formatInteger($sumMoneyByRow); ?></xls>
+						</td>
+						<?php $sumMoneyByRow = 0;//khởi tạo lại tổng tiền theo từng dòng?>
+						<?php $begin = 0;?>
+						<?php $row++?>
+					</tr>
+				<?php endif;?>
+				<?php $group = $list->Ref_DonVi;//Tên đơn vị ?>
+			<?php endforeach;?>
+			<!-- DÒng tổng cộng -->
+			<tr>
+				<?php $begin = 0;?>
+				<td class="center bold" colspan="2">	
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1" column-merge="<?php echo $excel_col[$begin+1]?>"
+						h-align="center" v-align="center" border="1" bold="1"><?php echo $this->_translate(21)?></xls>
+				</td>
+				<?php $begin += 1?>
+				<?php for($month = $monthStart; $month <= $monthEnd; $month++):?>
+					<!-- Tổng số lượng từng tháng -->
+					<td class="right bold">	
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="right" v-align="center" border="1" bold="1"><?php echo Qss_Lib_Util::formatInteger($sumWeightGroupByCol[$month])?></xls>
+					</td>
+					<?php $sumAllWeight += ($sumWeightGroupByCol[$month])?>
+					<!-- Tổng tiền từng tháng -->
+					<td class="right bold">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="right" v-align="center" border="1" bold="1"><?php echo Qss_Lib_Util::formatInteger($sumMoneyGroupByCol[$month])?></xls>
+					</td>
+					<?php $sumAllMoney += ($sumMoneyGroupByCol[$month]);?>
+				<?php endfor;?>
+				<!--  tổng số lượng ở cột tổng cộng -->
+				<td class="right bold">	
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="right" v-align="center" border="1" bold="1"><?php echo Qss_Lib_Util::formatInteger($sumAllWeight)?></xls>
+				</td>
+				<!-- Tổng tiền ở cột tổng cột -->
+				<td class="right bold">
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="right" v-align="center" border="1" bold="1"><?php echo Qss_Lib_Util::formatInteger($sumAllMoney)?></xls>
+				</td>
+				<?php $begin = 0?>
+				<?php $row += 2;?>
+			</tr>
+		</table>
+		<table style="margin-top: 20px">
+        	<tr class="center">
+	            <th  class="center" style="width: 45%;">
+	                <xls
+	                    row="<?php echo $row?>"
+	                    column="<?php echo $excel_col[2]?>"
+	                    wrap-text="1"
+	                    v-align="center"
+	                    h-align="center"
+	                    bold="1">LẬP BIỂU</xls>
+	
+	            </th>
+	
+				<th class="center">
+	                <xls
+	                    row="<?php echo $row?>"
+	                    column="<?php echo $excel_col[5]?>"
+	                    wrap-text="1"
+	                    v-align="center"
+	                    h-align="center"
+	                    bold="1">QUẢN ĐỐC</xls>
+	            </th>
+	
+	            <th class="center">
+	                <xls
+	                    row="<?php echo $row?>"
+	                    column="<?php echo $excel_col[8]?>"
+	                    wrap-text="1"
+	                    v-align="center"
+	                    h-align="center"
+	                    bold="1">PHÒNG CƠ ĐIỆN VI TÍNH</xls>
+	            </th>
+	        </tr>
+   		 </table>
+	</div>
+	</div>
+</div>
+
+	

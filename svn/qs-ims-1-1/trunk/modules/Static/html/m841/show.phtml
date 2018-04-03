@@ -1,0 +1,198 @@
+<?php
+$widths         = array(657, 2000, 2000, 1000, 1000, 1000, 1000, 1000, 1000, 2000);
+$totalColumn    = count($widths);
+$htmlWidth      = Qss_Lib_Report::changeWidthToFitScreen($widths);
+$begin          = 0;
+$sttThietBi     = 0;
+$sttCongCu      = 0;
+?>
+
+<div class="portrait">
+    <div id="head_print">
+        <?php echo $this->views->Common->Portrait() ?>
+        <h2 class="report-title center"> <?php echo $this->_translate(1); ?> </h2>
+    </div>
+
+    <br/>
+    <table class="border" border="0" cellpadding="0" cellspacing="0">
+        <tr class="bggrey">
+            <!-- STT -->
+            <th class="center" style="width: <?php echo $htmlWidth[$begin++];?>px;">
+                <?php echo $this->_translate(4); ?>
+            </th>
+
+            <!-- Thiết bị: Loại thiết bị -->
+            <th class="center" style="width: <?php echo $htmlWidth[$begin++];?>px;">
+                <?php echo $this->_translate(5); ?>
+            </th>
+
+            <!-- Mã: Mã loại thiết bị -->
+            <th class="center" style="width: <?php echo $htmlWidth[$begin++];?>px;">
+                <?php echo $this->_translate(6); ?>
+            </th>
+
+            <!-- Đơn vị tính -->
+            <th class="center" style="width: <?php echo $htmlWidth[$begin++];?>px;">
+                <?php echo $this->_translate(7); ?>
+            </th>
+
+            <!-- Số lượng -->
+            <th class="center" style="width: <?php echo $htmlWidth[$begin++];?>px;">
+                <?php echo $this->_translate(8); ?>
+            </th>
+
+            <!-- Số lượng đang yêu cầu -->
+            <th class="center" style="width: <?php echo $htmlWidth[$begin++];?>px;">
+                <?php echo $this->_translate(9); ?>
+            </th>
+
+            <!-- Số lượng đã điều động -->
+            <th class="center" style="width: <?php echo $htmlWidth[$begin++];?>px;">
+                <?php echo $this->_translate(10); ?>
+            </th>
+
+            <!-- Số lượng hỏng -->
+            <th class="center" style="width: <?php echo $htmlWidth[$begin++];?>px;">
+                <?php echo $this->_translate(13); ?>
+            </th>
+
+            <!-- Số lượng có thể điều động -->
+            <th class="center" style="width: <?php echo $htmlWidth[$begin++];?>px;">
+                <?php echo $this->_translate(11); ?>
+            </th>
+
+            <!-- Đơn vị quản lý -->
+            <th class="center" style="width: <?php echo $htmlWidth[$begin++];?>px;">
+                <?php echo $this->_translate(12); ?>
+            </th>
+        </tr>
+
+        <?php if(count($this->equipsMoving)):?>
+            <tr>
+                <!-- Thiết bị -->
+                <td class="bold left" colspan="<?php echo $totalColumn;?>">
+                    <?php echo $this->_translate(2); ?>
+                </td>
+            </tr>
+        <?php endif;?>
+
+        <!-- In danh sách thiết bị điều động -->
+        <?php foreach ($this->equipsMoving as $item):?>
+            <tr>
+                <!-- STT -->
+                <td class="center">
+                    <?php echo ++$sttThietBi;?>
+                </td>
+
+                <!-- Thiết bị: Loại thiết bị -->
+                <td class="left">
+                    <?php echo $item->thietBi;?>
+                </td>
+
+                <!-- Mã: Mã loại thiết bị -->
+                <td class="left">
+                    <?php echo $item->ma;?>
+                </td>
+
+                <!-- Đơn vị tính -->
+                <td class="left">
+                    <?php echo $item->donViTinh;?>
+                </td>
+
+                <!-- Số lượng -->
+                <td class="right">
+                    <?php echo Qss_Lib_Util::formatNumber($item->soLuong);?>
+                </td>
+
+                <!-- Số lượng đang yêu cầu -->
+                <td class="right">
+                    <?php echo Qss_Lib_Util::formatNumber($item->soLuongDangYeuCau);?>
+                </td>
+
+                <!-- Số lượng đã điều động -->
+                <td class="right">
+                    <?php echo Qss_Lib_Util::formatNumber($item->soLuongDaDieuDong);?>
+                </td>
+
+                <!-- Số lượng hỏng -->
+                <td class="right">
+                    <?php echo Qss_Lib_Util::formatNumber($item->soLuongHong);?>
+                </td>
+
+                <!-- Số lượng có thể điều động -->
+                <td class="right">
+                    <?php echo Qss_Lib_Util::formatNumber($item->soLuongCoTheDieuDong);?>
+                </td>
+
+                <!-- Đơn vị quản lý -->
+                <td class="left">
+                    <?php echo $item->donViQuanLy;?>
+                </td>
+            </tr>
+        <?php endforeach;?>
+
+        <?php if(count($this->toolsMoving)):?>
+            <tr>
+                <!-- Công cụ dụng cụ -->
+                <td class="bold left" colspan="<?php echo $totalColumn;?>">
+                    <?php echo $this->_translate(3); ?>
+                </td>
+            </tr>
+        <?php endif;?>
+
+        <!-- In danh sách công cụ điều động -->
+        <?php foreach ($this->toolsMoving as $item):?>
+            <tr>
+                <!-- STT -->
+                <td class="center">
+                    <?php echo ++$sttCongCu;?>
+                </td>
+
+                <!-- Thiết bị: Loại thiết bị -->
+                <td class="left">
+                    <?php echo $item->thietBi;?>
+                </td>
+
+                <!-- Mã: Mã loại thiết bị -->
+                <td class="left">
+                    <?php echo $item->ma;?>
+                </td>
+
+                <!-- Đơn vị tính -->
+                <td class="left">
+                    <?php echo $item->donViTinh;?>
+                </td>
+
+                <!-- Số lượng -->
+                <td class="right">
+                    <?php echo Qss_Lib_Util::formatNumber($item->soLuong);?>
+                </td>
+
+                <!-- Số lượng đang yêu cầu -->
+                <td class="right">
+                    <?php echo Qss_Lib_Util::formatNumber($item->soLuongDangYeuCau);?>
+                </td>
+
+                <!-- Số lượng đã điều động -->
+                <td class="right">
+                    <?php echo Qss_Lib_Util::formatNumber($item->soLuongDaDieuDong);?>
+                </td>
+
+                <!-- Số lượng hỏng -->
+                <td class="right">
+
+                </td>
+
+                <!-- Số lượng có thể điều động -->
+                <td class="right">
+                    <?php echo Qss_Lib_Util::formatNumber($item->soLuongCoTheDieuDong);?>
+                </td>
+
+                <!-- Đơn vị quản lý -->
+                <td class="left">
+                    <?php echo $item->donViQuanLy;?>
+                </td>
+            </tr>
+        <?php endforeach;?>
+    </table>
+</div>

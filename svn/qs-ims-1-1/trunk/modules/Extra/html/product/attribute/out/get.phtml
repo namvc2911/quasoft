@@ -1,0 +1,397 @@
+<?php
+$serialLot  = $this->serialLot;  // Th.tin lot,serial,item,kho.
+$attributes = $this->attributes; // Thông tin về thuộc tính sản phẩm
+$zoneAndBin = $this->zoneAndBin; // zone và bin
+//echo '<pre>'; print_r(Qss_Lib_Extra::formatSerialize(serialize($this->serialLot))); die;
+?>
+
+<?php if(  $serialLot->SelectWarehouse || ($serialLot->lot || $serialLot->serial || $this->hasBin) ):?>
+<link
+	rel="stylesheet" href="/css/button.css" type="text/css" />
+<style>
+.yellowBg {
+	background: #FFFF33;
+}
+
+.movement_regBg {
+	background: red;
+}
+
+.select {
+	width: 142px;
+}
+</style>
+<script><!--
+		
+	$(document).ready(function(){
+		countTotalQty();
+	});	
+	function showBin(ele)
+	{
+		var zone = ele.value;
+		var data = {
+				zone:zone
+				,refWarehouse:'<?php echo $serialLot->refWarehouse;?>'
+				,refItem:'<?php echo $serialLot->refItem?>'
+				,ifid:'<?php echo $this->ifid;?>'
+				,ioid:'<?php echo $this->ioid;?>'
+				,objid:'<?php echo $this->objid;?>'
+				}; 
+		var url = sz_BaseUrl + '/extra/product/attribute/in/bin'; 
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('.bin_1').html(jreturn); 
+		});
+	}
+	
+	function enableAttr(ele)
+	{
+		
+		if($(ele).is(':checked'))
+		{
+			$(ele).parent().parent().removeClass('movement_regBg').addClass('yellowBg').find('.movementQty').removeAttr('disabled');
+			$(ele).parent().parent().find('input[type=hidden]').removeAttr('disabled');
+			$(ele).parent().parent().find('input[name*=check]').attr('value','1');
+		}
+		else
+		{
+			$(ele).parent().parent().find('input[name*=check]').attr('value','0');
+			if($(ele).parent().parent().find('input[name*=existsIOID]').val() != 0)
+			{
+				$(ele).parent().parent().removeClass('yellowBg').addClass('movement_regBg').find('.movementQty').attr('readonly','readonly');
+			}
+			else
+			{
+				$(ele).parent().parent().removeClass('yellowBg').find('.movementQty').attr('disabled','disabled');
+				$(ele).parent().parent().find('input[type=hidden]').attr('disabled',true);
+			}
+			
+		}
+		countTotalQty();
+	}
+	
+	function checkAllLine(ele)
+	{
+		if($(ele).is(':checked'))
+		{
+			$('#attrTable').find('tr').has('input[type=text]').removeClass('movement_regBg').addClass('yellowBg')
+			.find('input[type=checkbox]').attr('checked','checked').parent().parent()
+			.find('.movementQty').removeAttr('disabled').parent().parent()
+			.find('input[type=hidden]').removeAttr('disabled');
+	
+			$('#attrTable').find('input[name*=check]').attr('value','1');
+		}
+		else
+		{
+			// [name!*=existsIOID][name!*=check]
+			$('#attrTable').find('tr').has('input[type=text]').removeClass('yellowBg')
+			.find('input[type=checkbox]').removeAttr('checked').parent().parent()
+			.find('.movementQty').attr('disabled','disabled').parent().parent()
+			.find('input[type=hidden]').attr('disabled',true);
+	
+			$('#attrTable').find('input[name*=check]').attr('value','0');
+	
+			$('#attrTable').find('input[name*=existsIOID][value!=0]').parent().parent().addClass('movement_regBg')
+			.find('input[type=hidden],input[type=text]').removeAttr('disabled');
+			
+		}
+		countTotalQty();
+	}
+	
+	function saveMovenmetAttr()
+	{
+		var data = $('#getAttributeDetail').serialize();
+		var url = sz_BaseUrl + '/extra/product/attribute/out/save'; 
+		var check = $('input[name*=stt]').val();
+	
+		if(check >0)
+		{
+			qssAjax.call(url, data, function(jreturn){
+				
+						$('#qss_combo').dialog('close');
+						countTotalQty();
+//						if(jreturn.message != ''){
+//							qssAjax.alert(jreturn.message);
+//						}
+//						changeSave();
+//						searchMovenmetAttrTop();
+					}, function(jreturn){
+						qssAjax.alert(jreturn.message);
+			});
+		}
+		else
+		{
+			qssAjax.alert('Không có giá trị để cập nhật !');
+		}
+	}
+	
+	function changeSave()
+	{
+		var data = $('#getAttributeDetail').serialize();
+		var url2 = sz_BaseUrl + '/extra/product/attribute/out/change'; 
+		qssAjax.getHtml(url2, data, function(jreturn) {
+			//$('#attributeTable').html(jreturn);// lấy dữ liệu chèn vào 
+			$('#changeAttrTable').html(jreturn);
+			countTotalQty();
+		});
+	}
+	
+	function searchMovenmetAttrTop()
+	{
+		var url = sz_BaseUrl + '/extra/product/attribute/out/page'; // url chuyển đến
+		var data = $('#searchAttrTop').serialize();
+		qssAjax.getHtml(url, data, function(jreturn) {
+			//$('#attributeTable').html(jreturn);// lấy dữ liệu chèn vào 
+			$('#page').html(jreturn);
+		});
+		searchMovenmetAttrTopValue();
+	}
+	
+	function searchMovenmetAttrTopValue()
+	{
+		var url = sz_BaseUrl + '/extra/product/attribute/out/search'; // url chuyển đến
+		var data = $('#searchAttrTop').serialize();
+		qssAjax.getHtml(url, data, function(jreturn) {
+			//$('#attributeTable').html(jreturn);// lấy dữ liệu chèn vào 
+			$('#attrTable').html(jreturn);
+			countTotalQty();
+		});
+	}
+	
+	function removeConditionMovement()
+	{
+		$('#searchAttrTop input[type=text]').val('');
+		$('#searchAttrTop select').val('');
+		$('#searchAttrTop select[name=binFilter]').html('<option value=""> Tất cả </option>');
+		searchMovenmetAttrTop();
+	}
+	
+	function countTotalQty()
+	{
+		var total = 0;
+		var totalOldQty = 0;
+		var totalShowQty = 0;
+		var totalHiddenQty = 0;
+		var itemQty = parseFloat($('#getItemQty').val());
+		
+		
+		if($('.show_get_qty').length)
+		{
+			$('.show_get_qty').each(function(){
+				if ( !$(this).is('readonly') && !$(this).is(':disabled')) 
+				{ 
+					totalShowQty += parseFloat($(this).val());
+				}
+				
+			});
+			
+			$('.hidden_get_qty').each(function(){
+				totalHiddenQty += parseFloat($(this).val());
+			});			
+		}
+		
+		if($('.old_qty').length)
+		{
+			$('.old_qty').each(function(){
+				totalOldQty += parseFloat($(this).val());
+			});
+		}
+		
+		total = (totalOldQty - totalHiddenQty) + totalShowQty;
+		
+//		console.log('Total Old:' + totalOldQty);
+//		console.log('Total Hidden:' + totalHiddenQty);
+//		console.log('Total Show:' + totalShowQty);
+		
+		$('#total_qty').text(total+'/'+itemQty);
+		if(total != itemQty)
+		{
+			$('#total_qty').removeClass('bold green');
+			$('#total_qty').addClass('bold red');
+		}
+		else
+		{
+			$('#total_qty').removeClass('bold red');
+			$('#total_qty').addClass('bold green');
+		}
+		
+		
+	}
+	--></script>
+
+<!--<h1> Trạng thái lưu trữ </h1>-->
+<br />
+<b> Mặt hàng "<?php echo $serialLot->itemName; ?>" ( Mã: "<?php echo $serialLot->itemCode; ?>"
+	- Đơn vị tính: "<?php echo $serialLot->itemUOM; ?>" <?php echo (isset($serialLot->warehouse) && $serialLot->warehouse)?'- Kho lấy hàng:'.$serialLot->warehouse:'';?>
+	<?php echo (isset($attributes) && $attributes)?'- Thuộc tính:'.$attributes:'';?>
+	- Số lượng xuất kho: <span id="total_qty">0/<?php echo $serialLot->itemQty;?>
+</span> ) </i> </b>
+<br />
+<br />
+<div id="changeAttrTable"></div>
+<script>changeSave()</script>
+<br />
+
+<div>
+	<form name="searchAttrTop" id="searchAttrTop">
+		<input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" />
+		<input type="hidden" name="ioid" value="<?php echo $this->ioid;?>" />
+		<input type="hidden" name="objid" value="<?php echo $this->objid;?>" />
+		<input type="hidden" name="obj"
+			value="<?php echo $this->getDataObject;?>" /> <input type="hidden"
+			id="getItemQty" name="itemQty"
+			value="<?php echo $serialLot->itemQty;?>" /> <input type="hidden"
+			name="serialLot"
+			value="<?php echo serialize($this->serialLot);//echo Qss_Lib_Extra::formatSerialize(serialize($this->serialLot));?>" />
+		<input type="hidden" name="attributes"
+			value='<?php echo $attributes;?>' /> <input type="hidden"
+			name="module" value='<?php echo $this->module;?>' />
+			<?php if($this->form->i_Status != 2):?>
+		<table align="left">
+
+
+		<?php if($serialLot->serial):?>
+			<tr>
+				<td>Số serial bắt đầu :</td>
+				<td><input type="text" name="beginSerial" value="" /></td>
+				<td>Số serial kết thúc :</td>
+				<td><input type="text" name="endSerial" value="" /></td>
+			</tr>
+			<?php endif;?>
+
+			<?php if($serialLot->lot):?>
+			<tr>
+				<td>Lô bắt đầu :</td>
+				<td><input type="text" name="beginLot" value="" /></td>
+				<td>Lô kết thúc :</td>
+				<td><input type="text" name="endLot" value="" /></td>
+			</tr>
+			<?php endif;?>
+
+			<?php if($serialLot->SelectWarehouse):?>
+			<td>Kho :</td>
+			<td><select name="warehouseFilter" class="warehouse_1 select">
+					<option value="">Tất cả</option>
+					<?php foreach ($this->warehouses as $v):?>
+					<option value="<?php echo $v->WCode;?>">
+					<?php echo $v->WName .' - '. $v->WCode?>
+					</option>
+					<?php endforeach;?>
+			</select>
+			</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<?php endif;?>
+
+
+			<?php if($this->hasBin):?>
+			<td>Bin :</td>
+			<td><select name="binFilter" class="bin_1 select">
+					<option value="">Tất cả</option>
+					<?php foreach ($zoneAndBin as $k=>$v):?>
+					<option value="<?php echo $k;?>">
+					<?php echo $k?>
+					</option>
+					<?php endforeach;?>
+			</select>
+			</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<?php endif;?>
+
+
+			<tr>
+				<td>Hiển thị :</td>
+				<td><select name="perPage" onchange="searchMovenmetAttrTop()">
+						<option value="5" selected>5</option>
+						<option value="10">10</option>
+						<option value="20">20</option>
+						<option value="50">50</option>
+						<option value="100">100</option>
+				</select>
+				</td>
+				<td>Trang :</td>
+				<td><select id="page" name="page"
+					onchange="searchMovenmetAttrTopValue()">
+						<option value="1">1</option>
+				</select>
+				</td>
+			</tr>
+		</table>
+		<?php endif;?>
+	</form>
+	<br />
+
+	<?php if($this->form->i_Status != 2):?>
+	<button class="btn-custom" onclick="searchMovenmetAttrTop()">Tìm kiếm</button>
+	<button class="btn-custom" onclick="removeConditionMovement()">Xóa điều
+		kiện</button>
+		<?php endif;?>
+</div>
+<br />
+<br />
+
+
+<form name="getAttributeDetail" id="getAttributeDetail">
+	<input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" /> <input
+		type="hidden" name="ioid" value="<?php echo $this->ioid;?>" /> <input
+		type="hidden" name="objid" value="<?php echo $this->objid;?>" /> <input
+		type="hidden" name="obj" value="<?php echo $this->getDataObject;?>" />
+	<input type="hidden" name="serialLot"
+		value='<?php echo serialize($this->serialLot);//echo Qss_Lib_Extra::formatSerialize(serialize($this->serialLot));?>' />
+	<input type="hidden" name="attributes"
+		value='<?php echo serialize($attributes);//echo Qss_Lib_Extra::formatSerialize(serialize($attributes));?>' />
+	<input type="hidden" name="module" value='<?php echo $this->module;?>' />
+
+	<?php if($this->form->i_Status != 2):?>
+	<table width=100% cellpadding=0 cellspacing=0 border=1
+		style="text-align: center" id='attrTable' class="border_table">
+		<tr class="bggrey">
+			<td>STT</td>
+			<td><input type="checkbox" name="checkAll" id="checkAll"
+				onclick="checkAllLine(this)" />
+			</td>
+			<?php if($serialLot->serial): // Nếu quản lý theo serial in ra nhãn serial?>
+			<td>Số serial</td>
+			<?php endif;?>
+			<?php if($serialLot->lot):// Nếu quản lý theo lot in ra nhãn lot?>
+			<td>Số lô</td>
+			<?php endif;?>
+
+			<?php if($serialLot->lot || $serialLot->serial):?>
+			<td>Ngày nhận</td>
+			<?php endif;?>
+
+			<?php if($serialLot->lot || $serialLot->serial):?>
+			<td>Ngày sx</td>
+			<?php endif;?>
+
+			<?php if($serialLot->lot || $serialLot->serial):?>
+			<td>Ngày hạn</td>
+			<?php endif;?>
+
+			<?php if($this->attributeExists):?>
+			<td>Mã thuộc tính</td>
+			<?php endif;?>
+
+			<?php if($serialLot->SelectWarehouse):?>
+			<td>Kho</td>
+			<?php endif;?>
+
+			<?php if($this->hasBin):?>
+			<td>Bin</td>
+			<?php endif;?>
+
+			<td>Số lượng</td>
+			<td>Số lượng lấy</td>
+		</tr>
+
+	</table>
+	<?php endif;?>
+</form>
+<br />
+
+	<?php else:?>
+<b><i>Sản phẩm "<?php echo $serialLot->itemName;?>" với mã "<?php echo $serialLot->itemCode;?>"
+		không quản lý theo serial hay lô hoặc kho hiện tại không quản lý theo
+		bin !</i> </b>
+	<?php endif;?>

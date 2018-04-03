@@ -1,0 +1,13 @@
+<!-- Chọn đơn vị thực hiện - M125 -->
+<select style="width: 150px;" onchange="rowSearch('<?php echo $this->form->FormCode?>');" name="filter_workcenter" id="filter_workcenter"
+	<?php if($this->selected):?>class="bglightgreen"<?php endif;?>>
+    <option value="0" <?php echo ((int)$this->selected == 0)?'selected':'';?>>
+        --- Chọn đơn vị ---
+    </option>
+
+    <?php foreach ($this->workcenters as $item):?>
+        <option value="<?php echo $item->IOID?>" <?php echo ((int)$this->selected == (int)$item->IOID)?'selected':'';?>>
+            <?php echo $item->Ma; ?> - <?php echo $item->Ten; ?>
+        </option>
+    <?php endforeach;?>
+</select>

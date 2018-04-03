@@ -1,0 +1,176 @@
+<?php
+$limit          = $this->limit;
+$serialLot      = $this->serialLot;
+$attributes     = $this->attributes;
+$zoneAndBinFrom = $this->zoneAndBinFrom;
+$zoneAndBinTo   = $this->zoneAndBinTo;
+$col            = 0;
+$itemQty        = $this->lineInfo?$this->lineInfo->SoLuong:0;
+
+?>
+
+<tr class="bggrey">
+	<th>STT <?php $col++;?>
+	</th>
+
+	<th><input type="checkbox" onclick="checkAllLines(this)" /> <?php $col++;?>
+	</th>
+
+	<th>Kho lấy hàng <?php $col++;?></th>
+
+	<?php if($serialLot->serial):?>
+	<th>Số serial <?php $col++;?></th>
+	<?php endif;?>
+
+	<?php if($serialLot->lot):?>
+	<th>Số lot <?php $col++;?></th>
+	<?php endif;?>
+
+	<?php if($serialLot->lot || $serialLot->serial):?>
+	<th>Ngày nhận <?php $col++;?>
+	</th>
+	<?php endif;?>
+
+	<?php if($serialLot->lot || $serialLot->serial):?>
+	<th>Ngày sx <?php $col++;?></th>
+	<?php endif;?>
+
+	<?php if($serialLot->lot || $serialLot->serial):?>
+	<th>Ngày hạn <?php $col++;?></th>
+	<?php endif;?>
+	<?php if($zoneAndBinFrom['hasBin']):?>
+	<th>Bin <?php $col++;?></th>
+	<?php endif;?>
+
+	<th>Số lượng <?php $col++;?></th>
+
+	<th>Kho nhận hàng <?php $col++;?></th>
+
+	<?php if($zoneAndBinTo['hasBin']):?>
+	<th>Bin <?php $col++;?></th>
+	<?php endif;?>
+
+	<?php if($attributes):?>
+	<th>Thuộc tính <?php $col++;?></th>
+	<?php endif;?>
+
+	<th>Số lượng lấy <?php $col++;?></th>
+</tr>
+
+	<?php $i=0;?>
+	<?php $old = ''?>
+
+<tr>
+	<td colspan="<?php echo $col?>"><b><i>Số lượng sản phẩm : <?php echo $itemQty.' '.($serialLot->itemUOM);?>
+		</i> </b>
+	</td>
+</tr>
+	<?php foreach ($limit as $val):?>
+	<?php $ioidExists = $val->existsIOID;?>
+
+<tr class="<?php echo ($ioidExists)?'yellowBg':''?>">
+	<td><?php $i++;?> <?php echo $i;?> <input type="hidden" name="ids[]"
+		value="<?php echo $i;?>" <?php echo ($ioidExists)?'':'disabled'?> /> <input
+		type="hidden" name="existsIOID[]"
+		value="<?php echo ($val->existsIOID);?>"
+		<?php echo ($ioidExists)?'':'disabled'?> />
+	</td>
+
+	<td><input type="hidden" name="check[]" id="check"
+	<?php echo ($ioidExists)?'value="1"':'value="0" disabled'?> /> <input
+		type="checkbox" onclick="enableThisLine(this)"
+	<?php echo ($ioidExists)?'checked':''?> />
+	</td>
+
+	<td><?php echo $serialLot->warehouse;?> <input type="hidden"
+		name="fromWarehouse" value="<?php echo $serialLot->warehouse?>"
+		<?php echo ($ioidExists)?'':'disabled'?> />
+	</td>
+
+	<?php if($serialLot->serial):?>
+	<td><?php echo $val->SoSerial;?> <input type="hidden" name="serial[]"
+		value="<?php echo $val->SoSerial?>"
+		<?php echo ($ioidExists)?'':'disabled'?> />
+	</td>
+	<?php endif;?>
+
+	<?php if($serialLot->lot):?>
+	<td><?php echo $val->SoLo;?> <input type="hidden" name="lot[]"
+		value="<?php echo $val->SoLo?>"
+		<?php echo ($ioidExists)?'':'disabled'?> />
+	</td>
+	<?php endif;?>
+
+	<?php if($serialLot->lot || $serialLot->serial):?>
+	<td><?php echo Qss_Lib_Date::mysqltodisplay($val->NgayNhan)?> <input
+		type="hidden" name="receiveDate[]" value="<?php echo $val->NgayNhan?>"
+		<?php echo ($ioidExists)?'':'disabled'?> />
+	</td>
+	<?php endif;?>
+
+	<?php if($serialLot->lot || $serialLot->serial):?>
+	<td><?php echo Qss_Lib_Date::mysqltodisplay($val->NgaySX)?> <input
+		type="hidden" name="productDate[]" value="<?php echo $val->NgaySX?>"
+		<?php echo ($ioidExists)?'':'disabled'?> />
+	</td>
+	<?php endif;?>
+
+	<?php if($serialLot->lot || $serialLot->serial):?>
+	<td><?php echo Qss_Lib_Date::mysqltodisplay($val->NgayHan)?> <input
+		type="hidden" name="expiryDate[]" value="<?php echo $val->NgayHan?>"
+		<?php echo ($ioidExists)?'':'disabled'?> />
+	</td>
+	<?php endif;?>
+
+	<?php if($zoneAndBinFrom['hasBin']):?>
+	<td><?php echo $val->Bin;?> <input type="hidden" name="bin[]"
+		value="<?php echo $val->Bin?>"
+		<?php echo ($ioidExists)?'':'disabled'?> />
+	</td>
+	<?php endif;?>
+
+	<td><?php echo $val->SoLuong;?> <input type="hidden" name="lineQty[]"
+		value="<?php echo $val->SoLuong?>"
+		<?php echo ($ioidExists)?'':'disabled'?> />
+	</td>
+
+	<td><?php echo $serialLot->toWarehouse;?> <input type="hidden"
+		name="toWarehouse" value="<?php echo $serialLot->toWarehouse?>"
+		<?php echo ($ioidExists)?'':'disabled'?> />
+	</td>
+
+
+	<?php if($zoneAndBinTo['hasBin']):?>
+	<td><select class="bin_<?php echo $i;?>" name="toBin[]"
+	<?php echo ($ioidExists)?'':'disabled'?>>
+		<?php foreach ($zoneAndBinTo['defaultArray'] as $khoa=>$giatri):?>
+			<option value="<?php echo $khoa?>"
+			<?php if($khoa == $val->toBin) echo 'selected';?>>
+				<?php echo $khoa;?>
+			</option>
+			<?php endforeach;?>
+	</select>
+	</td>
+	<?php endif;?>
+
+	<?php if($attributes):?>
+	<td><?php echo $attributes;?> <input type="hidden" name="attributes"
+		value="<?php echo $attributes?>"
+		<?php echo ($ioidExists)?'':'disabled'?> />
+	</td>
+	<?php endif;?>
+
+	<?php
+	//QTY
+	?>
+	<td><input type="text" name="qty[]"
+		value="<?php echo $val->SoLuongLay;?>" size="8" class="movementQty"
+		<?php echo ($ioidExists)?'':'disabled'?> />
+	</td>
+</tr>
+		<?php endforeach;?>
+<tr>
+	<td colspan="<?php echo $col?>"><b><i>Số lượng sản phẩm : <?php echo $itemQty.' '.($serialLot->itemUOM);?>
+		</i> </b>
+	</td>
+</tr>

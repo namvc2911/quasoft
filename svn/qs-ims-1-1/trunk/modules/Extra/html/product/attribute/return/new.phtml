@@ -1,0 +1,354 @@
+<?php
+/**
+ * Nạp dữ liệu
+ */
+$serialLot 		= $this->serialLot;
+$attributes 	= $this->attributes;
+$lines      	= $this->lines;
+$col            = 0;
+$lotQty         = (int)((is_numeric($this->lotQty) && $this->lotQty > 0) ? $this->lotQty : 1);
+$oldValue       = $this->oldValue;
+$zoneAndBin     = $this->zoneAndBin;
+
+/* Lấy lô mặc định và số lô cuối cùng nếu đánh lô tự động*/
+if($serialLot->lot) // Nếu quản lý theo lô
+{
+	$serialLot->lotLength = $serialLot->lotLength?$serialLot->lotLength:6; // Độ dài mã lô
+	$defaultLot           = $serialLot->preLot.str_pad(0, $serialLot->lotLength, '0', STR_PAD_LEFT); // Lô mặc định
+	$lastLot			  = $this->lastLot?$this->lastLot:'0';
+	$oldLot 			  = $serialLot->autoLot?(int)preg_replace('/'.$serialLot->preLot.'/', '', $lastLot):0;
+	// $oldLot, Lấy ra số lô cuối cùng được nhập
+}
+
+/* Lây serial mặc định và số serial cuối cùng nếu đánh mã tự động */
+if($serialLot->serial) // Nếu quản lý theo serial
+{
+	$serialLot->serialLength = $serialLot->serialLength?$serialLot->serialLength:6; // Độ dài mã serial
+	$defaultSerial           = $serialLot->preSerial.str_pad(0, $serialLot->serialLength, '0', STR_PAD_LEFT);
+	$lastSerial              = $this->lastSerial?$this->lastSerial:'0';
+	$oldSerial               = $serialLot->autoSerial?(int)preg_replace('/'.$serialLot->preSerial.'/', '', $lastSerial):0;
+	// $oldSerial, Lấy ra số serial cuối cùng
+}
+/* Kết thúc xử lý dữ kiện */
+/* Kết thúc xử lý dữ liệu */
+
+?>
+
+<!-- begin table -->
+
+
+
+<?php if($serialLot->serial || $serialLot->lot):?>
+<tr>
+	<td>STT</td>
+	<?php $col++; ?>
+
+	<?php if($serialLot->serial): $col++; ?>
+	<td>Số Serial</td>
+	<?php endif;?>
+
+	<?php if($serialLot->lot): $col++; ?>
+	<td>Số Lô</td>
+	<?php endif;?>
+
+	<?php if($this->attributeExists):?>
+	<td>Mã thuộc tính</td>
+	<?php $col++?>
+	<?php endif;?>
+
+	<?php if($zoneAndBin['hasZone']):?>
+	<td>Zone <?php $col++?></td>
+	<?php if($zoneAndBin['hasBin']):?>
+	<td>Bin <?php $col++?></td>
+	<?php endif;// hasBin?>
+	<?php endif; // hasZone?>
+
+	<td>Số lượng <?php $col++; ?> <input type="hidden" name="attributeNew"
+		value="<?php echo $attributes?>" /> <input type="hidden" name="lotQty"
+		value="<?php echo $lotQty;?>" />
+	</td>
+
+
+</tr>
+	<?php if($this->itemQty>0):?>
+<tr>
+	<td colspan="<?php echo $col;?>"><b>Số lượng sản phẩm đánh mới là <?php echo $this->itemQty;?>/<?php echo $serialLot->itemQty;?>
+	<?php echo strtolower($serialLot->itemUOM);?> </b> <input type="hidden"
+		name="newQty" value="<?php echo $this->itemQty;?>" />
+	</td>
+</tr>
+	<?php
+	$decrease = $this->itemQty;
+
+	for($i = 0; $i < $lines['lines']; $i++):
+
+	/**
+	 * Xử lý dữ kiện
+	 */
+
+	/* Lấy số lượng trên mỗi dòng */
+		
+	if($decrease > $lines['defaultLineQty'])
+	{
+		$qty = $lines['defaultLineQty'];
+	}
+	else
+	{
+		$qty = $decrease;
+	}
+	$decrease -= $lines['defaultLineQty'];
+	$decrease  = ($decrease > 0)?$decrease:0;
+		
+	/**
+	 *  Đánh lô
+	 *  */
+		
+
+	if($serialLot->lot && $serialLot->autoLot)
+	{
+		if($serialLot->serial)
+		{
+			$oldLot = ($i%$lotQty==0)?++$oldLot:$oldLot;
+		}
+		else
+		{
+			$oldLot++;
+		}
+		$newLot = $serialLot->preLot.str_pad($oldLot, $serialLot->lotLength, '0', STR_PAD_LEFT);
+	}
+	else
+	{
+		$newLot = isset($defaultLot)?$defaultLot:'';
+	}
+		
+		
+	/**
+	 *  Đánh mã
+	 *  */
+	if($serialLot->serial && $serialLot->autoSerial)
+	{
+		$oldSerial++;
+		$newSerial = $serialLot->preSerial.str_pad($oldSerial, $serialLot->serialLength, '0', STR_PAD_LEFT);
+	}
+	else
+	{
+		$newSerial = isset($defaultSerial)?$defaultSerial:'';
+	}
+		
+	/**
+	 * Kết thúc xử lý dữ kiện
+	 */
+	?>
+<tr>
+	<td><?php echo ($i+1); // In ra số thứ tự?>
+	</td>
+
+	<?php if($serialLot->serial): // Nếu quản lý theo serial in ra nhãn serial?>
+	<td><input type="text" name="serialNew[]"
+		value="<?php echo $newSerial;?>" />
+	</td>
+	<?php endif;?>
+
+	<?php if($serialLot->lot):// Nếu quản lý theo lot in ra nhãn lot?>
+	<td><input type="text" name="lotNew[]" value="<?php echo $newLot;?>" />
+	</td>
+	<?php endif;?>
+
+	<?php if($this->attributeExists):?>
+	<td><?php if($attributes):?> <?php echo $attributes;?> <?php endif;?>
+	</td>
+	<?php endif;?>
+
+	<?php if($serialLot->serial || $serialLot->lot):?>
+	<?php if($zoneAndBin['hasZone']):?>
+
+	<td><select name="zoneNew[]" <?php if($zoneAndBin['hasBin']):?>
+		id="zone_<?php echo $i?>"
+		onchange="showBinNew(<?php echo $i;?>, this)" <?php endif;?>>
+			<option value="">Chọn zone</option>
+			<?php foreach ($zoneAndBin['defaultArray'] as $k=>$v):?>
+			<option value="<?php echo $k;?>"
+			<?php //if(isset($oldValue[$i]['Zone']) && $oldValue[$i]['Zone'] == $k) echo 'selected';?>>
+				<?php echo $v['name'];?>
+			</option>
+			<?php endforeach;?>
+	</select>
+	</td>
+
+	<?php if($zoneAndBin['hasBin']):?>
+	<td><select name="binNew[]" class="bin_<?php echo $i;?>">
+			<option>Chọn bin</option>
+			<?php if(isset($oldValue[$i]['Zone']) && isset($oldValue[$i]['Bin'])):?>
+			<?php foreach ($zoneAndBin['defaultArray'][$oldValue[$i]['Zone']][bin] as $k=>$v):?>
+			<option value="<?php echo $k;?>"
+			<?php //if($oldValue[$i]['Bin'] == $k) echo 'selected';?>>
+				<?php echo $v;?>
+			</option>
+			<?php endforeach;?>
+			<?php endif;?>
+	</select>
+	</td>
+	<?php endif;?>
+	<?php endif;?>
+
+	<?php else:?>
+	<?php if($zoneAndBin['hasZone']):?>
+	<td><input type="hidden" name="zoneNew[]"
+		value="<?php echo $zoneAndBin['arrayWhereOnly'][$i]['zoneCode']?>" />
+		<?php echo  $zoneAndBin['arrayWhereOnly'][$i]['zoneCode']?> <?php
+		$ioidExists = 0;
+		foreach ($oldValue as $v)
+		{
+			if($v['Bin'])
+			{
+				if(($v['Bin'] ==  $zoneAndBin['arrayWhereOnly'][$i]['binCode']))
+				{
+					$qty = $v['SoLuong'];
+					$ioidExists = $v['IOID'];
+				}
+			}
+			else
+			{
+				if(($v['Zone'] ==  $zoneAndBin['arrayWhereOnly'][$i]['zoneCode']))
+				{
+					$qty = $v['SoLuong'];
+					$ioidExists = $v['IOID'];
+				}
+			}
+		}
+		?> <input type="hidden" name="ioidExists[]"
+		value="<?php echo $ioidExists?>" />
+	</td>
+	<?php if($zoneAndBin['hasBin']):?>
+	<td><input type="hidden" name="binNew[]"
+		value="<?php echo  $zoneAndBin['arrayWhereOnly'][$i]['binCode']?>" />
+		<?php echo  $zoneAndBin['arrayWhereOnly'][$i]['binCode']?>
+	</td>
+	<?php endif;?>
+	<?php endif;?>
+	<?php endif;?>
+
+	<td><input type="text" name="qtyNew[]"
+		value="<?php echo $qty;//Số lượng?>"
+		<?php echo $lines['lineQtyAccess'];?> />
+	</td>
+
+
+</tr>
+		<?php
+		endfor; // Kết thúc loop dòng
+		?>
+<tr>
+	<td colspan="<?php echo $col;?>"><b>Số lượng sản phẩm đánh mới là <?php echo $this->itemQty;?>/<?php echo $serialLot->itemQty;?>
+	<?php echo strtolower($serialLot->itemUOM);?> </b>
+	</td>
+</tr>
+	<?php endif;?>
+	<?php elseif($zoneAndBin['hasZone']): //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=?>
+	<?php $warehouseVal   = $this->warehouseValue;?>
+<tr>
+	<td>STT</td>
+	<?php $col++; ?>
+
+	<?php if($this->attributeExists):?>
+	<td>Mã thuộc tính</td>
+	<?php $col++?>
+	<?php endif;?>
+
+	<?php if($zoneAndBin['hasZone']):?>
+	<td>Zone <?php $col++?></td>
+	<?php if($zoneAndBin['hasBin']):?>
+	<td>Bin <?php $col++?></td>
+	<?php endif;// hasBin?>
+	<td>Sức chứa <?php $col++?></td>
+	<td>Số lượng trong kho <?php $col++?></td>
+	<?php endif; // hasZone?>
+
+
+
+	<td>Số lượng <?php $col++; ?> <input type="hidden" name="attributeNew"
+		value="<?php echo $attributes?>" /> <input type="hidden" name="lotQty"
+		value="<?php echo $lotQty;?>" />
+	</td>
+
+
+</tr>
+<tr>
+	<td colspan="<?php echo $col;?>"><b>Số lượng sản phẩm <?php echo $serialLot->itemQty;?>
+	<?php echo ($serialLot->itemUOM);?> </b> <input type="hidden"
+		name="newQty" value="<?php echo $this->itemQty;?>" />
+	</td>
+</tr>
+	<?php
+	for($i = 0; $i < $lines['lines']; $i++):
+	?>
+
+<tr>
+	<td><?php echo ($i+1); // In ra số thứ tự?>
+	</td>
+
+	<?php if($this->attributeExists):?>
+	<td><?php if($attributes):?> <?php echo $attributes;?> <?php endif;?>
+	</td>
+	<?php endif;?>
+
+	<?php if($zoneAndBin['hasZone']):?>
+	<td><input type="hidden" name="zoneNew[]"
+		value="<?php echo $zoneAndBin['arrayWhereOnly'][$i]['zoneCode']?>" />
+		<?php echo  $zoneAndBin['arrayWhereOnly'][$i]['zoneCode']?> <?php
+		$ioidExists = 0;
+		$qty        = 0;
+		foreach ($oldValue as $v)
+		{
+			if($v['Bin'])
+			{
+				if(($v['Bin'] ==  $zoneAndBin['arrayWhereOnly'][$i]['binCode']))
+				{
+					$qty = $v['SoLuong'];
+					$ioidExists = $v['IOID'];
+				}
+			}
+			else
+			{
+				if(($v['Zone'] ==  $zoneAndBin['arrayWhereOnly'][$i]['zoneCode']))
+				{
+					$qty = $v['SoLuong'];
+					$ioidExists = $v['IOID'];
+				}
+			}
+		}
+		?> <input type="hidden" name="ioidExists[]"
+		value="<?php echo $ioidExists?>" />
+	</td>
+	<?php if($zoneAndBin['hasBin']):?>
+	<td><input type="hidden" name="binNew[]"
+		value="<?php echo  $zoneAndBin['arrayWhereOnly'][$i]['binCode']?>" />
+		<?php echo  $zoneAndBin['arrayWhereOnly'][$i]['binCode']?>
+	</td>
+	<?php endif;?>
+	<td><?php echo $zoneAndBin['capacity'][$zoneAndBin['arrayWhereOnly'][$i]['zoneCode']][$zoneAndBin['arrayWhereOnly'][$i]['binCode']]?>
+	</td>
+	<td><?php $key1 = $zoneAndBin['arrayWhereOnly'][$i]['zoneCode'] ;?> <?php $key2 = $zoneAndBin['arrayWhereOnly'][$i]['binCode']?>
+	<?php if(isset($warehouseVal[$key1][$key2])):?> <?php echo $warehouseVal[$key1][$key2]?>
+	<?php else:?> 0 <?php endif;?>
+	</td>
+	<?php endif;?>
+
+	<td><input type="text" name="qtyNew[]"
+		value="<?php echo $qty;//Số lượng?>"
+		<?php echo $lines['lineQtyAccess'];?> />
+	</td>
+
+
+</tr>
+		<?php
+		endfor; // Kết thúc loop dòng
+		?>
+<tr>
+	<td colspan="<?php echo $col;?>"><b>Số lượng sản phẩm là <?php echo $serialLot->itemQty;?>
+	<?php echo ($serialLot->itemUOM);?> </b>
+	</td>
+</tr>
+	<?php endif;?>
+<!-- /table -->
+

@@ -1,0 +1,232 @@
+<?php
+    $oldRequest      = '';
+    $requestWidthArr = array(1,4,4,2,2,3,3,3,3, 3);
+    $width           = 770;
+    $padding         = 2;
+    $formNo          = 0;
+    $oldQuotation    = '';
+    
+    $fit = Qss_Lib_Report::changeWidthToFitScreen2($requestWidthArr, $width, $padding);
+    
+    if(!count($this->quotation))
+    {
+        echo 'Không có báo giá nào cho kế hoạch!';
+        die;
+    }
+?>
+
+<div id="M411_quotation2_wrap">
+	
+    
+    <?php foreach ($this->quotation as $dat):?>
+        <form id="M411_quotation2_form<?php echo ++$formNo;?>">    
+                
+            <table cellpadding="0" cellspacing="0" border="0">
+    			<!-- Số báo giá -->
+    			<tr>
+    				<th class="left" width="180px">Báo giá:</th>
+    
+    				<td class="left" width="">
+                        <?php echo $dat['Info']->DocNo;?>      
+                        <input type="hidden" name="docno" value="<?php echo $dat['Info']->DocNo;?>" />
+    				</td>
+    			</tr>
+    
+    			<!-- Nhà cung cấp -->
+    			<tr>
+    				<th class="left" width="180px">
+                        <?php echo $this->_translate(11);?>:
+                    </th>
+    
+    				<td class="left required" width="">
+                        <?php echo $dat['Info']->PartnerName;?> - <?php echo $dat['Info']->PartnerCode;?>    
+                        <input type="hidden" name="partnerioid" value="<?php echo $dat['Info']->PartnerIOID;?>" />
+    				</td>
+    			</tr>
+    
+    			<!-- Kế hoạch -->
+    			<tr>
+    				<th class="left" width="180px">
+                        <?php echo $this->_translate(13);?>:
+                    </th>
+    
+    				<td class="left" width="">
+                        <?php echo $dat['Info']->PlanNo;?>      
+                        <input type="hidden" name="planioid" value="<?php echo $dat['Info']->PlanIOID;?>" />
+    				</td>
+    			</tr>
+    
+    			<!-- Thời gian giao hàng -->
+    			<tr>
+    				<th class="left" width="180px">
+                        Thời gian chuyển hàng (ngày):
+                    </th>
+    
+    				<td class="left" width="">
+                        <?php echo $dat['Info']->DeliveryTime;?>      
+                        <input type="hidden" name="deliverytime" value="<?php echo $dat['Info']->DeliveryTime;?>" />
+    				</td>
+    			</tr>
+    		</table>
+    
+    		<div class="clear"></div>
+    		<br />
+    
+    		<table class="border_table" cellpadding="0" cellspacing="0" border="0" style="width:<?php echo $width;?>px">
+    			<!-- Title -->
+                <?php $begin = 0; ?>
+                <tr class="bggrey">
+    				<!-- STT -->
+    				<th style="width:<?php echo $fit[$begin++];?>px;">
+                        <input type="checkbox" onclick="common_check_all_table_line(this, '.cwpo_line_checkbok', '.cwpo_line_checkbok_val')"/>
+                    </th>
+    
+    				<!-- Mã mặt hàng -->
+    				<th style="width:<?php echo $fit[$begin++];?>px;">
+                        <?php echo $this->_translate(2);?>
+                    </th>
+    
+    				<!-- Tên mặt hàng -->
+    				<th style="width:<?php echo $fit[$begin++];?>px;">
+                        <?php echo $this->_translate(3);?>
+                    </th>
+    
+    				<!-- ĐVT -->
+    				<th style="width:<?php echo $fit[$begin++];?>px;">
+                        <?php echo $this->_translate(4);?>
+                    </th>
+    
+
+    				<!-- Số lượng báo giá  -->
+    				<th style="width:<?php echo $fit[$begin++];?>px;">
+                        <?php echo $this->_translate(14);?>
+                    </th>                    
+    
+    				<!-- Đơn giá -->
+    				<th style="width:<?php echo $fit[$begin++];?>px;">
+                        <?php echo $this->_translate(6);?>
+                    </th>
+                    
+    				<!-- Số lượng  -->
+    				<th style="width:<?php echo $fit[$begin++];?>px;">
+                        <?php echo $this->_translate(5);?>
+                    </th>
+                                        
+    
+    				<!-- Thành tiền -->
+    				<th style="width:<?php echo $fit[$begin++];?>px;">
+                        Thành tiền
+                    </th>
+                    
+    				<!-- Kỹ thuật -->
+    				<th style="width:<?php echo $fit[$begin++];?>px;">
+                        Kỹ thuật
+                    </th>      
+                    
+    				<!-- Chất lượng -->
+    				<th style="width:<?php echo $fit[$begin++];?>px;">
+                        Chật lượng
+                    </th>                           
+    
+    
+    			</tr>
+    
+                <?php $no = 0;?>     
+                
+                
+                
+                <?php foreach ($dat['Item'] as $dat2):?>
+    
+                    
+                    <tr <?php echo !$dat2->Pass?'common_no_check="1"':''?> >
+        				<!-- STT -->
+        				<td class="center">
+        				    
+                            <input type="checkbox" class="cwpo_line_checkbok " onclick="common_check_table_line(this, '.cwpo_line_checkbok_val')" <?php echo !$dat2->Pass?'disabled':'';?>>
+                            <input type="hidden" class="table_line_disabled cwpo_line_checkbok_val" name="CheckBox[]"  value="0">
+                            
+                            <input class="table_line_disabled" type="hidden" name="itemioid[]" value="<?php echo $dat2->ItemIOID;?>" disabled /> 
+                            <input class="table_line_disabled" type="hidden" name="uomioid[]" value="<?php echo $dat2->UomIOID;?>" disabled /> 
+                            <input class="table_line_disabled" type="hidden" name="unitprice[]" value="<?php echo $dat2->UnitPrice;?>" disabled /> 
+                            <input class="table_line_disabled" type="hidden" name="requestioid[]" value="<?php echo $dat2->RequestIOID;?>" disabled />
+        				</td>
+        
+        				<!-- Mã mặt hàng -->
+        				<td class="left">
+                                <?php echo $dat2->ItemCode;?>
+                            </td>
+        
+        				<!-- Tên mặt hàng -->
+        				<td class="left">
+                                <?php echo $dat2->ItemName;?>
+                            </td>
+        
+        				<!-- ĐVT -->
+        				<td class="left">
+                                <?php echo $dat2->UOM;?>
+                            </td>
+
+        				
+        				
+        				<!-- Số lượng báo giá -->
+        				<td class="right">
+    				        <?php echo $dat2->Qty;?>
+        				</td>        				
+        
+        
+        				<!-- Đơn giá -->
+        				<td class="right">
+        				    <input type="hidden" class="M411_show_quotation_unitprice" value="<?php echo $dat2->UnitPrice;?>"/>
+        				    <?php echo Qss_Lib_Util::formatMoney($dat2->UnitPrice);?>
+        				
+        				</td>
+        				
+        				
+        
+        				<!-- Số lượng -->
+        				<td class="right">
+        				    <?php $qty = $dat2->Planed - $dat2->Ordered;?>
+        				
+    				        <input type="text" class="table_line_disabled right" name="qty[]" value="<?php echo $qty;?>" onkeyup="M411.changeTotalAmountInShowQuotation(this)" size="10" disabled/>
+        				</td>        				
+        
+        
+        				<!-- Thành tiền -->
+        				<td class="right M411_show_quotation_totalamount">
+                            <?php echo Qss_Lib_Util::formatMoney( $qty * $dat2->UnitPrice);?>
+                        </td>
+                        
+        				<!-- Kỹ thuật -->
+        				<td class="center " style="<?php echo !$dat2->Pass?'color:red;':''?>">
+                            <?php echo Qss_Lib_System::getFieldRegxByVal('ODSBGMuaHang', 'KyThuat', $dat2->Pass);?>
+                        </td>
+                        
+        				<!-- Chất lượng  -->
+        				<td class="center">
+                            <?php echo Qss_Lib_System::getFieldRegxByVal('ODSBGMuaHang', 'ChatLuong', $dat2->Quality);?>
+                        </td>                
+        
+        			</tr>                
+                <?php endforeach;?>                        
+            </table>      
+            
+        	<div class="clear"></div>
+        	<br />
+
+        </form>    
+        
+    	<div>
+    		<!-- Button: Tạo đơn hàng-->
+    		<button type="button" class="btn btn-custom" onclick="M411.createOrder2('M411_quotation2_form<?php echo $formNo;?>')">
+                Tạo đơn hàng
+            </button>
+    	</div>       
+    	
+    
+    	<br />
+    	<hr />
+    	<br />          	    
+    <?php endforeach;?>
+
+</div>
+<!-- END #M411_quotation_wrap -->

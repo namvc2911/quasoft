@@ -1,0 +1,405 @@
+<?php
+$excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$row       = 2;
+$totalCol  = 6;
+//$sumMoney = 0;
+$sttGroup = 1;
+$sttMemberGroup = 1;
+$widthPx = array(1,3,2,1,1,1,3,2,3,3,3,3,1,2,2,1,3);
+$widthEx   = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($widthPx);
+$widthPx   = Qss_Lib_Report::changeWidthToFitScreen($widthPx);
+$subTitle       = array();
+$subTitleStr    = '';
+$LoaiThietBi = '';
+$percent =  0;
+?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="landscape">
+	<excel orientation="landscape" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+
+	<div id="head_print">
+	<?php echo $this->views->Common->Landscape() ?>
+	<!-- Nếu năm đầu nhập vào khác năm cuối nhập vào thì in tiêu đề Báo cáo danh sách đề nghị cấp bảo hiểm từ năm đầu đến năm cuối -->
+	<?php if($this->yearStart != $this->yearEnd):?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(22).($this->yearEnd+1).$this->_translate(23).$this->yearStart.$this->_translate(5).$this->yearEnd.' )'?></xls>
+			</h2>
+		</center>
+	<!-- Nếu năm đầu nhập vào  = năm cuối nhập vào thì in tiêu đề là Báo cáo danh sách đề nghị bảo hiểm năm  (năm cuối) -->
+	<?php else:?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(22).($this->yearEnd + 1)?></xls>
+			</h2>
+		</center>
+	<?php endif;?>
+	<?php $row++ ?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $subTitleStr ?></xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++ ?>
+
+	<div id="container">
+		<table width="" cellpadding="0" cellspacing="0" class="border" border="1">
+			<tr class="bggrey center">
+			<?php $begin = 0; ?>
+				<th rowspan="2" width="<?php echo $widthPx[$begin];?>px">
+					<!-- STT --> 
+					<xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(2) ?></xls>
+				</th>
+
+				<th rowspan="2" width="<?php echo $widthPx[$begin];?>px">
+					<!-- Tên thiết bị --> 
+					<xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(3) ?></xls>
+				</th>
+				
+				<th rowspan="2">
+					<!-- Nước sản xuất --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(6)?></xls>
+				</th>
+
+				<th rowspan="2">
+					<!-- Năm sử dụng --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(7) ?></xls>
+				</th>
+				
+				<th rowspan="2">
+					<!-- Trọng tải công suất --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(8) ?></xls>
+				</th>
+				
+				<th rowspan="2">
+					<!-- Số chỗ ngồi --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(9) ?></xls>
+				</th>
+				
+				<th rowspan="2">
+					<!-- Nguyên giá  --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(10) ?></xls>
+				</th>
+				
+				<!-- Nếu năm đầu khác năm cuối thì phần tiêu đề trên cùng của từng cột là 
+					1. Theo dõi mua bảo hiểm từ năm đâu đến năm cuối
+					2.Đã mua bảo hiểm từ năm đầu đến năm cuối-->
+				<?php if( $this->yearStart != $this->yearEnd):?>
+				<th colspan="5">
+					<!-- Theo dõi mua bảo hiểm từ năm đầu đến năm cuối  --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(11).$this->yearStart.$this->_translate(24).$this->yearEnd;?></xls>
+				</th>
+				
+				<th colspan="2">
+					<!-- Đã mua bảo hiểm từ năm đầu đến năm cuối--> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(12).$this->yearStart.$this->_translate(24).$this->yearEnd; ?></xls>
+				</th>
+				<!-- Nếu năm đầu = năm cuối thì phần tiêu đề trên cùng của từng cột là 
+					1. Theo dõi mua bảo hiểm năm Năm cuối
+					2.Đã mua bảo hiểm từ năm Năm cuối-->
+				<?php else:?>
+				<th colspan="5">
+					<!-- Theo dõi mua bảo hiểm năm  --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(11).$this->yearEnd;?></xls>
+				</th>
+				
+				<th colspan="2">
+					<!-- Đã mua bảo hiểm năm --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(12).$this->yearEnd; ?></xls>
+				</th>
+				<?php endif;?>
+				<th rowspan="2">
+					<!-- Giá trị mua bảo hiểm năm--> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(13).($this->yearEnd+1) ?></xls>
+				</th>
+				
+				<th rowspan="2">
+					<!-- Ghi chú--> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(14) ?></xls>
+				</th>
+			</tr>
+			
+			<tr>
+				<th>
+					<!-- Đơn vị mua --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(15) ?></xls>
+				</th>
+				
+				<th>
+					<!-- Số hợp đồng-ngày tháng --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(16) ?></xls>
+				</th>
+				
+				<th>
+					<!-- Giá trị mua bảo hiểm --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(17) ?></xls>
+				</th>
+				
+				<th>
+					<!-- tiền mua bảo hiểm --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(18) ?></xls>
+				</th>
+				
+				<th>
+					<!-- % phí bảo hiểm --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(19) ?></xls>
+				</th>
+				
+				<th>
+					<!-- Mua BH Từ ngày --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(20) ?></xls>
+				</th>
+				
+				<th>
+					<!-- Hết hạn BH --> 
+					<xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(21) ?></xls>
+				</th>
+			</tr>
+			
+			<?php $row++ ?>
+			<?php foreach ($this->data as $item):?>
+			<!-- In Nhóm thiết bị -->
+			<!-- Kiểm tra thiết bị cùng 1 nhóm thì in tên nhóm thiết bị -->
+			<?php if ($LoaiThietBi != $item->MoTa):?>
+			<!-- Nếu khác loại thiết bị thì sang 1 nhóm mới và sttMemberGroup được khởi tạo lại từ đầu = 1 -->
+			<?php $LoaiThietBi = $item->MoTa;?>
+			<?php $sttMemberGroup = 1;?>
+			<tr>
+				<!-- STT -->
+				<td>
+					<div class="bold">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"> <?php echo $sttGroup; ?></xls>
+					</div>
+				</td>
+				
+				<?php $sttGroup++ ?>
+					
+				<!-- Nhóm Thiết bị -->
+				<td>
+					<div class=" bold left">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"> <?php echo $LoaiThietBi ?></xls>
+					</div>
+				</td>
+				
+				<td colspan="14"></td>
+			</tr>
+			<?php endif;?>
+			
+			<!-- In thông tin từng thiết bị được lên lịch bảo hiểm -->
+			<tr>
+				<!-- STT -->
+				<td>
+					<div class=" right">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"><?php echo $sttMemberGroup;?></xls>
+					</div>
+				</td>
+				
+				<?php $sttMemberGroup++;?>
+				
+				<!-- tên thiết bị -->
+				<td>
+					<div class="left">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"><?php echo $item->TenThietBi;?></xls>
+					</div>
+				</td>
+				
+				<!-- Xuất xứ -->
+				<td>
+					<div class="right">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"><?php echo $item->XuatXu;?></xls>
+					</div>
+				</td>
+				
+				<!-- Năm Sản Xuất -->
+				<td>
+					<div class=" right">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"><?php echo $item->NamSanXuat;?></xls>
+					</div>
+				</td>
+				
+				<!-- Trọng tải công suất -->
+				<td>
+					<div class=" right">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"></xls>
+					</div>
+				</td>
+				
+				<!-- Số chỗ ngồi -->
+				<td>
+					<div class=" right">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"></xls>
+					</div>
+				</td>
+				
+				<!-- Nguyên giá -->
+				<td>
+					<div class=" right">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"><?php echo Qss_Lib_Util::formatInteger(($item->NguyenGia)/1000);?></xls>
+					</div>
+				</td>
+				
+				<!-- Đơn vị mua -->
+				<td>
+					<div class=" right">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"><?php echo $item->DonViBaoHiem;?></xls>
+					</div>
+				</td>
+				
+				<!-- Số hợp đồng- Ngày tháng -->
+				<td>
+					<div class="right">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"><?php echo $item->SoHopDong.' '.$item->NgayDongBaoHiem;?></xls>
+					</div>
+				</td>
+				
+				<!-- Giá trị mua bảo hiểm -->
+				<td>
+					<div class="right">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"><?php echo Qss_Lib_Util::formatInteger(($item->SoTienDong)/1000);?></xls>
+					</div>
+				</td>
+				
+				<!-- tiền mua bảo hiểm -->
+				<td>
+					<div class="right">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"><?php echo  Qss_Lib_Util::formatInteger(($item->PhiBaoHiem)/1000);?></xls>
+					</div>
+				</td>
+				
+				<!-- %phí mua BH -->
+				<td>
+					<?php $percent = ($item->PhiBaoHiem / $item->SoTienDong)*100;?>
+					<div class=" right">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"><?php echo round($percent,2).'%'?></xls>
+					</div>
+				</td>
+				
+				<!-- Ngày bắt đầu đóng bảo hiểm -->
+				<td>
+					<div class="right">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"><?php echo $item->NgayDongBaoHiem;?></xls>
+					</div>
+				</td>
+				
+				<!-- Ngày kết thúc bảo hiểm -->
+				<td>
+					<div class="right">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"><?php echo $item->NgayHetHan;?></xls>
+					</div>
+				</td>
+				
+				<!-- Giá trị mua bảo hiểm năm hiện tại -->
+				<td>
+					<div class="right">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"><?php echo '100%';?></xls>
+					</div>
+				</td>
+				
+				<!-- Ghi Chú -->
+				<td>
+					<div class="right">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"><?php echo $item->NoiDung;?></xls>
+					</div>
+				</td>
+				
+			</tr>
+			
+			<?php $row++;?>
+			<?php $begin = 0;?>
+			
+			<?php endforeach;?>
+		</table>
+	</div>
+	</div>
+</div>
+	

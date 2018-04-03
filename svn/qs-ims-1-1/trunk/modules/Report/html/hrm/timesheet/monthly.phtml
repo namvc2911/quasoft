@@ -1,0 +1,97 @@
+<!-- Báo cáo chấm công theo tháng  -->
+<script type="text/javascript">
+<!--
+// Xem báo cáo chấm công theo tháng
+$(document).ready(function(){
+	var yearNo   = <?php echo (int)date('Y');?>;
+
+	$('#year option').each(function()
+	{
+		if($(this).val() == yearNo) $(this).attr('selected','selected');
+	});
+});
+function printPreview()
+{
+	var month    = $('#month').val();
+	var year     = $('#year').val();
+	
+	if(month == '' || year == '')
+	{
+		qssAjax.alert('<?php echo $this->_translate(21);?>');
+		return;
+	}
+//	$('#report').submit(function() {
+//
+//        window.open('', 'formpopup', 'statusbar=no,resizable=yes,scrollbars=yes, addressbar=no,maximize=yes');
+//        this.target = 'formpopup';
+//    });
+//	$('#report').submit();
+
+	 var url = sz_BaseUrl + '/report/hrm/timesheet/monthly1';
+		var data = $('#report').serialize();
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#print-area').html(jreturn);
+                        removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+		});
+}
+//-->
+</script>
+
+<!-- html -->
+<div class="clear"></div>
+<div id="view">
+	<div class="line-hr">
+		<span><?php echo $this->_translate(1)?> </span>
+	</div>
+	<form id="report" method="get" action="/report/hrm/timesheet/monthly1">
+		<table class="detail">
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(2)?>
+				</th>
+				<td><?php echo $this->views->Report->SelectMonth(); ?> <span
+					class="bold red">(*)</span>
+				</td>
+			</tr>
+
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(16)?>
+				</th>
+				<td><?php echo $this->views->Report->SelectYear();?> <span
+					class="bold red">(*)</span> <!--  
+		<select name="year" id="year">
+			<option value=""> -- <?php echo $this->_translate(17)?> -- </option>
+			<option value="2010"> 2010 </option>
+			<option value="2011"> 2011 </option>
+			<option value="2012"> 2012 </option>
+			<option value="2013"> 2013 </option>
+			<option value="2014"> 2014 </option>
+			<option value="2015"> 2015 </option>
+		</select><span class="bold red">(*)</span>
+		-->
+				</td>
+			</tr>
+
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(18)?>
+				</th>
+				<td><?php
+				$id            = 'department';
+				$getFields     = array('num'=>3,
+                                       'objects'=>array('OPhongBan'=>array(
+                                                            'id'=>'MaPhongBan'
+                                                            ,'display1'=>'MaPhongBan'
+                                                            ,'display2'=>'TenPhongBan')) );
+                                                            ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+				</td>
+			</tr>
+		</table>
+	</form>
+	<p>
+	
+	
+	<hr>
+	<?php echo $this->views->Report->PrintToolbar();?>
+	<div id="print-content">
+		<div id="print-area"></div>
+	</div>
+</div>

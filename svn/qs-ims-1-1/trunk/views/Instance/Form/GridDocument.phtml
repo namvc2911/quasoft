@@ -1,0 +1,39 @@
+<table cellspacing="0" class="grid">
+	<tr>
+		<th class="nocount">STT</th>
+		<?php if ( $this->object->bTrack ):?>
+		<th><?php echo $this->_translate(50,'Người đăng')?></th>
+		<?php endif;?>
+		<?php foreach ($this->fields as $field):?>
+			<?php if ( $field->bGrid ):?>
+			<th>
+				<a><?php echo $field->szFieldName;?></a>
+			</th>
+			<?php endif;?>
+		<?php endforeach;?>
+	</tr>
+	<?php $i=1;?>
+	<?php foreach ($this->objects as $object):?>
+	<?php $fields = $this->object->loadFields();?>
+	<tr>
+	<td class="center nocount"><a href="/user/form/detail?ifid=<?php echo $object->IFID?>&deptid=<?php echo $object->DepartmentID?>">#<?php echo $i?></a></td>
+			<?php if ( $this->object->bTrack ):?>
+				<td class=data style="border-left: 1px solid #CCCCCC"><?php	echo $object->UserName?></td>
+			<?php endif;?>
+		<?php $bFirst = true;?>
+		<?php foreach ($fields as $field):?>
+		<?php if ( $field->bGrid ):?>
+		<td class="data <?php echo Qss_Lib_Const::$FIELD_ALIGN[$field->intFieldType-1]?>"
+		<?php
+		if ( $bFirst )
+		echo 'style="border-left: 1px solid rgb(204, 204, 204);"'?>><?php
+		echo $field->sz_fGetDisplay();
+		?></td>
+
+		<?php $bFirst = false;?>
+		<?php endif;?>		
+		<?php endforeach;?>
+	</tr>
+	<?php $i++;?>
+	<?php endforeach;?>
+</table>

@@ -1,0 +1,280 @@
+<style>
+    .empty_block
+    {
+        width: 24px;
+        position: relative;
+        display: block;
+        float: left;
+    }
+
+    .empty_block_100
+    {
+        width: 100px;
+        position: relative;
+        display: block;
+        float: left;
+    }
+
+    .status_box
+    {
+        clear: both;
+        width: 100%;
+        margin: 1px;
+        font-size: 11px;
+    }
+
+    .status_color
+    {
+        float: left;
+        padding: 6px;
+        text-align: center;
+        border: 1px #ccc solid;
+    }
+    .status_text
+    {
+        float: left;
+        padding:6px;
+    }
+</style>
+
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+
+    <!-- Button: Tải lại -->
+    <button type="button" class="btn extra-button" onclick="showToDay(); calendar_index_file.removeEffectCheckAll();">
+        <?php //echo $this->_translate(1) ?>
+        Tải lại
+    </button>
+
+    <!-- Button: Lịch tuần -->
+    <button
+        id="btnWEEK"
+        type="button"
+        class="btn extra-button <?php echo ($this->type == 'week')?'extra-selected':''; ?>"
+        onclick="showWeek()">
+        <?php echo $this->_translate(3) ?>
+    </button>
+
+    <!-- Button: Lịch tháng -->
+    <button
+        id="btnMONTH"
+        type="button"
+        class="btn extra-button <?php echo ($this->type == 'month')?'extra-selected':''; ?>"
+        onclick="showMonth()">
+        <?php echo $this->_translate(4) ?>
+    </button>
+
+    <div class="empty_block">&nbsp;</div>
+
+
+    <?php /*
+    <!-- Button: Tạo phiếu baor tri-->
+    <button
+        type="button"
+        class="btn extra-button"
+        onclick="popupWindowFormInsert( 'M759',1, {}, reloadCalendar);">
+        Tạo phiếu đột xuất<!--		Chạy kế hoạch-->
+    </button>
+
+    <!-- Button: Tạo phiếu định kỳ -->
+    <button
+        type="button"
+        class="btn extra-button"
+        onclick="calendar_index_file.showWo();">
+        Tự động sinh phiếu<!--		Chạy kế hoạch-->
+    </button>
+
+    <!-- Button: Tạo phiếu định kỳ -->
+    <button
+        type="button"
+        class="btn extra-button"
+        onclick="calendar_index_file.general_plans();">
+        KH tổng thể<!--		Chạy kế hoạch-->
+    </button>
+
+    <!-- Button: Tạo phiếu định kỳ -->
+    <button
+        type="button"
+        class="btn extra-button"
+        onclick="calendar_index_file.plans();">
+        KH định kỳ<!--		Chạy kế hoạch-->
+    </button>
+
+
+    <div class="empty_block">&nbsp;</div>
+
+
+
+    <!-- Button: Xóa-->
+    <button type="button" class="btn extra-button" id="checkOrUnCheckAllWo" onclick="calendar_index_file.checkOrUnCheckAllWo(this)" ctype="1">
+        <?php //echo $this->_translate(1) ?>
+        Chọn tất cả
+    </button>
+
+    <!-- Button: Xóa-->
+    <button type="button" class="btn extra-button" onclick="calendar_index_file.removeOrders()">
+        <?php //echo $this->_translate(1) ?>
+        Xóa
+    </button>
+
+    <!-- Button: Phụ trách -->
+    <button type="button" class="btn extra-button" onclick="calendar_index_file.assign()">
+        <?php //echo $this->_translate(1) ?>
+        Giao việc
+    </button>
+
+    <!-- Button: Thực hiện-->
+<!--    <button type="button" class="btn extra-button" onclick="calendar_index_file.sendRequest()">-->
+<!--        --><?php ////echo $this->_translate(1) ?>
+<!--        Ban hành-->
+<!--    </button>-->
+
+    <div style="float:left;" class="dropdown" id="dropdown">
+        <button onclick="calendar_index_file.showStatus(this);" class="btn btn_main_top" type="button" id="btnWORKFLOW">
+            Qui trình
+            <span style="display: block;" class="downarrowclass">&nbsp;</span>
+        </button>
+
+        <ul style="left: 0px; z-index:1000" class="dropdown-content" id="status_bar">
+            <?php foreach($this->steps as $step):?>
+                <li>
+                    <div style="width:20%;height: 100%;float:left;text-align: center;padding-top:10px;">
+                        <input type="checkbox" onchange="calendar_index_file.sendRequest(1<?php echo $step->StepNo;?>)" id="m729_step<?php echo $step->StepNo;?>">
+                    </div>
+                    <div style="float:left;height: 100%;width: 80%;padding-top:10px;" class="<?php echo $step->Color;?>"><?php echo $step->Name;?></div>
+                </li>
+            <?php endforeach;?>
+        </ul>
+    </div>
+
+    <div class="fl">
+
+    </div>
+    */?>
+
+    <div class="fr">
+        <button
+            id="search-button"
+            type="button"
+            class="btn fr extra-button"
+            onclick="calendar_index_file.showSearchBox(this)">
+            Tìm kiếm
+        </button>
+    </div>
+
+    <div style="height: 301px;">
+        <div id="div-search" class="clearfix" style="right: 12px; top: 100px; display: none;">
+            <form name="cal_form" id="cal_form">
+                <input type="hidden"
+                       id="fid"
+                       name="fid"
+                       value="<?php echo $this->fid ?>">
+
+                <input type="hidden"
+                       id="type"
+                       name="type"
+                       value="<?php echo $this->type ?>">
+
+                <input
+                    type="hidden"
+                    id="day"
+                    name="day"
+                    value="<?php echo $this->day ?>">
+
+                <input
+                    type="hidden"
+                    id="week"
+                    name="week"
+                    value="<?php echo $this->week ?>">
+
+                <input type="hidden"
+                       id="month"
+                       name="month"
+                       value="<?php echo $this->month ?>">
+
+                <input type="hidden"
+                       id="year"
+                       name="year"
+                       value="<?php echo $this->year ?>">
+
+                <div class="fl">
+                    <table>
+                        <tr>
+                            <th class="left">Đơn vị bảo trì:&nbsp;&nbsp;</th>
+                            <td>
+                                <select
+                                    name="workcenter" id="workcenter_select" style="width: 200px">
+                                    <option value="0">&nbsp;</option>
+                                    <?php foreach ($this->workcenters as $item): ?>
+                                        <option <?php if ($item->IOID == $this->workcenter): ?> selected
+                                        <?php endif; ?> value="<?php echo $item->IOID ?>">
+                                            <?php echo $item->Ten ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th class="left"> Người phụ trách:&nbsp;&nbsp; </th>
+                            <td>
+                                <select name="responseid" id="responseid_select" style="width: 200px">
+                                    <option value="0">&nbsp;</option>
+                                    <?php foreach ($this->employees as $item): ?>
+                                        <option <?php if ($item->IOID == $this->responseid): ?> selected
+                                        <?php endif; ?> value="<?php echo $item->IOID ?>">
+                                            <?php echo $item->TenNhanVien ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="fl">
+                    <div onclick="reloadCalendar(); calendar_index_file.removeEffectCheckAll();" style="width:70px" class="btn-custom center">Tìm kiếm</div>
+                    <div class="clearfix"><br></div>
+                    <div onclick="calendar_index_file.cleanSearch();" style="width:70px" class="btn-custom center">Xóa điều kiện</div>
+                    <div class="clearfix"><br></div>
+                    <div onclick="calendar_index_file.showSearchBox();" style="width:70px" class="btn-custom center">Đóng</div>
+                </div>
+
+
+            </form>
+        </div>
+    </div>
+
+</div>
+<div class="clear"></div>
+
+
+
+<div id="view">
+
+    <div class="clear status_box">
+        <div class="fl">
+            <?php foreach($this->steps as $step):?>
+                <div class="status_color <?php echo $step->Color;?>" > A </div>
+                <div class="status_text"> <?php echo $step->Name;?> </div>
+            <?php endforeach;?>
+        </div>
+
+        <div class="fr">
+            <button class="btn extra-button" type="button" onclick="calendar_index_file.material()" title="Dự trù vật tư">Dự trù vật tư</button>
+        </div>
+
+    </div>
+
+    <div class="clear"></div>
+
+    <div class="cal_view" id="cal_view">
+        <div class="cal_content_wrap">
+            <div class="cal_content" style="margin-left: 0px !important">
+                <?php echo $this->content ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="qss_combo" title=""></div>
+<div id="qss_trace" title=""></div>

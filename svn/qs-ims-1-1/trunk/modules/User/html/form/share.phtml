@@ -1,0 +1,58 @@
+<div id="horizontal-toolbar" class="horizontal-toolbar">
+	<div onclick="rowEdit();" title="Sửa đổi" id="btnEDIT"
+		class="btn_main_top btn_disabled">
+		<a class="icon-32-edit" href="#1"></a>
+	</div>
+	<div onclick="rowDetail();" title="Chi tiết" id="btnDETAIL"
+		class="btn_main_top btn_disabled">
+		<a class="icon-32-preview" href="#1"></a>
+	</div>
+	<div onclick="rowPrint()" title="In ấn" id="btnPRINT"
+		class="btn_main_top btn_disabled">
+		<a class="icon-32-print" href="#1"></a>
+	</div>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#1"><span>Công việc được chia
+						sẻ</span> </a></li>
+		</ul>
+	</div>
+	<table class="grid" cellspacing="0">
+		<tr>
+			<th style="border-left: 1px solid rgb(204, 204, 204);">STT</th>
+			<th>Mã hồ sơ</th>
+			<th>Loại công việc</th>
+			<th>Ngày tạo</th>
+			<th>Tình trạng</th>
+		</tr>
+		<?php
+		$i=1;
+		foreach($this->forms as $form){
+			$rights = @$form->Rights ^ 128;?>
+		<tr onclick="rowCLK(this);" ondblclick="rowTrace();"
+			status="<?php echo $form->Status?>" id="<?php echo $form->IFID?>"
+			rights="<?php echo $rights?>"
+			deptid="<?php echo $form->DepartmentID?>"
+			<?php if(!$form->Accepted) echo 'style="font-weight:600"';?>>
+			<td><?php echo $i?></td>
+			<td><?php echo $form->code?></td>
+			<td><a href="/user/form/?fid=<?php echo $form->FID?>"><?php
+			echo $form->Name?>
+			</a></td>
+			<td><?php echo date('d-m-Y',$form->SDate)?></td>
+			<td
+				class="<?php if(!$form->Status) echo 'done'; elseif($form->Error) echo 'error'; else echo 'data';?>"
+				title="<?php if($form->Error) echo $form->ErrorMessage;?>"><?php echo $form->SName?>
+			</td>
+		
+		
+		<tr>
+		<?php $i++;}?>
+	
+	</table>
+</div>
+<div id="qss_trace"
+	title="Chi tiết công việc"></div>

@@ -1,0 +1,47 @@
+<?php
+$width  = 1200;
+$widths = array(1,1,1,1,1,1,1,1,1);
+$widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+?>
+<div>
+    <table  id="grid" cellspacing="0" cellpadding="0" border="0" class="grid" >
+        <?php $begin = 0;?>
+        <thead>
+            <tr>
+                <th style="width:<?php echo $widths[$begin++];?>%">Số phiếu</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Mã thiết bị</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Tên thiết bị</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Bộ phận</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Loại bảo trì</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Đơn vị</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Ngày yêu cầu</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Ngày bắt đầu</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Ngày kết thúc</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <?php $ci = 0;?>
+            <?php foreach($this->dueOrders as $item):?>
+                <tr class="" <?php echo ++$ci%2==0?'bgcolor="#f7f9f9"':'';?>>
+                    <td class="left"><a href="#1" onclick="popupFormDetail('<?php echo $item->IFID_M759;?>', '<?php echo $this->deptid;?>')"><?php echo $item->SoPhieu;?></a></td>
+                    <td class="left"><?php echo $item->MaThietBi;?></td>
+                    <td class="left"><?php echo $item->TenThietBi;?></td>
+                    <td class="left"><?php echo $item->BoPhan;?></td>
+                    <td class="left"><?php echo $item->LoaiBaoTri;?></td>
+                    <td class="left"><?php echo $item->TenDVBT;?></td>
+                    <td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item->NgayYeuCau);?></td>
+                    <td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item->NgayBatDau);?></td>
+                    <td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item->Ngay);?></td>
+                </tr>
+            <?php endforeach;?>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function() {
+        var height = $(window).height() - 210 - $('#grid thead').height();//-8
+        $('#grid').tableScroll({height:height,width:'100%'});
+    });
+</script>

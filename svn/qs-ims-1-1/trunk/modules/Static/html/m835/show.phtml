@@ -1,0 +1,284 @@
+
+
+<?php $excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);?>
+
+<?php
+
+$colWidthPx    = array(4, 5, 2, 2, 2, 2, 2, 2, 2, 2);
+$totalCol      = count($colWidthPx);
+$colWidthExcel = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($colWidthPx, Qss_Lib_Extra_Const::PRINT_TYPE_PORTRAIT);
+$fitScreen     = Qss_Lib_Report::changeWidthToFitScreen($colWidthPx, Qss_Lib_Extra_Const::PRINT_TYPE_PORTRAIT);
+?>
+<?php ?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="portrait">
+	<excel orientation="portrait" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+	<div id="head_print">
+	<?php echo $this->views->Common->Portrait() ?>
+	<?php $row = 2; ?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(1) ?>
+				(<?php echo $this->_translate(2) ?> <?php echo $this->start; ?> <?php echo $this->_translate(3) ?>
+				<?php echo $this->end; ?> ) </xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++;?>
+
+
+	<div id="container">
+		<table width="" cellpadding="0" cellspacing="0" class="border">
+			<tr class="bggrey">
+			<?php $begin = 0; ?>
+
+                <!-- Mã nhân viên -->
+				<th style="width:<?php echo $fitScreen[$begin];?>px;">
+                    <xls row="<?php echo $row?>"
+						width="<?php echo $colWidthExcel[$begin]?>"
+						column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+						h-align="center"
+                        v-align="center"
+                        border="1"
+                        bold="1"> <?php echo $this->_translate(10)?></xls>
+				</th>
+
+                <!-- Tên nhân viên -->
+                <th style="width:<?php echo $fitScreen[$begin];?>px;">
+                    <xls row="<?php echo $row?>"
+                         width="<?php echo $colWidthExcel[$begin]?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="center"
+                         v-align="center"
+                         border="1"
+                         bold="1"> <?php echo $this->_translate(11)?></xls>
+                </th>
+
+                <!-- Công việc được giao -->
+                <th style="width:<?php echo $fitScreen[$begin];?>px;">
+                    <xls row="<?php echo $row?>"
+                         width="<?php echo $colWidthExcel[$begin]?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="center"
+                         v-align="center"
+                         border="1"
+                         bold="1"> <?php echo $this->_translate(12)?></xls>
+                </th>
+
+                <!-- Công việc đã làm -->
+                <th style="width:<?php echo $fitScreen[$begin];?>px;">
+                    <xls row="<?php echo $row?>"
+                         width="<?php echo $colWidthExcel[$begin]?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="center"
+                         v-align="center"
+                         border="1"
+                         bold="1"> <?php echo $this->_translate(13)?></xls>
+                </th>
+
+                <!-- Công việc chưa làm -->
+                <th style="width:<?php echo $fitScreen[$begin];?>px;">
+                    <xls row="<?php echo $row?>"
+                         width="<?php echo $colWidthExcel[$begin]?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="center"
+                         v-align="center"
+                         border="1"
+                         bold="1"> <?php echo $this->_translate(14)?></xls>
+                </th>
+
+                <!-- Công việc bỏ qua -->
+                <th style="width:<?php echo $fitScreen[$begin];?>px;">
+                    <xls row="<?php echo $row?>"
+                         width="<?php echo $colWidthExcel[$begin]?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="center"
+                         v-align="center"
+                         border="1"
+                         bold="1"> <?php echo $this->_translate(15)?></xls>
+                </th>
+
+                <!-- Thời gian dự kiến  -->
+                <th style="width:<?php echo $fitScreen[$begin];?>px;">
+                    <xls row="<?php echo $row?>"
+                         width="<?php echo $colWidthExcel[$begin]?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="center"
+                         v-align="center"
+                         border="1"
+                         bold="1"> <?php echo $this->_translate(16)?></xls>
+                </th>
+
+                <!-- Thời gian thực tế  -->
+                <th style="width:<?php echo $fitScreen[$begin];?>px;">
+                    <xls row="<?php echo $row?>"
+                         width="<?php echo $colWidthExcel[$begin]?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="center"
+                         v-align="center"
+                         border="1"
+                         bold="1"> <?php echo $this->_translate(17)?></xls>
+                </th>
+
+                <!-- % hoàn thành số lượng  -->
+                <th style="width:<?php echo $fitScreen[$begin];?>px;">
+                    <xls row="<?php echo $row?>"
+                         width="<?php echo $colWidthExcel[$begin]?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="center"
+                         v-align="center"
+                         border="1"
+                         bold="1"> <?php echo $this->_translate(18)?></xls>
+                </th>
+
+                <!-- % hoàn thành theo thời gian  -->
+                <th style="width:<?php echo $fitScreen[$begin];?>px;">
+                    <xls row="<?php echo $row?>"
+                         width="<?php echo $colWidthExcel[$begin]?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="center"
+                         v-align="center"
+                         border="1"
+                         bold="1"> <?php echo $this->_translate(19)?></xls>
+                </th>
+
+
+            </tr>
+			<?php $row++;?>
+
+
+			<!-- ========================================================================================= -->
+			<?php foreach ($this->report as $item): ?>
+
+                <?php $congViecDuocGiao = $item->ChuaThucHien + $item->DaThucHien + $item->BoQua;?>
+                <?php $percentByQty     = ($congViecDuocGiao?$item->DaThucHien/$congViecDuocGiao:0)*100;?>
+                <?php $percentByTime    = ($item->ThoiGianDuKien != 0?($item->ThoiGianThucTe/$item->ThoiGianDuKien):0)*100;?>
+                <?php $TenNhanVien      = $item->TenNhanVien?$item->TenNhanVien:'Không phân nhân viên';?>
+			<tr>
+			    <?php $begin = 0; ?>
+
+                <!-- Mã nhân viên -->
+                <td class="left">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="left"
+                         v-align="center"
+                         border="1"> <?php echo $item->MaNhanVien;?> </xls>
+                </td>
+
+                <!-- Tên nhân viên -->
+                <td class="left">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="left"
+                         v-align="center"
+                         border="1"> <?php echo $TenNhanVien;?> </xls>
+                </td>
+
+                <!-- Công việc được giao -->
+                <td class="right">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="right"
+                         v-align="center"
+                         border="1"> <?php echo $congViecDuocGiao;?> </xls>
+                </td>
+
+                <!-- Công việc đã làm  -->
+                <td class="right">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="right"
+                         v-align="center"
+                         border="1"> <?php echo $item->DaThucHien;?> </xls>
+                </td>
+
+                <!-- Công việc chưa làm  -->
+                <td class="right">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="right"
+                         v-align="center"
+                         border="1"> <?php echo $item->ChuaThucHien;?> </xls>
+                </td>
+
+                <!-- Công việc bỏ qua  -->
+                <td class="right">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="right"
+                         v-align="center"
+                         border="1"> <?php echo $item->BoQua;?> </xls>
+                </td>
+
+                <!-- Thời gian dự kiến -->
+                <td class="right">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="right"
+                         v-align="center"
+                         border="1"> <?php echo $item->ThoiGianDuKien;?> </xls>
+                </td>
+
+                <!-- Thời gian thực tế  -->
+                <td class="right">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="right"
+                         v-align="center"
+                         border="1"> <?php echo $item->ThoiGianThucTe;?> </xls>
+                </td>
+
+                <!-- % hoàn thành số lượng  -->
+                <td class="right">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="right"
+                         v-align="center"
+                         border="1"> <?php echo Qss_Lib_Util::formatNumber($percentByQty);?> </xls>
+                </td>
+
+                <!-- % hoàn thành theo thời gian  -->
+                <td class="right">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="right"
+                         v-align="center"
+                         border="1"> <?php echo Qss_Lib_Util::formatNumber($percentByTime);?> </xls>
+                </td>
+
+
+            </tr>
+			<?php $row++;?>
+			<?php endforeach;?>
+
+
+		</table>
+	</div>
+</div>

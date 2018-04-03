@@ -1,0 +1,149 @@
+<script type="text/javascript">
+    jQuery(document).ready(function($){
+        $('#warehouse').change(function(){
+            refWarehouse = $(this).val();
+            var url = sz_BaseUrl + '/static/m609/show2';
+            var data = {refWarehouse:refWarehouse};
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#item').html(jreturn);
+            });
+        });
+    });
+    function printPreview(){
+        var ngaybd = $('#start').val();
+        var ngaykt = $('#end').val();
+        var firstValue = ngaybd.split('-');
+        var secondValue = ngaykt.split('-');
+        var firstDate=new Date();
+        firstDate.setFullYear(firstValue[2],(firstValue[1] - 1 ),firstValue[0]);
+        var secondDate=new Date();
+        secondDate.setFullYear(secondValue[2],(secondValue[1] - 1 ),secondValue[0]);
+        var ky     = $('#period').val();
+        var kho    = $('#warehouse').val();
+        var item   = $('#item').val();
+        var msg    = '';
+
+        if(ngaybd == '')	{
+            msg  += '<?php echo $this->_translate(1)?>';
+        }
+
+        if(ngaykt == '')	{
+            msg  += '<?php echo $this->_translate(2)?>';
+        }
+
+        if (firstDate > secondDate)
+        {
+            msg  += '<?php echo $this->_translate(3)?>';
+        }
+
+        if(ky == '')
+        {
+            msg  += '<?php echo $this->_translate(4)?>';
+        }
+
+        /*
+         if(kho == '')
+         {
+         msg  += '<?php echo $this->_translate(5)?>';
+         }
+         */
+
+        if(item == '')
+        {
+            msg  += '<?php echo $this->_translate(6)?>';
+        }
+
+
+        if(msg != '')
+        {
+            qssAjax.alert(msg);
+            return;
+        }
+        else
+        {
+            var url = sz_BaseUrl + '/static/m609/show';
+            var data = $('#report').serialize();
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#print-area').html(jreturn);
+                removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+            });
+        }
+    }
+</script>
+
+<?php
+$solar = new Qss_Model_Calendar_Solar();
+$month = date('m');
+$year  = date('Y');
+$daysInMonth = $solar->getDaysInMonth($month, $year);
+$startDate = "01-$month-$year";
+$endDate = "$daysInMonth-$month-$year";
+?>
+<div class="clear"></div>
+<div id="view">
+    <div class="line-hr">
+        <span><?php echo Qss_Lib_System::getReportTitle('M609');?> </span>
+    </div>
+    <form id="report" method="get" action="/static/m609/show">
+        <table class="detail">
+            <tr>
+                <th width="20%" class="report-param-label"><?php echo $this->_translate(8)?>
+                </th>
+                <td><?php echo $this->views->Report->Datepicker('start', $startDate );?><span
+                        class="bold red">(*)</span></td>
+            </tr>
+            <tr>
+                <th width="20%" class="report-param-label"><?php echo $this->_translate(9)?>
+                </th>
+                <td><?php echo $this->views->Report->Datepicker('end', $endDate );?><span
+                        class="bold red">(*)</span></td>
+            </tr>
+            <tr>
+                <th width="20%" class="report-param-label"><?php echo $this->_translate(10)?>
+                </th>
+                <td><?php echo $this->views->Report->SelectPeriod('period', 'period');?>
+                    <span class="bold red">(*)</span>
+                </td>
+            </tr>
+            <tr>
+                <th width="20%" class="report-param-label"><?php echo $this->_translate(17)?>
+                </th>
+                <td><?php
+                    $id            = 'warehouse';
+                    $getFields     = array('num'=>2,
+                        'objects'=>array('ODanhSachKho'=>array(
+                            'id'=>'IOID'
+                        ,'display1'=>'MaKho'
+                        ,'display2'=>'TenKho')) );
+                    ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+                </td>
+            </tr>
+
+            <tr>
+                <th width="20%" class="report-param-label"><?php echo $this->_translate(18)?>
+                </th>
+                <td><?php
+                    $id            = 'item';
+                    $getFields     = array('num'=>2,
+                        'objects'=>array('OKho'=>array(
+                            'id'=>'Ref_MaSP'
+                        , 'group'=>'Ref_MaSP'
+                        , 'order'=>'MaSP'
+                        ,'display1'=>'MaSP'
+                        ,'display2'=>'TenSP')) );
+                    ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+                    <span class="bold red">(*)</span>
+                </td>
+            </tr>
+
+        </table>
+    </form>
+    <p>
+
+
+    <hr>
+    <?php echo $this->views->Report->PrintToolbar();?>
+    <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>

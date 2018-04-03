@@ -1,0 +1,140 @@
+<?php
+$fields = Qss_Lib_System::getFieldsByObject('M759', 'OPhieuBaoTri');
+$widths = array(11,11,11,16,26,19,19,11,11,11,19,19,19,19,19,19);
+$width  = 1800;
+$widths = Qss_Lib_Report::changeWidthToFitScreen2($widths, $width);
+$begin  = 0;
+?>
+
+<div class="landscape">
+	<div id="head_print">
+		<?php echo $this->views->Common->Landscape()?>
+		<h2 class="center">
+			<?php echo Qss_Lib_System::getUpperCaseReportTitle('M745');?>
+			(<?php echo $this->_translate(2)?> <?php echo $this->start;?> <?php echo $this->_translate(3)?> <?php echo $this->end;?>)
+		</h2>
+	</div>
+
+	<div id="container">
+		<table width="" cellpadding="0" cellspacing="0" class="border" style="width: <?php echo $width;?>px;">
+			<tr class="bggrey">
+				<th width="<?php echo $widths[$begin];?>px;">
+					<div style="width: <?php echo $widths[$begin++];?>px;">
+						<?php echo $fields->getFieldByCode('SoPhieu')->szFieldName;?>
+					</div>
+				</th>
+
+				<th width="<?php echo $widths[$begin];?>px;">
+					<div style="width: <?php echo $widths[$begin++];?>px;">
+						<?php echo $fields->getFieldByCode('NgayBatDau')->szFieldName;?>
+					</div>
+				</th>
+
+				<th width="<?php echo $widths[$begin];?>px;">
+					<div style="width: <?php echo $widths[$begin++];?>px;">
+						<?php echo $fields->getFieldByCode('NgayYeuCau')->szFieldName;?>
+					</div>
+				</th>
+
+				<th width="<?php echo $widths[$begin];?>px;">
+					<div style="width: <?php echo $widths[$begin++];?>px;">
+						<?php echo $fields->getFieldByCode('MaThietBi')->szFieldName;?>
+					</div>
+				</th>
+
+				<th width="<?php echo $widths[$begin];?>px;">
+					<div style="width: <?php echo $widths[$begin++];?>px;">
+						<?php echo $fields->getFieldByCode('TenThietBi')->szFieldName;?>
+					</div>
+				</th>
+
+				<th width="<?php echo $widths[$begin];?>px;">
+					<div style="width: <?php echo $widths[$begin++];?>px;">
+						<?php echo $fields->getFieldByCode('MaKhuVuc')->szFieldName;?>
+					</div>
+				</th>
+
+				<th width="<?php echo $widths[$begin];?>px;">
+					<div style="width: <?php echo $widths[$begin++];?>px;">
+						<?php echo $fields->getFieldByCode('TenDVBT')->szFieldName;?>
+					</div>
+				</th>
+
+				<th width="<?php echo $widths[$begin];?>px;">
+					<div style="width: <?php echo $widths[$begin++];?>px;">
+						<?php echo $fields->getFieldByCode('NgayDungMay')->szFieldName;?>
+					</div>
+				</th>
+
+				<th width="<?php echo $widths[$begin];?>px;">
+					<div style="width: <?php echo $widths[$begin++];?>px;">
+						<?php echo $fields->getFieldByCode('NgayKetThucDungMay')->szFieldName;?>
+					</div>
+				</th>
+
+				<th width="<?php echo $widths[$begin];?>px;">
+					<div style="width: <?php echo $widths[$begin++];?>px;">
+						<?php echo $fields->getFieldByCode('ThoiGianDungMay')->szFieldName;?>
+					</div>
+				</th>
+
+				<th width="<?php echo $widths[$begin];?>px;">
+					<div style="width: <?php echo $widths[$begin++];?>px;">
+						<?php echo $fields->getFieldByCode('BoPhan')->szFieldName;?>
+					</div>
+				</th>
+
+				<th width="<?php echo $widths[$begin];?>px;">
+					<div style="width: <?php echo $widths[$begin++];?>px;">
+						<?php echo $this->_translate(4);?>
+					</div>
+				</th>
+				
+				<th width="<?php echo $widths[$begin];?>px;">
+					<div style="width: <?php echo $widths[$begin++];?>px;">
+						<?php echo $fields->getFieldByCode('NguyenNhan')->szFieldName;?>
+					</div>
+				</th>
+
+				<th width="<?php echo $widths[$begin];?>px;">
+					<div style="width: <?php echo $widths[$begin++];?>px;">
+						<?php echo $fields->getFieldByCode('BienPhapKhacPhuc')->szFieldName;?>
+					</div>
+				</th>
+
+				<th width="<?php echo $widths[$begin];?>px;">
+					<div style="width: <?php echo $widths[$begin++];?>px;">
+						<?php echo $fields->getFieldByCode('DoiSach')->szFieldName;?>
+					</div>
+				</th>
+
+				<th width="<?php echo $widths[$begin];?>px;">
+					<div style="width: <?php echo $widths[$begin++];?>px;">
+						<?php echo $this->_translate(1);?>
+					</div>
+				</th>
+			</tr>
+
+			<?php foreach ($this->reports as $val):?>
+				<tr>
+					<td class="left"><?php echo $val->SoPhieu;?></td>
+					<td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($val->NgayBatDau);?></td>
+					<td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($val->NgayYeuCau);?></td>
+					<td class="left"><?php echo $val->MaThietBi;?></td>
+					<td class="left"><?php echo $val->TenThietBi;?></td>
+					<td class="left"><?php echo $val->KhuVucHienTai;?></td>
+					<td class="left"><?php echo $val->TenDVBT;?></td>
+					<td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($val->NgayDungMay);?></td>
+					<td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($val->NgayKetThucDungMay);?></td>
+					<td class="right"><?php echo Qss_Lib_Util::formatNumber($val->ThoiGianDungMay);?></td>
+					<td class="left"><?php echo $val->BoPhan;?></td>
+					<td class="left"><?php echo @$val->MoTa;?></td>
+					<td class="left"><?php echo @$val->NguyenNhan;?></td>
+					<td class="left"><?php echo @$val->BienPhapKhacPhuc;?></td>
+					<td class="left"><?php echo @$val->DoiSach;?></td>
+					<td class="left"></td>
+				</tr>
+			<?php endforeach;?>
+		</table>
+	</div>
+</div>

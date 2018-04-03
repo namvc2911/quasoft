@@ -1,0 +1,125 @@
+<?php
+/**
+ * *****************************************************************************
+ * Hien Thi Ke Hoach Bao Tri
+ * *****************************************************************************
+ */
+?>
+
+
+<!-- HIEN THI OBJECT CHINH  -->
+<div id="einfo-select-maintaint-plan" class="ui_box_s100">
+	<div>
+	<div style="float: left; width: 70%">	
+		<table cellpadding="0" cellspacing="0" class="border_table" border="0"
+			style="width: 100%;">
+			<tr class="bggrey center">
+				<th style="width: 10%;">Bộ phận <!-- STT -->
+				</th>
+				<th style="width: 11.5%;"><?php echo $this->_translate(2);?> <!-- Loại bảo trì    -->
+				</th>
+				<th style="width: 11%;"><?php echo $this->_translate(3);?> <!-- ĐVBT   -->
+				</th>
+				<th style="width: 5%;"><?php echo $this->_translate(4);?> <!-- Thuê ngoài   -->
+				</th>
+				<th style="width: 8.25%;"><?php echo $this->_translate(11);?> <!-- Mức độ ưu tiên -->
+				</th>
+			</tr>
+
+			<?php $i = 0; ?>
+			<?php foreach ($this->period as $p): ?>
+			<tr onclick="einfo_select_maintaint_plan_for_component(this)"
+				class="einfo-select-maintaint-plan pointer"
+				ifid="<?php echo $p->IFID_M724; ?>"
+				eq="<?php echo $p->Ref_MaThietBi; ?>">
+
+				<td class="left"><?php echo str_repeat('&nbsp;&nbsp;',$p->level)?><?php echo $p->BoPhan; ?>
+				</td>
+
+				<td class="left"><?php echo $p->MoTa; ?>
+				</td>
+
+				<td class="left"><?php echo $p->DVBT; ?>
+				</td>
+
+				<td
+					class="left>     
+					<?php echo $p->BenNgoai ? 'col-checked' : 'col-unchecked' ?>"></td>
+
+				
+				<td class="center"><?php echo $p->MucDoUuTien; ?>
+				</td>
+			</tr>
+			<?php endforeach; ?>
+
+			<?php if ($i < 10): ?>
+			<?php for ($j = $i; $j < 10; $j++):?>
+			<tr onclick="einfo_select_maintaint_plan(this)"
+				class="einfo-select-maintaint-plan pointer" ifid="0" eq="0">
+				<td class="left">&nbsp;</td>
+				<td class="left">&nbsp;</td>
+				<td class="left ">&nbsp;</td>
+				<td class="left">&nbsp;</td>
+				<td class="left">&nbsp;</td>
+			</tr>
+			<?php endfor; ?>
+			<?php endif; ?>
+		</table>
+		</div>
+		<div style="float: left; width:30%" id="einfo-select-maintaint-period">
+
+		</div>
+	</div>
+</div>
+
+<!-- HIEN THI CAC OBJECT PHU -->
+<div id="" class="ui_box_s100">
+	<div class="navmenutab" id="einfo_maintain_plan_tab">
+		<ul>
+			<li class="splash"></li>
+			<li class=""><a href="#"
+				onclick="einfo_show_maintain_plan_tab_for_component(1)"
+				id="einfo_maintain_plan_tab_1" class="einfo_maintain_plan_tab"
+				tab="1" objid="OCongViecBT"> <span><?php echo $this->_translate(15);?> <!-- Công việc bảo trì -->
+				</span> </a>
+			</li>
+			<li class="splash"></li>
+			<li class=""><a href="#"
+				onclick="einfo_show_maintain_plan_tab_for_component(2)"
+				id="einfo_maintain_plan_tab_2" class="einfo_maintain_plan_tab"
+				tab="2" objid="163"> <span><?php echo $this->_translate(17);?> <!-- Vật tư -->
+				</span> </a>
+			</li>
+
+		</ul>
+	</div>
+</div>
+
+<div id="einfo-maintain-plan-child-info" class="ui_box_s100"></div>
+
+<script>
+$('.einfo_plan_edit_control').each(function() {
+	$(this).hide();
+});
+
+$('#einfo-select-maintaint-plan table tr').hover(function() {
+	$(this).addClass('marker');
+	$(this).find('.einfo_plan_edit_control').show();
+}
+, function() {
+	if (!$(this).hasClass('einfo-active-maintaint-plan')) {
+		$(this).removeClass('marker');
+	}
+	$(this).find('.einfo_plan_edit_control').hide();
+});
+
+if (active_maintplan_sub_for_component_global 
+		&& $('.einfo-select-maintaint-plan[ifid="' + active_maintplan_sub_for_component_global + '"]').length)
+{
+	$('.einfo-select-maintaint-plan[ifid="' + active_maintplan_sub_for_component_global + '"]').click();
+}
+else
+{
+	$('.einfo-select-maintaint-plan').eq(0).click();
+}
+</script>

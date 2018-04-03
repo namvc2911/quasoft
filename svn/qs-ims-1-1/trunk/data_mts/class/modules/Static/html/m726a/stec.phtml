@@ -1,0 +1,467 @@
+<?php $excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);?>
+<?php
+$widthArr = array(1, 5);//, 2, 3, 2, 2,2, 2, 2
+
+foreach($this->DungTichStec as $item) {
+    $widthArr[] = 2;
+}
+$widthArr[] = 3;
+$widthArr[] = 3;
+$widthArr[] = 3;
+
+$countDungTichStec = count($this->DungTichStec);
+
+$totalCol = count($widthArr);
+$excelWidth = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($widthArr, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+$widthArr = Qss_Lib_Report::changeWidthToFitScreen3($widthArr);
+$bg             = "#EEEEEE"; // Mau nen cua cot tieu de
+$row           =1;
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+    <input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="landscape">
+    <excel orientation="landscape" font-name="Times New Roman" font-size="11"
+           margin-left="0.5" margin-right="0.5" margin-top="0.75"
+           margin-bottom="0.75" />
+
+    <div id="head_print">
+        <table>
+            <tr>
+                <td style="width: 40%;" class="center">
+                    <xls row="<?php echo $row?>" column="A" column-merge="C" font-size="11" h-align="center" v-align="center"> Công ty…………</xls>
+                </td>
+                <td  class="center">
+                    <xls row="<?php echo $row?>" column="H" column-merge="L" font-size="11" h-align="center" v-align="center"> Cộng hòa xã hội chủ nghĩa Việt nam</xls>
+                </td>
+            </tr>
+            <?php $row++;?>
+
+            <tr>
+                <td  class="center">
+                    <xls row="<?php echo $row?>" column="A" column-merge="C" font-size="11" h-align="center" v-align="center"> Xí nghiệp:………………...……..</xls>
+                </td>
+                <td  class="center">
+                    <xls row="<?php echo $row?>" column="H" column-merge="L" font-size="11" h-align="center" v-align="center"> Độc lập - Tự do - Hạnh phúc</xls>
+                </td>
+            </tr>
+            <?php $row++;?>
+
+            <tr>
+                <td  class="center">
+                    <xls row="<?php echo $row?>" column="A" column-merge="C" font-size="11" h-align="center" v-align="center"> Số:………./BC - KT</xls>
+                </td>
+                <td  class="center">
+                    <xls row="<?php echo $row?>" column="H" column-merge="L" font-size="11" h-align="center" v-align="center"> …………, ngày……tháng……năm 20….</xls>
+                </td>
+            </tr>
+            <?php $row++;?>
+        </table>
+
+        <div class="">
+            <div class="fl" style="width: 90%">
+                <h2 class="center"><xls row="<?php echo $row?>" column="D" column-merge="J" font-size="16" h-align="center" v-align="center" bold="1"> BÁO CÁO TỔNG HỢP STÉC CHỨA XĂNG DẦU, NƯỚC  </xls></h2>
+            </div>
+            <div class="fr" style="font-weight: normal !important; font-size: 12px !important;"><xls row="<?php echo $row?>" column="K" column-merge="L" font-size="16" h-align="center" v-align="center" bold="1"> Mẫu số: BC - KT 13  </xls></div>
+        </div>
+        <div class="clear"></div>
+        <?php $row++;?>
+
+        <p class="center">
+            <xls row="<?php echo $row?>" column="A" column-merge="L" font-size="11" h-align="center" v-align="center" > Từ ngày …/…/… đến ngày…/…/… </xls>
+        </p>
+        <?php $row++;?>
+    </div>
+
+    <div id="container">
+
+        <table width="" cellpadding="0" cellspacing="0" class="border" border="0">
+            <?php $begin = 0;?>
+            <tr class="bggrey">
+                <!-- STT -->
+                <th rowspan="2"  style="width: <?php echo $widthArr[$begin];;?>%">
+                    <xls row="<?php echo $row?>" row-merge="1" font-size="8" column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center" v-align="center" bold="1" border="1" wrap-text="1"> STT </xls>
+                </th>
+
+                <th rowspan="2"  style="width: <?php echo $widthArr[$begin];;?>%">
+                    <xls row="<?php echo $row?>" row-merge="1" font-size="8" column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center" v-align="center" bold="1" border="1" wrap-text="1"> Nơi đặt thiết bị </xls>
+                </th>
+
+                <th colspan="<?php echo (int)$countDungTichStec;?>">
+                    <xls row="<?php echo $row?>" font-size="8" column="<?php echo $excel_col[++$begin];?>" column-merge="<?php echo $excel_col[$begin+ ((int)$countDungTichStec-1)];?>" bgcolor="<?php echo $bg;?>" h-align="center" v-align="center" bold="1" border="1" wrap-text="1"> Loại stéc/ số lượng stéc </xls>
+                </th>
+                <?php $begin = $begin + ((int)$countDungTichStec-1);?>
+
+                <th rowspan="2"  style="width: <?php echo $widthArr[$begin];;?>%">
+                    <xls row="<?php echo $row?>" row-merge="1" font-size="8" column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center" v-align="center" bold="1" border="1" wrap-text="1"> Tổng cộng </xls>
+                </th>
+
+                <th rowspan="2"  style="width: <?php echo $widthArr[$begin];;?>%">
+                    <xls row="<?php echo $row?>" row-merge="1" font-size="8" column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center" v-align="center" bold="1" border="1" wrap-text="1"> Số stéc </xls>
+                </th>
+
+                <th rowspan="2"  style="width: <?php echo $widthArr[$begin];;?>%">
+                    <xls row="<?php echo $row?>" row-merge="1" font-size="8" column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center" v-align="center" bold="1" border="1" wrap-text="1"> Ghi chú </xls>
+                </th>
+            </tr>
+            <?php $row++;?>
+
+            <?php $begin = 2;?>
+            <tr class="bggrey">
+                <?php foreach($this->DungTichStec as $item):?>
+                <th  style="width: <?php echo $widthArr[$begin];;?>%">
+                    <xls row="<?php echo $row?>" font-size="8" column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center" v-align="center" bold="1" border="1" wrap-text="1"> <?php echo $item;?> </xls>
+                </th>
+
+                <?php endforeach;;?>
+            </tr>
+            <?php $row++;?>
+
+            <?php $begin = 0;?>
+            <tr class="bggrey">
+                <?php $sttDungTich = 0;?>
+                <th ><xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="8" column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center" v-align="center" bold="1" border="1" wrap-text="1"> <?php echo ++$sttDungTich;?> </xls></th>
+                <th ><xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="8" column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center" v-align="center" bold="1" border="1" wrap-text="1"> <?php echo ++$sttDungTich;?> </xls></th>
+                <?php foreach($this->DungTichStec as $item):?>
+                    <th ><xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="8" column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center" v-align="center" bold="1" border="1" wrap-text="1"> <?php echo ++$sttDungTich;?> </xls></th>
+                <?php endforeach;;?>
+                <th ><xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="8" column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center" v-align="center" bold="1" border="1" wrap-text="1"> <?php echo ++$sttDungTich;?> </xls>
+                <th ><xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="8" column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center" v-align="center" bold="1" border="1" wrap-text="1"> <?php echo ++$sttDungTich;?> </xls>
+                <th ><xls row="<?php echo $row?>" width="<?php echo $excelWidth[$begin];?>" font-size="8" column="<?php echo $excel_col[++$begin];?>" bgcolor="<?php echo $bg;?>" h-align="center" v-align="center" bold="1" border="1" wrap-text="1"> <?php echo ++$sttDungTich;?> </xls>
+            </tr>
+            <?php $row++;?>
+
+            <?php
+            $oldKhuVuc      = '';
+            $sttKhuVuc      = 0;
+            $oldLoaiThietBi = '';
+            $sttLoaiThietBi = 0;
+            $oldThongSo     = '';
+            $oldThietBi     = '';
+            $sttThietBi     = 0;
+            $tongSo         = 0;
+            ?>
+
+            <?php $begin = 0;?>
+            <tr>
+                <td class="center bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="center" v-align="center" border="1" bold="1" >I</xls>
+                </td>
+
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> Stéc chứa xăng dầu</xls>
+                </td>
+
+                <?php foreach($this->DungTichStec as $item):?>
+                    <td class="left bold">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                    </td>
+                <?php endforeach;;?>
+
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                </td>
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                </td>
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                </td>
+            </tr>
+            <?php $row++;?>
+
+            <?php $begin = 0;?>
+            <tr>
+                <td class="center bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="center" v-align="center" border="1" bold="1" >A</xls>
+                </td>
+
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> Stéc hiện đang sử dụng </xls>
+                </td>
+
+                <?php foreach($this->DungTichStec as $item):?>
+                    <td class="left bold">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                    </td>
+                <?php endforeach;;?>
+
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                </td>
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                </td>
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                </td>
+            </tr>
+            <?php $row++;?>
+
+            <?php $stt = 0;?>
+            <?php foreach ($this->stecXangDauDangSuDung as $item):?>
+                <?php $begin = 0;?>
+                <tr>
+                    <td class="center ">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="center" v-align="center" border="1"  > <?php echo ++$stt;?></xls>
+                    </td>
+
+                    <td class="left ">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" > <?php echo @$item['Info']->Ten;?> </xls>
+                    </td>
+
+                    <?php foreach($this->DungTichStec as $key=>$val):?>
+                        <td class="right">
+                            <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="right" v-align="center" border="1" > <?php echo Qss_Lib_Util::formatNumber(@$item['Count'][$key]);?> </xls>
+                        </td>
+                    <?php endforeach;;?>
+
+                    <td class="right ">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="right" v-align="center" border="1" > <?php echo @Qss_Lib_Util::formatNumber($item['Total']);?> </xls>
+                    </td>
+                    <td class="right ">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="right" v-align="center" border="1" > <?php echo @Qss_Lib_Util::formatNumber($item['Stec']);?> </xls>
+                    </td>
+                    <td class="left ">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" > <?php echo @$item->GhiChu;?> </xls>
+                    </td>
+
+                </tr>
+                <?php $row++;?>
+            <?php endforeach;?>
+
+            <?php $begin = 0;?>
+            <tr>
+                <td class="center bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="center" v-align="center" border="1" bold="1" >B</xls>
+                </td>
+
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> Stéc chưa sử dụng </xls>
+                </td>
+
+                <?php foreach($this->DungTichStec as $item):?>
+                    <td class="left bold">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                    </td>
+                <?php endforeach;;?>
+
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                </td>
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                </td>
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                </td>
+            </tr>
+            <?php $row++;?>
+
+            <?php $stt = 0;?>
+            <?php foreach ($this->stecXangDauChuaSuDung as $item):?>
+                <?php $begin = 0;?>
+                <tr>
+                    <td class="center ">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="center" v-align="center" border="1"  > <?php echo ++$stt;?></xls>
+                    </td>
+
+                    <td class="left ">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" > <?php echo @$item['Display'];?> </xls>
+                    </td>
+
+                    <?php foreach($this->DungTichStec as $key=>$val):?>
+                        <td class="right">
+                            <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="right" v-align="center" border="1" > <?php echo Qss_Lib_Util::formatNumber(@$item['Count'][$key]);?> </xls>
+                        </td>
+                    <?php endforeach;;?>
+
+
+                    <td class="right ">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="right" v-align="center" border="1" > <?php echo @Qss_Lib_Util::formatNumber($item['Total']);?> </xls>
+                    </td>
+                    <td class="right ">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="right" v-align="center" border="1" > <?php echo @Qss_Lib_Util::formatNumber($item['Stec']);?> </xls>
+                    </td>
+                    <td class="left ">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" > <?php echo @$item->GhiChu;?> </xls>
+                    </td>
+
+                </tr>
+                <?php $row++;?>
+            <?php endforeach;?>
+
+            <?php $begin = 0;?>
+            <tr>
+                <td class="center bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="center" v-align="center" border="1" bold="1" >II</xls>
+                </td>
+
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> Stéc chứa nước</xls>
+                </td>
+
+                <?php foreach($this->DungTichStec as $item):?>
+                    <td class="left bold">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                    </td>
+                <?php endforeach;;?>
+
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                </td>
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                </td>
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                </td>
+            </tr>
+            <?php $row++;?>
+
+            <?php $begin = 0;?>
+            <tr>
+                <td class="center bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="center" v-align="center" border="1" bold="1" >A</xls>
+                </td>
+
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> Stéc hiện đang sử dụng </xls>
+                </td>
+
+                <?php foreach($this->DungTichStec as $item):?>
+                    <td class="left bold">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                    </td>
+                <?php endforeach;;?>
+
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                </td>
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                </td>
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                </td>
+            </tr>
+            <?php $row++;?>
+
+            <?php $stt = 0;?>
+            <?php foreach ($this->stecNuocDangSuDung as $item):?>
+                <?php $begin = 0;?>
+                <tr>
+                    <td class="center ">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="center" v-align="center" border="1"  > <?php echo ++$stt;?></xls>
+                    </td>
+
+                    <td class="left ">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" > <?php echo @$item['Display'];?> </xls>
+                    </td>
+
+                    <?php foreach($this->DungTichStec as $key=>$val):?>
+                        <td class="right">
+                            <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="right" v-align="center" border="1" > <?php echo Qss_Lib_Util::formatNumber(@$item['Count'][$key]);?> </xls>
+                        </td>
+                    <?php endforeach;;?>
+
+
+                    <td class="right ">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="right" v-align="center" border="1" > <?php echo @Qss_Lib_Util::formatNumber($item['Total']);?> </xls>
+                    </td>
+                    <td class="right ">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="right" v-align="center" border="1" > <?php echo @Qss_Lib_Util::formatNumber($item['Stec']);?> </xls>
+                    </td>
+                    <td class="left ">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" > <?php echo @$item->GhiChu;?> </xls>
+                    </td>
+
+                </tr>
+                <?php $row++;?>
+
+            <?php endforeach;?>
+
+            <?php $begin = 0;?>
+            <tr>
+                <td class="center bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="center" v-align="center" border="1" bold="1" >B</xls>
+                </td>
+
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> Stéc chưa sử dụng </xls>
+                </td>
+
+                <?php foreach($this->DungTichStec as $item):?>
+                    <td class="left bold">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                    </td>
+                <?php endforeach;;?>
+
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                </td>
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                </td>
+                <td class="left bold">
+                    <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" bold="1"> </xls>
+                </td>
+            </tr>
+            <?php $row++;?>
+
+            <?php $stt = 0;?>
+            <?php foreach ($this->stecNuocChuaSuDung as $item):?>
+                <?php $begin = 0;?>
+                <tr>
+                    <td class="center ">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="center" v-align="center" border="1"  > <?php echo ++$stt;?></xls>
+                    </td>
+
+                    <td class="left ">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" > <?php echo @$item['Display'];?> </xls>
+                    </td>
+
+                    <?php foreach($this->DungTichStec as $key=>$val):?>
+                        <td class="right">
+                            <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="right" v-align="center" border="1" > <?php echo Qss_Lib_Util::formatNumber(@$item['Count'][$key]);?> </xls>
+                        </td>
+                    <?php endforeach;;?>
+
+
+                    <td class="right ">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="right" v-align="center" border="1" > <?php echo @Qss_Lib_Util::formatNumber($item['Total']);?> </xls>
+                    </td>
+                    <td class="right ">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="right" v-align="center" border="1" > <?php echo @Qss_Lib_Util::formatNumber($item['Stec']);?> </xls>
+                    </td>
+                    <td class="left ">
+                        <xls row="<?php echo $row?>" column="<?php echo $excel_col[++$begin];?>" h-align="left" v-align="center" border="1" > <?php echo @$item->GhiChu;?> </xls>
+                    </td>
+
+                </tr>
+                <?php $row++;?>
+
+            <?php endforeach;?>
+        </table>
+        <br/>
+        <br/>
+        <?php $row++;?>
+        <?php $row++;?>
+
+        <table>
+            <tr>
+                <th style="width: 33.33%;" class="bold center">
+                    <xls row="<?php echo $row?>" column="B" column-merge="C" font-size="11" h-align="center" v-align="center" bold="1"> LẬP BIỂU</xls>
+                </th>
+                <th style="width: 33.33%;" class="bold center">
+                    <xls row="<?php echo $row?>" column="E" column-merge="H" font-size="11" h-align="center" v-align="center" bold="1"> TRƯỞNG PHÒNG KT</xls>
+                </th>
+                <th style="width: 33.33%;" class="bold center">
+                    <xls row="<?php echo $row?>" column="J" column-merge="K" font-size="11" h-align="center" v-align="center" bold="1"> GIÁM ĐỐC</xls>
+                </th>
+            </tr>
+        </table>
+    </div>
+</div>

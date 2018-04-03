@@ -1,0 +1,33 @@
+<div id="cal_year" class="cal_select_year">
+	<div class="info">
+    	<ul class="clearfix">
+            <li class="arow_top"><a href="#"
+                onclick="showYear('<?php echo $this->y-1?>');"><img src="/images/calendar/left_arrow_16.png" /></a></li>
+            <li class="info_top">Năm <?php echo $this->y?></span>
+            <li class="arow_top"><a href="#"
+                onclick="showYear('<?php echo $this->y+1?>');"><img src="/images/calendar/right_arrow_16.png" /></a></li>
+		</ul>
+    </div>
+	<div class="month clearfix">
+    	<ul>
+		<li><a href="#1" onclick="showYear('<?php echo $this->y-4?>');"><?php echo $this->y-4?></a></li>
+		<li><a href="#1" onclick="showYear('<?php echo $this->y-3?>');"><?php echo $this->y-3?></a></li>
+		<li><a href="#1" onclick="showYear('<?php echo $this->y-2?>');"><?php echo $this->y-2?></a></li>
+        </ul>
+	</div>
+	<div class="month clearfix">
+    	<ul>
+		<li><a href="#1" onclick="showYear('<?php echo $this->y-1?>');"><?php echo $this->y-1?></a></li>
+		<li class="selected"><a href="#1"><?php echo $this->y?></a></li>
+		<li><a href="#1" onclick="showYear('<?php echo $this->y+1?>');"><?php echo $this->y+1?></a></li>
+        </ul>
+	</div>
+	<div class="month clearfix">
+    	<ul>
+		<li><a href="#1" onclick="showYear('<?php echo $this->y+2?>');"><?php echo $this->y+2?></a></li>
+		<li><a href="#1" onclick="showYear('<?php echo $this->y+3?>');"><?php echo $this->y+3?></a></li>
+		<li><a href="#1" onclick="showYear('<?php echo $this->y+4?>');"><?php echo $this->y+4?></a></li>
+        </ul>
+	</div>
+	
+</div>

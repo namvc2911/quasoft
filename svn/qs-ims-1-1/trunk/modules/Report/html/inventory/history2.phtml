@@ -1,0 +1,14 @@
+<?php if(count((array)$this->warehouse)): ?>
+<?php foreach ($this->warehouse as $val):?>
+<option value="<?php echo "{$val->Ref_MaSP}";?>">
+<?php echo "{$val->MaSP} - {$val->TenSP} - {$val->Kho}";?>
+</option>
+<?php endforeach;?>
+<?php else:?>
+<option value="">
+<?php echo $this->_translate(1)?>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</option>
+<?php endif;?>
+
+

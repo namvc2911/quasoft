@@ -1,0 +1,3032 @@
+<?php
+$excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg = "#EEEEEE";
+$row = 2;
+$totalColumn = 21;
+$widthArr = array(1, 5, 3, 3, 3, 2, 2, 6, 2, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 1.5, 1.5, 1.5);
+$excelWidth = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($widthArr, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+$fitWidth = Qss_Lib_Report::changeWidthToFitScreen($widthArr, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+$i1 = 0;
+$i2 = 0;
+$i3 = 0;
+//echo '<pre>'; print_r($this->report); die;
+?>
+<!--
+Stt	Tên thiết bị                                                                     	Mã số	"Mã
+tài sản"	Số hiệu 	Đơn vị quản lý	"Hình thức thực hiện
+BD/KĐ/
+HC/TT"	Nội dung thực hiện                             	Định kỳ thực hiện                       	Năm…..
+									T 1	T 2	T 3	T 4	T 5	T 6	T 7	T 8	T 9	T 10	T 11	T 12
+ -->
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="landscape">
+	<excel orientation="landscape" font-name="Arial" font-size="9"
+		   margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		   margin-bottom="0.75"/>
+
+	<div id="head_print">
+		<?php echo $this->views->Common->Landscape() ?>
+
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					 column-merge="<?php echo $excel_col[$totalColumn] ?>" font-size="12"
+					 wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(11) ?>
+				</xls>
+			</h2>
+		</center>
+		<?php $row++ ?>
+
+
+		<?php if ($this->locationIOID): ?>
+			<center>
+				<h2>
+					<xls row="<?php echo $row ?>" column="A"
+						 column-merge="<?php echo $excel_col[$totalColumn] ?>" font-size="12"
+						 wrap-text="1" h-align="center" v-align="center"> BỘ PHẬN QUẢN
+						LÝ: <?php echo $this->location; ?>
+					</xls>
+				</h2>
+			</center>
+			<?php $row++ ?>
+		<?php endif; ?>
+
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					 column-merge="<?php echo $excel_col[$totalColumn] ?>" font-size="12"
+					 wrap-text="1" h-align="center" v-align="center"> Năm: <?php echo $this->year; ?>
+				</xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++ ?>
+
+
+	<div id="container">
+		<table cellspacing="0" cellpadding="0" border="1" id="" class="border">
+
+			<?php $begin = 0; ?>
+			<tr class="bggrey" row="<?php echo $row ?>">
+
+				<!-- STT -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					rowspan="2"
+
+					class="report_title_marker remove_col <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>"
+					>
+					<xls row="<?php echo $row ?>" row-merge="1"
+						 width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(1); ?></xls>
+				</th>
+
+				<!-- Ten thiet bi -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					rowspan="2"
+
+					class="report_title_marker remove_col <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>">
+					<xls row="<?php echo $row ?>" row-merge="1"
+						 width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(2); ?></xls>
+				</th>
+
+				<!-- Ma so -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					rowspan="2"
+
+					class="report_title_marker remove_col <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>">
+					<xls row="<?php echo $row ?>" row-merge="1"
+						 width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(3); ?></xls>
+				</th>
+
+				<!-- Ma tai san -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					rowspan="2"
+					class="report_title_marker remove_col <?php echo 'col' . $begin; ?>"
+
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>">
+					<xls row="<?php echo $row ?>" row-merge="1"
+						 width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(4); ?></xls>
+				</th>
+
+				<!-- So Hieu -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					rowspan="2"
+					class="report_title_marker remove_col  <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>">
+					<xls row="<?php echo $row ?>"
+						 row-merge="1" width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(5); ?></xls>
+				</th>
+
+				<!--Don vi quan ly -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					rowspan="2"
+					class="report_title_marker remove_col  <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>">
+					<xls row="<?php echo $row ?>"
+						 row-merge="1" width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(6); ?></xls>
+				</th>
+
+				<!-- Hình thức thực hiện BD/KĐ/HC/TT -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					rowspan="2"
+					class="report_title_marker remove_col  <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>">
+					<xls row="<?php echo $row ?>"
+						 row-merge="1" width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(7); ?></xls>
+				</th>
+
+				<!-- Noi dung thuc hien -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					rowspan="2"
+					class="report_title_marker remove_col  <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>">
+					<xls row="<?php echo $row ?>"
+						 row-merge="1" width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(8); ?></xls>
+				</th>
+
+
+				<!-- Dinh ky thuc hien -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					rowspan="2"
+					class="report_title_marker remove_col  <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>">
+					<xls row="<?php echo $row ?>"
+						 row-merge="1" width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(9); ?></xls>
+				</th>
+
+
+				<?php $startRow2 = $begin; ?>
+				<th colspan="12"
+					class="report_title_marker remove_col <?php echo 'col' . $begin; ?>"
+					colmerge="<?php echo($begin + 11); ?>" col="<?php echo $begin; ?>"
+					id="<?php echo 'col' . $begin . ($begin + 11); ?>"
+					markerid="<?php echo 'col' . $begin . ($begin + 11); ?>">
+					<!-- Block Kho  -->
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>"
+						 column-merge="<?php echo $excel_col[($begin + 11)] ?>"
+						 wrap-text="1" h-align="center" v-align="center" border="1"
+						 bold="1" repeat="1"> <?php echo $this->_translate(10); ?><?php echo $this->year; ?></xls>
+				</th>
+				<?php $begin = $begin + 11; ?>
+			</tr>
+			<?php $row++ ?>
+
+
+			<?php $begin = $startRow2; ?>
+			<tr class="bggrey" row="<?php echo $row ?>">
+				<!-- 01 -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					class="report_title_marker remove_col <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>"
+					>
+					<!-- Xuat Kho -->
+					<xls row="<?php echo $row ?>"
+						 width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(12); //01?></xls>
+				</th>
+
+				<!-- 02 -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					class="report_title_marker remove_col <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>"
+					>
+					<!-- Xuat Kho -->
+					<xls row="<?php echo $row ?>"
+						 width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(13); //02?></xls>
+				</th>
+
+
+				<!-- 03 -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					class="report_title_marker remove_col <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>"
+					>
+					<!-- Xuat Kho -->
+					<xls row="<?php echo $row ?>"
+						 width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(14); //03?></xls>
+				</th>
+
+				<!-- 04 -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					class="report_title_marker remove_col <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>"
+					>
+					<!-- Xuat Kho -->
+					<xls row="<?php echo $row ?>"
+						 width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(15); //04?></xls>
+				</th>
+
+				<!-- 05 -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					class="report_title_marker remove_col <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>"
+					>
+					<!-- Xuat Kho -->
+					<xls row="<?php echo $row ?>"
+						 width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(16); //05?></xls>
+				</th>
+
+				<!-- 06 -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					class="report_title_marker remove_col <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>"
+					>
+					<!-- Xuat Kho -->
+					<xls row="<?php echo $row ?>"
+						 width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(17); //06?></xls>
+				</th>
+
+				<!-- 07 -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					class="report_title_marker remove_col <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>"
+					>
+					<!-- Xuat Kho -->
+					<xls row="<?php echo $row ?>"
+						 width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(18); //07?></xls>
+				</th>
+
+				<!-- 08 -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					class="report_title_marker remove_col <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>"
+					>
+					<!-- Xuat Kho -->
+					<xls row="<?php echo $row ?>"
+						 width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(19); //08?></xls>
+				</th>
+
+				<!-- 09 -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					class="report_title_marker remove_col <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>"
+					>
+					<!-- Xuat Kho -->
+					<xls row="<?php echo $row ?>"
+						 width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(20); //09?></xls>
+				</th>
+
+				<!-- 10 -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					class="report_title_marker remove_col <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>"
+					>
+					<!-- Xuat Kho -->
+					<xls row="<?php echo $row ?>"
+						 width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(21); //10?></xls>
+				</th>
+
+				<!-- 11 -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					class="report_title_marker remove_col <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>"
+					>
+					<!-- Xuat Kho -->
+					<xls row="<?php echo $row ?>"
+						 width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(22); //11?></xls>
+				</th>
+
+				<!-- 12 -->
+				<th style="width:<?php echo $fitWidth[$begin]; ?>px;"
+					class="report_title_marker remove_col <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" id="<?php echo 'col' . $begin; ?>"
+					markerid="<?php echo 'col' . $begin; ?>"
+					>
+					<!-- Xuat Kho -->
+					<xls row="<?php echo $row ?>"
+						 width="<?php echo $excelWidth[$begin] ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="1" bold="1" repeat="1">
+						<?php echo $this->_translate(23); //12?></xls>
+				</th>
+			</tr>
+			<?php $row++ ?>
+
+
+			<?php $stt = 0; ?>
+			<?php $oldEqGroup = ''; ?>
+			<?php $eqGroupNo = 0; ?>
+			<?php $oldEqType = ''; ?>
+			<?php $eqTypeNo = 0; ?>
+			<?php $eqTypeNoMemory = array(); ?>
+			<?php $oldEqTypeLevel = ''; ?>
+			<?php $oldCode = ''; ?>
+			<?php $oldCode2 = ''; ?>
+			<?php $oldCode3 = ''; ?>
+			<?php $oldItem = ''; ?>
+			<?php $oldSub = '';?>
+			<?php foreach (@(array)$this->report as $code => $items): // in report?>
+				<?php $totalLine = count($items); ?>
+
+				<?php foreach ($items as $item): // in chi tiet?>
+					<?php $begin = 0; ?>
+					<?php $totalLine = $item['Rowspan']; ?>
+					<?php
+					if (isset($item['Period']) && $item['Period']) {
+
+						switch ($item['Period']) {
+							case 'M':
+								$dinhKy = $item['Interval'] . ' ' . $this->_translate(24) . ' ';
+								break;
+
+							case 'Y':
+								$dinhKy = $item['Interval'] . ' ' . $this->_translate(25) . ' ';
+								break;
+						}
+					}
+					?>
+					<?php if (isset($item['Period']) && $item['Period']): ?>
+						<?php if ($oldItem != '' && $oldItem != $item['EqIOID']): ?>
+							<?php foreach ($oldSub as $code2 => $subs): ?>
+								<?php foreach ($subs as $sub): ?>
+									<?php $begin = 0; ?>
+									<?php $totalLine2 = $sub['Rowspan']; ?>
+									<?php
+									if (isset($sub['Period']) && $sub['Period']) {
+
+										switch ($sub['Period']) {
+											case 'M':
+												$dinhKy2 = $sub['Interval'] . ' ' . $this->_translate(24) . ' ';
+												break;
+
+											case 'Y':
+												$dinhKy2 = $sub['Interval'] . ' ' . $this->_translate(25) . ' ';
+												break;
+
+										}
+									}
+									?>
+									<?php if (isset($sub['Period']) && $sub['Period']): ?>
+										<?php if ($totalLine2 == 1): ?>
+											<tr>
+												<!-- STT -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center" border="1"> <?php //echo ++$stt; ?></xls>
+												</td>
+
+												<!-- Thiet BI -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center"
+														 border="1"> <?php echo $sub['EqName']; ?></xls>
+												</td>
+
+												<!-- Ma SO -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center"
+														 border="1"> <?php echo $sub['EqCode']; ?></xls>
+												</td>
+
+												<!-- Ma Tai san -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center"
+														 border="1"> <?php echo $sub['FACode']; ?></xls>
+												</td>
+
+												<!-- So hieu  -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center"
+														 border="1"> <?php echo $sub['Serial']; ?></xls>
+												</td>
+
+												<!-- Don vi thuc hien -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center"
+														 border="1"> <?php echo $sub['WorkCenter']; ?></xls>
+												</td>
+
+												<!-- Hinh thuc thuc hien BD/KĐ/HC/TT -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center"
+														 border="1"> <?php echo @$sub['WorkCode'][0] ?></xls>
+												</td>
+
+												<!-- Noi dung thuc hien -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center"
+														 border="1"> <?php echo @$sub['Des'][0]; ?></xls>
+												</td>
+
+												<!-- Dinh ky thuc hien -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center" border="1"> <?php echo $dinhKy2; ?></xls>
+												</td>
+
+												<!-- T1 -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center"
+														 border="1"> <?php echo @$sub['Month'][1] ? $sub['Month'][1] : ''; ?></xls>
+												</td>
+
+												<!-- T2 -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center"
+														 border="1"> <?php echo @$sub['Month'][2] ? $sub['Month'][2] : ''; ?></xls>
+												</td>
+
+												<!-- T3 -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center"
+														 border="1"> <?php echo @$sub['Month'][3] ? $sub['Month'][3] : ''; ?></xls>
+												</td>
+
+												<!-- T4 -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center"
+														 border="1"> <?php echo @$sub['Month'][4] ? $sub['Month'][4] : ''; ?></xls>
+												</td>
+
+												<!-- T5 -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center"
+														 border="1"> <?php echo @$sub['Month'][5] ? $sub['Month'][5] : ''; ?></xls>
+												</td>
+
+												<!-- T6 -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center"
+														 border="1"> <?php echo @$sub['Month'][6] ? $sub['Month'][6] : ''; ?></xls>
+												</td>
+
+												<!-- T7 -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center"
+														 border="1"> <?php echo @$sub['Month'][7] ? $sub['Month'][7] : ''; ?></xls>
+												</td>
+
+												<!-- T8 -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center"
+														 border="1"> <?php echo @$sub['Month'][8] ? $sub['Month'][8] : ''; ?></xls>
+												</td>
+
+												<!-- T9 -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center"
+														 border="1"> <?php echo @$sub['Month'][9] ? $sub['Month'][9] : ''; ?></xls>
+												</td>
+
+												<!-- T10 -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center"
+														 border="1"> <?php echo @$sub['Month'][10] ? $sub['Month'][10] : ''; ?></xls>
+												</td>
+
+												<!-- T11 -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center"
+														 border="1"> <?php echo @$sub['Month'][11] ? $sub['Month'][11] : ''; ?></xls>
+												</td>
+
+												<!-- T12 -->
+												<td class="center <?php echo 'col' . $begin; ?>"
+													col="<?php echo $begin; ?>">
+													<xls row="<?php echo $row ?>"
+														 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+														 h-align="center" v-align="center"
+														 border="1"> <?php echo @$sub['Month'][12] ? $sub['Month'][12] : ''; ?></xls>
+												</td>
+											</tr>
+											<?php $row++ ?>
+
+										<?php elseif ($totalLine2 > 1): ?>
+
+											<?php if ($oldCode2 != $code2): ?>
+												<tr>
+													<!-- STT -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														rowspan="<?php echo($totalLine2); ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 row-merge="<?php echo($totalLine2 - 1) ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php //echo ++$stt; ?></xls>
+													</td>
+
+													<!-- Thiet BI -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														rowspan="<?php echo($totalLine2); ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 row-merge="<?php echo($totalLine2 - 1) ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo $sub['EqName']; ?></xls>
+													</td>
+
+													<!-- Ma SO -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														rowspan="<?php echo($totalLine2); ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 row-merge="<?php echo($totalLine2 - 1) ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo $sub['EqCode']; ?></xls>
+													</td>
+
+													<!-- Ma Tai san -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														rowspan="<?php echo($totalLine2); ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 row-merge="<?php echo($totalLine2 - 1) ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo $sub['FACode']; ?></xls>
+													</td>
+
+													<!-- So hieu  -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														rowspan="<?php echo($totalLine2); ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 row-merge="<?php echo($totalLine2 - 1) ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo $sub['Serial']; ?></xls>
+													</td>
+
+													<!-- Don vi thuc hien -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo $sub['WorkCenter']; ?></xls>
+													</td>
+
+													<!-- Hinh thuc thuc hien BD/KĐ/HC/TT -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['WorkCode'][0]; ?></xls>
+													</td>
+
+													<!-- Noi dung thuc hien -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Des'][0]; ?></xls>
+													</td>
+
+													<!-- Dinh ky thuc hien -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo $dinhKy2; ?></xls>
+													</td>
+
+													<!-- T1 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][1] ? $sub['Month'][1] : ''; ?></xls>
+													</td>
+
+													<!-- T2 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][2] ? $sub['Month'][2] : ''; ?></xls>
+													</td>
+
+													<!-- T3 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][3] ? $sub['Month'][3] : ''; ?></xls>
+													</td>
+
+													<!-- T4 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][4] ? $sub['Month'][4] : ''; ?></xls>
+													</td>
+
+													<!-- T5 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][5] ? $sub['Month'][5] : ''; ?></xls>
+													</td>
+
+													<!-- T6 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][6] ? $sub['Month'][6] : ''; ?></xls>
+													</td>
+
+													<!-- T7 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][7] ? $sub['Month'][7] : ''; ?></xls>
+													</td>
+
+													<!-- T8 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][8] ? $sub['Month'][8] : ''; ?></xls>
+													</td>
+
+													<!-- T9 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][9] ? $sub['Month'][9] : ''; ?></xls>
+													</td>
+
+													<!-- T10 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][10] ? $sub['Month'][10] : ''; ?></xls>
+													</td>
+
+													<!-- T11 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][11] ? $sub['Month'][11] : ''; ?></xls>
+													</td>
+
+													<!-- T12 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][12] ? $sub['Month'][12] : ''; ?></xls>
+													</td>
+												</tr>
+												<?php $rowBegin = $row; ?>
+												<?php $row++; ?>
+												<?php //continue;?>
+											<?php endif; ?>
+
+
+											<?php //if($oldCode == $code):?>
+											<?php $row = $rowBegin + 1; ?>
+
+
+											<?php foreach ($sub['Des'] as $desNo => $des): ?>
+												<?php if ($desNo == 0) continue; ?>
+
+												<tr>
+													<!-- Don vi thuc hien -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo $sub['WorkCenter']; ?></xls>
+													</td>
+
+													<!-- Hinh thuc thuc hien BD/KĐ/HC/TT -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['WorkCode'][$desNo]; ?></xls>
+													</td>
+
+													<!-- Noi dung thuc hien -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center" border="1"> <?php echo $des; ?></xls>
+													</td>
+
+													<!-- Dinh ky thuc hien -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo $dinhKy2; ?></xls>
+													</td>
+
+													<!-- T1 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][1] ? $sub['Month'][1] : ''; ?></xls>
+													</td>
+
+													<!-- T2 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][2] ? $sub['Month'][2] : ''; ?></xls>
+													</td>
+
+													<!-- T3 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][3] ? $sub['Month'][3] : ''; ?></xls>
+													</td>
+
+													<!-- T4 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][4] ? $sub['Month'][4] : ''; ?></xls>
+													</td>
+
+													<!-- T5 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][5] ? $sub['Month'][5] : ''; ?></xls>
+													</td>
+
+													<!-- T6 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][6] ? $sub['Month'][6] : ''; ?></xls>
+													</td>
+
+													<!-- T7 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][7] ? $sub['Month'][7] : ''; ?></xls>
+													</td>
+
+													<!-- T8 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][8] ? $sub['Month'][8] : ''; ?></xls>
+													</td>
+
+													<!-- T9 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][9] ? $sub['Month'][9] : ''; ?></xls>
+													</td>
+
+													<!-- T10 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][10] ? $sub['Month'][10] : ''; ?></xls>
+													</td>
+
+													<!-- T11 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][11] ? $sub['Month'][11] : ''; ?></xls>
+													</td>
+
+													<!-- T12 -->
+													<td class="center <?php echo 'col' . $begin; ?>"
+														col="<?php echo $begin; ?>">
+														<xls row="<?php echo $row ?>"
+															 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+															 h-align="center" v-align="center"
+															 border="1"> <?php echo @$sub['Month'][12] ? $sub['Month'][12] : ''; ?></xls>
+													</td>
+												</tr>
+												<?php $row++ ?>
+
+											<?php endforeach; ?>
+
+											<?php //endif;?>
+
+											<?php $oldCode2 = $code2; ?>
+
+
+										<?php endif; ?>
+									<?php endif; ?>
+								<?php endforeach; ?>
+
+							<?php endforeach; ?>
+						<?php endif; ?>
+
+
+						<?php if ($oldEqGroup != $item['EqGroupIOID']): ?>
+							<tr>
+								<td colspan="<?php echo $totalColumn; ?>" class="bgyellow bold">
+									<xls row="<?php echo $row ?>" column="A"
+										 column-merge="<?php echo $excel_col[$totalColumn] ?>"
+										 wrap-text="1" h-align="left" v-align="center"
+										 border="1"> <?php echo ++$eqGroupNo; ?>. <?php echo $item['EqGroup']; ?></xls>
+								</td>
+							</tr>
+							<?php $row++; ?>
+
+							<?php $eqTypeNo = 0;// reset;?>
+							<?php $eqTypeNoMemory[$eqGroupNo] = array(); ?>
+
+						<?php endif; ?>
+						<?php $oldEqGroup = $item['EqGroupIOID']; ?>
+
+
+						<?php if ($oldEqType != $item['EqTypeIOID']): ?>
+							<?php
+							$displayEqType = $eqGroupNo;
+
+							// neu chua ton tai bien nho so thu tu cua level hien tai thi khoi tao
+							if (!isset($eqTypeNoMemory[$eqGroupNo][$item['EqTypeLevel']])) {
+								$eqTypeNoMemory[$eqGroupNo][$item['EqTypeLevel']] = 0;
+							}
+
+							$eqTypeNoMemory[$eqGroupNo][$item['EqTypeLevel']]++;
+
+							if ($oldEqTypeLevel != '' && $item['EqTypeLevel'] < $oldEqTypeLevel) {
+								foreach ($eqTypeNoMemory[$eqGroupNo] as $etlv => $etnm) {
+									if ($etlv > $item['EqTypeLevel']) {
+										$eqTypeNoMemory[$eqGroupNo][$etlv] = 0;
+									}
+								}
+							}
+
+
+							$i = 0;
+							while ($i != $item['EqTypeLevel']) {
+								$j = $i + 1;
+								$displayEqType .= '.' . $eqTypeNoMemory[$eqGroupNo][$j];
+								$i++;
+							}
+
+							$displayEqType .= ' ' . $item['EqType'];
+
+							$oldEqTypeLevel = $item['EqTypeLevel'];
+							?>
+							<tr>
+								<td colspan="<?php echo $totalColumn; ?>" class="bgorange bold">
+									<xls row="<?php echo $row ?>" column="A"
+										 column-merge="<?php echo $excel_col[$totalColumn] ?>"
+										 wrap-text="1" h-align="left" v-align="center"
+										 border="1"> <?php echo $displayEqType; ?></xls>
+								</td>
+							</tr>
+							<?php $row++; ?>
+						<?php endif; ?>
+						<?php $oldEqType = $item['EqTypeIOID']; ?>
+
+
+						<?php if ($item['CurrentEqTypeIOID'] == $item['EqTypeIOID']): ?>
+
+							<?php if ($totalLine == 1): ?>
+								<tr>
+									<!-- STT -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center" border="1"> <?php echo ++$stt; ?></xls>
+									</td>
+
+									<!-- Thiet BI -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo $item['EqName']; ?></xls>
+									</td>
+
+									<!-- Ma SO -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo $item['EqCode']; ?></xls>
+									</td>
+
+									<!-- Ma Tai san -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo $item['FACode']; ?></xls>
+									</td>
+
+									<!-- So hieu  -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo $item['Serial']; ?></xls>
+									</td>
+
+									<!-- Don vi thuc hien -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo $item['WorkCenter']; ?></xls>
+									</td>
+
+									<!-- Hinh thuc thuc hien BD/KĐ/HC/TT -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$item['WorkCode'][0] ?></xls>
+									</td>
+
+									<!-- Noi dung thuc hien -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>"> &nbsp;
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$item['Des'][0]; ?></xls>
+									</td>
+
+									<!-- Dinh ky thuc hien -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center" border="1"> <?php echo $dinhKy; ?></xls>
+									</td>
+
+									<!-- T1 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$item['Month'][1] ? $item['Month'][1] : ''; ?></xls>
+									</td>
+
+									<!-- T2 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$item['Month'][2] ? $item['Month'][2] : ''; ?></xls>
+									</td>
+
+									<!-- T3 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$item['Month'][3] ? $item['Month'][3] : ''; ?></xls>
+									</td>
+
+									<!-- T4 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$item['Month'][4] ? $item['Month'][4] : ''; ?></xls>
+									</td>
+
+									<!-- T5 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$item['Month'][5] ? $item['Month'][5] : ''; ?></xls>
+									</td>
+
+									<!-- T6 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$item['Month'][6] ? $item['Month'][6] : ''; ?></xls>
+									</td>
+
+									<!-- T7 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$item['Month'][7] ? $item['Month'][7] : ''; ?></xls>
+									</td>
+
+									<!-- T8 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$item['Month'][8] ? $item['Month'][8] : ''; ?></xls>
+									</td>
+
+									<!-- T9 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$item['Month'][9] ? $item['Month'][9] : ''; ?></xls>
+									</td>
+
+									<!-- T10 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$item['Month'][10] ? $item['Month'][10] : ''; ?></xls>
+									</td>
+
+									<!-- T11 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$item['Month'][11] ? $item['Month'][11] : ''; ?></xls>
+									</td>
+
+									<!-- T12 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$item['Month'][12] ? $item['Month'][12] : ''; ?></xls>
+									</td>
+								</tr>
+								<?php $row++ ?>
+
+							<?php elseif ($totalLine > 1): ?>
+
+								<?php if ($oldCode != $code): ?>
+									<tr>
+										<!-- STT -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											rowspan="<?php echo($totalLine); ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 row-merge="<?php echo($totalLine - 1) ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo ++$stt; ?></xls>
+										</td>
+
+										<!-- Thiet BI -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											rowspan="<?php echo($totalLine); ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 row-merge="<?php echo($totalLine - 1) ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo $item['EqName']; ?></xls>
+										</td>
+
+										<!-- Ma SO -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											rowspan="<?php echo($totalLine); ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 row-merge="<?php echo($totalLine - 1) ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo $item['EqCode']; ?></xls>
+										</td>
+
+										<!-- Ma Tai san -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											rowspan="<?php echo($totalLine); ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 row-merge="<?php echo($totalLine - 1) ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo $item['FACode']; ?></xls>
+										</td>
+
+										<!-- So hieu  -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											rowspan="<?php echo($totalLine); ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 row-merge="<?php echo($totalLine - 1) ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo $item['Serial']; ?></xls>
+										</td>
+
+										<!-- Don vi thuc hien -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo $item['WorkCenter']; ?></xls>
+										</td>
+
+										<!-- Hinh thuc thuc hien BD/KĐ/HC/TT -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['WorkCode'][0]; ?></xls>
+										</td>
+
+										<!-- Noi dung thuc hien -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>"> &nbsp;
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Des'][0]; ?></xls>
+										</td>
+
+										<!-- Dinh ky thuc hien -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo $dinhKy; ?></xls>
+										</td>
+
+										<!-- T1 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][1] ? $item['Month'][1] : ''; ?></xls>
+										</td>
+
+										<!-- T2 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][2] ? $item['Month'][2] : ''; ?></xls>
+										</td>
+
+										<!-- T3 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][3] ? $item['Month'][3] : ''; ?></xls>
+										</td>
+
+										<!-- T4 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][4] ? $item['Month'][4] : ''; ?></xls>
+										</td>
+
+										<!-- T5 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][5] ? $item['Month'][5] : ''; ?></xls>
+										</td>
+
+										<!-- T6 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][6] ? $item['Month'][6] : ''; ?></xls>
+										</td>
+
+										<!-- T7 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][7] ? $item['Month'][7] : ''; ?></xls>
+										</td>
+
+										<!-- T8 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][8] ? $item['Month'][8] : ''; ?></xls>
+										</td>
+
+										<!-- T9 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][9] ? $item['Month'][9] : ''; ?></xls>
+										</td>
+
+										<!-- T10 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][10] ? $item['Month'][10] : ''; ?></xls>
+										</td>
+
+										<!-- T11 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][11] ? $item['Month'][11] : ''; ?></xls>
+										</td>
+
+										<!-- T12 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][12] ? $item['Month'][12] : ''; ?></xls>
+										</td>
+									</tr>
+									<?php $rowBegin = $row; ?>
+									<?php $row++; ?>
+									<?php //continue;?>
+								<?php endif; ?>
+
+
+								<?php //if($oldCode == $code):?>
+								<?php $row = $rowBegin + 1; ?>
+
+
+								<?php foreach ($item['Des'] as $desNo => $des): ?>
+									<?php if ($desNo == 0) continue; ?>
+
+									<tr>
+										<!-- Don vi thuc hien -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo $item['WorkCenter']; ?></xls>
+										</td>
+
+										<!-- Hinh thuc thuc hien BD/KĐ/HC/TT -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>"> &nbsp;
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['WorkCode'][$desNo]; ?></xls>
+										</td>
+
+										<!-- Noi dung thuc hien -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>"> &nbsp;
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center" border="1"> <?php echo $des; ?></xls>
+										</td>
+
+										<!-- Dinh ky thuc hien -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo $dinhKy; ?></xls>
+										</td>
+
+										<!-- T1 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][1] ? $item['Month'][1] : ''; ?></xls>
+										</td>
+
+										<!-- T2 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][2] ? $item['Month'][2] : ''; ?></xls>
+										</td>
+
+										<!-- T3 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][3] ? $item['Month'][3] : ''; ?></xls>
+										</td>
+
+										<!-- T4 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][4] ? $item['Month'][4] : ''; ?></xls>
+										</td>
+
+										<!-- T5 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][5] ? $item['Month'][5] : ''; ?></xls>
+										</td>
+
+										<!-- T6 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][6] ? $item['Month'][6] : ''; ?></xls>
+										</td>
+
+										<!-- T7 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][7] ? $item['Month'][7] : ''; ?></xls>
+										</td>
+
+										<!-- T8 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][8] ? $item['Month'][8] : ''; ?></xls>
+										</td>
+
+										<!-- T9 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][9] ? $item['Month'][9] : ''; ?></xls>
+										</td>
+
+										<!-- T10 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][10] ? $item['Month'][10] : ''; ?></xls>
+										</td>
+
+										<!-- T11 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][11] ? $item['Month'][11] : ''; ?></xls>
+										</td>
+
+										<!-- T12 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$item['Month'][12] ? $item['Month'][12] : ''; ?></xls>
+										</td>
+									</tr>
+									<?php $row++ ?>
+
+								<?php endforeach; ?>
+
+								<?php //endif;?>
+
+								<?php $oldCode = $code; ?>
+
+
+							<?php endif; ?>
+
+							<?php $oldItem = $item['EqIOID'];?>
+							<?php $oldSub  = isset($item['Sub'])?$item['Sub']:array();?>
+
+						<?php endif; ?>
+
+
+					<?php endif; ?>
+
+
+
+
+
+
+
+
+				<?php endforeach;// in report?>
+			<?php endforeach;// in report?>
+
+			<?php if ($oldItem != '' && $oldItem != $item['EqIOID']): ?>
+				<?php foreach ($oldSub as $code3 => $subs): ?>
+
+
+					<?php foreach ($subs as $sub): ?>
+						<?php $begin = 0; ?>
+						<?php $totalLine2 = $sub['Rowspan']; ?>
+						<?php
+						if (isset($sub['Period']) && $sub['Period']) {
+
+							switch ($sub['Period']) {
+								case 'M':
+									$dinhKy2 = $sub['Interval'] . ' ' . $this->_translate(24) . ' ';
+									break;
+
+								case 'Y':
+									$dinhKy2 = $sub['Interval'] . ' ' . $this->_translate(25) . ' ';
+									break;
+
+							}
+						}
+						?>
+						<?php if (isset($sub['Period']) && $sub['Period']): ?>
+
+							<?php if ($totalLine2 == 1): ?>
+								<tr>
+									<!-- STT -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center" border="1"> <?php //echo ++$stt; ?></xls>
+									</td>
+
+									<!-- Thiet BI -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo $sub['EqName']; ?></xls>
+									</td>
+
+									<!-- Ma SO -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo $sub['EqCode']; ?></xls>
+									</td>
+
+									<!-- Ma Tai san -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo $sub['FACode']; ?></xls>
+									</td>
+
+									<!-- So hieu  -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo $sub['Serial']; ?></xls>
+									</td>
+
+									<!-- Don vi thuc hien -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo $sub['WorkCenter']; ?></xls>
+									</td>
+
+									<!-- Hinh thuc thuc hien BD/KĐ/HC/TT -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$sub['WorkCode'][0] ?></xls>
+									</td>
+
+									<!-- Noi dung thuc hien -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$sub['Des'][0]; ?></xls>
+									</td>
+
+									<!-- Dinh ky thuc hien -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center" border="1"> <?php echo $dinhKy2; ?></xls>
+									</td>
+
+									<!-- T1 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$sub['Month'][1] ? $sub['Month'][1] : ''; ?></xls>
+									</td>
+
+									<!-- T2 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$sub['Month'][2] ? $sub['Month'][2] : ''; ?></xls>
+									</td>
+
+									<!-- T3 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$sub['Month'][3] ? $sub['Month'][3] : ''; ?></xls>
+									</td>
+
+									<!-- T4 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$sub['Month'][4] ? $sub['Month'][4] : ''; ?></xls>
+									</td>
+
+									<!-- T5 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$sub['Month'][5] ? $sub['Month'][5] : ''; ?></xls>
+									</td>
+
+									<!-- T6 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$sub['Month'][6] ? $sub['Month'][6] : ''; ?></xls>
+									</td>
+
+									<!-- T7 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$sub['Month'][7] ? $sub['Month'][7] : ''; ?></xls>
+									</td>
+
+									<!-- T8 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$sub['Month'][8] ? $sub['Month'][8] : ''; ?></xls>
+									</td>
+
+									<!-- T9 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$sub['Month'][9] ? $sub['Month'][9] : ''; ?></xls>
+									</td>
+
+									<!-- T10 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$sub['Month'][10] ? $sub['Month'][10] : ''; ?></xls>
+									</td>
+
+									<!-- T11 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$sub['Month'][11] ? $sub['Month'][11] : ''; ?></xls>
+									</td>
+
+									<!-- T12 -->
+									<td class="center <?php echo 'col' . $begin; ?>"
+										col="<?php echo $begin; ?>">
+										<xls row="<?php echo $row ?>"
+											 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+											 h-align="center" v-align="center"
+											 border="1"> <?php echo @$sub['Month'][12] ? $sub['Month'][12] : ''; ?></xls>
+									</td>
+								</tr>
+								<?php $row++ ?>
+
+							<?php elseif ($totalLine2 > 1): ?>
+
+								<?php if ($oldCode3 != $code3): ?>
+									<tr>
+										<!-- STT -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											rowspan="<?php echo($totalLine2); ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 row-merge="<?php echo($totalLine2 - 1) ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php //echo ++$stt; ?></xls>
+										</td>
+
+										<!-- Thiet BI -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											rowspan="<?php echo($totalLine2); ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 row-merge="<?php echo($totalLine2 - 1) ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo $sub['EqName']; ?></xls>
+										</td>
+
+										<!-- Ma SO -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											rowspan="<?php echo($totalLine2); ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 row-merge="<?php echo($totalLine2 - 1) ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo $sub['EqCode']; ?></xls>
+										</td>
+
+										<!-- Ma Tai san -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											rowspan="<?php echo($totalLine2); ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 row-merge="<?php echo($totalLine2 - 1) ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo $sub['FACode']; ?></xls>
+										</td>
+
+										<!-- So hieu  -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											rowspan="<?php echo($totalLine2); ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 row-merge="<?php echo($totalLine2 - 1) ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo $sub['Serial']; ?></xls>
+										</td>
+
+										<!-- Don vi thuc hien -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo $sub['WorkCenter']; ?></xls>
+										</td>
+
+										<!-- Hinh thuc thuc hien BD/KĐ/HC/TT -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['WorkCode'][0]; ?></xls>
+										</td>
+
+										<!-- Noi dung thuc hien -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Des'][0]; ?></xls>
+										</td>
+
+										<!-- Dinh ky thuc hien -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo $dinhKy2; ?></xls>
+										</td>
+
+										<!-- T1 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][1] ? $sub['Month'][1] : ''; ?></xls>
+										</td>
+
+										<!-- T2 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][2] ? $sub['Month'][2] : ''; ?></xls>
+										</td>
+
+										<!-- T3 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][3] ? $sub['Month'][3] : ''; ?></xls>
+										</td>
+
+										<!-- T4 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][4] ? $sub['Month'][4] : ''; ?></xls>
+										</td>
+
+										<!-- T5 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][5] ? $sub['Month'][5] : ''; ?></xls>
+										</td>
+
+										<!-- T6 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][6] ? $sub['Month'][6] : ''; ?></xls>
+										</td>
+
+										<!-- T7 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][7] ? $sub['Month'][7] : ''; ?></xls>
+										</td>
+
+										<!-- T8 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][8] ? $sub['Month'][8] : ''; ?></xls>
+										</td>
+
+										<!-- T9 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][9] ? $sub['Month'][9] : ''; ?></xls>
+										</td>
+
+										<!-- T10 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][10] ? $sub['Month'][10] : ''; ?></xls>
+										</td>
+
+										<!-- T11 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][11] ? $sub['Month'][11] : ''; ?></xls>
+										</td>
+
+										<!-- T12 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][12] ? $sub['Month'][12] : ''; ?></xls>
+										</td>
+									</tr>
+									<?php $rowBegin = $row; ?>
+									<?php $row++; ?>
+									<?php //continue;?>
+								<?php endif; ?>
+
+
+								<?php //if($oldCode == $code):?>
+								<?php $row = $rowBegin + 1; ?>
+
+
+								<?php foreach ($sub['Des'] as $desNo => $des): ?>
+									<?php if ($desNo == 0) continue; ?>
+
+									<tr>
+										<!-- Don vi thuc hien -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo $sub['WorkCenter']; ?></xls>
+										</td>
+
+										<!-- Hinh thuc thuc hien BD/KĐ/HC/TT -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['WorkCode'][$desNo]; ?></xls>
+										</td>
+
+										<!-- Noi dung thuc hien -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center" border="1"> <?php echo $des; ?></xls>
+										</td>
+
+										<!-- Dinh ky thuc hien -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo $dinhKy2; ?></xls>
+										</td>
+
+										<!-- T1 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][1] ? $sub['Month'][1] : ''; ?></xls>
+										</td>
+
+										<!-- T2 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][2] ? $sub['Month'][2] : ''; ?></xls>
+										</td>
+
+										<!-- T3 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][3] ? $sub['Month'][3] : ''; ?></xls>
+										</td>
+
+										<!-- T4 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][4] ? $sub['Month'][4] : ''; ?></xls>
+										</td>
+
+										<!-- T5 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][5] ? $sub['Month'][5] : ''; ?></xls>
+										</td>
+
+										<!-- T6 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][6] ? $sub['Month'][6] : ''; ?></xls>
+										</td>
+
+										<!-- T7 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][7] ? $sub['Month'][7] : ''; ?></xls>
+										</td>
+
+										<!-- T8 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][8] ? $sub['Month'][8] : ''; ?></xls>
+										</td>
+
+										<!-- T9 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][9] ? $sub['Month'][9] : ''; ?></xls>
+										</td>
+
+										<!-- T10 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][10] ? $sub['Month'][10] : ''; ?></xls>
+										</td>
+
+										<!-- T11 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][11] ? $sub['Month'][11] : ''; ?></xls>
+										</td>
+
+										<!-- T12 -->
+										<td class="center <?php echo 'col' . $begin; ?>"
+											col="<?php echo $begin; ?>">
+											<xls row="<?php echo $row ?>"
+												 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+												 h-align="center" v-align="center"
+												 border="1"> <?php echo @$sub['Month'][12] ? $sub['Month'][12] : ''; ?></xls>
+										</td>
+									</tr>
+									<?php $row++ ?>
+
+								<?php endforeach; ?>
+
+								<?php //endif;?>
+
+								<?php $oldCode3 = $code3; ?>
+
+
+							<?php endif; ?>
+						<?php endif; ?>
+					<?php endforeach; ?>
+
+				<?php endforeach; ?>
+			<?php endif; ?>
+
+
+		</table>
+		<?php //echo '<pre>'; print_r($eqTypeNoMemory); die;?>
+
+
+		<table cellspacing="0" cellpadding="0" border="0">
+
+			<?php $begin = 0; ?>
+			<tr>
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  Ghi chú -->
+				<td class="left <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> Ghi chú
+					</xls>
+				</td>
+
+				<!--  -->
+				<?php $next = $begin + 1;
+				$width = $fitWidth[$begin] + $fitWidth[$next]; ?>
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" colspan="2" style="width:<?php echo $width; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>"
+						 column-merge="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+
+				<!--   -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!---->
+				<?php $next = $begin + 1;
+				$next2 = $begin + 2;
+				$width = $fitWidth[$begin] + $fitWidth[$next] + $fitWidth[$next2]; ?>
+				<td class="center <?php echo 'col' . $begin; ?>" colspan="3"
+					col="<?php echo $begin; ?>" style="width:<?php echo $width; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>"
+						 column-merge="<?php echo $excel_col[($begin + 2)] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+				<?php $begin = $begin + 2; ?>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+
+				<!--  -->
+				<?php $next = $begin + 1;
+				$width = $fitWidth[$begin] + $fitWidth[$next]; ?>
+				<td class="center <?php echo 'col' . $begin; ?>" colspan="4"
+					col="<?php echo $begin; ?>" style="width:<?php echo $width; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>"
+						 column-merge="<?php echo $excel_col[($begin + 3)] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+			</tr>
+
+			<!-- Dong 1 -->
+			<?php $begin = 0; ?>
+			<tr>
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!-- X -->
+				<td class="left <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> X
+					</xls>
+				</td>
+
+				<!-- Kế hoạch -->
+				<?php $next = $begin + 1;
+				$width = $fitWidth[$begin] + $fitWidth[$next]; ?>
+				<td class="left <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" colspan="2" style="width:<?php echo $width; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>"
+						 column-merge="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> Kế hoạch
+					</xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+
+				<!-- L  -->
+				<td class="left <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> L
+					</xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!-- Bôi trơn -->
+				<td class="left <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> Bôi trơn
+					</xls>
+				</td>
+
+				<!-- C -->
+				<td class="left <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> C
+					</xls>
+				</td>
+
+				<!--Vệ sinh-->
+				<?php $next = $begin + 1;
+				$next2 = $begin + 2;
+				$width = $fitWidth[$begin] + $fitWidth[$next] + $fitWidth[$next2]; ?>
+				<td class="left <?php echo 'col' . $begin; ?>" colspan="3"
+					col="<?php echo $begin; ?>" style="width:<?php echo $width; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>"
+						 column-merge="<?php echo $excel_col[($begin + 2)] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> Vệ sinh
+					</xls>
+				</td>
+				<?php $begin = $begin + 2; ?>
+
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!-- M -->
+				<td class="left <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> M
+					</xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+
+				<!--Bảo dưỡng -->
+				<?php $next = $begin + 1;
+				$width = $fitWidth[$begin] + $fitWidth[$next]; ?>
+				<td class="left <?php echo 'col' . $begin; ?>" colspan="4"
+					col="<?php echo $begin; ?>" style="width:<?php echo $width; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>"
+						 column-merge="<?php echo $excel_col[($begin + 3)] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> Bảo dưỡng
+					</xls>
+				</td>
+
+			</tr>
+			<?php $row++; ?>
+
+
+			<!-- DONG 2 -->
+			<?php $begin = 0; ?>
+			<tr>
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!-- &#9774; -->
+				<td class="left <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> &#9774; </xls>
+				</td>
+
+				<!-- Đã thực hiện -->
+				<?php $next = $begin + 1;
+				$width = $fitWidth[$begin] + $fitWidth[$next]; ?>
+				<td class="left <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" colspan="2" style="width:<?php echo $width; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>"
+						 column-merge="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> Đã thực hiện
+					</xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+
+				<!-- I  -->
+				<td class="left <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> I
+					</xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!-- Kiểm tra -->
+				<td class="left <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> Kiểm tra
+					</xls>
+				</td>
+
+				<!-- D -->
+				<td class="left <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> D
+					</xls>
+				</td>
+
+				<!--Xả-->
+				<?php $next = $begin + 1;
+				$next2 = $begin + 2;
+				$width = $fitWidth[$begin] + $fitWidth[$next] + $fitWidth[$next2]; ?>
+				<td class="left <?php echo 'col' . $begin; ?>" colspan="3"
+					col="<?php echo $begin; ?>" style="width:<?php echo $width; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>"
+						 column-merge="<?php echo $excel_col[($begin + 2)] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> Xả
+					</xls>
+				</td>
+				<?php $begin = $begin + 2; ?>
+
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!-- V -->
+				<td class="left <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> V
+					</xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+
+				<!--Kiểm định -->
+				<?php $next = $begin + 1;
+				$width = $fitWidth[$begin] + $fitWidth[$next]; ?>
+				<td class="left <?php echo 'col' . $begin; ?>" colspan="4"
+					col="<?php echo $begin; ?>" style="width:<?php echo $width; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>"
+						 column-merge="<?php echo $excel_col[($begin + 3)] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> Kiểm định
+					</xls>
+				</td>
+
+			</tr>
+			<?php $row++; ?>
+
+
+			<!-- DONG 3 -->
+			<?php $begin = 0; ?>
+			<tr>
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!-- X-> -->
+				<td class="left <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> X->
+					</xls>
+				</td>
+
+				<!-- Đã dời kế hoạch -->
+				<?php $next = $begin + 1;
+				$width = $fitWidth[$begin] + $fitWidth[$next]; ?>
+				<td class="left <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" colspan="2" style="width:<?php echo $width; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>"
+						 column-merge="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> Đã dời kế hoạch
+					</xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+
+				<!-- R  -->
+				<td class="left <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> R
+					</xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!-- Thay thế -->
+				<td class="left <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> Thay thế
+					</xls>
+				</td>
+
+				<!-- A -->
+				<td class="left <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> A
+					</xls>
+				</td>
+
+				<!--Điều chỉnh-->
+				<?php $next = $begin + 1;
+				$next2 = $begin + 2;
+				$width = $fitWidth[$begin] + $fitWidth[$next] + $fitWidth[$next2]; ?>
+				<td class="left <?php echo 'col' . $begin; ?>" colspan="3"
+					col="<?php echo $begin; ?>" style="width:<?php echo $width; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>"
+						 column-merge="<?php echo $excel_col[($begin + 2)] ?>" wrap-text="1"
+						 h-align="center" v-align="left" border="0"> Điều chỉnh
+					</xls>
+				</td>
+				<?php $begin = $begin + 2; ?>
+
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!-- Ca -->
+				<td class="left <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> Ca
+					</xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+
+				<!--Hiệu chuẩn -->
+				<?php $next = $begin + 1;
+				$width = $fitWidth[$begin] + $fitWidth[$next]; ?>
+				<td class="left <?php echo 'col' . $begin; ?>" colspan="4"
+					col="<?php echo $begin; ?>" style="width:<?php echo $width; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>"
+						 column-merge="<?php echo $excel_col[($begin + 3)] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> Hiệu chuẩn
+					</xls>
+				</td>
+
+			</tr>
+			<?php $row++; ?>
+
+
+			<!-- DONG 4 -->
+			<?php $begin = 0; ?>
+			<tr>
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<?php $next = $begin + 1;
+				$width = $fitWidth[$begin] + $fitWidth[$next]; ?>
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" colspan="2" style="width:<?php echo $width; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>"
+						 column-merge="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+
+				<!--   -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!---->
+				<?php $next = $begin + 1;
+				$next2 = $begin + 2;
+				$width = $fitWidth[$begin] + $fitWidth[$next] + $fitWidth[$next2]; ?>
+				<td class="center <?php echo 'col' . $begin; ?>" colspan="3"
+					col="<?php echo $begin; ?>" style="width:<?php echo $width; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>"
+						 column-merge="<?php echo $excel_col[($begin + 2)] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+				<?php $begin = $begin + 2; ?>
+
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">&nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+				<!-- LT -->
+				<td class="left <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="left" border="0"> LT
+					</xls>
+				</td>
+
+				<!--  -->
+				<td class="center <?php echo 'col' . $begin; ?>"
+					col="<?php echo $begin; ?>" style="width:<?php echo $fitWidth[$begin]; ?>px;"> &nbsp;
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						 h-align="center" v-align="center" border="0"></xls>
+				</td>
+
+
+				<!--Thử tải -->
+				<?php $next = $begin + 1;
+				$width = $fitWidth[$begin] + $fitWidth[$next]; ?>
+				<td class="left <?php echo 'col' . $begin; ?>" colspan="4"
+					col="<?php echo $begin; ?>" style="width:<?php echo $width; ?>px;">
+					<xls row="<?php echo $row ?>"
+						 column="<?php echo $excel_col[++$begin] ?>"
+						 column-merge="<?php echo $excel_col[($begin + 3)] ?>" wrap-text="1"
+						 h-align="left" v-align="center" border="0"> Thử tải
+					</xls>
+				</td>
+
+			</tr>
+			<?php $row++; ?>
+		</table>
+
+
+		<div style="text-align: right">
+			<xls row="<?php echo $row ?>"
+				 column="<?php echo $excel_col[14] ?>"
+				 column-merge="<?php echo $excel_col[20] ?>" wrap-text="1"
+				 h-align="center" v-align="center" border="0"> Ngày …….tháng ……..năm……….
+			</xls>
+		</div>
+		<?php $row++; ?>
+
+		<div class="">
+			<table cellpadding="0" cellspacing="0" border="0">
+				<tr>
+					<td style="width: 25%" class="center bold">
+						<xls row="<?php echo $row ?>"
+							 column="<?php echo $excel_col[1] ?>"
+							 column-merge="<?php echo $excel_col[3] ?>" wrap-text="1"
+							 h-align="center" v-align="center" border="0" bold="1">Người lập
+						</xls>
+					</td>
+
+					<td style="width: 25%" class="center bold">
+						<xls row="<?php echo $row ?>"
+							 column="<?php echo $excel_col[4] ?>"
+							 column-merge="<?php echo $excel_col[7] ?>" wrap-text="1"
+							 h-align="center" v-align="center" border="0" bold="1">Đơn vị quản lý
+						</xls>
+					</td>
+
+					<td style="width: 25%" class="center bold">
+						<xls row="<?php echo $row ?>"
+							 column="<?php echo $excel_col[8] ?>"
+							 column-merge="<?php echo $excel_col[12] ?>" wrap-text="1"
+							 h-align="center" v-align="center" border="0" bold="1">Phòng Kỹ thuật
+						</xls>
+					</td>
+
+					<td style="width: 25%" class="center bold">
+						<xls row="<?php echo $row ?>"
+							 column="<?php echo $excel_col[15] ?>"
+							 column-merge="<?php echo $excel_col[20] ?>" wrap-text="1"
+							 h-align="center" v-align="center" border="0" bold="1">Ban Giám đốc
+						</xls>
+					</td>
+				</tr>
+
+			</table>
+
+		</div>
+
+	</div>
+</div>

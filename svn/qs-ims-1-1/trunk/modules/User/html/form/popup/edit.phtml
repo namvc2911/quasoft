@@ -1,0 +1,237 @@
+<script type="text/javascript">
+var dialog_<?php echo $this->form->FormCode?> = {
+	fedit: false,
+	uploadPicture: function (field) {
+		/* Upload file by ajax */
+		disabledLayout();
+		$.ajaxFileUpload({
+			url : sz_BaseUrl + '/user/field/uploadpicture',
+			secureuri : false,
+			fileElementId : $('#' + field + '_picture'),
+			dataType : 'json',
+			success : function(data, status) {
+				/* Upload file successfully */
+				if (data.error) {
+					qssAjax.alert(data.message);
+					enabledLayout();
+				} else {
+					$('#' + field).val(data.image);
+					$('#' + field).parent().find('img').attr('src','/user/field/picture?file='+data.image);
+					enabledLayout();
+				}
+			},
+			error : function(data, status, e) {
+				/* If upload error */
+				qssAjax.alert(e);
+			}
+		});
+	},
+	rowEditRefresh: function(input,refresh) {
+        	if($(input).val()=='null'){
+            	var selected = $(input).find(':selected');
+            	org_objid = $(selected).attr('org_objid');
+        		org_fieldid = $(selected).attr('org_fieldid');
+        		fid = $(selected).attr('fid');
+        		objid = $(selected).attr('objid');
+        		fielid = $(selected).attr('fielid');
+        		ifid = $(selected).attr('ifid');
+        		json = $(selected).attr('json');
+        		createNew(org_objid,org_fieldid,fid,objid,fielid,ifid,json);
+        		$(input).val('');
+        		return false;
+        	}
+        	if(refresh == 1){
+        		var fid = $('.popup-edit').find('#fid').val();
+                var ifid = $('.popup-edit').find('#ifid').val();
+                var deptid = $('.popup-edit').find('#deptid').val();
+                var url = sz_BaseUrl + '/user/form/popup/edit?fid=' + fid + '&ifid=' + ifid
+                                + '&deptid=' + deptid;
+                var data = $('.popup-edit').find('#form_' + fid + '_edit').serialize();
+                $('.popup-edit').find('#form_' + fid + '_edit').find('input[type=checkbox]').each(function(){
+                        if(!$(this).is(':checked')){
+                                data += '&' + $(this).attr('name') +'=';
+                        }
+                });
+                qssAjax.getHtml(url, data, function(jreturn) {
+                	$('.popup-edit').find('#qss_form').html(jreturn);
+                        $(input).focus();
+                        var val = $(input).val();
+                        $(input).val('');
+                        $(input).val(val);
+                }, function(jreturn) {
+                        qssAjax.alert(jreturn.message);
+                });
+		    }
+	},        
+        
+	formSave: function(fid, ifid, deptid,back) {
+		var ele = $('.popup-edit').find('#form_' + fid + '_edit').closest('.popup-edit');
+		ifid = ifid ? ifid : $('.popup-edit').find('#ifid').val();
+		var url = sz_BaseUrl + '/user/form/save?fid=' + fid + '&ifid=' + ifid
+				+ '&deptid=' + deptid;
+		var data = $('.popup-edit').find('#form_' + fid + '_edit').serialize();
+		$('.popup-edit').find('#form_' + fid + '_edit').find('input[type=checkbox]').each(function(){
+			if(!$(this).is(':checked')){
+				data += '&' + $(this).attr('name') +'=';
+			}
+		});
+		qssAjax.call(url, data, function(jreturn) {
+			$(ele).data('saved',true);
+			$(ele).data('ifid',jreturn.status);
+			if($(ele).data('sFunction2') !== undefined){
+				this.ifid = jreturn.status;
+				$(ele).data('sFunction2')(this);
+			}
+			if(jreturn.message != ''){
+				qssAjax.alert(jreturn.message,function(){
+					dialog_<?php echo $this->form->FormCode?>.fedit = false;
+					if(back){
+						  $(ele).dialog('close'); // close dialog insert
+					}
+					if(!ifid || ifid == 0){
+						$('.popup-edit').find('#form_' + fid + '_edit').find('#ifid').val(jreturn.status);
+						$('#btnDETAIL').removeClass('btn_disabled');
+						$('#btnWORKFLOW').removeClass('btn_disabled');
+						$('#btnSHARING').removeClass('btn_disabled');
+						$('#btnVALIDATE').removeClass('btn_disabled');
+						$('#btnSHARING').removeClass('btn_disabled');
+						$('#btnDOCUMENT').removeClass('btn_disabled');
+						$('#btnACTIVITY').removeClass('btn_disabled');
+						$('#btnEVENT').removeClass('btn_disabled');
+						$('#btnEMAIL').removeClass('btn_disabled');
+						$('#tabs_sub').css('opacity',1);
+						$('.extra-button-record').removeClass('extra-disabled');
+						$('.custom-button-field').prop('disabled',false);
+					}
+					if(bLS){
+						var lastActiveModule = $.cookie('lastActiveModule');
+						localStorage.removeItem(lastActiveModule);
+					}
+				});
+			}
+			else{
+				dialog_<?php echo $this->form->FormCode?>.fedit = false;
+				if(back){
+					 $(ele).dialog('close'); // close dialog insert
+				}
+				if(!ifid || ifid == 0){
+					$('.popup-edit').find('#form_' + fid + '_edit').find('#ifid').val(jreturn.status);
+					$('#btnDETAIL').removeClass('btn_disabled');
+					$('#btnWORKFLOW').removeClass('btn_disabled');
+					$('#btnSHARING').removeClass('btn_disabled');
+					$('#btnVALIDATE').removeClass('btn_disabled');
+					$('#btnSHARING').removeClass('btn_disabled');
+					$('#btnDOCUMENT').removeClass('btn_disabled');
+					$('#btnACTIVITY').removeClass('btn_disabled');
+					$('#btnEVENT').removeClass('btn_disabled');
+					$('#btnEMAIL').removeClass('btn_disabled');
+					$('#tabs_sub').css('opacity',1);
+					$('.extra-button-record').removeClass('extra-disabled');
+					$('.custom-button-field').prop('disabled',false);
+				}
+				if(bLS){
+					var lastActiveModule = $.cookie('lastActiveModule');
+					localStorage.removeItem(lastActiveModule);
+				}
+			}
+		}, function(jreturn) {
+			qssAjax.alert(jreturn.message);
+		});
+	}
+};	
+$(document).ready(function() {
+	$("#form_<?php echo $this->form->FormCode?>_edit .ui_box").hide();
+	$("#form_<?php echo $this->form->FormCode?>_edit .ui_box").first().fadeIn();
+	$("#form_<?php echo $this->form->FormCode?>_edit .tabs-menu a").click(function(event) {
+	        event.preventDefault();
+	        $(this).parent().addClass("active");
+	        $(this).parent().siblings().removeClass("active");
+	        var tab = $(this).attr("href");
+	        $("#form_<?php echo $this->form->FormCode?>_edit .ui_box").not(tab).css("display", "none");
+	        $(tab).find('fieldset').show();
+	        $(tab).fadeIn();
+	});
+	// set datepicker
+    $('.datepicker').each(function() {
+    	$(this).datepicker({dateFormat: "dd-mm-yy"});
+        $(this).attr('placeholder', 'dd-mm-yyyy');
+	});/* Datepicker*/
+    $.cookie('form_selected', '<?php echo $this->form->i_IFID ?>',{path:'/'});
+    	$(function() {
+                        // Display the first tab content
+                        // Set the first tab as start tab onload: if you want to set no start tab
+                        // comment it.
+                        // DisplayTabContent(10);
+                        // get index of the clicked navigation item in the list
+                        $("ul.tabslist_sub li a").click(
+                            function() {
+                                    // if animation has finished: meaning size()==0 then allow for
+                                    // other clicks
+                                    var ifid = $('#ifid').val();
+                                    var deptid = $('#deptid').val();
+                                    if (ifid && ifid != 0) {
+                                            if ($('div.tabscontent_container > div.tabcontent:animated')
+                                                .size() == 0) {
+                                                    $("ul.tabslist_sub li").removeClass('current');
+                                                    var $listItem = $(this).parent().addClass('current');
+                                                    var objid = $(this).parent().attr('objid');
+                                                    var fieldid = $(this).parent().attr('fieldid');
+                                                    var vid = $(this).parent().attr('vid');
+                                                    var ioid = $(this).parent().attr('ioid');
+                                                    var html = $(this).children().html();
+						if (ifid && deptid && objid) {
+                            DisplayTabContent(ifid, deptid, objid, fieldid, vid,
+                    		ioid, html);
+                	}
+            	}
+        	}
+        });
+    	return false;
+	});
+    <?php $fields = $this->form->o_fGetMainObject()->loadFields()?>
+    <?php foreach ($fields as $field):?>
+    	<?php if($field->bGrid & 4):?>
+    		$('.<?php echo $field->ObjectCode?>_<?php echo $field->FieldCode?>').hide();
+    	<?php endif;?>
+    <?php endforeach;?>
+    $('fieldset').each(function(){
+    	if($(this).find('.ui_box_line:visible').length == 0){
+    		$(this).hide();
+    	}
+    });
+  //onchange set fedit = true;
+	$('#form_<?php echo $this->form->FormCode?>_edit').on('keyup change',function(){
+		dialog_<?php echo $this->form->FormCode?>.fedit = true;
+		toggleFormSave();
+	});
+});
+function deletePicture(ele,name){
+	qssAjax.confirm(Language.translate('CONFIRM_DELETE'),function(){
+		$('#'+name).val('');
+		$(ele).parent().find('img').remove();
+	});
+}
+</script>
+<div id="qss_form">
+	<form id="form_<?php echo $this->form->FormCode ?>_edit" method="post" autocomplete="off">
+		<input type="hidden" name="fid" id="fid"
+			value="<?php echo $this->form->FormCode ?>"> <input type="hidden"
+			name="ifid" id="ifid" value="<?php echo $this->form->i_IFID ?>"> <input
+			type="hidden" name="deptid" id="deptid"
+			value="<?php echo $this->form->i_DepartmentID ?>">
+		<div>
+			<button
+				onclick="dialog_<?php echo $this->form->FormCode?>.formSave('<?php echo $this->form->FormCode ?>', '<?php echo $this->form->i_IFID ?>', '<?php echo $this->form->i_DepartmentID ?>')"
+				type="button" class="btn-custom" id="btnCUSTOMSAVE"><?php echo $this->_translate(34)?></button>
+			<button
+				onclick="dialog_<?php echo $this->form->FormCode?>.formSave('<?php echo $this->form->FormCode ?>', '<?php echo $this->form->i_IFID ?>', '<?php echo $this->form->i_DepartmentID ?>',1)"
+				type="button" class="btn-custom"><?php echo $this->_translate(35)?></button>
+			<button
+				onclick="$('.popup-edit').find('#form_<?php echo $this->form->FormCode?>_edit').closest('.popup-edit').dialog( 'close' );"
+				type="button" class="btn-custom"><?php echo $this->_translate(32)?></button>
+		</div>
+		<?php echo $this->formedit; ?>
+	</form>
+</div>
+<div
+	id="qss_trace" title="<?php echo $this->form->sz_Name ?>"></div>

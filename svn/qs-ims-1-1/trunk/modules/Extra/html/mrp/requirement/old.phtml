@@ -1,0 +1,56 @@
+<script type="text/javascript">
+<!--
+jQuery(document).ready(function($){
+  	$('.datepicker').each(function(){ $(this).datepicker({ dateFormat: "dd-mm-yy" }); });/* Datepicker*/
+});
+//-->
+</script>
+
+<form id="">
+	<table width="100%" cellspacing="0" cellpadding="0" border="1" id=""
+		class="borderX">
+		<tr class="bggrey">
+			<th class="" width="">
+				<!--  --> <?php  echo $this->_translate(1);?></th>
+			<th class="" width="">
+				<!--  --> <?php  echo $this->_translate(2);?></th>
+			<th class="" width="">
+				<!--  --> <?php  echo $this->_translate(3);?></th>
+			<th class="" width="">
+				<!--  --> <?php  echo $this->_translate(4);?></th>
+			<th class="" width="">
+				<!--  --> <?php  echo $this->_translate(5);?></th>
+			<th class="" width="">
+				<!--  --> <?php  echo $this->_translate(6);?></th>
+			<th class="" width="">
+				<!--  --> <?php  echo $this->_translate(7);?></th>
+			<th class="" width="">
+				<!--  --> <?php  echo $this->_translate(12);?></th>
+			<th class="" width="">
+				<!--  --> <?php  echo $this->_translate(13);?></th>
+		</tr>
+
+		<?php foreach ($this->old as $old): // In danh sach ?>
+		<tr class="">
+			<td class="left"><?php echo $old->ItemCode;?></td>
+			<td class="left"><?php echo $old->ItemName;?></td>
+			<td class="<?php echo $old->Attribute?'left':'center'; ?>"><?php echo $old->Attribute?$old->Attribute:'-';?>
+			</td>
+			<td class="left"><?php echo $old->ItemUOM;?></td>
+			<td class="right"><?php echo $old->ItemQty;?></td>
+			<td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($old->BeginDate);?>
+			</td>
+			<td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($old->EndDate);?>
+			</td>
+			<td class="left"><?php echo $old->Ref;?></td>
+			<td class="center"><button type="button"
+					class="button_like_anchor red"
+					onclick="deleteLine(<?php echo $old->IOID?>)">
+					<?php echo $this->_translate(14);?>
+				</button></td>
+		</tr>
+		<?php endforeach; // Ket thuc in danh sach ?>
+
+	</table>
+</form>
+<!-- end form #show_form -->

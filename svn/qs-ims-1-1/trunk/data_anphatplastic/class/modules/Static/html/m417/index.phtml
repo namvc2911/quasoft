@@ -1,0 +1,75 @@
+<script type="text/javascript">
+    function printPreview()
+    {
+        common_selectDialBox('materials');
+        var url = sz_BaseUrl + '/static/m417/show';
+        var data = $('#report').serialize();
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#print-area').html(jreturn);
+            removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+        });
+    }
+</script>
+
+<div class="clear"></div>
+<div id="view">
+    <div class="line-hr">
+        <span> <?php echo Qss_Lib_System::getReportTitle('M417');?> </span>
+    </div>
+    <form id="report" method="post" action="">
+        <table class="detail">
+            <!-- Thời gian -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Thời gian <span class="red bold">(*)</span>
+                </th>
+                <td>
+                    <?php echo $this->views->Report->Datepicker('start', date('01-m-Y'));?>
+                    <?php echo $this->views->Report->Datepicker('end', date('t-m-Y'));?>
+                </td>
+            </tr>
+
+            <!-- Vật tư -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Vật tư
+                </th>
+                <td>
+                    <?php echo $this->views->Report->AjaxDialBox('materials', 'OSanPham', 'IOID', array('TenSanPham', 'MaSanPham'));?>
+                </td>
+            </tr>
+
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Hàng chưa về
+                </th>
+                <td>
+                    <input type="checkbox" value="0" id="m417_HangChuaVe_checkbox" />
+                    <input type="hidden" value="0" id="m417_HangChuaVe" name="notenough"/>
+
+                    <script>
+                        $(document).ready(function () {
+                            $('#m417_HangChuaVe_checkbox').click(function () {
+                                if($(this).is(':checked'))
+                                {
+                                    $('#m417_HangChuaVe').val(1);
+                                }
+                                else
+                                {
+                                    $('#m417_HangChuaVe').val(0);
+                                }
+                            });
+                        });
+                    </script>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <p>
+
+    <hr>
+    <?php echo $this->views->Report->PrintToolbar();?>
+    <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>

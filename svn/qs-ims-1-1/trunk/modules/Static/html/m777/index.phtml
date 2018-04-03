@@ -1,0 +1,34 @@
+<script>
+function printPreview()
+{
+    var url = sz_BaseUrl + '/static/m777/show?';
+    var data = $('#report').serialize();
+    window.open(url+data);
+}
+</script>
+<div class="clear"></div>
+<div id="view">
+	<div class="line-hr">
+		<span><?php echo Qss_Lib_System::getReportTitle('M777');?> </span>
+	</div>
+
+	<form id="report" method="get"
+		action="/static/m777/show">
+		<table class="detail">
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(5)?>
+				</th>
+				<td><?php
+				$getFields['num']                            = 3;
+				$getFields['objects']['OKhuVuc']['id']       = 'IOID';
+				$getFields['objects']['OKhuVuc']['display1'] = 'MaKhuVuc';
+				$getFields['objects']['OKhuVuc']['display2'] = 'Ten';
+				echo $this->views->Report->ComboBox('location',$getFields);
+				?>
+				</td>
+			</tr>
+		</table>
+	</form>
+	<hr />
+	<?php echo $this->views->Report->PrintToolbar(array('html'=>true, 'excel'=>true));?>
+</div>

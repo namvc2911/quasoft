@@ -1,0 +1,88 @@
+<?php 
+$arrClass = array(0=>'',1=>'done',2=>'error');
+$arrStatus = array(0=>$this->_translate(13),1=>$this->_translate(15),2=>$this->_translate(14));
+// treo hoàn thành lỗi
+?>
+<div id="qss_attach">
+<table class="grid_navigator">
+      <tr>
+        <td align="center" style="border-right: 0pt none; width: 100px;"></td>
+        <td align="right"><?php echo $this->_translate(1);?>:
+          <select onchange="rowSearch(<?php echo $this->ifid?>);" id="qss_form_groupby">
+            <option value="0"/>
+            <option <?php if($this->groupby == 1) echo 'selected'?> value="1"><?php echo $this->_translate(2);?></option>
+            <option <?php if($this->groupby == 4) echo 'selected'?> value="4"><?php echo $this->_translate(3);?></option>
+            <option <?php if($this->groupby == 5) echo 'selected'?> value="5"><?php echo $this->_translate(4);?></option>
+          </select>
+          <?php echo $this->_translate(5);?>:
+          <select style="" onchange="rowSearch(<?php echo $this->ifid?>);" id="qss_form_pageno">
+          <?php for($i = 1;$i <= ceil($this->recordcount/$this->limit);$i++):?>
+            <option <?php if($i == $this->currentpage) echo 'selected';?>><?php echo $i?></option>
+          <?php endfor;?>
+          </select>
+          / 1 <?php echo $this->_translate(11);?>:
+          <select onchange="rowSearch(<?php echo $this->ifid?>);" style="" id="qss_form_perpage">
+            <option <?php if($this->limit == 10) echo 'selected'?>>10</option>
+            <option <?php if($this->limit == 20) echo 'selected'?>>20</option>
+            <option <?php if($this->limit == 50) echo 'selected'?>>50</option>
+            <option <?php if($this->limit == 100) echo 'selected'?>>100</option>
+          </select></td>
+      </tr>
+</table>
+<table cellspacing="0" class="grid">
+	<tr>
+		<th class="nocount"><?php echo $this->_translate(6);?></th>
+		<th><a href="#!" onclick="rowSort(1,<?php echo $this->ifid?>)"><?php echo $this->_translate(7);?> <?php if($this->orderfield == 1):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="rowSort(2,<?php echo $this->ifid?>)"><?php echo $this->_translate(12);?> <?php if($this->orderfield == 2):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="rowSort(3,<?php echo $this->ifid?>)"><?php echo $this->_translate(8);?> <?php if($this->orderfield == 3):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="rowSort(4,<?php echo $this->ifid?>)"><?php echo $this->_translate(9);?> <?php if($this->orderfield == 4):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="rowSort(5,<?php echo $this->ifid?>)"><?php echo $this->_translate(10);?> <?php if($this->orderfield == 5):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+	</tr>
+	<?php
+	$group = null;
+	$i=1;
+	foreach ($this->logs as $item)
+	{
+		?>
+	<?php if(isset(Qss_Model_Process::$arrField[$this->groupby])):?>
+      	<?php if($group != (($this->groupby == 1)?Qss_Lib_Date::mysqltodisplay($item->{Qss_Model_Process::$arrField[$this->groupby]}):$item->{Qss_Model_Process::$arrField[$this->groupby]})):?>
+      	<tr>
+			<td class="groupby" colspan="6">
+				<?php 
+				if($this->groupby == 1) 
+				{
+					echo Qss_Lib_Date::mysqltodisplay($item->{Qss_Model_Process::$arrGroup[$this->groupby]}); 
+				}
+				elseif($this->groupby == 4) 
+				{
+					echo $item->{Qss_Model_Process::$arrGroup[$this->groupby]};
+				}
+				elseif($this->groupby == 5)
+				{
+					echo $arrStatus[$item->{Qss_Model_Process::$arrGroup[$this->groupby]}];
+				}
+				?>
+			</td>
+		</tr>
+      	<?php endif;?>
+      <?php $group = (($this->groupby == 1)?Qss_Lib_Date::mysqltodisplay($item->{Qss_Model_Process::$arrField[$this->groupby]}):$item->{Qss_Model_Process::$arrField[$this->groupby]})?>
+      <?php endif;?>	
+	<tr rights="63" id="<?php echo $item->DID;?>">
+		<td class="nocount"><?php echo $i?></td>
+		<td><?php echo Qss_Lib_Date::mysqltodisplay($item->Date)?></td>
+		<td><?php echo $item->STime?></td>
+		<td><?php echo $item->ETime?></td>
+		<td><?php echo $item->UserName?></td>
+		<td class="center <?php echo $arrClass[$item->Status]?>" title="<?php echo $item->Note?>"><?php echo $arrStatus[$item->Status]?></td>
+	</tr>
+	<?php
+	$i++;
+	}
+	?>
+</table>
+</div>

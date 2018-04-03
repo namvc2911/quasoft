@@ -1,0 +1,106 @@
+<?php $excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);?>
+<?php
+$widthArr = array(1.5,5.5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 5);//, 2, 3, 2, 2,2, 2, 2
+$totalCol = count($widthArr);
+$widthArr = Qss_Lib_Report::changeWidthToFitScreen3($widthArr);
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+    <input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="landscape">
+    <excel orientation="landscape" font-name="Arial" font-size="9"
+           margin-left="0.5" margin-right="0.5" margin-top="0.75"
+           margin-bottom="0.75" />
+
+    <div id="head_print">
+        <table>
+            <tr>
+                <td style="width: 40%;" class="center">Công ty…………</td>
+                <td  class="center">Cộng hòa xã hội chủ nghĩa Việt nam</td>
+            </tr>
+            <tr>
+                <td  class="center">Xí nghiệp:………………...……..</td>
+                <td  class="center">Độc lập - Tự do - Hạnh phúc</td>
+            </tr>
+            <tr>
+                <td  class="center">Số:………./BC - KT</td>
+                <td  class="right">…………, ngày……tháng……năm 20….</td>
+            </tr>
+        </table>
+
+        <h2 class="center"> BÁO CÁO TỔNG HỢP THIẾT BỊ CHỊU ÁP LỰC VÀ THIẾT BỊ NÂNG</h2>
+        <p class="center">….. Tháng đầu năm</p>
+    </div>
+
+    <div id="container">
+        <p class="right">
+            Mẫu số: BC - KT 05
+
+        </p>
+
+        <table width="" cellpadding="0" cellspacing="0" class="border" border="0">
+            <?php $begin = 0;?>
+            <tr class="bggrey">
+                <th style="width: <?php echo $widthArr[$begin++];;?>%">TT</th>
+                <th style="width: <?php echo $widthArr[$begin++];;?>%">Tên thiết bị</th>
+                <th style="width: <?php echo $widthArr[$begin++];;?>%">Kiểu, Mã hiệu</th>
+                <th style="width: <?php echo $widthArr[$begin++];;?>%">Số chế tạo</th>
+                <th style="width: <?php echo $widthArr[$begin++];;?>%">Ngày, tháng, năm<br>  đăng ký</th>
+                <th style="width: <?php echo $widthArr[$begin++];;?>%">Năm chế tạo</th>
+                <th style="width: <?php echo $widthArr[$begin++];;?>%">Năm sử dụng</th>
+                <th style="width: <?php echo $widthArr[$begin++];;?>%">Nước sản suất</th>
+                <th style="width: <?php echo $widthArr[$begin++];;?>%">Đặc tính kỹ thuật, thiết kế</th>
+                <th style="width: <?php echo $widthArr[$begin++];;?>%">Thời gian khám<br>  nghiệm</th>
+                <th style="width: <?php echo $widthArr[$begin++];;?>%">Đơn vị sử dụng</th>
+                <th style="width: <?php echo $widthArr[$begin++];;?>%">Ghi chú</th>
+            </tr>
+
+            <tr class="bggrey">
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>6</th>
+                <th>7</th>
+                <th>8</th>
+                <th>9</th>
+                <th>10</th>
+                <th>11</th>
+                <th>12</th>
+            </tr>
+
+            <?php
+            $oldKhuVuc      = '';
+            $sttKhuVuc      = 0;
+            $oldLoaiThietBi = '';
+            $sttLoaiThietBi = 0;
+            $oldThongSo     = '';
+            $oldThietBi     = '';
+            $sttThietBi     = 0;
+            ?>
+
+            <?php foreach ($this->equips as $item):?>
+                    <tr>
+                        <td class="center"> <?php echo ++$sttThietBi;?></td>
+                        <td class="left"> <?php echo $item->TenThietBi;?></td>
+                        <td class="left"> <?php echo @$item->MaThietBi;?></td>
+                        <td class="left"> <?php echo @$item->SoCheTao;?></td>
+                        <td class="left"> <?php echo @$item->NgayDangKy;?></td>
+                        <td class="center"> <?php echo @$item->NamSanXuat;?></td>
+                        <td class="center"> <?php echo @$item->NgayDuaVaoSuDung?date('Y', strtotime($item->NgayDuaVaoSuDung)):'';?></td>
+                        <td class="left"> <?php echo $item->XuatXu;?></td>
+                        <td class="left"> <?php echo $item->DacTinhKT;?></td>
+                        <td class="center"> <?php echo @$item->ThoiGianKhamNghiem;?></td>
+                        <td class="left"> <?php echo @$item->DonViQuanLy;?></td>
+                        <td class="left"> <?php echo @$item->GhiChu;?></td>
+                    </tr>
+
+            <?php endforeach;?>
+
+
+        </table>
+    </div>
+</div>

@@ -1,0 +1,74 @@
+<div id="qss_attach">
+<table class="grid">
+      <tr>
+        <td align="center" style="border-right: 0pt none; width: 100px;"></td>
+        <td align="right">Nhóm theo:
+          <select onchange="attachSearch();" id="qss_form_groupby">
+            <option value="0"/>
+            <option <?php if($this->groupby == 2) echo 'selected'?> value="2">Người tạo</option>
+            <option <?php if($this->groupby == 3) echo 'selected'?> value="3">Ngày tạo</option>
+            <option <?php if($this->groupby == 4) echo 'selected'?> value="4">Ngày sửa</option>
+            <option <?php if($this->groupby == 5) echo 'selected'?> value="5">Thư mục</option>
+          </select>
+          Trang:
+          <select style="" onchange="attachSearch();" id="qss_form_pageno">
+          <?php for($i = 1;$i <= ceil($this->recordcount/$this->limit);$i++):?>
+            <option <?php if($i == $this->currentpage) echo 'selected';?>><?php echo $i?></option>
+          <?php endfor;?>
+          </select>
+          / 1 Hiển thị:
+          <select onchange="attachSearch();" style="" id="qss_form_perpage">
+            <option <?php if($this->limit == 10) echo 'selected'?>>10</option>
+            <option <?php if($this->limit == 20) echo 'selected'?>>20</option>
+            <option <?php if($this->limit == 50) echo 'selected'?>>50</option>
+            <option <?php if($this->limit == 100) echo 'selected'?>>100</option>
+          </select></td>
+      </tr>
+</table>
+<table cellspacing="0" class="grid">
+	<tr>
+		<th class="nocount">Chọn</th>
+		<th><a href="#!" onclick="attachSort(1)">Tên tài liệu <?php if($this->orderfield == 1):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="attachSort(2)">Người tạo <?php if($this->orderfield == 2):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="attachSort(3)">Ngày tạo <?php if($this->orderfield == 3):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="attachSort(4)">Ngày cập nhật <?php if($this->orderfield == 4):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="attachSort(5)">Thư mục <?php if($this->orderfield == 5):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="attachSort(6)">Kiểu <?php if($this->orderfield == 6):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="attachSort(7)">Kích thước <?php if($this->orderfield == 7):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+	</tr>
+	<?php
+	$group = null;
+	$i=1;
+	foreach ($this->documents as $item)
+	{
+		?>
+	<?php if(isset(Qss_Model_Document::$arrField[$this->groupby])):?>
+      	<?php if($group != (($this->groupby == 3 || $this->groupby == 4)?Qss_Lib_Date::mysqltodisplay($item->{Qss_Model_Document::$arrField[$this->groupby]}):$item->{Qss_Model_Document::$arrField[$this->groupby]})):?>
+      	<tr>
+			<td class="groupby" colspan="11"><?php if($this->groupby == 3 || $this->groupby == 4) echo Qss_Lib_Date::mysqltodisplay($item->{Qss_Model_Document::$arrGroup[$this->groupby]}); else echo $item->{Qss_Model_Document::$arrGroup[$this->groupby]};?></td>
+		</tr>
+      	<?php endif;?>
+      <?php $group = (($this->groupby == 3 || $this->groupby == 4)?Qss_Lib_Date::mysqltodisplay($item->{Qss_Model_Document::$arrField[$this->groupby]}):$item->{Qss_Model_Document::$arrField[$this->groupby]})?>
+      <?php endif;?>	
+	<tr>
+		<td class="nocount"><input type="checkbox" onclick="clickAttach(this,<?php echo $item->DID?>,'<?php echo $item->Name?>')"></td>
+		<td><?php echo $item->Name?></td>
+		<td><?php echo $item->UserName?></td>
+		<td><?php echo  date('d-m-Y H:i:s',strtotime($item->CDate))?></td>
+		<td><?php echo $item->Modify?date('d-m-Y H:i:s',strtotime($item->Modify)):''?></td>
+		<td><?php echo $item->Folder?></td>
+		<td><span class="<?php echo $item->Ext?> unknown">&nbsp;</span></td>
+		<td class="right"><?php echo number_format($item->Size,0,'.',',')?> KB</td>
+	</tr>
+	<?php
+	}
+	?>
+</table>
+</div>

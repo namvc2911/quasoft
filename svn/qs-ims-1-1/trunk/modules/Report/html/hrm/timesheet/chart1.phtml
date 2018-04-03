@@ -1,0 +1,795 @@
+<?php
+/*
+ * search key
+ * m1 : Biểu đồ chấm công
+ * m2 : Biểu đồ số giờ làm việc
+ * m3 : Biểu đồ đi muộn
+ * m4 : Biểu đồ về sớm
+ * m5 : html
+ */
+
+$solar 		           = new Qss_Model_Calendar_Solar();
+$dateRange    		   = array();
+$startDate    		   = Qss_Lib_Date::displaytomysql($this->startDate);
+$endDate      		   = Qss_Lib_Date::displaytomysql($this->endDate);
+$iStartDate   		   = strtotime($startDate);
+$iEndDate     		   = strtotime($endDate);
+$timesheet    		   = $this->timesheet;
+$manDayData   		   = array();// Mảng chấm công
+$hoursData    		   = array();// Mảng số giờ làm việc
+$lateData     		   = array(); // Mảng đi muộn
+$earlyData    		   = array(); // Mảng về sớm
+$countWeek    		   = 0; // Đếm số tuần
+$period                = ''; // Kỳ
+$xAxis                 = '';
+$seriesManDayData      = '';
+$seriesManDayDataComma = 0; // Do series có thể nối thêm 0 ở đầu nên cần một biến xác định dấu phẩy
+$seriesHoursData       = '';
+$seriesHoursDataComma  = 0; // Do series có thể nối thêm 0 ở đầu nên cần một biến xác định dấu phẩy
+$seriesLateData        = '';
+$seriesLateDataComma   = 0; // Do series có thể nối thêm 0 ở đầu nên cần một biến xác định dấu phẩy
+$seriesEarlyData       = '';
+$seriesEarlyDataComma  = 0; // Do series có thể nối thêm 0 ở đầu nên cần một biến xác định dấu phẩy
+
+switch($this->period)
+{
+	case 'D': // Ngày
+		$dateRange = $solar->createDateRangeArray($startDate, $endDate, 62); // limit 62 ngày
+		$period    = $this->_translate(4);
+		foreach ($timesheet as $ts) // Sắp xếp theo ngày tháng
+		{
+			$code              = $ts->Ngay;
+			$manDayData[$code] = $ts->TongCong;
+			$hoursData[$code]  = $ts->TongGio;
+			$lateData[$code]   = $ts->TongSoDiMuon;
+			$earlyData[$code]  = $ts->TongSoVeSom;
+		}
+			
+
+		foreach ($dateRange as $date)
+		{
+			$code        = $date; // Xác định chỉ số của man-day
+			$tmp         = '';
+			$iDate       = strtotime($date);
+			$iDay        = (int)date('d',$iDate);
+			$iMonth      = (int)date('m',$iDate);
+			$iYear       = (int)date('Y',$iDate);
+
+			if($iDay == 1)
+			{
+				if($iMonth == 1)
+				{
+					$tmp = $iDay.'/'.$iMonth.'/'.$iYear;
+				}
+				else
+				{
+					$tmp = $iDay.'/'.$iMonth;
+				}
+			}
+			else
+			{
+				$tmp = $iDay;
+			}
+
+			if($iDate)
+			/*
+			 * Dữ liệu xAxis và series data của ngày công
+			 */
+
+			// xAsis
+			$xAxis .= $xAxis?',':'';
+			$xAxis .= "'{$tmp}'";
+
+			// series của ngày công
+			if($seriesManDayDataComma)
+			{
+				$seriesManDayData .= ',';
+			}
+			else
+			{
+				$seriesManDayDataComma = 1;
+			}
+
+			if(isset($manDayData[$code]))
+			{
+				$seriesManDayData .= $manDayData[$code];
+			}
+			else
+			{
+				$seriesManDayData .= '0';
+			}
+
+			// series của số giờ làm
+			if($seriesHoursDataComma)
+			{
+				$seriesHoursData .= ',';
+			}
+			else
+			{
+				$seriesHoursDataComma = 1;
+			}
+
+			if(isset($hoursData[$code]))
+			{
+				$seriesHoursData .= $hoursData[$code];
+			}
+			else
+			{
+				$seriesHoursData .= '0';
+			}
+
+			// series của đi muộn
+			if($seriesLateDataComma)
+			{
+				$seriesLateData .= ',';
+			}
+			else
+			{
+				$seriesLateDataComma = 1;
+			}
+
+			if(isset($lateData[$code]))
+			{
+				$seriesLateData .= $lateData[$code];
+			}
+			else
+			{
+				$seriesLateData .= '0';
+			}
+
+			// series của về sớm
+			if($seriesEarlyDataComma)
+			{
+				$seriesEarlyData .= ',';
+			}
+			else
+			{
+				$seriesEarlyDataComma = 1;
+			}
+
+			if(isset($earlyData[$code]))
+			{
+				$seriesEarlyData .= $earlyData[$code];
+			}
+			else
+			{
+				$seriesEarlyData .= '0';
+			}
+		}
+		break;
+	case 'W': // Tuần
+		$dateRange = $solar->createWeekRangeArray($startDate, $endDate, 24); // limit 24 tuần
+		$countWeek = count($dateRange);
+		$period    = $this->_translate(5);
+		foreach ($timesheet as $ts) // Sắp xếp theo ngày tháng
+		{
+			$code              = (int)$ts->TuanThu.'.'.(int)$ts->NamThu;
+			$manDayData[$code] = $ts->TongCong;
+			$hoursData[$code]  = $ts->TongGio;
+			$lateData[$code]   = $ts->TongSoDiMuon;
+			$earlyData[$code]  = $ts->TongSoVeSom;
+		}
+
+
+		$count = 0;
+		foreach ($dateRange as $week)
+		{
+			$rangOfWeek  = $solar->getDateRangeByWeek($week['week'],$week['year']);
+			$startOfWeek = strtotime($rangOfWeek[0]);// Ngày đầu tuần
+			$endOfWeek   = strtotime($rangOfWeek[1]);// Ngày cuối tuần
+			$code        = (int)$week['week'].'.'.(int)$week['year'];
+
+			// xAxis
+			if($count==0 && $startOfWeek > $iStartDate)
+			{
+				$rangOfWeek[0] = $this->startDate;
+			}
+
+			if($count==$countWeek && $endOfWeek < $iEndDate)
+			{
+				$rangOfWeek[1] = $this->endDate;
+			}
+
+			$xAxis .= $xAxis?',':'';
+			$xAxis .= "'{$rangOfWeek[0]} {$this->_translate(1)} {$rangOfWeek[1]}'";// Tran (đến)
+
+			// series của ngày công
+			if($seriesManDayDataComma)
+			{
+				$seriesManDayData .= ',';
+			}
+			else
+			{
+				$seriesManDayDataComma = 1;
+			}
+
+			if(isset($manDayData[$code]))
+			{
+				$seriesManDayData .= $manDayData[$code];
+			}
+			else
+			{
+				$seriesManDayData .= '0';
+			}
+
+			// series của số giờ làm
+			if($seriesHoursDataComma)
+			{
+				$seriesHoursData .= ',';
+			}
+			else
+			{
+				$seriesHoursDataComma = 1;
+			}
+
+			if(isset($hoursData[$code]))
+			{
+				$seriesHoursData .= $hoursData[$code];
+			}
+			else
+			{
+				$seriesManDayData .= '0';
+			}
+
+			// series của đi muộn
+			if($seriesLateDataComma)
+			{
+				$seriesLateData .= ',';
+			}
+			else
+			{
+				$seriesLateDataComma = 1;
+			}
+
+			if(isset($lateData[$code]))
+			{
+				$seriesLateData .= $lateData[$code];
+			}
+			else
+			{
+				$seriesLateData .= '0';
+			}
+
+			// series của về sớm
+			if($seriesEarlyDataComma)
+			{
+				$seriesEarlyData .= ',';
+			}
+			else
+			{
+				$seriesEarlyDataComma = 1;
+			}
+
+			if(isset($earlyData[$code]))
+			{
+				$seriesEarlyData .= $earlyData[$code];
+			}
+			else
+			{
+				$seriesEarlyData .= '0';
+			}
+				
+			$count++;
+		}
+		break;
+	case 'M': // Tháng
+		$dateRange = $solar->createMonthRangeArray($startDate, $endDate, 24); //limit 24 tháng
+		$period    = $this->_translate(6);
+		foreach ($timesheet as $ts) // Sắp xếp theo ngày tháng
+		{
+			$code              = (int)$ts->ThangThu.'.'.(int)$ts->NamThu;
+			$manDayData[$code] = $ts->TongCong;
+			$hoursData[$code]  = $ts->TongGio;
+			$lateData[$code]   = $ts->TongSoDiMuon;
+			$earlyData[$code]  = $ts->TongSoVeSom;
+		}
+			
+		foreach ($dateRange as $year=>$month)
+		{
+			foreach ($month as $m)
+			{
+				$m      = (string)$m;
+				$code   = (int)$m.'.'.(int)$year;
+					
+				// xAxis
+				$xAxis .= $xAxis?',':'';
+				$xAxis .= "'{$m}/{$year}'";
+					
+				// series của ngày công
+				if($seriesManDayDataComma)
+				{
+					$seriesManDayData .= ',';
+				}
+				else
+				{
+					$seriesManDayDataComma = 1;
+				}
+					
+				if(isset($manDayData[$code]))
+				{
+					$seriesManDayData .= $manDayData[$code];
+				}
+				else
+				{
+					$seriesManDayData .= '0';
+				}
+					
+
+				// series của số giờ làm
+				if($seriesHoursDataComma)
+				{
+					$seriesHoursData .= ',';
+				}
+				else
+				{
+					$seriesHoursDataComma = 1;
+				}
+					
+				if(isset($hoursData[$code]))
+				{
+					$seriesHoursData .= $hoursData[$code];
+				}
+				else
+				{
+					$seriesHoursData .= '0';
+				}
+
+
+				// series của đi muộn
+				if($seriesLateDataComma)
+				{
+					$seriesLateData .= ',';
+				}
+				else
+				{
+					$seriesLateDataComma = 1;
+				}
+					
+				if(isset($lateData[$code]))
+				{
+					$seriesLateData .= $lateData[$code];
+				}
+				else
+				{
+					$seriesLateData .= '0';
+				}
+
+				// series của về sớm
+				if($seriesEarlyDataComma)
+				{
+					$seriesEarlyData .= ',';
+				}
+				else
+				{
+					$seriesEarlyDataComma = 1;
+				}
+					
+				if(isset($earlyData[$code]))
+				{
+					$seriesEarlyData .= $earlyData[$code];
+				}
+				else
+				{
+					$seriesEarlyData .= '0';
+				}
+					
+			}
+		}
+		break;
+	case 'Q': // Quý
+		$dateRange = $solar->createQuarterRangeArray($startDate, $endDate, 24); // limit 12 quý
+		$period    = $this->_translate(7);
+		foreach ($timesheet as $ts) // Sắp xếp theo ngày tháng
+		{
+			$code              = (int)$ts->QuyThu.'.'.(int)$ts->NamThu;
+			$manDayData[$code] = $ts->TongCong;
+			$hoursData[$code]  = $ts->TongGio;
+			$lateData[$code]   = $ts->TongSoDiMuon;
+			$earlyData[$code]  = $ts->TongSoVeSom;
+		}
+			
+		foreach ($dateRange as $quarter)
+		{
+			// xAxis
+			$xAxis .= $xAxis?',':'';
+			$xAxis .= "'$this->_translate(2){$quarter['quarter']}-{$quarter['year']}'";// Tran (Quý)
+			$code   = (int)$quarter['quarter'].'.'.(int)$quarter['year'];
+
+			// series của ngày công
+			if($seriesManDayDataComma)
+			{
+				$seriesManDayData .= ',';
+			}
+			else
+			{
+				$seriesManDayDataComma = 1;
+			}
+
+			if(isset($manDayData[$code]))
+			{
+				$seriesManDayData .= $manDayData[$code];
+			}
+			else
+			{
+				$seriesManDayData .= '0';
+			}
+
+
+			// series của số giờ làm
+			if($seriesHoursDataComma)
+			{
+				$seriesHoursData .= ',';
+			}
+			else
+			{
+				$seriesHoursDataComma = 1;
+			}
+
+			if(isset($hoursData[$code]))
+			{
+				$seriesHoursData .= $hoursData[$code];
+			}
+			else
+			{
+				$seriesHoursData .= '0';
+			}
+
+			// series của đi muộn
+			if($seriesLateDataComma)
+			{
+				$seriesLateData .= ',';
+			}
+			else
+			{
+				$seriesLateDataComma = 1;
+			}
+
+			if(isset($lateData[$code]))
+			{
+				$seriesLateData .= $lateData[$code];
+			}
+			else
+			{
+				$seriesLateData .= '0';
+			}
+				
+			// series của về sớm
+			if($seriesEarlyDataComma)
+			{
+				$seriesEarlyData .= ',';
+			}
+			else
+			{
+				$seriesEarlyDataComma = 1;
+			}
+
+			if(isset($earlyData[$code]))
+			{
+				$seriesEarlyData .= $earlyData[$code];
+			}
+			else
+			{
+				$seriesEarlyData .= '0';
+			}
+		}
+		break;
+	case 'Y': // Năm
+		$dateRange = $solar->createYearRangeArray($startDate, $endDate);
+		$period    = $this->_translate(8);
+		foreach ($timesheet as $ts) // Sắp xếp theo ngày tháng
+		{
+			$code              = (int)$ts->NamThu;
+			$manDayData[$code] = $ts->TongCong;
+			$hoursData[$code]  = $ts->TongGio;
+			$lateData[$code]   = $ts->TongSoDiMuon;
+			$earlyData[$code]  = $ts->TongSoVeSom;
+		}
+			
+		foreach ($dateRange as $year)
+		{
+			// xAxis
+			$xAxis .= $xAxis?',':'';
+			$xAxis .= "'{$year}'";
+			$code   = (int)$year;
+
+			// series của ngày công
+			if($seriesManDayDataComma)
+			{
+				$seriesManDayData .= ',';
+			}
+			else
+			{
+				$seriesManDayDataComma = 1;
+			}
+
+			if(isset($manDayData[$code]))
+			{
+				$seriesManDayData .= $manDayData[$code];
+			}
+			else
+			{
+				$seriesManDayData .= '0';
+			}
+
+			// series của số giờ làm
+			if($seriesHoursDataComma)
+			{
+				$seriesHoursData .= ',';
+			}
+			else
+			{
+				$seriesHoursDataComma = 1;
+			}
+
+			if(isset($hoursData[$code]))
+			{
+				$seriesHoursData .= $hoursData[$code];
+			}
+			else
+			{
+				$seriesHoursData .= '0';
+			}
+
+			// series của đi muộn
+			if($seriesLateDataComma)
+			{
+				$seriesLateData .= ',';
+			}
+			else
+			{
+				$seriesLateDataComma = 1;
+			}
+
+			if(isset($lateData[$code]))
+			{
+				$seriesLateData .= $lateData[$code];
+			}
+			else
+			{
+				$seriesLateData .= '0';
+			}
+				
+			// series của về sớm
+			if($seriesEarlyDataComma)
+			{
+				$seriesEarlyData .= ',';
+			}
+			else
+			{
+				$seriesEarlyDataComma = 1;
+			}
+
+			if(isset($lateData[$code]))
+			{
+				$seriesEarlyData .= $lateData[$code];
+			}
+			else
+			{
+				$seriesEarlyData .= '0';
+			}
+		}
+		break;
+}
+//echo '<Pre>'; print_r($manDayData); die;
+?>
+
+<style>
+#chart-wrap {
+	width: 90%;
+	margin: auto;
+}
+
+.chart_style {
+	width: 1200px;
+	margin: 5px auto 5px 0px;
+}
+</style>
+
+<script>
+<!--
+$(document).ready(function() {
+	var manDay;
+	var workingHours;
+	var lateTimes;
+	var earlyTimes;
+
+	// m1 : BIểu đồ chấm công
+	manDay = new Highcharts.Chart({
+        chart: {
+        	renderTo: 'man_day',
+	         plotBackgroundColor: null,
+	         plotBorderWidth: null,
+	         plotShadow: false
+        },
+        title: {
+            text: '<?php echo "{$this->_translate(3)} {$period} ({$this->_translate(9)} {$this->startDate} {$this->_translate(10)} {$this->endDate}) ";?>',
+            // Tran "Tổng công theo" "+Loại kỳ+" ("TỪ" "ĐẾN") 
+            x: -20 //center
+        },
+        xAxis: {
+            categories: [<?php echo $xAxis;?>]
+        },
+        yAxis: {
+            title: {
+                text: '<?php echo $this->_translate(12);?>' // Tran man-day
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+			formatter: function() {
+				return '<b>'+ this.series.name +'</b><br/>'+
+					this.x +': '+ this.y;
+			}
+		},
+        legend: {
+        	enabled: false
+        },
+        //tran
+        series: [{
+            name: '<?php echo $this->_translate(21);?>',
+            data: [<?php echo $seriesManDayData;?>]
+        }]
+    });
+    
+	// m2 : Biểu đồ số giờ làm việc
+	workingHours = new Highcharts.Chart({
+        chart: {
+        	renderTo: 'working_hours',
+	         plotBackgroundColor: null,
+	         plotBorderWidth: null,
+	         plotShadow: false
+        },
+        title: {
+            text: '<?php echo "{$this->_translate(11)} {$period} ({$this->_translate(9)} {$this->startDate} {$this->_translate(10)} {$this->endDate}) ";?>',
+            // Tran "Tổng giờ làm việc theo" "+Loại kỳ+" ("TỪ" "ĐẾN") 
+            x: -20 //center
+        },
+        xAxis: {
+            categories: [<?php echo $xAxis;?>]
+        },
+        yAxis: {
+            title: {
+                text: '<?php echo $this->_translate(13);?>'// tran gio lam
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+			formatter: function() {
+				return '<b>'+ this.series.name +'</b><br/>'+
+					this.x +': '+ this.y;
+			}
+		},
+        legend: {
+        	enabled: false
+        },
+        //tran
+        series: [{
+            name: '<?php echo $this->_translate(20);?>',
+            data: [<?php echo $seriesHoursData;?>]
+        }]
+    });
+
+
+	// m3 : Biểu đồ đi muộn
+	lateTimes = new Highcharts.Chart({
+        chart: {
+        	renderTo: 'late_times',
+	         plotBackgroundColor: null,
+	         plotBorderWidth: null,
+	         plotShadow: false
+        },
+        title: {
+             text: '<?php echo "{$this->_translate(14)} {$period} ({$this->_translate(9)} {$this->startDate} {$this->_translate(10)} {$this->endDate}) ";?>',
+             // Tran "Tổng giờ làm việc theo" "+Loại kỳ+" ("TỪ" "ĐẾN") 
+             x: -20 //center
+        },
+        xAxis: {
+            categories: [<?php echo $xAxis;?>]
+        },
+        yAxis: {
+            title: {
+                text: '<?php echo $this->_translate(15)?>'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+			formatter: function() {
+				return '<b>'+ this.series.name +'</b><br/>'+
+					this.x +': '+ this.y;
+			}
+		},
+        legend: {
+        	enabled: false
+        },
+        //tran
+        series: [{
+            name: '<?php echo $this->_translate(19)?>',
+            data: [<?php echo $seriesLateData;?>]
+        }]
+    });
+
+
+	// m4 : Biểu đồ về sớm
+	earlyTimes = new Highcharts.Chart({
+        chart: {
+        	renderTo: 'early_times',
+	         plotBackgroundColor: null,
+	         plotBorderWidth: null,
+	         plotShadow: false
+        },
+        title: {
+             text: '<?php echo "{$this->_translate(16)} {$period} ({$this->_translate(9)} {$this->startDate} {$this->_translate(10)} {$this->endDate}) ";?>',
+             // Tran "Tổng giờ làm việc theo" "+Loại kỳ+" ("TỪ" "ĐẾN") 
+             x: -20 //center
+        },
+        xAxis: {
+            categories: [<?php echo $xAxis;?>]
+        },
+        yAxis: {
+            title: {
+                text: '<?php echo $this->_translate(17);?>'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+			formatter: function() {
+				return '<b>'+ this.series.name +'</b><br/>'+
+					this.x +': '+ this.y;
+			}
+		},
+        legend: {
+        	enabled: false
+        },
+        //tran
+        series: [{
+            name: '<?php echo $this->_translate(18);?>',
+            data: [<?php echo $seriesEarlyData;?>]
+        }]
+    });
+
+});
+//-->
+</script>
+
+<!-- m5 -->
+<!-- Biểu đồ ngày công -->
+<div
+	id="chart-wrap">
+	<div id="man_day" class="chart_style"></div>
+	<!-- end #man-day -->
+
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<!-- Biểu đồ số giờ -->
+	<div id="working_hours" class="chart_style"></div>
+	<!-- end #working_hours-->
+
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<!-- Biểu đồ đi muộn -->
+	<div id="late_times" class="chart_style"></div>
+	<!-- end #late_times-->
+
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<!-- Biểu đồ về sớm  -->
+	<div id="early_times" class="chart_style"></div>
+	<!-- end #early_time-->
+</div>
+
+<script>
+    $('#man_day').css('width','100%');
+</script>

@@ -1,0 +1,1026 @@
+<script type="text/javascript">
+<!--
+$(document).ready(function(){
+	$('.tooltip').tooltip();
+});
+//-->
+</script>
+
+<?php
+if($this->start == $this->end)
+{
+    $reportTitle = 'PHÂN BỔ ĐIỆN NĂNG THÁNG '.$this->start.' NĂM '. $this->year;
+}
+else
+{
+    $reportTitle = 'PHÂN BỔ ĐIỆN NĂNG TỪ THÁNG '.$this->start.' ĐẾN THÁNG ' .$this->end. ' NĂM '. $this->year;
+}
+
+    $excel_col      = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+    $bg             = Qss_Lib_Extra_Const::REPORT_EXCEL_THEAD_COLOR;
+    $row            = 2;
+    $totalColumn    = 9;
+    $no             = 0; 
+    $colWidths      = array(1,6,3,3,3,3,3,3,3,3);
+    $excelColWidths = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($colWidths, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+    $autoFit        = Qss_Lib_Report::changeWidthToFitScreen($colWidths, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);    
+?>
+
+<div class="landscape">
+    <excel
+        orientation="<?php echo Qss_Lib_Extra_Const::REPORT_ORIENTATION_LANDSCAPE;?>"
+        font-name="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_NAME;?>"
+        font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_SIZE;?>"
+        margin-left="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_LEFT;?>"
+        margin-right="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_RIGHT;?>"
+        margin-top="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_TOP;?>"
+        margin-bottom="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_BOTTOM;?>"  />
+
+        
+    <!-- REPORT TITLE -->
+    <div id="head_print">
+        <?php  echo $this->views->Common->Landscape(); ?>
+        <center>
+            <h2>
+                <xls
+                    row="<?php echo $row ?>"
+                    column="A"
+                    column-merge="<?php echo $excel_col[$totalColumn] ?>"
+                    font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_TITLE_FONT_SIZE;?>"
+                    wrap-text="1"
+                    bold="1"
+                    h-align="center"
+                    v-align="center" ><?php echo $reportTitle;?></xls>
+            </h2>
+        </center>
+    </div><!-- end div#head_print -->
+    <?php $row++ ?>
+
+
+    <div id="container">       
+        <table class="border"  border="1" cellspacing="0" cellpadding="0" >        
+            <!-- REPORT TITLE -->
+            
+            <!-- TITLE - ROW1 -->
+            <?php $begin    = 0;?>
+            <tr class="bggrey">                
+                <!-- TT -->
+                <th rowspan="2" class="center" style="width:<?php echo $autoFit[$begin];?>px">                    
+                    <xls
+                        row="<?php echo $row?>"
+                        row-merge="1"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->TT<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                
+                </th>
+                
+                <!-- PHÂN XƯỞNG -->
+                <th rowspan="2" class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        row-merge="1"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->PHÂN XƯỞNG<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                   
+                </th>
+                <?php $startRow2 = $begin; ?>
+                
+                <!-- KỲ 1 -->
+                <th colspan="2">
+                    <xls
+                        row="<?php echo $row?>"                        
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        column-merge="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->KỲ 1<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                                                     
+                </th>
+                
+                <!-- KỲ 2 -->
+                <th colspan="2">
+                    <xls
+                        row="<?php echo $row?>"                        
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        column-merge="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->KỲ 2<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                                                     
+                </th>
+
+                <!-- KỲ 3 -->
+                <th colspan="2">
+                    <xls
+                        row="<?php echo $row?>"                        
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        column-merge="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->KỲ 3<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                                                     
+                </th>                                
+                
+                <!-- TỔNG THÁNG -->
+                <th colspan="2">
+                    <xls
+                        row="<?php echo $row?>"                        
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        column-merge="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->TỔNG THÁNG<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                                                     
+                </th>                                
+            </tr>
+            <?php $row++;?>
+           
+            
+            <!-- TITLE - ROW2 -->
+            <?php $begin = $startRow2; ?>
+            <tr class="bggrey">
+            
+                <!-- SL -->
+                <th style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->SL<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                    
+                </th>
+                
+                <!-- THÀNH TIỀN -->
+                <th style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->THÀNH TIỀN<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                    
+                </th>     
+                
+                <!-- SL -->
+                <th style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->SL<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                    
+                </th>
+                
+                <!-- THÀNH TIỀN -->
+                <th style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->THÀNH TIỀN<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                    
+                </th>   
+                
+                <!-- SL -->
+                <th style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->SL<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                    
+                </th>
+                
+                <!-- THÀNH TIỀN -->
+                <th style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->THÀNH TIỀN<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                    
+                </th>   
+                
+                <!-- SL -->
+                <th style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->SL<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                    
+                </th>
+                
+                <!-- THÀNH TIỀN -->
+                <th style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>"><!-- #1 -->THÀNH TIỀN<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                    
+                </th>                                                                                             
+            </tr>
+            <?php $row++;?>
+            
+            
+            <!-- TITLE - ROW3 - I. Mua điện lực Quảng Ninh -->
+            <?php $begin  = 0;?>
+            <?php $reportCol = 1;?>
+            <?php $reportRow = 1;?>
+            <tr class="bold">
+            
+                <!-- I -->
+                <td class="center">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="center"
+                        border="1"><!-- #1 -->I<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                    
+                </td>
+                     
+                <!-- Mua điện lực Quảng Ninh -->                              
+                <td class="left">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="left"
+                        border="1"><!-- #1 -->Mua điện lực Quảng Ninh<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                    
+                </td>                
+                                
+                <!-- SL -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatInteger($this->report['DienMuaKy1QuangNinh']);?></xls>                    
+                </td>   
+                
+                <!-- THÀNH TIỀN -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatMoney($this->report['TienMuaKy1QuangNinh']);?></xls>                    
+                </td>  
+
+                <!-- SL -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatInteger($this->report['DienMuaKy2QuangNinh']);?></xls>                    
+                </td>   
+                
+                <!-- THÀNH TIỀN -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatMoney($this->report['TienMuaKy2QuangNinh']);?></xls>                    
+                </td> 
+                
+                <!-- SL -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatInteger($this->report['DienMuaKy3QuangNinh']);?></xls>                    
+                </td>   
+                
+                <!-- THÀNH TIỀN -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatMoney($this->report['TienMuaKy3QuangNinh']);?></xls>                    
+                </td> 
+                
+                <!-- SL -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatInteger($this->report['TongDienMuaQuangNinh']);?></xls>                    
+                </td>   
+                
+                <!-- THÀNH TIỀN -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatMoney($this->report['TongTienMuaQuangNinh']);?></xls>                    
+                </td>                                                 
+            </tr>
+            <?php $row++;?>
+            
+            
+			<!-- TITLE - ROW4 - II. Bán cho khách hàng -->
+            <?php $begin  = 0;?>
+            <?php $reportCol = 1;?>
+            <?php $reportRow = 2;?>            
+            <tr class="bold">
+            
+                <!-- II -->
+                <td class="center">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="center"
+                        border="1"><!-- #1 -->II<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                    
+                </td>
+                     
+                <!-- Bán cho khách hàng -->                              
+                <td class="left">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="left"
+                        border="1"><!-- #1 -->Bán cho khách hàng<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                    
+                </td>                
+                                
+                <!-- SL -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatInteger($this->report['DienBanNgoaiKy1']);?></xls>                    
+                </td>   
+                
+                <!-- THÀNH TIỀN -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatMoney($this->report['TienBanNgoaiKy1']);?></xls>                    
+                </td>  
+
+                <!-- SL -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatInteger($this->report['DienBanNgoaiKy2']);?></xls>                    
+                </td>   
+                
+                <!-- THÀNH TIỀN -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatMoney($this->report['TienBanNgoaiKy2']);?></xls>                    
+                </td> 
+                
+                <!-- SL -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatInteger($this->report['DienBanNgoaiKy3']);?></xls>                    
+                </td>   
+                
+                <!-- THÀNH TIỀN -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatMoney($this->report['TienBanNgoaiKy3']);?></xls>                    
+                </td> 
+                
+                <!-- SL -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatInteger($this->report['TongDienBanNgoai']);?></xls>                    
+                </td>   
+                
+                <!-- THÀNH TIỀN -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatMoney($this->report['TongTienBanNgoai']);?></xls>                    
+                </td>                                              
+            </tr>
+            <?php $row++;?>      
+            
+            
+			<!-- TITLE - ROW5 - III. Thực tế sử dụng cho sx -->
+            <?php $begin  = 0;?>
+            <?php $reportCol = 1;?>
+            <?php $reportRow = 2;?>            
+            <tr class="bold">
+            
+                <!-- II -->
+                <td class="center">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="center"
+                        border="1"><!-- #1 -->II<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                    
+                </td>
+                     
+                <!-- Bán cho khách hàng -->                              
+                <td class="left">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="left"
+                        border="1"><!-- #1 -->Thực tế sử dụng cho sx<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                    
+                </td>                
+                                
+                <!-- SL -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatInteger($this->report['DienSuDungKy1']);?></xls>                    
+                </td>   
+                
+                <!-- THÀNH TIỀN -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatMoney($this->report['TienSuDungKy1']);?></xls>                    
+                </td>  
+
+                <!-- SL -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatInteger($this->report['DienSuDungKy2']);?></xls>                    
+                </td>   
+                
+                <!-- THÀNH TIỀN -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatMoney($this->report['TienSuDungKy2']);?></xls>                    
+                </td> 
+                
+                <!-- SL -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatInteger($this->report['DienSuDungKy3']);?></xls>                    
+                </td>   
+                
+                <!-- THÀNH TIỀN -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatMoney($this->report['TienSuDungKy3']);?></xls>                    
+                </td> 
+                
+                <!-- SL -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatInteger($this->report['TongDienSuDung']);?></xls>                    
+                </td>   
+                
+                <!-- THÀNH TIỀN -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"><?php echo Qss_Lib_Util::formatMoney($this->report['TongTienSuDung']);?></xls>                    
+                </td>                                              
+            </tr>
+            <?php $row++;?>             
+            
+
+            
+            <!-- TITLE - ROW5 - IV. Trong đó các đơn vị sd -->
+            <?php $begin  = 0;?>
+            
+                         
+            <tr>
+            
+                <!-- IV -->
+                <td class="center">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="center"
+                        border="1"></xls>                    
+                </td>
+                     
+                <!-- Trong đó các đơn vị sd -->                              
+                <td class="left">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="left"
+                        border="1"><!-- #1 -->Trong đó các đơn vị sd<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                    
+                </td>                
+                                
+                <!-- SL -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"></xls>                    
+                </td>   
+                
+                <!-- THÀNH TIỀN -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"></xls>                    
+                </td>  
+
+                <!-- SL -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"></xls>                    
+                </td>   
+                
+                <!-- THÀNH TIỀN -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"></xls>                    
+                </td> 
+                
+                <!-- SL -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"></xls>                    
+                </td>   
+                
+                <!-- THÀNH TIỀN -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"></xls>                    
+                </td> 
+                
+                <!-- SL -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"></xls>                    
+                </td>   
+                
+                <!-- THÀNH TIỀN -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"></xls>                    
+                </td>                                                 
+            </tr>
+            <?php $row++;?>                         
+            
+            
+            <?php $reportRow = 4;?> 
+            
+            
+            <!-- REPORT DATA -->
+            <?php foreach(@$this->report[4] as $key=>$item):?>
+                <?php $begin     = 0;?>
+                <?php $reportCol = 1;?>
+                <tr title="<?php echo @$item[11]?$item[11]:''; ?>" class="tooltip">
+                
+                    <!-- TT -->
+                    <td class="center">                    
+                        <xls
+                            row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>"
+                            wrap-text="1"
+                            v-align="top"
+                            h-align="center"
+                            border="1"> <?php echo ++$no; ?> </xls>                    
+                    </td>
+                         
+                    <!-- PHÂN XƯỞNG -->                              
+                    <td class="left">
+                        <xls
+                            row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>"
+                            wrap-text="1"
+                            v-align="top"
+                            h-align="left"
+                            border="1"><?php echo @$item[9]?$item[9]:0; ?></xls>                    
+                    </td>                
+                                    
+                    <!-- SL -->                              
+                    <td class="right">
+                        <xls
+                            row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>"
+                            wrap-text="1"
+                            v-align="top"
+                            h-align="right"
+                            border="1"><?php echo @$item[$reportCol]?Qss_Lib_Util::formatInteger($item[$reportCol]):0; $reportCol++;?></xls>                    
+                    </td>   
+                    
+                    <!-- THÀNH TIỀN -->                              
+                    <td class="right">
+                        <xls
+                            row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>"
+                            wrap-text="1"
+                            v-align="top"
+                            h-align="right"
+                            border="1"><?php echo @$item[$reportCol]?Qss_Lib_Util::formatMoney($item[$reportCol]):0; $reportCol++;?></xls>                    
+                    </td>  
+    
+                    <!-- SL -->                              
+                    <td class="right">
+                        <xls
+                            row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>"
+                            wrap-text="1"
+                            v-align="top"
+                            h-align="right"
+                            border="1"><?php echo @$item[$reportCol]?Qss_Lib_Util::formatInteger($item[$reportCol]):0; $reportCol++;?></xls>                    
+                    </td>   
+                    
+                    <!-- THÀNH TIỀN -->                              
+                    <td class="right">
+                        <xls
+                            row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>"
+                            wrap-text="1"
+                            v-align="top"
+                            h-align="right"
+                            border="1"><?php echo @$item[$reportCol]?Qss_Lib_Util::formatMoney($item[$reportCol]):0; $reportCol++;?></xls>                    
+                    </td> 
+                    
+                    <!-- SL -->                              
+                    <td class="right">
+                        <xls
+                            row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>"
+                            wrap-text="1"
+                            v-align="top"
+                            h-align="right"
+                            border="1"><?php echo @$item[$reportCol]?Qss_Lib_Util::formatInteger($item[$reportCol]):0; $reportCol++;?></xls>                    
+                    </td>   
+                    
+                    <!-- THÀNH TIỀN -->                              
+                    <td class="right">
+                        <xls
+                            row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>"
+                            wrap-text="1"
+                            v-align="top"
+                            h-align="right"
+                            border="1"><?php echo @$item[$reportCol]?Qss_Lib_Util::formatMoney($item[$reportCol]):0; $reportCol++;?></xls>                    
+                    </td> 
+                    
+                    <!-- SL -->                              
+                    <td class="right">
+                        <xls
+                            row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>"
+                            wrap-text="1"
+                            v-align="top"
+                            h-align="right"
+                            border="1"><?php echo @$item[$reportCol]?Qss_Lib_Util::formatInteger($item[$reportCol]):0; $reportCol++;?></xls>                    
+                    </td>   
+                    
+                    <!-- THÀNH TIỀN -->                              
+                    <td class="right">
+                        <xls
+                            row="<?php echo $row?>"
+                            column="<?php echo $excel_col[++$begin]?>"
+                            wrap-text="1"
+                            v-align="top"
+                            h-align="right"
+                            border="1"><?php echo @$item[$reportCol]?Qss_Lib_Util::formatMoney($item[$reportCol]):0; $reportCol++;?></xls>                    
+                    </td>                                                 
+                </tr>
+                <?php $row++;?>  
+                <?php $reportRow++;?>
+            <?php endforeach;?>
+            
+            <!-- TITLE - ROW5 - Tổng -->
+            <?php $begin  = 0;?>
+            <?php $reportCol = 1;?>
+            <?php $reportRow = 5;?>
+            <tr class="bold">
+            
+                <!-- I -->
+                <td class="center">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="center"
+                        border="1"></xls>                    
+                </td>
+                     
+                <!-- Tổng -->                              
+                <td class="right bold">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"
+                        bold="1"><!-- #1 -->Cộng<!-- #1 --><?php // echo $this->_translate(100); ?></xls>                    
+                </td>                
+                                
+                <!-- SL -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"
+                        bold="1"><?php echo @$this->report[$reportRow][$reportCol]?
+                        Qss_Lib_Util::formatInteger($this->report[$reportRow][$reportCol]):0; $reportCol++;?></xls>                    
+                </td>   
+                
+                <!-- THÀNH TIỀN -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"
+                        bold="1"><?php echo @$this->report[$reportRow][$reportCol]?Qss_Lib_Util::formatMoney($this->report[$reportRow][$reportCol]):0; $reportCol++;?></xls>                    
+                </td>  
+
+                <!-- SL -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"
+                        bold="1"><?php echo @$this->report[$reportRow][$reportCol]?Qss_Lib_Util::formatInteger($this->report[$reportRow][$reportCol]):0; $reportCol++;?></xls>                    
+                </td>   
+                
+                <!-- THÀNH TIỀN -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"
+                        bold="1"><?php echo @$this->report[$reportRow][$reportCol]?Qss_Lib_Util::formatMoney($this->report[$reportRow][$reportCol]):0; $reportCol++;?></xls>                    
+                </td> 
+                
+                <!-- SL -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"
+                        bold="1"><?php echo @$this->report[$reportRow][$reportCol]?Qss_Lib_Util::formatInteger($this->report[$reportRow][$reportCol]):0; $reportCol++;?></xls>                    
+                </td>   
+                
+                <!-- THÀNH TIỀN -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"
+                        bold="1"><?php echo @$this->report[$reportRow][$reportCol]?Qss_Lib_Util::formatMoney($this->report[$reportRow][$reportCol]):0; $reportCol++;?></xls>                    
+                </td> 
+                
+                <!-- SL -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"
+                        bold="1"><?php echo @$this->report[$reportRow][$reportCol]?Qss_Lib_Util::formatInteger($this->report[$reportRow][$reportCol]):0; $reportCol++;?></xls>                    
+                </td>   
+                
+                <!-- THÀNH TIỀN -->                              
+                <td class="right">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="top"
+                        h-align="right"
+                        border="1"
+                        bold="1"><?php echo @$this->report[$reportRow][$reportCol]?Qss_Lib_Util::formatMoney($this->report[$reportRow][$reportCol]):0; $reportCol++;?></xls>                    
+                </td>                                                 
+            </tr>
+            <?php $row++;?>   
+            <?php $reportRow++;?>         
+            
+            
+        </table>                         
+    </div><!-- End #container -->
+</div><!-- End report -->

@@ -1,0 +1,40 @@
+<table cellpadding="0" cellspacing="0" class="border_table">
+    <tr>
+        <th style="width: 10%">
+            <input type="checkbox" onclick="common_check_all_table_line(this, '.cwpo_line_checkbok', '.cwpo_line_checkbok_val')"/>
+        </th>
+
+        <th style="width: 40%">
+            Tên
+        </th>
+
+        <th style="width: 50%">
+            Mô tả
+        </th>
+    </tr>
+
+    <?php foreach ($this->data as $item):?>
+        <tr>
+            <td class="center" >
+                <input type="checkbox" class="cwpo_line_checkbok " onclick="common_check_table_line(this, '.cwpo_line_checkbok_val')">
+                <input type="hidden" class="table_line_disabled cwpo_line_checkbok_val" name="CheckBox[]"  value="0">
+            </td>
+
+            <td class="left">
+                <?php echo $item->Ten;?>
+                <input class="table_line_disabled" type="hidden" value="<?php echo $item->IOID;?>" name="ioid[]" disabled>
+            </td>
+
+            <td class="left">
+                <?php echo $item->MoTa;?>
+            </td>
+        </tr>
+    <?php endforeach;?>
+</table>
+
+<div class="clear"></div>
+<br/>
+<br/>
+
+<div class="fr"><button type="button" onclick="m852_checklists.save();" class="btn"> Coppy </button></div>
+

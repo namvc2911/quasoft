@@ -1,0 +1,74 @@
+<script>
+    var myTask = {
+        list : function () {
+            location.href = '/mobile/m759/mytasks/list';
+        },
+
+        addTask : function () {
+            location.href = '/mobile/m759/mytasks/edit?fid=M759';
+        }
+    };
+
+    var output = {
+        myList : function () {
+            location.href = '/mobile/m506/myoutputs/list';
+        },
+
+        addOutput : function () {
+            location.href = '/mobile/m506/myoutputs/edit?fid=M506';
+        },
+
+        approveList : function () {
+            location.href = '/mobile/m506/approval/list';
+        }
+    };
+
+    var approvePurchaseRequest = {
+        listUrl : '/user/form?fid=m412',
+        list : function () {
+            location.href = approvePurchaseRequest.listUrl;
+        }
+    };
+</script>
+
+<div id="pagewrap">
+    <div id="m000_content">
+        <div class="mobile-box-wrap">
+
+            <?php if($this->rightM759):?>
+                <div class="mobile-box-sub-line" style="position: relative;">
+                    <span href="#1" onclick="myTask.list();">Công việc của tôi (<span class="red bold"><?php echo $this->countWO;?></span>)</span>
+                    <button type="button" style=" position: absolute; top:auto; right: 10px; font-weight: bold"
+                            class="btn btn_main_top" onclick="myTask.addTask();">
+                        Thêm
+                    </button>
+                </div>
+            <?php endif;?>
+
+
+            <?php if($this->rightCreateM506):?>
+                <div class="mobile-box-sub-line">
+                    <span href="#1" onclick="output.myList();">Phiếu xuất kho của tôi (<span class="red bold"><?php echo $this->countOutByUser;?></span>)</span>
+
+                    <button type="button" style=" position: absolute; top:auto; right: 10px; font-weight: bold"
+                            class="btn btn_main_top" onclick="output.addOutput();">
+                        Thêm
+                    </button>
+                </div>
+            <?php endif;?>
+
+
+            <?php if($this->rightApproveM506):?>
+                <div class="mobile-box-sub-line">
+                    <span href="#1" onclick="output.approveList();">Duyệt yêu cầu xuất kho (<span class="red bold"><?php echo $this->countOut;?></span>)</span>
+                </div>
+            <?php endif;?>
+
+            <?php if($this->rightM412):?>
+                <div class="mobile-box-sub-line">
+                    <span href="#1" onclick="approvePurchaseRequest.list();">Duyệt yêu cầu mua hàng (<span class="red bold"><?php echo $this->countReq;?></span>)</span>
+                </div>
+            <?php endif;?>
+        </div>
+    </div>
+</div>

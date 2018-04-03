@@ -1,0 +1,74 @@
+<?php
+$excel_col   = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg          = "#EEEEEE";
+$row         = 2;
+$widths      = array(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1);
+$totalColumn = count($widths);
+$fitHtml     = Qss_Lib_Report::changeWidthToFitScreen($widths, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+    <input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="landscape">
+    <excel orientation="landscape" font-name="Arial" font-size="9"
+           margin-left="0.5" margin-right="0.5" margin-top="0.75"
+           margin-bottom="0.75" />
+
+    <div id="head_print">
+        <?php echo $this->views->Common->Landscape() ?>
+        <h2 class="center">THEO DÕI TIÊU THỤ ĐIỆN NĂNG CÁC PHÂN XƯỞNG - CÔNG TY</h2>
+        <h2 class="center"> THÁNG <?php echo $this->month;?> NĂM <?php echo $this->year;?></h2>
+    </div>
+
+    <br/>
+    <br/>
+
+    <div id="container">
+        <table cellspacing="0" cellpadding="0" border="1" id="" class="border">
+            <tr class="bggrey">
+                <th class="center"  valign="top" style="padding: 3px 0px;">TÊN ĐƠN VỊ<br/><br/>Ngày</th>
+                <th class="center"  valign="top" style="padding: 3px 0px;">T.THAN 1<br/><br/>(KWH)</th>
+                <th class="center"  valign="top" style="padding: 3px 0px;">LŨY KẾ<br/><br/>(KWH)</th>
+                <th class="center"  valign="top" style="padding: 3px 0px;">T.THAN 2<br/><br/>(KWH)</th>
+                <th class="center"  valign="top" style="padding: 3px 0px;">LŨY KẾ<br/><br/>(KWH)</th>
+                <th class="center"  valign="top" style="padding: 3px 0px;">T.THAN 3<br/><br/>(KWH)</th>
+                <th class="center"  valign="top" style="padding: 3px 0px;">LŨY KẾ<br/><br/>(KWH)</th>
+                <th class="center"  valign="top" style="padding: 3px 0px;">LỌC ÉP<br/>THAN BÙN<br/>(KWH) </th>
+                <th class="center"  valign="top" style="padding: 3px 0px;">LŨY KẾ<br/><br/>(KWH)</th>
+                <th class="center"  valign="top" style="padding: 3px 0px;">BẾN 2<br/><br/>(KWH)</th>
+                <th class="center"  valign="top" style="padding: 3px 0px;">LŨY KẾ<br/><br/>(KWH)</th>
+                <th class="center"  valign="top" style="padding: 3px 0px;">LỘ 2A<br/><br/>(KWH)</th>
+                <th class="center"  valign="top" style="padding: 3px 0px;">LỘ 4B<br/><br/>(KWH)</th>
+                <th class="center"  valign="top" style="padding: 3px 0px;">LỘ 6B<br/><br/>(KWH)</th>
+                <th class="center"  valign="top" style="padding: 3px 0px;">TỔNG C.TY<br/><br/>(KWH)</th>
+                <th class="center"  valign="top" style="padding: 3px 0px;">COS f</th>
+            </tr>
+
+            <?php for($i = 1; $i <= 31; $i++):?>
+                <tr>
+                    <td class="center"><?php echo $i;?></td>
+                    <td class="right"><?php echo Qss_Lib_Util::formatNumber(@$this->report[$i]['TT1']);?></td>
+                    <td class="right"><?php echo Qss_Lib_Util::formatNumber(@$this->report[$i]['LuyKe_TT1']);?></td>
+                    <td class="right"><?php echo Qss_Lib_Util::formatNumber(@$this->report[$i]['TT2']);?></td>
+                    <td class="right"><?php echo Qss_Lib_Util::formatNumber(@$this->report[$i]['LuyKe_TT2']);?></td>
+                    <td class="right"><?php echo Qss_Lib_Util::formatNumber(@$this->report[$i]['TT3']);?></td>
+                    <td class="right"><?php echo Qss_Lib_Util::formatNumber(@$this->report[$i]['LuyKe_TT3']);?></td>
+                    <td class="right"><?php echo Qss_Lib_Util::formatNumber(@$this->report[$i]['PMT']);?></td>
+                    <td class="right"><?php echo Qss_Lib_Util::formatNumber(@$this->report[$i]['LuyKe_PMT']);?></td>
+                    <td class="right"><?php echo Qss_Lib_Util::formatNumber(@$this->report[$i]['KB2']);?></td>
+                    <td class="right"><?php echo Qss_Lib_Util::formatNumber(@$this->report[$i]['LuyKe_KB2']);?></td>
+                    <td class="right"><?php echo Qss_Lib_Util::formatNumber(@$this->report[$i]['2A']);?></td>
+                    <td class="right"><?php echo Qss_Lib_Util::formatNumber(@$this->report[$i]['4B']);?></td>
+                    <td class="right"><?php echo Qss_Lib_Util::formatNumber(@$this->report[$i]['6B']);?></td>
+                    <td class="right"><?php echo Qss_Lib_Util::formatNumber(@$this->report[$i]['CTY']);?></td>
+                    <td class="right"> &nbsp; </td>
+                </tr>
+            <?php endfor;?>
+
+        </table>
+    </div>
+</div>
+
+<?php echo $this->views->Common->Footer() ?>

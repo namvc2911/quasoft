@@ -1,0 +1,126 @@
+<link rel="stylesheet" href="/css/button.css" />
+<style>
+#cwpo_filter label {
+	line-height: 24px;
+	margin-left: 10px;
+	font-weight: bold;
+}
+</style>
+
+
+<script src="/js/common.js"></script>
+<script>
+// JS INIT
+$(document).ready(function(){
+        $('.datepicker').each(function(){
+                $(this).datepicker({ dateFormat: "dd-mm-yy" });
+        });
+});
+
+
+// JS FUNCTION
+function cwpo_show_po()
+{
+        var msg = '';
+        var start = $('#cwpo_filter_start').val();
+        var line  = $('#cwpo_filter_ref_line').val();
+        var item = $('#cwpo_filter_ref_item').val();
+        
+        
+        // Kiem tra cac o da nhap du du lieu chua?
+        msg += common_checkEmpty(start, 'Ngày');
+        
+        // Bao loi neu co loi, tiep tuc neu ko
+        if(msg)
+        {
+                qssAjax.alert(msg);
+                return;
+        }
+        else
+        {
+                // Hien thi lenh san xuat theo tim kiem
+                var data = $('#cwpo_search_filter').serialize();
+                var url = sz_BaseUrl + '/extra/production/createwo/po/search'; 
+                qssAjax.getHtml(url, data, function(jreturn) {
+                        $('#cwpo_show').html(jreturn);
+                });
+        }
+}
+
+function cwpo_save_wo()
+{
+	var data = $('#param_save, .cwpo_filter_start').serialize();
+	var url = sz_BaseUrl + '/extra/production/createwo/po/save'; 
+	qssAjax.call(url, data, function(jreturn){
+		if(jreturn.message != ''){
+			qssAjax.alert(jreturn.message);
+		}
+		$('#qss_trace').dialog('close');
+		rowSearch(126);
+	}, function(jreturn){
+		qssAjax.alert(jreturn.message);		
+	}); 
+}
+</script>
+
+
+<?php
+// Begin: List box san pham
+$ItemID                 = array('id'=>'cwpo_filter_ref_item', 'inline'=>true,'size'=>180);
+$getItemDataObject = array('OSanPham'=>array('MaSanPham', 'TenSanPham'));
+$getItemFields        = array('num'=>2,
+                                        'objects'=>array('OSanPham'=>array(
+                                                'id'=>'IOID'
+                                                ,'display1'=>'MaSanPham'
+                                                ,'display2'=>'TenSanPham')) );
+                                                // End: List box san pham
+
+
+                                                // Begin: Combobox day chuyen
+                                                $LineID              = 'cwpo_filter_ref_line';
+                                                $getLineFields     = array('num'=>3,
+                                'objects'=>array('ODayChuyen'=>array(
+                                        'id'=>'IOID'
+                                        ,'display1'=>'MaDayChuyen'
+                                        ,'display2'=>'TenDayChuyen'
+                                        ) ));
+                                        // End: Combobox day chuyen
+                                        ?>
+
+
+<div
+	id="cwpo_wrap">
+	<!-- LOC LENH SAN XUAT -->
+	<div id="cwpo_filter" style="">
+		<form id="cwpo_search_filter">
+			<div class="fl">
+				<label>Ngày :</label> <input type="text"
+					value="<?php echo date('d-m-Y');?>" id="cwpo_filter_start"
+					class="datepicker" name="cwpo_filter_start"
+					placeholder="dd-mm-yyyy" style="width: 100px;"> <span
+					class="red bold">(*)</span>
+			</div>
+
+			<div class="fl">
+				<label>Dây chuyền:</label>
+				<?php echo $this->views->Report->ComboBox($LineID,$getLineFields);?>
+			</div>
+
+			<div class="fl">
+				<label class="fl">Sản phẩm:</label>
+				<?php echo $this->views->Report->ListBox($ItemID, $getItemDataObject,$getItemFields);?>
+			</div>
+
+			<div class="fl">
+				<button type="button" class="btn-custom" onclick="cwpo_show_po()">Xem</button>
+			</div>
+		</form>
+	</div>
+	<!-- end cwpo_filter -->
+	<div class="clearfix">&nbsp;</div>
+
+	<!-- HIEN THI LENH SAN XUAT -->
+	<div id="cwpo_show"></div>
+	<!-- end  cwpo_show-->
+</div>
+<!-- end  cwpo_wrap -->

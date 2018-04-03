@@ -1,0 +1,58 @@
+<div class="mobile-box-head-line bold">
+	<div class="fr">
+		<button style="width: 100px;" id="btnOINSERT" type="button"
+			onclick="rowInsert('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->object->ObjectCode?>');"
+			class="btn-custom" <?php if( !$this->object->bInsert || !($this->Rights & 1)):?>disabled<?php endif;?>>
+			<?php echo $this->_translate(12)?>
+		</button>
+		
+		<?php if($this->object->bTrack):?>
+		<button style="width: 100px;" id="btnEIMPORT" type="button"
+			onclick="rowIOExcel('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->object->ObjectCode?>');"
+			class="btn-custom">
+			<?php echo $this->_translate(33)?>
+		</button>
+		<?php endif;?>
+		
+		<button style="width: 100px;" id="btnOREFRESH" type="button"
+			onclick="rowObjectSearch('<?php echo $this->object->i_IFID;?>','<?php echo $this->object->intDepartmentID;?>','<?php echo $this->object->ObjectCode;?>');"
+			class="btn-custom">
+			<?php echo $this->_translate(23)?>
+		</button>
+		<?php foreach($this->bashes as $item):?>
+		<?php $arr = explode(',',$item->Step)?>
+		<?php if(in_array($this->form->i_Status,$arr)):?>
+		<?php switch($item->Type):
+case 2:?>
+<?php case 3:?>
+		<button style="width: 100px; color: yellow" type="button"
+			class="btn-custom extra-button <?php if($item->Record):?>extra-button-object-record<?php endif;?>" <?php if($item->Record):?>disabled<?php endif;?>
+			onclick="bashRun(<?php echo $this->form->i_IFID?>,<?php echo $item->BID?>,'<?php echo $item->BashName?>',this,'<?php echo $this->object->ObjectCode?>')">
+			<?php echo $item->BashName?>
+		</button>
+		<?php break;?>
+		<?php case 4:?>
+		<button style="width: 100px; color: yellow" type="button"
+			class="btn-custom extra-button <?php if($item->Record):?>extra-button-orecord<?php endif;?>" <?php if($item->Record):?>disabled<?php endif;?>
+			onclick="popupOther(<?php echo $this->form->i_IFID?>,'<?php echo $this->object->ObjectCode?>','<?php echo $item->Class?>',this)">
+			<?php echo $item->BashName?>
+			</a>
+		</button>
+		<?php break;?>
+		<?php case 5:?>
+		<button style="width: 100px; color: yellow" type="button"
+			class="btn-custom extra-button <?php if($item->Record):?>extra-button-orecord<?php endif;?>" <?php if($item->Record):?>disabled<?php endif;?>
+			onclick="openOther(<?php echo $this->form->i_IFID?>,'<?php echo $this->object->ObjectCode?>','<?php echo $item->Class?>',this)">
+			<?php echo $item->BashName?>
+		</button>
+		<?php break;?>
+		<?php endswitch;?>
+		<?php endif;?>
+		<?php endforeach;?>
+	</div>
+</div>
+<div>
+	<?php echo $this->pager?>
+	<?php echo $this->grid?>
+</div>
+	

@@ -1,0 +1,340 @@
+<style>
+        #view
+        {
+                overflow:hidden;
+        }
+        #qss_form
+        {
+                overflow:hidden;
+        }
+        #control-box
+        {
+                width:18%;
+                height: 515px; 
+                float:right;
+                overflow:auto;
+                border: 1px #ccc solid;
+                background: #fff;
+        }
+        #show-map
+        {
+                width:81%;
+                height: 515px;
+                float:left;
+                overflow:auto;
+                border: 1px #ccc solid;
+        }
+
+        .map-group-filter
+        {
+                margin:5px 0px;
+                overflow:hidden;
+        }
+
+        .group-title
+        {
+                height:20px;
+                line-height:20px;
+                font-size: 11px;
+                font-weight:bold;
+                color:#3B5998;
+                padding: 0px 5px;
+                margin:0px 5px;
+                border-bottom: 1px #ccc solid;
+        }
+
+        .group-content
+        {
+                min-height:10px;
+                max-height: 500px;
+                overflow:auto;
+                padding: 5px 5px;
+                margin:0px 5px;
+        }
+
+        .show-map-button
+        {
+                padding: 5px 5px;
+                margin:0px 5px;  
+        }
+</style>
+
+<!--<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>-->
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+<script type="text/javascript">
+function removePrintToolbarDisabled()
+{
+    $('.pt-button').each(function(){
+        $(this).prop('disabled',false);
+    });
+}
+<?php /*
+  var markers = [
+  <?php foreach ($this->workstation as $tram):?>
+  <?php if($tram->KinhDo && $tram->ViDo):?>
+  ['<?php echo $tram->TenTram; ?>', <?php echo $tram->KinhDo;?> , <?php echo $tram->ViDo;?>],
+  <?php endif;?>
+  <?php endforeach;?>
+  ];
+ * 
+ */
+?>
+        var sz_BaseUrl = 'http://' + location.host;
+        var newRoad = new Array();
+        var arrtemp = new Array();
+        var map;
+        var mapWorkstationMarkers = [];
+        var mapSectionMarkers = [];
+        var mapXoiLoBoiTuMarkers = [];
+        var mapHoKhoanMarkers = [];
+        var mapHoChuaMarkes = [];
+        var mapHoChuaMarkers = [];
+        var markers = []; // workstation
+        var markers2 = []; // section
+        var XoiLoBoiTuMarkers = [];
+        var HoKhoanMarkers = [];
+        var HoChuaMarkers = [];
+        function initializeMaps() {
+                var myOptions = {
+                        center: new google.maps.LatLng(20.10882, 105.23561),
+                        zoom: 9,
+                        disableDefaultUI: false,
+                        mapTypeId: google.maps.MapTypeId.HYBRID,
+                        mapTypeControl: true
+                };
+                map = new google.maps.Map(document.getElementById("show-map"), myOptions);
+        }
+        ;
+
+        window.onload = initializeMaps;
+
+
+        function chooseAll(ele)
+        {
+                if ($(ele).is(':checked'))
+                {
+                        $('.layer-checkbox').each(function() {
+                                $(this).attr('checked', true);
+                        });
+                }
+                else
+                {
+                        $('.layer-checkbox').each(function() {
+                                $(this).removeAttr('checked');
+                        });
+                }
+        }
+
+        function checkAllSection(ele)
+        {
+                if ($(ele).is(':checked'))
+                {
+                        $('.section-checkbox').each(function() {
+                                $(this).attr('checked', true);
+                        });
+                }
+                else
+                {
+                        $('.section-checkbox').each(function() {
+                                $(this).removeAttr('checked');
+                        });
+                }
+        }
+
+        function searchMap()
+        {
+                var data = $('#report').serialize();
+                var url2 = sz_BaseUrl + '/report/map/search';
+                qssAjax.getHtml(url2, data, function(jreturn) {
+                        $('#map-search-script').html(jreturn);
+                });
+        }
+
+        // Sets the map on all markers in the array.
+        function clearMarkers(mapMarkers) {
+                for (var i = 0; i < mapMarkers.length; i++) {
+                        if (mapMarkers[i] != null) {
+                                mapMarkers[i].setMap(null);
+                                mapMarkers[i] = null;
+                        }
+                }
+        }
+        function showSection(ioid, section) {
+
+        }
+
+        function showSectionDetail(ioid, section) {
+                var url = [sz_BaseUrl, '/report/map/section?id=', ioid , '&section=' ,section].join('');
+                qssAjax.getHtml(url, {}, function(jreturn) {
+                        if (jreturn != '') {
+                                $('#map-detail-script').html(jreturn);
+                                $('#map-detail-script').dialog({width: 720, height: 400});
+                        }
+                });
+        }
+
+        function showWorkstationDetail(ioid)
+        {
+                var url = [sz_BaseUrl, '/report/map/workstation?id=', ioid].join('');
+                qssAjax.getHtml(url, {}, function(jreturn) {
+                        if (jreturn != '') {
+                                $('#map-detail-script').html(jreturn);
+                                $('#map-detail-script').dialog({width: 450, height: 250});
+                        }
+                });
+        }
+        
+        function openLinkModule(code,url){
+                $( this ).dialog( "close" );
+                openModule(code,url);
+        }
+        
+        function showHoKhoanDetail(ioid)
+        {
+                 var url = [sz_BaseUrl, '/report/map/hokhoan?id=', ioid].join('');
+                qssAjax.getHtml(url, {}, function(jreturn) {
+                        if (jreturn != '') {
+                                $('#map-detail-script').html(jreturn);
+                                $('#map-detail-script').dialog({width: 450, height: 250});
+                        }
+                });               
+        }
+        
+        function showHoChuaDetail(ioid)
+        {
+                 var url = [sz_BaseUrl, '/report/map/hochua?id=', ioid].join('');
+                qssAjax.getHtml(url, {}, function(jreturn) {
+                        if (jreturn != '') {
+                                $('#map-detail-script').html(jreturn);
+                                $('#map-detail-script').dialog({width: 450, height: 250});
+                        }
+                });               
+        }
+        
+        function showXoiLoBoiTuDetail(ioid)
+        {
+                 var url = [sz_BaseUrl, '/report/map/xoiloboitu?id=', ioid].join('');
+                qssAjax.getHtml(url, {}, function(jreturn) {
+                        if (jreturn != '') {
+                                $('#map-detail-script').html(jreturn);
+                                $('#map-detail-script').dialog({width: 450, height: 250});
+                        }
+                });               
+        }
+
+window.onload = initializeMaps;
+    
+    
+function chooseAll(ele)
+{
+	if( $(ele).is(':checked') )
+    {
+    	$('.layer-checkbox').each(function(){
+        	$(this).attr('checked',true);
+		});
+	}
+    else
+    {
+    	$('.layer-checkbox').each(function(){
+			$(this).removeAttr('checked');
+		});             
+	}
+}
+    
+function checkAllSection(ele)
+{
+	if( $(ele).is(':checked') )
+	{
+    	$('.section-checkbox').each(function(){
+    		$(this).attr('checked',true);
+        });
+	}
+    else
+    {
+    	$('.section-checkbox').each(function(){
+        	$(this).removeAttr('checked');
+		});             
+	}
+}
+    
+function searchMap()
+{
+	var data = $('#report').serialize();
+	var url2 = sz_BaseUrl + '/report/map/search'; 
+	qssAjax.getHtml(url2, data, function(jreturn) {
+		$('#map-search-script').html(jreturn);
+	});
+}
+    
+    // Sets the map on all markers in the array.
+function clearMarkers(mapMarkers) {
+	for (var i = 0; i < mapMarkers.length; i++) {
+		if(mapMarkers[i] != null){
+	    	mapMarkers[i].setMap(null);
+	    	mapMarkers[i] = null;
+		}
+  	}
+}
+function showSection(ioid){
+	qssAjax.alert(ioid);
+}
+  
+</script>
+
+
+<div class="clear"></div>
+<div id="view">
+        <div id="qss_form">
+
+
+                <div id="show-map" style="">
+
+                </div><!-- end #map -->
+
+                <div id="control-box">
+
+                        <form id="report">
+                                <!-- Group 1 -->
+                                <div class="map-group-filter">
+                                        <div class="group-title">
+                                                Chọn lớp bản đồ
+                                        </div>
+
+                                        <div class="group-content">
+                                                <ul>
+                                                        <li>
+                                                                <input type="checkbox" name="" value="" onclick="chooseAll(this)" />
+                                                                Chọn tất các lớp
+                                                        </li>
+                                                        <?php foreach ($this->layers as
+                                                                        $ws): ?>
+                                                                <li>
+                                                                        <input id="layer_<?php echo $ws->IOID; ?>" type="checkbox" name="layers[]" value="<?php echo $ws->IOID; ?>" class="layer-checkbox"/>
+                                                                        <label for="layer_<?php echo $ws->IOID; ?>"><?php echo $ws->Ten; ?></label>
+                                                                </li>
+<?php endforeach; ?>
+                                                </ul>
+                                        </div>
+                                </div>
+
+
+
+                        </form>
+
+                        <div class="show-map-button">
+                                <button type="button" class="btn-custom" onclick="searchMap()"> Xem bản đồ </button>
+                        </div>
+
+                </div>
+        </div>
+</div>
+<div id="map-search-script">
+
+</div>
+<div id="map-detail-script">
+
+</div>
+
+
+
+

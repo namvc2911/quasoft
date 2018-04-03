@@ -1,0 +1,430 @@
+<style>
+    .m715_filter_box
+    {
+        float: left;
+        display: inline;
+        line-height: 24px;
+        height: 24px;
+        padding-bottom: 5px;
+        vertical-align: middle;
+    }
+    .m715_filter_box_title
+    {
+        min-width: 80px;
+        font-weight: bold;
+        float: left;
+    }
+    .m715_filter_box_dat
+    {
+        min-width: 100px;
+        margin-right: 10px;
+        float: left;
+    }
+    .m715_filter_box_dat input[type="text"], .m715_filter_box_dat select
+    {
+        width: 150px !important;
+    }
+
+    .m715_filter_box_dat #start, .m715_filter_box_dat #end
+    {
+        width: 80px !important;
+    }
+
+    .m715_data table
+    {
+        margin-top: 5px;;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+    }
+
+    .status_box
+    {
+        clear: both;
+        width: 100%;
+        margin: 1px;
+        font-size: 11px;
+    }
+
+    .status_color
+    {
+        float: left;
+        padding: 6px;
+        text-align: center;
+        border: 1px #ccc solid;
+    }
+
+    .status_text {
+        float: left;
+        padding: 6px;
+    }
+
+    .status_one_color {
+        background: yellow none repeat scroll 0 0;
+        font-weight: bold;
+    }
+
+
+    .status_two_color {
+        background: pink none repeat scroll 0 0;
+        font-weight: bold;
+    }
+</style>
+
+<script>
+    var m715 = {
+        show : function()
+        {
+            var url  = sz_BaseUrl + '/static/m715/show';
+            var data = $('#m715_form').serialize();
+
+            console.log(data);
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('.m715_data').html(jreturn);
+            });
+        },
+        loadEquip : function(ele)
+        {
+            var loc  = $(ele).val();
+            var data = {loc:loc};
+            var url  = sz_BaseUrl + '/static/m715/equips2';
+            var html = '';
+
+            qssAjax.call(url, data, function(jreturn) {
+                for(i in jreturn.data)
+                {
+                    html += '<option value="'+jreturn.data[i].id+'"  side="FROM" parent="'+jreturn.data[i].parent+'" ifid="'+jreturn.data[i].ifid+'">'+jreturn.data[i].display+'</option>';
+                }
+
+                $('#m715_from_select_dial_box').html('');
+                $('#m715_from_select_dial_box').html(html);
+            });
+        },
+
+        /**
+         * Chuyển dữ liệu từ bên lấy sang bên cập nhật
+         * @param all
+         */
+        add : function(all)
+        {
+            if($('#m715_from_select_dial_box').is(':enabled'))
+            {
+                var add;
+                var val;
+                var html   = '';
+                var to     = $('#m715_to_filter_select_box').val();
+
+                if(all != undefined && all)
+                {
+                    add = $('#m715_from_select_dial_box option[value!="0"]').filter(":not(:hidden)");
+                }
+                else
+                {
+                    add = $('#m715_from_select_dial_box option[value!="0"]').filter(":selected").filter(":not(:hidden)");
+                }
+
+                add.each(function(){
+
+                    if($(this).hasClass('move') || $(this).attr('parent') != to) // Khong cho chuyen cung vi tri
+                    {
+                        val   = $(this).val();
+                        html  = '<option value="'+$(this).val()+'" side="'+$(this).attr('side')+'" parent="'+$(this).attr('parent')+'" ifid="'+$(this).attr('ifid')+'"> ';
+                        html += $(this).text();
+                        html += '</option>';
+
+                        // An neu ton tai tu hai the, lam truoc khi them the
+                        $('#m715_to_select_dial_box option[value="'+val+'"]').hide();
+                        $('#m715_from_select_dial_box option[value="'+val+'"]').show();
+
+                        // Chen the moi
+                        $('#m715_to_select_dial_box').prepend(html);
+                        $(this).remove();
+                    }
+                });
+
+                m715.highlightMove();
+            }
+
+        },
+
+        /**
+         * Chuyển dữ liệu ngược từ bên cập nhật về lại bên lấy
+         * @param all
+         */
+        remove : function(all)
+        {
+            if($('#m715_to_select_dial_box').is(':enabled'))
+            {
+                var remove;
+                var html = '';
+                var val;
+                var from = $('#m715_from_filter_select_box').val();
+
+                if (all != undefined && all) {
+                    remove = $('#m715_to_select_dial_box option[value!="0"]').filter(":not(:hidden)");
+                }
+                else {
+                    remove = $('#m715_to_select_dial_box option[value!="0"]').filter(":selected").filter(":not(:hidden)");
+                }
+
+                remove.each(function () {
+                    if($(this).hasClass('move') || $(this).attr('parent') != from) // ko cho chuyen cung vi tri
+                    {
+                        val  = $(this).val();
+                        html = '<option value="' + $(this).val() + '" side="'+$(this).attr('side')+'" parent="'+$(this).attr('parent')+'" ifid="'+$(this).attr('ifid')+'"> ';
+                        html += $(this).text();
+                        html += '</option>';
+
+                        // An neu ton tai tu hai the, lam truoc khi them the
+                        $('#m715_to_select_dial_box option[value="'+val+'"]').show();
+                        $('#m715_from_select_dial_box option[value="'+val+'"]').hide();
+
+                        // Them the moi
+                        $('#m715_from_select_dial_box').prepend(html);
+                        $(this).remove();
+                    }
+                });
+
+                m715.highlightMove();
+            }
+        },
+
+        highlightMove : function()
+        {
+            var side;
+
+            $('#m715_from_select_dial_box option').each(function(){
+                side = $(this).attr('side');
+                if(side == 'TO')
+                {
+                    $(this).addClass('move');
+                }
+                else
+                {
+                    $(this).removeClass('move');
+                }
+            });
+
+            $('#m715_to_select_dial_box option').each(function(){
+                side = $(this).attr('side');
+                if(side == 'FROM')
+                {
+                    $(this).addClass('move');
+                }
+                else
+                {
+                    $(this).removeClass('move');
+                }
+            });
+        },
+        
+        save : function(not_confirm)
+        {
+            var data;
+            var url      = sz_BaseUrl + '/static/m715/save';
+            var fromifid = '';
+            var toifid   = '';
+
+            // Chon tat ca dong thay doi
+            $('.move').each(function(){
+                $(this).attr('selected', true);
+
+                // neu la from thi cho vao phan toifid va nguoc lai
+                if($(this).attr('side') == 'FROM')
+                {
+                    toifid += '&toifid%5B%5D='+$(this).attr('ifid');
+                }
+                else
+                {
+                    fromifid += '&fromifid%5B%5D='+$(this).attr('ifid');
+                }
+            });
+
+            // Loai bo cac dong chon ma khong duoc chuyen sang
+            $('#m715_from_select_dial_box option').not('.move').each(function(){
+                $(this).removeAttr('selected');
+            });
+
+            $('#m715_to_select_dial_box option').not('.move').each(function(){
+                $(this).removeAttr('selected');
+            });
+
+
+            data  = $('#m715_add_form').serialize();
+            data += toifid;
+            data += fromifid;
+
+            if(not_confirm)
+            {
+                qssAjax.call(url, data, function(jreturn) {
+                    if(jreturn.message != '')
+                    {
+                        qssAjax.alert(jreturn.message);
+                    }
+
+                    $('#m715_add').dialog('close');
+                    m715.show();
+                    //M173.get2();
+                }, function(jreturn) {
+                    qssAjax.alert(jreturn.message);
+                });
+            }
+            else
+            {
+                qssAjax.confirm('Bạn muốn lưu dừng máy hay không?', function(){
+                    qssAjax.call(url, data, function(jreturn) {
+                        if(jreturn.message != '')
+                        {
+                            qssAjax.alert(jreturn.message);
+                        }
+
+                        $('#m715_add').dialog('close');
+                        m715.show();
+                        //M173.get();
+                        //M173.get2();
+                    }, function(jreturn) {
+                        qssAjax.alert(jreturn.message);
+                    });
+                });
+            }
+        }
+    };
+
+    $(document).ready(function(){
+        $('.datepicker').each(function(){
+            $(this).datepicker();
+        });
+
+        m715.show();
+
+//        var view_height = $('#view').height();
+//
+//        $('#view').height(view_height - 80);
+    })
+</script>
+
+<form id="m715_form">
+    <div id="m715_wrap">
+        <table class="detail">
+            <tr>
+                <th class="report-param-label"  style="width: 10%;">
+                    Từ ngày:
+                </th>
+
+                <td style="width: 15%;">
+                    <?php echo $this->views->Report->Datepicker('start', date('01-m-Y')); ?>
+                </td>
+
+                <th class="report-param-label" style="width: 10%;">
+                    Đến ngày:
+                </th>
+
+                <td>
+                    <?php echo $this->views->Report->Datepicker('end', date('t-m-Y')); ?>
+                </td>
+            </tr>
+
+            <tr>
+                <th class="report-param-label">
+                    Nguyên nhân:
+                </th>
+
+                <td>
+                    <?php echo $this->views->Report->SimpleComboBox('reason', $this->reasons);?>
+                </td>
+
+                <th class="report-param-label">
+                    Khu vực:
+                </th>
+
+                <td>
+                    <?php echo $this->views->Report->SimpleComboBox('location', $this->locations);?>
+                </td>
+            </tr>
+
+            <tr>
+                <th class="report-param-label">
+                    Loại thiết bị:
+                </th>
+
+                <td>
+                    <?php echo $this->views->Report->SimpleComboBox('type', $this->types);?>
+                </td>
+
+                <th class="report-param-label">
+                    Thiết bị:
+                </th>
+
+                <td>
+                    <?php echo $this->views->Report->SimpleListBox('equip', '/static/m715/equips');?>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="4">
+                    <button type="button" class="btn btn-custom" onclick="m715.show()"> Xem</button>
+                </td>
+            </tr>
+        </table>
+
+
+        <div class="clear"></div>
+        <div class="clear"></div>
+
+        <div id="view">
+
+            <div class=" status_box">
+                <div class="fl">
+                    <div class="status_color status_one_color"> A </div>
+                    <div class="status_text"> Dừng máy nhập tay</div>
+                    <div class="status_color status_two_color"> A </div>
+                    <div class="status_text"> Phiếu bảo trì </div>
+                </div>
+
+                <div class="fr">
+                    Trang:
+                    <a class="bold"
+                       onclick="$('#einfo-history-page').val('1'); m715.show();"
+                       href="#" title="Trang trước"
+                       id ="einfo-history-back-page">
+                        <<
+                    </a>
+
+                    <input id="einfo-history-page"
+                           value="1"
+                           style="width: 20px !important; text-align: center;"
+                           onchange="m715.show();"
+                           name="einfo_history_page"> / <span id="einfo-history-total-page">1</span>
+
+                    <a class="bold"
+                       onclick="$('#einfo-history-page').val('1'); m715.show();"
+                       href="#"
+                       title="Trang sau"
+                       id ="einfo-history-next-page">
+                        >>
+                    </a>
+                    Hiển thị:
+
+                    <select id="einfo-history-display"
+                            onchange="m715.show();"
+                            style="width: 100;"
+                            name="einfo_history_display">
+                        <option value="10">10</option>
+                        <option value="20" selected >20</option>
+                        <option value="50" >50</option>
+                        <option value="100" >100</option>
+                    </select>
+
+                </div>
+            </div>
+
+            <div class="clear"></div>
+
+            <div class="m715_data">
+
+            </div>
+        </div>
+    </div>
+</form>
+
+<div id="m715_add"></div>

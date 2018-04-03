@@ -1,0 +1,55 @@
+<table cellpadding="0" cellspacing="0" class="border_table" border="0"
+	style="width: 100%;" id="einfo_maintplan_installtab">
+	<tr class="bggrey">
+		<th style="width: 10%;"><?php echo $this->_translate(1);?>
+			<!-- Thứ tự --></th>
+		<th style="width: 25%;"><?php echo $this->_translate(2);?>
+			<!-- Khu vực --></th>
+		<th style="width: 25%;"><?php echo $this->_translate(3);?>
+			<!-- Lịch làm việc --></th>
+		<th style="width: 40%;"><?php echo $this->_translate(4);?>
+			<!-- Ghi chú -->
+		</th>
+	</tr>
+
+	<?php $j = 0;?>
+	<?php foreach($this->data as $data):?>
+	<?php
+	$editControl = ' <div class="einfo_plan_installtab_edit_control" style="display: none;">';
+	$editControl .= '<div class="einfo_delete_eq" style="" onclick="einfo_delete_sub_plan_tab( 252, ' . $data->IFID_M724 . ',' . $data->IOID . ');"> </div>';
+	$editControl .= '<div class="einfo_edit_eq" onclick="einfo_edit_sub_plan_tab(252, ' . $data->IFID_M724 . ',' . $data->IOID . ')"> </div>';
+	$editControl .= '</div>';
+	?>
+	<?php ++$j;?>
+	<tr>
+		<td class="left"><?php echo $data->STT;?>
+		</td>
+		<td class="left"><?php echo $data->KhuVuc;?>
+		</td>
+		<td class="left"><?php echo $data->LichLamViec;?>
+		</td>
+		<td class="left" style="position: relative;"><?php echo $data->GhiChu;?>
+		<?php echo $editControl;?>
+		</td>
+	</tr>
+
+	<?php endforeach;?>
+
+
+	<?php if ($j < 10):?>
+	<?php for ($k = $j; $k < 10; $k++):?>
+	<tr>
+		<td class="center">&nbsp;</td>
+		<td class="center">&nbsp;</td>
+		<td class="center">&nbsp;</td>
+		<td class="center">&nbsp;</td>
+	</tr>
+	<?php endfor;?>
+	<?php endif;?>
+</table>
+
+<script>
+	$('.einfo_plan_installtab_edit_control').each(function(){ $(this).hide(); });
+	$('#einfo_maintplan_installtab tr').hover(function(){ $(this).addClass('marker'); $(this).find('.einfo_plan_installtab_edit_control').show();}
+	, function(){ $(this).removeClass('marker'); $(this).find('.einfo_plan_installtab_edit_control').hide();});
+</script>

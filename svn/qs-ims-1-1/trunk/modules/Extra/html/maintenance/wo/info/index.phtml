@@ -1,0 +1,162 @@
+<link rel="stylesheet" href="/css/extra/maintenance/wo/info.css" />
+<script
+	type="text/javascript" src="/js/hightchart/highcharts.js"></script>
+<script
+	type="text/javascript" src="/js/extra/maintenance/wo/info.js"></script>
+
+
+
+<div class="clear"></div>
+<div id="view">
+	<div id="woinfo-wrap">
+		<?php /* //menu sau nay
+	<div id="woinfo-column-one">
+	<div id='woinfo-inner-column-one'>
+
+	</div><!-- end #woinfo-inner-column-one -->
+	</div><!-- end #woinfo-column-one -->
+	*/ ?>
+		<div id="woinfo-column-two">
+			<div id='woinfo-inner-column-two'>
+				<div id="woinfo-filter" class="pointer"
+					 ondblclick="woinfo_remove_location_filter()"
+					 style="overflow: hidden; z-index: 10;">
+					<span id="loc" class="bggreen white "></span>
+				</div>
+				<!-- end #woinfo-filter -->
+
+				<?php
+				// xu ly in ngay bat dau va ket thuc
+
+				$start = (isset($_COOKIE['wo_start']))?(($_COOKIE['wo_start'])?$_COOKIE['wo_start']:''):date('d-m-Y');
+				$end = (isset($_COOKIE['wo_end']))?(($_COOKIE['wo_end'])?$_COOKIE['wo_end']:''):date('d-m-Y');
+				$workCenter  = (isset($_COOKIE['wo_wc']))?(($_COOKIE['wo_wc'])?$_COOKIE['wo_wc']:''):0;
+				$maintType =  (isset($_COOKIE['wo_mtype']))?(($_COOKIE['wo_mtype'])?$_COOKIE['wo_mtype']:''):0;
+				?>
+				<div id='woinfo-filter-order'>
+					<div class="wo-filter-label">
+						<?php echo $this->_translate(1);?>
+						<!-- Từ ngày -->
+					</div>
+					<div class="wo-filter-element">
+						<input type='text' name='start' id='woinfo-fitler-start-date'
+							   class="datepicker" size="12" value="<?php echo $start;?>" />
+					</div>
+					<div class="wo-filter-label">
+						<?php echo $this->_translate(2);?>
+						<!-- Đến ngày -->
+					</div>
+					<div class="wo-filter-element">
+						<input type='text' name='end' id='woinfo-fitler-end-date'
+							   class="datepicker" size="12" value="<?php echo $end;?>" />
+					</div>
+
+					<?php /*
+					<div class="wo-filter-label">
+					<?php echo $this->_translate(7);?>
+						<!-- Đơn vị bảo trì -->
+					</div>
+					<div class="wo-filter-element">
+						<select name="woinfo_fitler_work_center"
+							id="woinfo_fitler_work_center" style="width: 100px">
+							<option value="0">--- Chọn ---</option>
+							<?php foreach($this->workCenter as $wc):?>
+							<option value="<?php echo $wc->IOID;?>"
+							<?php echo ($workCenter == $wc->IOID)?'selected':'';?>>
+								<?php echo $wc->Ma;?>
+								-
+								<?php echo $wc->Ten;?>
+							</option>
+							<?php endforeach;?>
+						</select>
+					</div>
+
+					<div class="wo-filter-label">
+					<?php echo $this->_translate(6);?>
+						<!-- Loai Bao Tri -->
+					</div>
+
+					<div class="wo-filter-element">
+						<select name="woinfo_fitler_maint_type"
+							id="woinfo_fitler_maint_type" style="width: 100px">
+							<option value="0">--- Chọn ---</option>
+							<?php foreach($this->maintType as $mtype):?>
+							<option value="<?php echo $mtype->IOID;?>"
+							<?php echo ($maintType == $mtype->IOID)?'selected':'';?>>
+								<?php echo $mtype->Loai;?>
+							</option>
+							<?php endforeach;?>
+						</select>
+					</div>
+					*/?>
+
+					<div class="wo-filter-element">
+						<button type="button" onclick="woinfo_location();"
+								class="btn btn_main_top">
+							<?php echo $this->_translate(5);?>
+							<!-- Lọc -->
+						</button>
+					</div>
+				</div>
+				<!-- end #woinfo-filter-order -->
+
+				<?php /*
+				<div class="clearfix fr">
+					<div class="wo-filter-label">
+					<?php echo $this->_translate(3);?>
+						<!-- Hiển thị -->
+					</div>
+					<div class="wo-filter-element">
+						<select name='display' id='woinfo-display'
+							onchange="woinfo_location();">
+							<option value="5">5</option>
+							<option value="10" selected="">10</option>
+							<option value="20">20</option>
+							<option value="50">50</option>
+							<option value="100">100</option>
+						</select>
+					</div>
+					<div class="wo-filter-label">
+					<?php echo $this->_translate(4);?>
+						<!-- Trang -->
+					</div>
+					<div class="wo-filter-element">
+						<select name='page' id='woinfo-page' onchange="woinfo_location();">
+							<option value="1">1</option>
+						</select>
+					</div>
+				</div>
+ 				*/?>
+
+				<?php /*
+				<div class="clr"></div>
+
+
+				<div id='woinfo-order-line'></div>
+				*/?>
+				<!-- end #woinfo-order-line -->
+
+				<!-- LOCATION FILTER -->
+				<div id="woinfo-general-analytics-table"></div>
+				<!-- end #woinfo-general-analytics-table -->
+			</div>
+			<!-- end #woinfo-inner-column-two -->
+		</div>
+		<!-- end #woinfo-column-two -->
+		<div id="woinfo-column-three">
+			<div id='woinfo-inner-column-three'>
+
+				<div id="woinfo-number-of-wo-by-step-chart"
+					 style="width: 100%; height: 250px; margin: auto;"></div>
+				<br /> <br />
+				<div id="woinfo-number-of-wo-by-mtype-chart"
+					 style="width: 100%; height: 350px; margin: auto;"></div>
+			</div>
+			<!-- end #woinfo-column-three -->
+		</div>
+		<!-- end #woinfo-inner-column-three -->
+	</div>
+	<!-- end #woinfo-wrap -->
+</div>
+<div id="qss_trace"></div>
+

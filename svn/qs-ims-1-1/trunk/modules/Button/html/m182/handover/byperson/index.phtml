@@ -1,0 +1,160 @@
+<?php
+    $widths = array(1,3,4,3,4,2,2,2,2);
+    $widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+?>
+
+<script>
+    $(document).ready(function(){
+        // Tim kiem khi an enter
+        $('#m182HandOver_opmi_filter_dialbox').keypress(function (e) {
+            if (e.which == 13) {
+                M182_Handover.search_opmi();
+                return false;    //<---- Add this line
+            }
+        });
+
+        // Tim kiem khi go xong phim
+        $('#m182HandOver_opmi_filter_dialbox').keyup(function ()
+        {
+            M182_Handover.search_opmi();
+        });
+
+        // Xoa cac mat hang da duoc chon vao trong danh sach
+        $('.selected_line').each(function(){
+            var refItem = $(this).find('.RefItem').val();
+            $('#select_m182HandOver_opmi_box select option[value="'+refItem+'"]').remove();
+        });
+
+        <?php if($this->clawback == 0):?>
+        M182_Handover.load_assets();
+        <?php endif;?>
+
+        <?php // if($this->clawback != 0):?>
+        $('#m182HandOver_opmi_employee').change(function(){
+            M182_Handover.load_assets();
+        });
+        <?php // endif;?>
+    });
+</script>
+
+
+<!--==============================BÀN GIAO THEO NGƯỜI======================================================-->
+<div id="view_one_item_many_persons">
+    <div class="">
+        <div class="fl" style="width: 100px;">
+            <label>Nhân viên:</label>
+        </div>
+
+        <div class="fl">
+            <?php echo $this->views->Report->SimpleListBox('m182HandOver_opmi_employee', '/button/m182/employees?clawback='.$this->clawback.'&factory='.@(int)$this->handover->Ref_NhaMay);?>
+        </div>
+
+
+    </div>
+
+    <div class="clear">&nbsp;</div>
+
+    <div class="">
+        <div class="fl" style="width: 100px;">
+            <label>Số lượng:</label>
+        </div>
+
+        <div class="fl">
+            <?php if($this->clawback != 0):?>
+                <input type="text" style="width: 200px" name="" id="" class="readonly" value="" readonly/>
+            <?php else:?>
+                <input type="text" style="width: 200px" name="m182HandOver_opmi_qty" id="m182HandOver_opmi_qty" value="1"/>
+            <?php endif;?>
+        </div>
+    </div>
+
+    <div class="clear">&nbsp;</div>
+
+    <div class="">
+        <div id="">
+            <div style="width: 30%;" class="fl" id="m182HandOver_opmi_select">
+                <div id="select_m182HandOver_opmi_box">
+                    <input type="text" id="m182HandOver_opmi_filter_dialbox" placeholder="Search" style="width: 94%" />
+                    <select class="select" size="10" multiple="multiple">
+
+                    </select>
+                </div>
+            </div>
+
+            <script>
+
+            </script>
+
+            <div id="M182_Handover_opmi_box" class="fl">
+
+                <div id="m182HandOver_opmi_add_button">
+                    <button onclick="M182_Handover.add_opmi()"
+                            class="btn-custom"
+                            type="button"> &gt;&gt; </button>
+                </div>
+
+                <div id="">
+                    <button onclick="M182_Handover.remove_opmi()"
+                            class="btn-custom"
+                            type="button"> &lt;&lt; </button>
+                </div>
+
+                <div id="">
+                    <button onclick="M182_Handover.add_opmi(1)"
+                            class="btn-custom"
+                            type="button"> &gt;&gt;&gt;&gt; </button>
+                </div>
+
+                <div id="m182HandOver_opmi_remove_button">
+                    <button onclick="M182_Handover.remove_opmi(1)"
+                            class="btn-custom"
+                            type="button"> &lt;&lt;&lt;&lt; </button>
+                </div>
+            </div>
+
+
+            <div style="width: 60%;" class="fl" id="m182HandOver_opmi_show">
+                <div class="fl">
+                    <table cellpadding="0" cellspacing="0" class="border_table" border="0" id="m182HandOver_opmi_box" style="table-layout: fixed;">
+                        <!-- Tieu de -->
+                        <?php $begin = 0;?>
+                        <tr>
+                            <th style="width: <?php echo $widths[$begin++];?>%;"> &nbsp; </th>
+                            <th style="width: <?php echo $widths[$begin++];?>%;"> Mã NV </th>
+                            <th style="width: <?php echo $widths[$begin++];?>%;"> Tên NV </th>
+                            <th style="width: <?php echo $widths[$begin++];?>%;"> Mã TS </th>
+                            <th style="width: <?php echo $widths[$begin++];?>%;"> Tên TS </th>
+                            <th style="width: <?php echo $widths[$begin++];?>%;"> ĐVT </th>
+                            <th style="width: <?php echo $widths[$begin++];?>%;"> SL </th>
+                            <th style="width: <?php echo $widths[$begin++];?>%;"> Đơn giá </th>
+                            <th style="width: <?php echo $widths[$begin++];?>%;"> TG đã sử dụng (Tháng) </th>
+                        </tr>
+
+                        <?php foreach($this->olds as $item):?>
+                            <tr>
+                                <td class="center">
+                                    <!-- <input class="remov_line" onclick="M182_Handover.checkItem(this)" type="checkbox"> -->
+                                </td>
+                                <td class="left"><?php echo $item->MaNhanVien;?></td>
+                                <td class="left"><?php echo $item->TenNhanVien;?></td>
+                                <td class="left"><?php echo $item->MaTaiSan;?></td>
+                                <td class="left"><?php echo $item->TenTaiSan;?></td>
+                                <td class="left"><?php echo $item->DonViTinh;?></td>
+                                <td class="right"><?php echo Qss_Lib_Util::formatNumber($item->SoLuong);?></td>
+                                <td class="right"><?php echo Qss_Lib_Util::formatMoney($item->DonGia);?></td>
+                                <td class="right"><?php echo Qss_Lib_Util::formatNumber($item->ThoiGianDaSuDung);?></td>
+                            </tr>
+                        <?php endforeach;?>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="clear">&nbsp;</div>
+    <br/>
+
+    <div class="fr">
+        <button class="btn btn_main_top" onclick="M182_Handover.save();" type="button"> Tạo bàn giao </button>
+    </div>
+</div>

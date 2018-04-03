@@ -1,0 +1,391 @@
+<?php
+$old       = '';
+$array1     = array();
+$array2     = array();
+$array3     = array();
+$j        = 0;
+
+foreach ($this->cost1 as $cost)
+{
+	switch($this->period)
+	{
+		case 'D':
+			$id = $cost->Ngay;
+			break;
+		case 'W':
+			$id = (string)$cost->Tuan.'.'.$cost->Nam;
+			break;
+		case 'M':
+			$id = (string)$cost->Thang.'.'.$cost->Nam;
+			break;
+		case 'Q':
+			$id = (string)$cost->Quy.'.'.$cost->Nam;
+			break;
+		case 'Y':
+			$id = $cost->Nam;
+			break;
+	}
+	$cost->GiaNhanCong = round($cost->GiaNhanCong/1000,0)*1000;
+
+	//thành phần
+	$array3[$cost->WorkCenter]['Ten']             = $cost->WorkCenterCode;
+	$array3[$cost->WorkCenter]['ThuTu'][$id]      = $cost->GiaVatTu + $cost->GiaNhanCong + $cost->GiaDichVu + $cost->ChiPhiThemGio + $cost->ChiPhiKhac;
+}
+foreach ($this->cost3 as $cost)
+{
+	switch($this->period)
+	{
+		case 'D':
+			$id = $cost->Ngay;
+			break;
+		case 'W':
+			$id = (string)$cost->Tuan.'.'.$cost->Nam;
+			break;
+		case 'M':
+			$id = (string)$cost->Thang.'.'.$cost->Nam;
+			break;
+		case 'Q':
+			$id = (string)$cost->Quy.'.'.$cost->Nam;
+			break;
+		case 'Y':
+			$id = $cost->Nam;
+			break;
+	}
+	$cost->GiaNhanCong = round($cost->GiaNhanCong/1000,0)*1000;
+
+	//thành phần
+	$array1[1]['Ten']             = 'Vật tư';
+	$array1[1]['ThuTu'][$id]      = $cost->GiaVatTu;
+
+	$array1[2]['Ten']             = 'Nhân công';
+	$array1[2]['ThuTu'][$id]      = $cost->GiaNhanCong;
+	
+	$array1[3]['Ten']             = 'Thuê ngoài';
+	$array1[3]['ThuTu'][$id]      = $cost->GiaDichVu;
+	
+	$array1[4]['Ten']             = 'Làm thêm giờ';
+	$array1[4]['ThuTu'][$id]      = $cost->ChiPhiThemGio;
+	
+	$array1[5]['Ten']             = 'Chi phí khác';
+	$array1[5]['ThuTu'][$id]      = $cost->ChiPhiKhac;
+}
+//echo '<pre>';print_r($array1);die;
+foreach ($this->cost2 as $cost)
+{
+	switch($this->period)
+	{
+		case 'D':
+			$id = $cost->Ngay;
+			break;
+		case 'W':
+			$id = (string)$cost->Tuan.'.'.$cost->Nam;
+			break;
+		case 'M':
+			$id = (string)$cost->Thang.'.'.$cost->Nam;
+			break;
+		case 'Q':
+			$id = (string)$cost->Quy.'.'.$cost->Nam;
+			break;
+		case 'Y':
+			$id = $cost->Nam;
+			break;
+	}
+	$cost->GiaNhanCong = round($cost->GiaNhanCong/1000,0)*1000;
+
+	//theo nhóm thiết bị
+	$array2[$cost->Ref_NhomThietBi]['Ten']             = $cost->NhomThietBi;
+	$array2[$cost->Ref_NhomThietBi]['ThuTu'][$id]      = $cost->GiaVatTu + $cost->GiaNhanCong + $cost->GiaDichVu + $cost->ChiPhiThemGio + $cost->ChiPhiKhac; 
+	
+}
+//echo '<pre>';print_r($array);die;
+?>
+<script>
+$(document).ready(function() {
+	var chart;
+	chart = new Highcharts.Chart({
+        chart: {
+        	 renderTo: 'chart1',
+        	 type: 'column',
+	         plotBackgroundColor: null,
+	         plotBorderWidth: null,
+	         plotShadow: false
+        },
+        title: {
+            text: '<?php echo "{$this->_translate(1)}"?>'
+        },
+        xAxis: {
+        	labels: {
+                rotation: -45,
+                align: 'right'
+                },
+        	categories: [
+	         	            <?php
+                                        $cate = '';
+                                        
+                                        foreach($this->time as $time)
+                                        {
+                                            $cate .= $cate?',':'';
+                                            $cate .= "'{$time['Display']}'";    
+                                        }
+                                        echo $cate;
+                                    ?>]
+	            
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Total'
+            },
+            stackLabels: {
+                enabled: true,
+                style: {
+                    fontWeight: 'bold',
+                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                }
+            }
+        },
+        legend: {
+            align: 'right',
+            x: -100,
+            verticalAlign: 'top',
+            y: 20,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColorSolid) || 'white',
+            borderColor: '#CCC',
+            borderWidth: 1,
+            shadow: false
+        },
+        tooltip: {
+            formatter: function() {
+                return '<b>'+ this.x +'</b><br/>'+
+                    this.series.name +': '+ this.y +'<br/>'+
+                    'Total: '+ this.point.stackTotal;
+            }
+        },
+        plotOptions: {
+            column: {
+                stacking: 'normal',
+                dataLabels: {
+                    enabled: false,
+                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+                    rotation: -45
+                }
+            }
+        },
+        series: [
+			<?php 
+			$comma  = 0;
+			foreach ($array1 as $val)
+			{
+                            $commaD = 0;
+                            echo ($comma != '')?',':'';
+                            if(!$comma) $comma = 1;
+                            echo "{ name: '{$val['Ten']}', data : [";
+
+                            foreach($this->time as $time)
+                            {
+                                echo ($commaD != '')?' ,':'';
+                                if($commaD == 0) $commaD = 1;
+                                echo (isset($val['ThuTu'][$time['Key']]))?($val['ThuTu'][$time['Key']]/1000):0;
+
+                            }
+                            echo ']}';
+			}
+			?>
+        ]
+    });
+	chart = new Highcharts.Chart({
+        chart: {
+        	 renderTo: 'chart2',
+        	 type: 'column',
+	         plotBackgroundColor: null,
+	         plotBorderWidth: null,
+	         plotShadow: false
+        },
+        title: {
+            text: '<?php echo "{$this->_translate(2)}"?>'
+        },
+        xAxis: {
+        	labels: {
+                rotation: -45,
+                align: 'right'
+                },
+        	categories: [
+	         	            <?php
+                                        $cate = '';
+                                        
+                                        foreach($this->time as $time)
+                                        {
+                                            $cate .= $cate?',':'';
+                                            $cate .= "'{$time['Display']}'";    
+                                        }
+                                        echo $cate;
+                                    ?>]
+	            
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Total'
+            },
+            stackLabels: {
+                enabled: true,
+                style: {
+                    fontWeight: 'bold',
+                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                }
+            }
+        },
+        legend: {
+            align: 'right',
+            x: -100,
+            verticalAlign: 'top',
+            y: 20,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColorSolid) || 'white',
+            borderColor: '#CCC',
+            borderWidth: 1,
+            shadow: false
+        },
+        tooltip: {
+            formatter: function() {
+                return '<b>'+ this.x +'</b><br/>'+
+                    this.series.name +': '+ this.y +'<br/>'+
+                    'Total: '+ this.point.stackTotal;
+            }
+        },
+        plotOptions: {
+            column: {
+                stacking: 'normal',
+                dataLabels: {
+                    enabled: false,
+                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+                    rotation: -45
+                }
+            }
+        },
+        series: [
+			<?php 
+			$comma  = 0;
+			foreach ($array2 as $val)
+			{
+                            $commaD = 0;
+                            echo ($comma != '')?',':'';
+                            if(!$comma) $comma = 1;
+                            echo "{ name: '{$val['Ten']}', data : [";
+
+                            foreach($this->time as $time)
+                            {
+                                echo ($commaD != '')?' ,':'';
+                                if($commaD == 0) $commaD = 1;
+                                echo (isset($val['ThuTu'][$time['Key']]))?($val['ThuTu'][$time['Key']]/1000):0;
+
+                            }
+                            echo ']}';
+			}
+			?>
+        ]
+    });
+	chart = new Highcharts.Chart({
+        chart: {
+        	 renderTo: 'chart3',
+        	 type: 'column',
+	         plotBackgroundColor: null,
+	         plotBorderWidth: null,
+	         plotShadow: false
+        },
+        title: {
+            text: '<?php echo "{$this->_translate(3)}"?>'
+        },
+        xAxis: {
+        	labels: {
+                rotation: -45,
+                align: 'right'
+                },
+        	categories: [
+	         	            <?php
+                                        $cate = '';
+                                        
+                                        foreach($this->time as $time)
+                                        {
+                                            $cate .= $cate?',':'';
+                                            $cate .= "'{$time['Display']}'";    
+                                        }
+                                        echo $cate;
+                                    ?>]
+	            
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Total'
+            },
+            stackLabels: {
+                enabled: true,
+                style: {
+                    fontWeight: 'bold',
+                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                }
+            }
+        },
+        legend: {
+            align: 'right',
+            x: -100,
+            verticalAlign: 'top',
+            y: 20,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColorSolid) || 'white',
+            borderColor: '#CCC',
+            borderWidth: 1,
+            shadow: false
+        },
+        tooltip: {
+            formatter: function() {
+                return '<b>'+ this.x +'</b><br/>'+
+                    this.series.name +': '+ this.y +'<br/>'+
+                    'Total: '+ this.point.stackTotal;
+            }
+        },
+        plotOptions: {
+            column: {
+                stacking: 'normal',
+                dataLabels: {
+                    enabled: false,
+                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+                    rotation: -45
+                }
+            }
+        },
+        series: [
+			<?php 
+			$comma  = 0;
+			foreach ($array3	 as $val)
+			{
+                            $commaD = 0;
+                            echo ($comma != '')?',':'';
+                            if(!$comma) $comma = 1;
+                            echo "{ name: '{$val['Ten']}', data : [";
+
+                            foreach($this->time as $time)
+                            {
+                                echo ($commaD != '')?' ,':'';
+                                if($commaD == 0) $commaD = 1;
+                                echo (isset($val['ThuTu'][$time['Key']]))?($val['ThuTu'][$time['Key']]/1000):0;
+
+                            }
+                            echo ']}';
+			}
+			?>
+        ]
+    });
+});
+</script>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div id="chart1" style="width: 95%; height: 400px; margin: 0 auto"></div>
+<br><br>
+<div id="chart2" style="width: 95%; height: 400px; margin: 0 auto"></div>
+<br><br>
+<div id="chart3" style="width: 95%; height: 400px; margin: 0 auto"></div>
+

@@ -1,0 +1,28 @@
+<table class="grid border" cellspacing="0" cellpadding="0" border="1">
+
+    <tr>
+        <th style="width: 40%; text-align: left;">&nbsp;Mã thiết bị</th>
+        <th style=" text-align: left;">&nbsp;Số giờ</th>
+    </tr>
+
+    <?php foreach($this->tree as $locioid=>$detail):?>
+
+        <tr>
+            <td colspan="2" class="left tree_level_<?php echo $detail['Level'];?> tree_open"> <b><?php echo $detail['Name'].' - '.$detail['Code'];?></b> </td>
+        </tr>
+
+        <?php if($locioid > 0 && isset($detail['Equip'])):?>
+            <?php foreach($detail['Equip'] as $item):?>
+                <tr>
+                    <td class="tree_level_<?php echo ($detail['Level'] + 1);?>">
+                        <label><?php echo $item['Name'].' - '.$item['Code'];?></label>
+                        <input type="hidden" name="eq[]" value="<?php echo $item['Code'];?>">
+                    </td>
+                    <td><input type="text" size="12" name="val[]" value="<?php echo $item['Old'];?>"></td>
+                </tr>
+            <?php endforeach;?>
+        <?php endif;?>
+
+
+    <?php endforeach;?>
+</table>

@@ -1,0 +1,157 @@
+<?php if($this->canCu == 0):?>
+    <div class="ui_box_line">
+        <div  class="label" style="width: 30% !important;">
+            <label><?php echo $this->object->getFieldByCode("KyBaoDuong")->szFieldName;?></label>
+        </div>
+
+        <div class="element">
+            <select name="OChuKyBaoTri_KyBaoDuong" id="OChuKyBaoTri_KyBaoDuong" class="OChuKyBaoTri_Element" onchange="einfo_loadPeriod();">
+                <option value="-1">&nbsp;</option>
+                <?php foreach($this->KyBaoDuong as $key=>$value):?>
+                    <option value="<?php echo $key;?>" <?php echo ($key==$this->ky)?'selected':'';?>><?php echo $value;?></option>
+                <?php endforeach;?>
+            </select>
+        </div>
+    </div>
+
+    <div class="ui_box_line">
+        <div  class="label" style="width: 30% !important;" >
+            <label><?php echo $this->object->getFieldByCode("LapLai")->szFieldName;?></label>
+        </div>
+
+        <div class="element">
+            <?php echo $this->object->sz_fGetFormFieldElement("LapLai",$this->user,true);?>
+        </div>
+    </div>
+
+    <?php switch($this->ky): case 'D': ?>
+
+        <?php break; ?>
+        <?php case 'W': ?>
+            <div class="ui_box_line">
+                <div  class="label" style="width: 30% !important;">
+                    <label><?php echo $this->object->getFieldByCode("Thu")->szFieldName;?></label>
+                </div>
+
+                <div class="element">
+                    <?php echo $this->object->sz_fGetFormFieldElement("Thu",$this->user,true);?>
+                </div>
+            </div>
+        <?php break;?>
+
+        <?php case 'M': ?>
+            <div class="ui_box_line">
+                <div  class="label" style="width: 30% !important;">
+                    <label><?php echo $this->object->getFieldByCode("Ngay")->szFieldName;?></label>
+                </div>
+
+                <div class="element">
+                    <?php echo $this->object->sz_fGetFormFieldElement("Ngay",$this->user,true);?>
+                </div>
+            </div>
+        <?php break;?>
+
+        <?php case 'Y': ?>
+            <div class="ui_box_line">
+                <div  class="label" style="width: 30% !important;">
+                    <label><?php echo $this->object->getFieldByCode("Ngay")->szFieldName;?></label>
+                </div>
+
+                <div class="element">
+                    <?php echo $this->object->sz_fGetFormFieldElement("Ngay",$this->user,true);?>
+                </div>
+            </div>
+
+            <div class="ui_box_line">
+                <div  class="label" style="width: 30% !important;">
+                    <label><?php echo $this->object->getFieldByCode("Thang")->szFieldName;?></label>
+                </div>
+
+                <div class="element">
+                    <?php echo $this->object->sz_fGetFormFieldElement("Thang",$this->user,true);?>
+                </div>
+            </div>
+        <?php break;?>
+
+        <?php case 'S': ?>
+
+        <?php break;?>
+    <?php endswitch; ?>
+
+    <div class="ui_box_line">
+        <div  class="label" style="width: 30% !important;">
+            <label><?php echo $this->object->getFieldByCode("DieuChinhTheoPBT")->szFieldName;?></label>
+        </div>
+
+        <div class="element">
+            <?php echo $this->object->sz_fGetFormFieldElement("DieuChinhTheoPBT",$this->user,true);?>
+        </div>
+    </div>
+<?php elseif($this->canCu == 1):?>
+    <div class="ui_box_line">
+        <div  class="label" style="width: 30% !important;">
+            <label><?php echo $this->object->getFieldByCode("ChiSo")->szFieldName;?></label>
+        </div>
+
+        <div class="element">
+            <?php // echo $this->object->sz_fGetFormFieldElement("ChiSo",$this->user,true);?>
+            <?php
+            $id            = array('id'=>'OChuKyBaoTri_ChiSo', 'size'=>120);
+            $getDataObject = array('OChiSoMayMoc'=>array('ChiSo'));
+            //,'OKhuVuc'=>array('MaKhuVuc','Ten')
+            $getFields     = array('num'=>2,
+                'objects'=>array('OChiSoMayMoc'=>array(
+                    'id'=>'IOID'
+                ,'display1'=>'ChiSo'
+                ,'display2'=>'DonViTinh')) );
+            ?> <?php echo $this->views->Report->ListBox($id, $getDataObject,$getFields
+                , array()
+                , array()
+                , ''
+                , @(string)$this->lastChuKy->ChiSo
+                , @(int)$this->lastChuKy->Ref_ChiSo
+
+            );?>
+        </div>
+    </div>
+
+    <div class="ui_box_line">
+        <div  class="label" style="width: 30% !important;">
+            <label><?php echo $this->object->getFieldByCode("GiaTri")->szFieldName;?></label>
+        </div>
+
+        <div class="element">
+            <?php echo $this->object->sz_fGetFormFieldElement("GiaTri",$this->user,true);?>
+        </div>
+    </div>
+
+    <div class="ui_box_line">
+        <div  class="label" style="width: 30% !important;">
+            <label><?php echo $this->object->getFieldByCode("DieuChinhTheoPBT")->szFieldName;?></label>
+        </div>
+
+        <div class="element">
+            <?php echo $this->object->sz_fGetFormFieldElement("DieuChinhTheoPBT",$this->user,true);?>
+        </div>
+    </div>
+<?php endif;?>
+
+<?php if($this->canCu == 1 || $this->ky != -1):?>
+
+    <div class="clear">&nbsp;</div>
+    <div class="fr">
+        <button type="button" class="btn-custom" onclick="einfo_savePeriod()">Cập nhật</button>
+    </div>
+<?php endif;?>
+
+<script>
+    <?php if($this->lastChuKy && $this->canCu == 0):?>
+    $(document).ready(function () {
+        if($('#OChuKyBaoTri_KyBaoDuong').val() == -1)
+        {
+            // $('#OChuKyBaoTri_KyBaoDuong').val('<?php echo @(string)$this->lastChuKy->KyBaoDuong;?>').change();
+        }
+    });
+    <?php endif;?>
+</script>
+

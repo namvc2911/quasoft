@@ -1,0 +1,22 @@
+<div id="horizontal-toolbar" class="horizontal-toolbar">
+	<div id="Insert" onClick="rowLanguageInsert()" title="Tạo mới"
+		class="btn_main_top">
+		<a href="#1" class="icon-32-new"></a>
+	</div>
+	<div id="Update" onClick="rowLanguageEdit()" title="Sửa đổi"
+		class="btn_main_top btn_disabled">
+		<a href="#" class="icon-32-edit"></a>
+	</div>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#1"><span>Quản lý ngôn ngữ</span>
+			</a></li>
+		</ul>
+	</div>
+	<div id="qss_form_list">
+	<?php echo $this->views->Common->List($this->languages,'Code','Name') ;?>
+	</div>
+</div>

@@ -1,0 +1,59 @@
+<script>
+function create_purchase_request(ifid) {
+	var url = sz_BaseUrl + '/extra/dashboard/maintenance/purchaserequest/create';
+	var data = {ifid:ifid};
+	
+	qssAjax.call(url, data, function(jreturn) {
+		if(jreturn.message != '')
+		{
+			qssAjax.alert(jreturn.message);
+		}
+		loadbyid('report_'+<?php echo $this->quickReportID;?>,'/extra/dashboard/maintenance/purchaserequest/stack');
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});	
+}	
+
+$(document).ready(function() {
+	$('#grid_<?php echo $this->quickReportID?>').tableScroll({height:260,width:"100%"});
+});
+</script>
+
+<div class="box_das2">
+	<div class="inside_das2" id="">
+		<div class="bold" style="border-bottom: 1pt solid #ccc;">
+		<?php echo $this->_translate(2);?>
+			(
+			<?php echo count((array)$this->request);?>
+			)
+		</div>
+		<table border="0" cellspacing="0" cellpadding="0"
+			id="grid_<?php echo $this->quickReportID?>">
+			<?php foreach ($this->request as $dat):?>
+			<tr>
+				<td style="width: 30%"><a href="#"
+					onclick="popupFormDetail(<?php echo $dat->IFID;?>,<?php echo $this->depid;?>)">
+					<?php echo $dat->SoPhieu;?> </a>
+				</td>
+
+				<td style="width: 30%"><?php echo Qss_Lib_Date::mysqltodisplay($dat->Ngay);?>
+				</td>
+
+
+				<td style="width: 30%"><?php echo $dat->NoiDung;?>
+				</td>
+
+				<td>
+					<button class="btn-custom"
+						onclick="create_purchase_request(<?php echo $dat->IFID;?>)"
+						type="button">
+						<?php echo $this->_translate(3);?>
+					</button>
+				</td>
+
+			</tr>
+			<?php endforeach;?>
+		</table>
+
+	</div>
+</div>

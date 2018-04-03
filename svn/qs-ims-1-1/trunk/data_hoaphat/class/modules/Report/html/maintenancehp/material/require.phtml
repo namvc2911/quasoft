@@ -1,0 +1,26 @@
+<script>    
+function printPreview(){
+    var url = sz_BaseUrl + '/report/maintenancehp/material/require1';
+    var data = $('#report').serialize();
+    qssAjax.getHtml(url, data, function(jreturn) {
+            $('#print-area').html(jreturn);
+            removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+    });
+}
+</script>
+
+<div class="clear"></div>
+<div id="view">
+<div class="line-hr"><span><?php echo $this->_translate(1)?></span></div>
+<form id="report" method="get" action="/report/maintenancehp/material/require1">
+<table class="detail" style="margin: 10px">
+
+</table>
+</form>
+<p>
+<hr>
+    <?php echo $this->views->Report->PrintToolbar();?>
+    <div id="print-content">
+            <div id="print-area"></div>		
+    </div>
+</div>

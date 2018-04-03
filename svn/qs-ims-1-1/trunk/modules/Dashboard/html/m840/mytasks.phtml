@@ -1,0 +1,32 @@
+<script>
+//    var mobile_dashboard_m840 = {
+//        listMyTasks : function () {
+//            openModule('', '/mobile/m840/mytasks/index/');
+//        },
+//
+//        addNewTask : function () {
+//            var url  = '/mobile/m840/mytasks/edit?fid=M840';
+//
+//            url += '&ifid=0';
+//
+//            openModule('', url);
+//        }
+//    };
+</script>
+<script src="/js/form-list.js"></script>
+<div id="m000_content">
+    <div class="mobile-box-wrap">
+        <?php if($this->rightM840):?>
+            <div class="mobile-box-sub-line">
+                <span href="#1" onclick="openModule('M840');">Thao tác vận hành </span>
+
+                <?php if($this->rightCreateM840):?>
+                    <button type="button" style=" position: absolute; top:auto; right: 10px; font-weight: bold; z-index: 10000;"
+                            class="btn btn_main_top" onclick="rowInsert('M840');">
+                        Thêm
+                    </button>
+                <?php endif;?>
+            </div>
+        <?php endif;?>
+    </div>
+</div>

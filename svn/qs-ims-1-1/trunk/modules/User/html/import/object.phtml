@@ -1,0 +1,196 @@
+<style>
+#container {
+	
+}
+
+.import-bar {
+	margin: 5px 0px;
+	overflow: hidden;
+}
+
+.title {
+	font-weight: bold;
+}
+
+.process {
+	position: relative;
+	background: none repeat scroll 0 0 #ccc;
+	font-size: 10px;
+	line-height: 14px;
+	width: 300px;
+	font-weight: bold;
+}
+
+.process_bar {
+	background: #6DB03C;
+	width: 0px;
+}
+
+.process_percent {
+	position: absolute;
+	top: 0px;
+	left: 140px;
+}
+
+.total {
+	
+}
+
+.imported {
+	
+}
+
+.error-import {
+	
+}
+
+.error-log-title {
+	clear: both;
+}
+
+.error-log {
+	clear: both;
+	font-size: 10px;
+	line-height: 16px;
+	min-height: 16px;
+	max-height: 90px;
+	overflow: auto;
+	padding-top: 5px;
+	border-bottom: 1px #ccc solid;
+	border-top: 1px #ccc solid;
+}
+
+.process-element {
+	margin-left: 15px;
+	padding: 1px 0px;
+	min-width: 60px;
+}
+</style>
+<script>
+socket = false;    
+var buttonStatus = {};    
+function normalImport(){
+	socket = false;
+	$('#fid').removeAttr( "disabled");
+	$('#excel_import_file').removeAttr( "disabled" );
+	$('#ignore').removeAttr( "disabled");
+	$('#statement').text('Import có giới hạn');
+	$('#statement').addClass('done');
+	$('#statement').removeClass('error');
+}
+function uploadFile(field) {
+	/* Upload file by ajax */
+	disabledLayout();
+	$.ajaxFileUpload({
+		url : sz_BaseUrl + '/user/field/uploadfile',
+		secureuri : false,
+		fileElementId : $('#' + field + '_file'),
+		dataType : 'json',
+		success : function(data, status) {
+			/* Upload file successfully */
+			if (data.error) {
+				qssAjax.alert(data.message);
+				enabledLayout();
+			} else {
+				$('#' + field).val(data.image);
+				enabledLayout();
+				$('#btnUPDATE').prop('disabled',false);
+			}
+		},
+		error : function(data, status, e) {
+			/* If upload error */
+			qssAjax.alert(e);
+		}
+	});
+}
+function excelImport() {
+	if (isDisabled('btnUPDATE')) {
+		return;
+	}
+	if($('#fid').val() == 0 && $('#fid').val() == 0){
+		qssAjax.alert(Language.translate('SELECT_IMPORT_MODULE'));
+		return;
+	}
+	$('#btnUPDATE').prop('disabled',true);
+	disabledLayout();
+	$('#qss_combo').data('saved',true);
+	var url = sz_BaseUrl + '/user/import/excelImport';
+	var data = $('#qss_object_excel').serialize();
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#qss_import').html(jreturn);
+		enabledLayout();
+	});
+}
+function downloadIMPO(type) {
+	if($('#fid').val() == 0 && $('#fid').val() == 0){
+		qssAjax.alert(Language.translate('SELECT_TEMPLATE_MODULE'));
+		return;
+	}
+	var url = sz_BaseUrl + '/user/import/download?type=' + type;
+	var data = $('#qss_object_excel').serialize();
+	window.open(url + '&' + data);
+	//window.location.href = url + '&' + data;
+        //openModule('', url + '&' + data);
+}
+</script>
+
+<input type="hidden"
+	value="1" name="readay" />
+<div style="height: 40px;">
+	<button id="btnUPDATE" type="button" class="btn btn_main_top" disabled
+		onclick="excelImport();">
+		<?php echo $this->_translate(39)?>
+	</button>
+	
+	<?php if(isset($this->object) && $this->object->i_IFID):?>
+	<button id="btnBACK" type="button" class="btn btn_main_top" 
+		onclick="$('#qss_combo').dialog('close');">
+		<?php echo $this->_translate(32)?>
+	</button>
+	<?php endif;?>
+</div>
+<div class="clear"></div>
+<div>
+	<form method="post" id="qss_object_excel">
+		<input type="hidden" id="ifid" name="ifid"
+			value="<?php echo (int )@$this->object->i_IFID?>" /> <input
+			type="hidden" id="deptid" name="deptid"
+			value="<?php echo (int )@$this->object->intDepartmentID?>" /> <input
+			type="hidden" id="objid" name="objid"
+			value="<?php echo @$this->object->ObjectCode?>" />
+		<p>
+		<?php if(isset($this->object) && $this->object->i_IFID):?>
+		<?php echo $this->object->sz_Name?>
+			<input type="hidden" name="fid" value="<?php echo $this->form->FormCode?>" />
+			<?php else:?>
+			<select id="fid" name="fid" style="width: 300px">
+				<option value="0">
+				<?php $modules = $this->user->a_fGetAllModule() ?>
+				<?php foreach($modules as $formofuser):?>
+				<?php if(!$formofuser->class):?>
+				
+				<option value="<?php echo $formofuser->FormCode;?>">
+				<?php echo $formofuser->Name;?>
+				<?php endif;?>
+				<?php endforeach;?>
+			
+			</select>
+			<?php endif;?>
+			<a onclick="downloadIMPO(1);" href="#"><?php echo $this->_translate(40)?>
+			</a> / <a onclick="downloadIMPO(2);" href="#"><?php echo $this->_translate(41)?></a>
+			
+		</p>
+		<p>
+			<input type="file" id="excel_import_file" name="excel_import_file"
+				size="40" onchange="return uploadFile('excel_import');" /> <input
+				type="hidden" id="excel_import" name="excel_import" value="" /> <input
+				type="checkbox" id="ignore" name="ignore" value="1"> <label
+				for="ignore"><?php echo $this->_translate(43)?> </label>
+		
+		
+		<hr />
+		<div id="statement"></div>
+		<div id="container"></div>
+	</form>
+	<div id="qss_import"></div>
+</div>

@@ -1,0 +1,64 @@
+﻿<script>
+function saveReport() {	
+	var data = $('#report').serialize();
+	var url = sz_BaseUrl + '/user/report/save';
+	qssAjax.call(url, data, function(jreturn) {
+		$('#qss_trace').dialog('close');
+		reportSearch('<?php echo $this->form->FormCode?>');
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+}
+function deleteReport() {	
+	var data = $('#report').serialize();
+	var url = sz_BaseUrl + '/user/report/delete';
+	qssAjax.call(url, data, function(jreturn) {
+		$('#qss_trace').dialog('close');
+		reportSearch('<?php echo $this->form->FormCode?>');
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+}
+</script>
+<form id="report" method="post">
+	<input type="hidden" name="fid"
+		value="<?php echo $this->form->FormCode?>"> <input type="hidden"
+		name="urid" value="<?php echo $this->urid?>">
+
+
+	<div class="line-hr">
+		<span><?php echo $this->_translate(4);?> </span>
+	</div>
+	<table class="detail">
+	<?php foreach ($this->languages as $lang):?>
+		<tr>
+			<td><?php echo $this->_translate(1)?> - <?php echo $lang->Name?>:</td>
+			<?php if($lang->Code == 'vn'):?>
+			<td><input type="text" style="width: 200px;" name="reportname"
+				value="<?php echo @$this->data->Name?>"></td>
+				<?php else:?>
+			<td><input type="text" name="reportname_<?php echo $lang->Code?>"
+				style="width: 200px;"
+				value="<?php echo @$this->data->{"Name_$lang->Code"}?>"></td>
+				<?php endif;?>
+		</tr>
+		<?php endforeach;?>
+		<tr>
+			<td><?php echo $this->_translate(2);?></td>
+			<td><input style="width: 250px" type="text" name="params"
+				value="<?php echo @$this->data->Params?>"></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->_translate(6);?></td>
+			<td><input type="checkbox" name="mobile" value="1" <?php if(@$this->data->Mobile):?>checked<?php endif;?>></td>
+		</tr>
+	</table>
+	<p>
+		<button type="button" class="btn-custom" onclick="saveReport()">
+		<?php echo $this->_translate(3);?>
+		</button>
+		<button type="button" class="btn-custom" onclick="deleteReport()">
+			<?php echo $this->_translate(5);?>
+		</button>
+
+</form>

@@ -1,0 +1,89 @@
+<div style="float: left; width: 98%">
+	<div style="float: left; width: 90%">
+	<?php echo $this->pager?>
+	<?php echo $this->grid?>
+	</div>
+	<div style="float: left; width: 10%; text-align: center;">
+		<button style="width: 100px;" id="btnOINSERT" type="button"
+			onclick="rowInsert('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->object->ObjectCode?>');"
+			class="btn-custom" <?php if( !$this->object->bInsert || !($this->Rights & 1)):?>disabled<?php endif;?>>
+			<?php echo $this->_translate(12)?>
+		</button>
+		<br>
+		<button style="width: 100px;" id="btnOEDIT" type="button"
+			onclick="rowEdit('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->object->ObjectCode?>');"
+			class="btn-custom" disabled>
+			<?php echo $this->_translate(13)?>
+		</button>
+		<br>
+		<button style="width: 100px;" id="btnDELETE" type="button"
+			onclick="rowDelete('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->object->ObjectCode?>');"
+			class="btn-custom" disabled>
+			<?php echo $this->_translate(14)?>
+		</button>
+
+		<?php if($this->object->bTrack):?>
+		<br>
+		<button style="width: 100px;" id="btnEIMPORT" type="button"
+			onclick="rowIOExcel('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->object->ObjectCode?>');"
+			class="btn-custom">
+			<?php echo $this->_translate(33)?>
+		</button>
+		<?php endif;?>
+		
+		<?php if($this->object->b_Tree):?>
+		<br>
+		<button style="width: 100px;" id="btnUP" type="button"
+			onclick="rowUpDown('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->object->ObjectCode?>',1);"
+			class="btn-custom" disabled>
+			<?php echo $this->_translate(35)?>
+		</button>
+		<br>
+		<button style="width: 100px;" id="btnDOWN" type="button"
+			onclick="rowUpDown('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->object->ObjectCode?>',0);"
+			class="btn-custom" disabled>
+			<?php echo $this->_translate(36)?>
+		</button>
+		<?php endif;?>
+		<br>
+		<button style="width: 100px;" id="btnOREFRESH" type="button"
+			onclick="rowObjectSearch('<?php echo $this->object->i_IFID;?>','<?php echo $this->object->intDepartmentID;?>','<?php echo $this->object->ObjectCode;?>');"
+			class="btn-custom">
+			<?php echo $this->_translate(23)?>
+		</button>
+		<?php foreach($this->bashes as $item):?>
+		<?php $arr = explode(',',$item->Step)?>
+		<?php if(in_array($this->form->i_Status,$arr)):?>
+		<?php switch($item->Type):
+case 2:?>
+<?php case 3:?>
+		<br>
+		<button style="width: 100px; color: yellow" type="button"
+			class="btn-custom extra-button <?php if($item->Record):?>extra-button-object-record<?php endif;?>" <?php if($item->Record):?>disabled<?php endif;?>
+			onclick="bashRun(<?php echo $this->form->i_IFID?>,<?php echo $item->BID?>,'<?php echo $item->BashName?>',this,'<?php echo $this->object->ObjectCode?>')">
+			<?php echo $item->BashName?>
+		</button>
+		<?php break;?>
+		<?php case 4:?>
+		<br>
+		<button style="width: 100px; color: yellow" type="button"
+			class="btn-custom extra-button <?php if($item->Record):?>extra-button-orecord<?php endif;?>" <?php if($item->Record):?>disabled<?php endif;?>
+			onclick="popupOther(<?php echo $this->form->i_IFID?>,'<?php echo $this->object->ObjectCode?>','<?php echo $item->Class?>',this)">
+			<?php echo $item->BashName?>
+			</a>
+		</button>
+		<?php break;?>
+		<?php case 5:?>
+		<br>
+		<button style="width: 100px; color: yellow" type="button"
+			class="btn-custom extra-button <?php if($item->Record):?>extra-button-orecord<?php endif;?>" <?php if($item->Record):?>disabled<?php endif;?>
+			onclick="openOther(<?php echo $this->form->i_IFID?>,'<?php echo $this->object->ObjectCode?>','<?php echo $item->Class?>',this)">
+			<?php echo $item->BashName?>
+		</button>
+		<?php break;?>
+		<?php endswitch;?>
+		<?php endif;?>
+		<?php endforeach;?>
+
+	</div>
+</div>

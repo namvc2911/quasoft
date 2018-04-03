@@ -1,0 +1,56 @@
+<?php ?>
+<script src="/js/import-list.js"></script>
+<script src="/js/extra/button/m765.js"></script>
+
+<div class="popup_wrap">
+    <div class="popup_header">
+        <form id="m765_param_export_form" action="/button/m765/param/excel" method="post">
+            <input type="hidden" name="fid" id="fid" value="M765" />
+            <input type="hidden" id="ifid" name="ifid" value="0">
+            <input type="hidden" id="deptid" name="deptid" value="0">
+            <input type="hidden" id="objid" name="objid" value="">
+            <input type="hidden" id="popup" name="popup" value="1">
+
+
+            <table class="popup_detail">
+                <tr>
+                    <th colspan="2">
+                        TẢI MẪU EXCEL
+                    </th>
+                </tr>
+
+                <tr>
+                    <th>Ngày bắt đầu: </th>
+                    <td  style="width: 85%" class=""><?php echo $this->views->Report->Datepicker('start', date('d-m-Y'));?></td>
+                </tr>
+
+                <tr>
+                    <th>Ngày kết thúc: </th>
+                    <td  style="" class=""><?php echo $this->views->Report->Datepicker('end', date('d-m-Y'));?></td>
+                </tr>
+
+                <tr>
+                    <th valign="top">Thiết bị <span class="red bold">(*)</span>: </th>
+                    <td class="required">
+                        <?php echo $this->views->Report->AjaxDialBox('equipment', 'ODanhSachThietBi', 'IFID_M705', array('MaThietBi', 'TenThietBi'), array('MaThietBi', 'TenThietBi'), array('IFID_M705 IN (SELECT IFID_M705 FROM ODanhSachDiemDo GROUP BY IFID_M705)'));?>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th valign="top">Điểm đo <span class="red bold">(*)</span> : </th>
+                    <td class="required" id="m765_export_params">
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>&nbsp;</th>
+                    <td>
+                        <button type="button" class="btn" onclick="m765_params_button.download();"> Tải mẫu excel </button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+

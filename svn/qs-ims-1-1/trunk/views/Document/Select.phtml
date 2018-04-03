@@ -1,0 +1,223 @@
+<script>
+$(function () {
+	var url = sz_BaseUrl + '/user/document/tag?ifid=<?php echo $this->form->i_IFID?>';
+    $('#document').tagSuggest({
+        url: url,
+        delay: 200,
+        separator : '*',
+        tagContainer: 'div',
+        callback: selecting
+    });
+});
+function selecting(workingTags,id)
+{
+	if(id){
+		attachDocument(id,<?php echo $this->form->i_IFID?>);
+	}
+}
+function attachSearch() {
+	var pageno = $('#qss_document_pageno').val();
+	var perpage = $('#qss_document_perpage').val();
+	var groupby = $('#qss_document_groupby').val();
+	var url = sz_BaseUrl + '/user/document/select';
+	var data = {ifid:$('#ifid').val(),deptid:$('#deptid').val(),pageno:pageno,perpage:perpage,groupby:groupby};
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#qss_trace').html(jreturn);
+		$('#upload').file(function(inp) {
+			inp.id = inp.name = 'myFileInput';
+			
+			/* Upload file by ajax */
+			disabledLayout();
+			$.ajaxFileUpload({
+				url : sz_BaseUrl + '/user/document/upload?folder='+$('#upload_folder').val(),
+				secureuri : false,
+				fileElementId : inp,
+				dataType : 'json',
+				success : function(data, status) {
+					/* Upload file successfully */
+					if (data.error) {
+						qssAjax.alert(data.message);
+						enabledLayout();
+					} else {
+						attachDocument(data.id,row.id);
+						enabledLayout();
+					}
+				},
+				error : function(data, status, e) {
+					/* If upload error */
+					qssAjax.alert(e);
+				}
+			});
+		});
+	});
+}
+function attachSort(id) {
+	var pageno = $('#qss_document_pageno').val();
+	var perpage = $('#qss_document_perpage').val();
+	var groupby = $('#qss_document_groupby').val();
+	var url = sz_BaseUrl + '/user/document/select';
+	var data = {fieldorder:id,ifid:$('#ifid').val(),deptid:$('#deptid').val(),pageno:pageno,perpage:perpage,groupby:groupby};
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#qss_trace').html(jreturn);
+		$('#upload').file(function(inp) {
+			inp.id = inp.name = 'myFileInput';
+			
+			/* Upload file by ajax */
+			disabledLayout();
+			$.ajaxFileUpload({
+				url : sz_BaseUrl + '/user/document/upload?folder='+$('#upload_folder').val(),
+				secureuri : false,
+				fileElementId : inp,
+				dataType : 'json',
+				success : function(data, status) {
+					/* Upload file successfully */
+					if (data.error) {
+						qssAjax.alert(data.message);
+						enabledLayout();
+					} else {
+						attachDocument(data.id,row.id);
+						enabledLayout();
+					}
+				},
+				error : function(data, status, e) {
+					/* If upload error */
+					qssAjax.alert(e);
+				}
+			});
+		});
+	});
+}
+function attachDocument(id,ifid)
+{
+	var url = sz_BaseUrl + '/user/document/attach/form';
+	var data = {id:id,ifid:ifid};
+	qssAjax.call(url, data, function(jreturn) {
+		attachSearch();
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+
+}
+function downloadDoc(id){
+	var url = sz_BaseUrl + '/user/document/download?id='+id;
+//	window.location.href = url;
+        openModule('', url);
+}
+function deleteDocument(ifid,id)
+{
+	var url = sz_BaseUrl + '/user/document/attach/delete';
+	var data = {id:id,ifid:ifid};
+	qssAjax.call(url, data, function(jreturn) {
+		attachSearch();
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+
+}
+</script>
+<style>
+#document
+{
+margin: 0px !important;
+}
+</style>
+<input type="hidden" id="upload_folder" value="<?php echo $this->form->sz_Name?>">
+<input type="hidden" id="ifid" value="<?php echo $this->form->i_IFID?>">
+<input type="hidden" id="deptid" value="<?php echo $this->form->i_DepartmentID?>">
+<div id="qss_attach">
+<table class="grid">
+      <tr>
+        <td align="right" colspan="4">Nhóm theo:
+          <select onchange="attachSearch();" id="qss_document_groupby">
+            <option value="0"/>
+            <option <?php if($this->groupby == 2) echo 'selected'?> value="2">Người tạo</option>
+            <option <?php if($this->groupby == 3) echo 'selected'?> value="3">Ngày tạo</option>
+            <option <?php if($this->groupby == 4) echo 'selected'?> value="4">Ngày sửa</option>
+            <option <?php if($this->groupby == 5) echo 'selected'?> value="5">Thư mục</option>
+          </select>
+          Trang:
+          <select style="" onchange="attachSearch();" id="qss_document_pageno">
+		  <option <?php if(1 == $this->currentpage) echo 'selected';?>>1</option>
+          <?php for($i = 2;$i <= ceil($this->recordcount/$this->limit);$i++):?>
+            <option <?php if($i == $this->currentpage) echo 'selected';?>><?php echo $i?></option>
+          <?php endfor;?>
+          </select>
+          / 1 Hiển thị:
+          <select onchange="attachSearch();" style="" id="qss_document_perpage">
+            <option <?php if($this->limit == 10) echo 'selected'?>>10</option>
+            <option <?php if($this->limit == 20) echo 'selected'?>>20</option>
+            <option <?php if($this->limit == 50) echo 'selected'?>>50</option>
+            <option <?php if($this->limit == 100) echo 'selected'?>>100</option>
+          </select></td>
+      </tr>
+      <tr>
+      	<td align="left" style="border-right: 0pt none; width: 250px;">Loại tài liệu: 
+				<select>
+				<option> --- Loại tài liệu --- </option>
+				<option> --- Loại tài liệu --- </option>
+				</select>	
+		</td>
+        <td align="left" style="border-right: 0pt none; width: 250px;">Đính kèm: 
+				<span class="tag-div" >
+                 <input type="text" size="30" id="document" name="document" >
+	        	</span>	
+		</td>
+		<td align="left" style="border-right: 0pt none; width: 80px;">
+				hay <a id="upload" href="#!">Tải lên</a> 
+		</td>
+		<td>
+			<button class="btn-custom">Thêm hồ sơ</button> 
+		</td>
+      </tr>
+</table>
+<table cellspacing="0" class="grid">
+	<tr>
+		<th class="nocount">STT</th>
+		<th><a href="#!" onclick="attachSort(1)">Tên tài liệu <?php if($this->orderfield == 1):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="attachSort(2)">Người tạo <?php if($this->orderfield == 2):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="attachSort(3)">Ngày tạo <?php if($this->orderfield == 3):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="attachSort(4)">Ngày cập nhật <?php if($this->orderfield == 4):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="attachSort(5)">Thư mục <?php if($this->orderfield == 5):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="attachSort(6)">Kiểu <?php if($this->orderfield == 6):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="attachSort(7)">Kích thước <?php if($this->orderfield == 7):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th>Xóa</th>
+	</tr>
+	<?php
+	$group = null;
+	$i=0;
+	foreach ($this->documents as $item)
+	{
+	$i++;
+		?>
+		
+	<?php if(isset(Qss_Model_Document::$arrField[$this->groupby])):?>
+      	<?php if($group != (($this->groupby == 3 || $this->groupby == 4)?Qss_Lib_Date::mysqltodisplay($item->{Qss_Model_Document::$arrField[$this->groupby]}):$item->{Qss_Model_Document::$arrField[$this->groupby]})):?>
+      	<tr>
+			<td class="groupby" colspan="11"><?php if($this->groupby == 3 || $this->groupby == 4) echo Qss_Lib_Date::mysqltodisplay($item->{Qss_Model_Document::$arrGroup[$this->groupby]}); else echo $item->{Qss_Model_Document::$arrGroup[$this->groupby]};?></td>
+		</tr>
+      	<?php endif;?>
+      <?php $group = (($this->groupby == 3 || $this->groupby == 4)?Qss_Lib_Date::mysqltodisplay($item->{Qss_Model_Document::$arrField[$this->groupby]}):$item->{Qss_Model_Document::$arrField[$this->groupby]})?>
+      <?php endif;?>	
+	<tr>
+		<td class="nocount"><?php echo $i?></td>
+		<td><a href="#!" onclick="downloadDoc(<?php echo $item->DID?>)"><?php echo $item->Name?></a></td>
+		<td><?php echo $item->UserName?></td>
+		<td><?php echo  date('d-m-Y H:i:s',strtotime($item->CDate))?></td>
+		<td><?php echo $item->Modify?date('d-m-Y H:i:s',strtotime($item->Modify)):''?></td>
+		<td><?php echo $item->Folder?></td>
+		<td class="center"><span class="<?php echo $item->Ext?> unknown">&nbsp;</span></td>
+		<td class="right"><?php echo number_format($item->Size,0,'.',',')?> KB</td>
+		<td class="center"><a href="#!" onclick="deleteDocument(<?php echo $item->IFID?>,<?php echo $item->DID?>)">Xóa</a></td>
+	</tr>
+	<?php
+	}
+	?>
+</table>
+</div>

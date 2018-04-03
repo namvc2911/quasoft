@@ -1,0 +1,15 @@
+<select
+	<?php if($this->selected):?>class="bglightgreen"<?php endif;?>
+    onchange="rowSearch('<?php echo $this->form->FormCode?>');"
+    name="filter_nameShift"
+    id="filter_idShift">
+
+    <option value="0" <?php echo ($this->selected==0)?'selected':'';?> >--- Chọn ca ---</option>
+    <?php foreach ($this->htmlShifts as $item):?>
+        <option
+            <?php echo ($this->selected==(int)$item->IOID)?'selected':'';?>
+            value="<?php echo $item->IOID?>">
+            <?php echo $item->MaCa; ?> - <?php echo $item->TenCa;?> (<?php echo date('H:i', strtotime($item->GioBatDau));?> - <?php echo date('H:i', strtotime($item->GioKetThuc));?>)
+        </option>
+    <?php endforeach;?>
+</select>

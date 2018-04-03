@@ -1,0 +1,7 @@
+<select onchange="rowSearch('<?php echo $this->form->FormCode?>');" style="width: 120px;" size="1" name="filter_maduan" id="filter_maduan"
+<?php if($this->selected):?>class="bglightgreen"<?php endif;?>>
+	<option value="0">--- Chọn dự án ---</option>
+	<?php foreach ($this->duan as $item):?>
+	<option <?php if($item->IOID == $this->selected):?>selected<?php endif;?> value="<?php echo $item->IOID?>"><?php echo $item->MaDuAn?> - <?php echo $item->TenDuAn?></option>
+	<?php endforeach;?>
+</select>

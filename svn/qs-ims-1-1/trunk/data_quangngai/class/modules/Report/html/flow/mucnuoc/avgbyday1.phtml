@@ -1,0 +1,76 @@
+<?php
+
+// *****************************************************************
+// === $series, gia tri cot ox, du lieu ve khoang cah; oy, du lieu ve cao do OZ
+// *****************************************************************
+$series = '';
+$seriesTemp = '';
+$xAxis  = '';
+
+// *****************************************************************
+// === Gan du lieu 
+// *****************************************************************
+
+
+$luuluong = array();
+foreach($this->luuluong as $dat)
+{
+	$luuluong[$dat->Day] = $dat->AVG;
+}
+
+
+
+for($i = 1; $i <= 31; $i++)
+{
+	$xAxis .= ($xAxis == '')?'':',';
+	$xAxis .= "'{$i}'";
+	
+    // Head of serie
+    $seriesTemp .= ($seriesTemp == '')?'':',';
+	$seriesTemp .= isset($luuluong[$i])?$luuluong[$i]:0;	
+}
+
+$series .= "{ name: 'Mực nước trung bình',data:[";
+$series .= $seriesTemp;
+$series .= "]}";
+?>
+
+
+
+<div id="container1" style="width: 95%; height: 400px; margin: 0 auto"></div>
+
+
+
+        <script type="text/javascript">
+            
+        $(document).ready(function() {
+	var chart;
+	chart = new Highcharts.Chart({
+        chart: {
+        	renderTo: 'container1'
+        } ,title: {
+                text: 'Biểu đồ mực nước trung bình tháng'
+				+' trạm <?php echo trim($this->workstation);?>'
+				+' tháng <?php echo $this->month;?>'
+				+' năm <?php echo $this->year;?>'
+            },
+            xAxis: {
+                categories: [<?php echo $xAxis;?>]
+            },
+            yAxis: {
+                title: {
+                    text: 'Mực nước (m)'
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                         this.x + ' - '+ this.y ;
+                }
+            },
+            
+            series: [<?php echo $series;?>]
+        });
+            });
+        </script>
+

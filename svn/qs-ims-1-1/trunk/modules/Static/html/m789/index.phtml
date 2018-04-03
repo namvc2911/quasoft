@@ -1,0 +1,113 @@
+<?php
+/**
+ * @author Thinh Tuan <thinh.tuan@quasoft.vn>
+ * @module Tong hop chi phi theo doi tuong
+ * @path /report/maintenance/cost/object
+ * @create 07/10/2014 - 8:00AM
+ * @description Module tong hop chi phi loc theo dieu kien tu ngay den ngay
+ * , chon mot hoac nhieu thiet bi.
+ */
+?>
+
+<script>
+	function printPreview()
+	{
+		var msg    = '';
+		var url    = sz_BaseUrl + '/static/m789/show';
+		var data   = $('#report').serialize();
+		
+		msg += common_checkEmpty($('#start').val(), '<?php echo $this->_translate(23) ?>');
+		msg += common_checkEmpty($('#end').val(), '<?php echo $this->_translate(24) ?>');
+		msg += common_compareStartAndEnd($('#start').val(), $('#end').val());
+
+		if(msg)
+		{
+			qssAjax.alert(msg);
+			return;
+		}
+		else
+		{
+			qssAjax.getHtml(url, data, function(jreturn) {
+					$('#print-area').html(jreturn);
+					removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+			});
+		}
+	}
+
+	function load(id) {
+		if(!id || id == undefined) id = 1;
+
+		var url  = sz_BaseUrl + '/static/m789/load';
+		var data = {selected:id};
+
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#m789_extra_filter').html(jreturn);
+			removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+		});
+	}
+
+	$(document).ready(function () {
+		load();
+	});
+</script>
+
+<div>
+	<div class="clear"></div>
+	<div id="view">
+		<div class="line-hr">
+			<span><?php echo $this->_translate(20) ?> </span>
+		</div>
+		<form id="report" method="get" action="/static/m789/show">
+			<table class="detail">
+				<!-- NGAY BAT DAU -->
+				<tr>
+					<th width="20%" class="report-param-label"><?php echo $this->_translate(23) ?>
+					</th>
+					<td><?php echo $this->views->Report->Datepicker('start', date('01-m-Y')); ?>
+						<span class="bold red">(*)</span>
+					</td>
+				</tr>
+
+				<!-- NGAY KET THUC -->
+				<tr>
+					<th width="20%" class="report-param-label"><?php echo $this->_translate(24) ?>
+					</th>
+
+					<td><?php echo $this->views->Report->Datepicker('end', date('d-m-Y')); ?>
+						<span class="bold red">(*)</span>
+					</td>
+				</tr>
+
+				<tr>
+					<th width="20%" class="report-param-label"><?php echo $this->_translate(45) ?>
+						<span class="bold red">(*)</span>
+					</th>
+
+					<td>
+                        <input type="radio" name="display" value="1" checked onclick="load(1)"/><?php echo $this->_translate(47)?>
+                        <input type="radio" name="display" value="2"  onclick="load(2)"/><?php echo $this->_translate(48)?>
+                        <input type="radio" name="display" value="3" onclick="load(3)"/><?php echo $this->_translate(49)?>
+                        <?php if (Qss_Lib_System::fieldActive('ODanhSachThietBi', 'TrungTamChiPhi')): ?>
+                            <input type="radio" name="display" value="4"  onclick="load(4)"/><?php echo $this->_translate(50)?>
+                        <?php endif; ?>
+					</td>
+				</tr>
+
+				<tr id="">
+					<th width="20%" class="report-param-label">&nbsp;</th>
+
+					<td id="m789_extra_filter">
+
+					</td>
+				</tr>
+
+			</table>
+		</form>
+		<hr>
+		<?php echo $this->views->Report->PrintToolbar(); ?>
+		<div id="print-content">
+			<div id="print-area"></div>
+		</div>
+	</div>
+</div>
+

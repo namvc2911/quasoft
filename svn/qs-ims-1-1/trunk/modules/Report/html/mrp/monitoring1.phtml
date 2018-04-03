@@ -1,0 +1,328 @@
+<style>
+table {
+	
+}
+
+table .gridx {
+	background-color: #fff;
+}
+
+.gridx {
+	WIDTH: 100%;
+	padding: 0;
+	border-top: 1px dotted #999999;
+	border-bottom: 1px dotted #999999;
+	border-left: 1px dotted #999999;
+}
+
+.gridx th {
+	font-size: 11px;
+	text-align: center;
+	height: 22px;
+	color: #333;
+	font-family: Arial, Helvetica, sans-serif;
+	border-bottom: 1px dotted #999999;
+	border-right: 1px dotted #CCCCCC;
+}
+
+.gridx .nocount {
+	font-size: 11px;
+	font-family: Arial, Helvetica, sans-serif;
+	border-bottom: 1px dotted #CCCCCC;
+	border-right: 1px dotted #CCCCCC;
+	border-left: 1px dotted #CCCCCC;
+	height: 22px;
+	background-color: #eee;
+	width: 40px;
+	text-align: center;
+	color: black !important;
+}
+
+.gridx .groupby {
+	font-weight: bold;
+	font-style: italic;
+	border-left: 1px dotted #CCCCCC;
+}
+
+.gridx td {
+	font-size: 11px;
+	font-family: Arial, Helvetica, sans-serif;
+	border-bottom: 1px dotted #CCCCCC;
+	border-right: 1px dotted #CCCCCC;
+	height: 22px;
+}
+
+.gridx td,.gridx th {
+	min-width: 38px;
+}
+
+.weekend { /*#FFFFBB, #E9E9D3*/
+	background-color: #D5D5BF;
+}
+
+.number_title {
+	cursor: pointer;
+}
+</style>
+
+<?php //echo '<pre>'; print_r($this->dayArray); die;?>
+<?php //$starttime=strtotime($this->startdate);?>
+<?php //$startday = date('w',$starttime);?>
+
+<?php
+
+$column                   = 0;
+$row                      = 0;                                                   // Hang excel
+$excel_col                = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);            // Column excel
+$seriesTitle              = array();                                             // Lưu tên series
+$xAxisPurchase     	  = '';                                                  // Cột x biểu đồ mua hàng
+$series    	          = '';                                                  // Series biểu đồ mua hàng
+$aSeriesData   	          = array();                                             // mảng Series biểu đồ mua hàng
+$aProductionSeriesTitle   = array();                                             // Lưu tên series
+$xAxisProduction   	  = '';                                                  // Cột x biểu đồ sản xuất
+$seriesProduction  	  = '';                                                  // Series biểu đồ sản xuất
+$aSeriesProduction 	  = array();                                             // mảng Series biểu đồ sản xuất
+$aSaleSeriesTitle  	  = array();                                             // Lưu tên series
+$xAxisSale         	  =	'';                                              // Cột x biểu đồ bán hàng
+$seriesSale        	  = '';                                                  // Series biểu đồ bán hàng
+$aSeriesSale       	  = array();                                             // mảng Series biểu đồ bán hàng
+$bgcolor                  = '#EEEEEE';                                           // Mau title
+?>
+<br />
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="landscape">
+	<excel orientation="landscape" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+	<div id="head_print">
+	<?php echo $this->views->Common->Landscape()?>
+	<?php $row = 2; ?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$this->totalCols] ?>"
+					font-size="14" wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(1) ?>
+				(<?php echo $this->_translate(2) ?> <?php echo $this->start; ?> <?php echo $this->_translate(3) ?>
+				<?php echo $this->end; ?>)</xls>
+			</h2>
+			<?php $row++; ?>
+		</center>
+	</div>
+	<div id="container">
+		<table class="gridx" cellpadding="0" cellspacing="0">
+
+			<!-- Tiêu đề -->
+			<tr>
+				<th width="60px" class="bggrey">
+					<!-- Mã --> <xls row="<?php echo $row ?>" row-merge="1" width="8"
+						column="<?php echo $excel_col[1] ?>" wrap-text="1"
+						h-align="center" bgcolor="<?php echo $bgcolor; ?>"
+						v-align="center" border="1" bold="1"> <?php echo $this->_translate(4) ?></xls>
+				</th>
+				<th width="90px" class="bggrey">
+					<!-- Mặt hàng --> <xls row="<?php echo $row ?>" row-merge="1"
+						width="12" column="<?php echo $excel_col[2] ?>" wrap-text="1"
+						bgcolor="<?php echo $bgcolor; ?>" h-align="center"
+						v-align="center" border="1" bold="1"> <?php echo $this->_translate(5) ?></xls>
+				</th>
+				<th width="30px" class="bggrey">
+					<!-- UOM --> <xls row="<?php echo $row ?>" row-merge="1" width="8"
+						column="<?php echo $excel_col[3] ?>" wrap-text="1"
+						h-align="center" bgcolor="<?php echo $bgcolor; ?>"
+						v-align="center" border="1" bold="1"> <?php echo $this->_translate(6) ?></xls>
+				</th>
+
+				<?php $currentColumn = 3; ?>
+				<?php foreach ($this->dayArray as $day): ?>
+				<?php
+				/* Description: Lấy cột Ox cho các biểu đồ (1) */
+				$xAxisPurchase .= $xAxisPurchase ? ",'{$day['Display']}'" : "'{$day['Display']}'";
+				/* End (1) */
+
+				/* Lấy màu đánh dấu cột */
+				if ($day['Weekday'] == 0 || $day['Weekday'] == 6) {
+					$class = 'weekend';
+					$bgcolor = '#D5D5BF';
+				} else {
+					$class = 'bggrey';
+					$bgcolor = '#EEEEEE';
+				}
+				?>
+				<th class="<?php echo $class; ?>"
+					parentcolumn="<?php echo ++$column ?>"><xls
+						row="<?php echo $row ?>" row-merge="1" width="10"
+						column="<?php echo $excel_col[++$currentColumn] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"
+						bgcolor="<?php echo $bgcolor; ?>" bold="1"> <?php echo $day['Display'] ?></xls>
+				</th>
+				<?php endforeach; ?>
+			</tr>
+			<?php $row++; ?>
+
+			<!-- Nội dung -->
+			<?php $column = 0; ?>
+			<?php $si = 0; /* index các mảng series */ ?>
+			<?php foreach ($this->products as $item): ?>
+
+			<?php
+			$seriesTitle[$si] = "{$item->MaSanPham} ({$this->_translate(17)})"; /* series title */
+			$si++;
+			$seriesTitle[$si] = "{$item->MaSanPham} ({$this->_translate(18)})"; /* series title */
+			$before           = (isset($this->before[$item->IOID])) ? $this->before[$item->IOID] : 0;
+			?>
+
+			<tr>
+				<td><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[1] ?>" wrap-text="1" h-align="left"
+						v-align="center" border="1"> <?php echo $item->MaSanPham ?></xls>
+				</td>
+				<td><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[2] ?>" wrap-text="1" h-align="left"
+						v-align="center" border="1"> <?php echo $item->TenSanPham ?></xls>
+				</td>
+				<td><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[3] ?>" wrap-text="1" h-align="left"
+						v-align="center" border="1"> <?php echo $item->DonViTinh ?></xls>
+				</td>
+				<?php $currentColumn = 3; ?>
+				<?php $itemCode = $item->MaSanPham ?>
+				<?php foreach ($this->dayArray as $day): ?>
+
+				<?php
+				$real = isset($this->real[$item->IOID][$day['Key']]) ? $this->real[$item->IOID][$day['Key']] : 0;
+				$purchase = isset($this->purchase[$item->IOID][$day['Key']]) ? $this->purchase[$item->IOID][$day['Key']] : 0;
+				$production = isset($this->production[$item->IOID][$day['Key']]) ? $this->production[$item->IOID][$day['Key']] : 0;
+				$need = $purchase + $production;
+
+				//echo 'Tonkho:'.$real.'- Mua hang'.$purchase.'- San xuat: '.$production.'- Ton kho bd:'.$before.'<br/>';
+
+				if (Qss_Lib_Date::compareTwoDate($day['Key'], $this->current) < 0) {
+					$inv = $real;
+				} else {
+					$yesterday = date('Y-m-d', strtotime($day['Key']) - 86400);
+					$purchaseYes = isset($this->purchase[$item->IOID][$yesterday]) ? $this->purchase[$item->IOID][$yesterday] : 0;
+					$productionYes = isset($this->production[$item->IOID][$yesterday]) ? $this->production[$item->IOID][$yesterday] : 0;
+					$inv = $before + $purchaseYes + $productionYes;
+					$before += $purchaseYes + $productionYes;
+				}
+
+				$aSeriesData[$si][] = $inv;
+				$si = $si - 1;
+				$aSeriesData[$si][] = $need;
+				$si = $si + 1;
+				?>
+
+				<?php
+				?>
+
+				<?php
+				if ($day['Weekday'] == 0 || $day['Weekday'] == 6) /* Nếu là hai ngày cuối tuần */ {
+					$class = 'weekend'; /* Màu cho ngày cuối tuần */
+					$bgcolor = '#D5D5BF'; /* Màu cho cột cuối tuần */
+				} else /* Ngày thường */ {
+					$class = ''; /* Màu cho ngày thường */
+					$bgcolor = ''; /* Màu cho cột ngày thường */
+				}
+				$title = "Yêu cầu/Tồn kho"
+                    ?>
+				<td title="<?php echo $title ?>"
+					class="number_title right <?php echo $class; ?>"
+					childrencolumn="<?php echo ++$column ?>"
+					childrenrow="<?php echo $row; ?>"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$currentColumn] ?>"
+						bgcolor="<?php echo $bgcolor ?>" wrap-text="1" h-align="right"
+						v-align="center" border="1"> <?php echo $need ?>/<?php echo $inv; ?>
+					</xls>
+				</td>
+				<?php endforeach; ?>
+			</tr>
+			<?php $row++; ?>
+			<?php endforeach; ?>
+		</table>
+	</div>
+</div>
+<div style="width: 1260px; margin: auto;">
+	<br />
+	<div id="container1"></div>
+	<br />
+</div>
+
+			<?php
+			$si = 0; /* Index mảng series */
+			foreach ($aSeriesData as $production) {
+				if ($si == 20)
+				break;
+				/* Lấy series data cho purchase */
+				$series .= $series ? ', ' : '';
+				$series .= "{ name: '{$seriesTitle[$si]}'";
+				$series .= ',data: [' . implode(',', $aSeriesData[$si]) . '] }';
+
+
+				$si++;
+			}
+			?>
+
+<script>
+<!--
+$(document).ready(function() {
+	var chart;
+	var chart2;
+	var chart3;
+	
+	chart = new Highcharts.Chart({
+        chart: {
+        	renderTo: 'container1',
+        	height: 500,
+	         plotBackgroundColor: null,
+	         plotBorderWidth: null,
+	         plotShadow: false
+        },
+        title: {
+            text: '<?php echo $this->_translate(13)?> (<?php echo $this->_translate(2)?> <?php echo $this->start ?> <?php echo $this->_translate(2)?> <?php echo $this->end ?>)',
+            x: -20 //center
+        },
+        subtitle: {
+            text: '<?php echo $this->_translate(21)?>',
+            align: 'center',
+            x: -10
+        },
+        xAxis: {
+            categories: [<?php echo $xAxisPurchase;?>]
+        },
+        yAxis: {
+        	min:0,
+            title: {
+                text: '<?php echo $this->_translate(14)?>'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            valueSuffix: '°C'
+        },
+        legend: {
+            layout: 'horizontal',
+            align: 'center',
+            verticalAlign: 'bottom',
+        },
+        series: [<?php echo $series;?>]
+    });
+
+	 for(j = 0; j < chart.series.length; j++)
+	 {
+		 chart.series[j].setVisible();
+	 }
+
+});
+    
+	
+	
+//-->
+</script>

@@ -1,0 +1,52 @@
+<script>
+function printPreview(){
+	var monthStart = $('#monthStart').val();
+	var monthEnd = $('#monthEnd').val();
+	var year = $('#year').val();
+	var msg = '';
+	msg += common_checkEmpty(monthStart,'<?php echo $this->_translate(1)?>');
+	msg += common_checkEmpty(monthEnd,'<?php echo $this->_translate(4)?>');
+	msg += common_checkEmpty(year,'<?php echo $this->_translate(2)?>');
+	if(msg)
+	{
+		qssAjax.alert(msg);
+		return;	
+	}
+	else
+	{
+		 var url = sz_BaseUrl + '/static/m819/show';
+         var data = $('#report').serialize();
+         qssAjax.getHtml(url, data, function(jreturn) {
+             $('#print-area').html(jreturn);
+             removePrintToolbarDisabled();
+         });
+	}
+		
+}
+</script>
+<div class='clear'></div>
+<div id='view'>
+	<div class='line-hr'>
+		<span><?php echo Qss_Lib_System::getReportTitle('M819');?></span>
+	</div>
+	<form id="report" action="/static/m819/show" method='get'>
+		<table class='detail' style='margin: 10px'>
+			<tr>
+				<th class="report-param-lable" width='20%'><?php echo $this->_translate(1);?>:</th>
+				<td><?php echo $this->views->Report->SelectMonth('monthStart');?></td>
+			</tr>
+			<tr>
+				<th class="report-param-lable" width='20%'><?php echo $this->_translate(4);?>:</th>
+				<td><?php echo $this->views->Report->SelectMonth('monthEnd');?></td>
+			</tr>
+			<tr>
+				<th class="report-param-lable" width='20%'><?php echo $this->_translate(2);?>:</th>
+				<td><?php echo $this->views->Report->SelectYear('year');?></td>
+			</tr>
+		</table>
+	</form>
+    <?php echo $this->views->Report->PrintToolbar();?>
+    <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>

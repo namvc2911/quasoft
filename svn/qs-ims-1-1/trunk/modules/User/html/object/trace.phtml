@@ -1,0 +1,81 @@
+<style>
+.event {
+	background: url("/images/event/event.png") no-repeat center -1px;
+}
+
+.meeting {
+	background: url("/images/event/meeting.png") no-repeat center -1px;
+}
+
+.task {
+	background: url("/images/event/task.png") no-repeat center -1px;
+}
+
+.call {
+	background: url("/images/event/call.png") no-repeat center -1px;
+}
+
+.email {
+	background: url("/images/event/email.png") no-repeat center -1px;
+}
+
+.other {
+	background: url("/images/event/other.png") no-repeat center -1px;
+}
+
+.bell {
+	background: url("/images/event/bell.png") no-repeat center 2px;
+}
+
+.no-bell {
+	background: url("/images/event/bell.png") no-repeat center -34px;
+}
+</style>
+<?php
+$arrCount = array(1=>'meeting',2=>'call',3=>'email',4=>'task',5=>'event',6=>'other');
+$arrStatus = array(0=>'chưa bắt đầu',1=>'đang thực hiện',2=>'hoàn thành',3=>'hủy');
+?>
+<div class="line-hr">
+	<span><?php echo $this->_translate(80,'Thông tin chung')?> </span>
+</div>
+<table class="detail">
+	<tr>
+		<th><?php echo $this->_translate(29,'Người thực hiện')?>:</th>
+		<td><?php echo $this->user->szUserName?></td>
+		<th><?php echo $this->_translate(78,'Ngày tạo')?>:</th>
+		<td><?php echo $this->object->createDate?Qss_Lib_Date::mysqltodisplay($this->object->createDate,'d-m-Y: H:m'):''?>
+		</td>
+	</tr>
+</table>
+
+<?php if(count($this->events)):?>
+<div class="line-hr">
+	<span>Công việc & sự kiện</span>
+</div>
+
+<table class="detail">
+	<tr>
+		<th width="40">&nbsp;</th>
+		<th width="200">Tên</th>
+		<th width="100">Ngày</th>
+		<th width="100">Thời gian</th>
+		<th width="150">Ghi chú</th>
+		<th width="80">Địa điểm</th>
+		<th width="80">Tình trạng</th>
+	</tr>
+	<?php foreach ($this->events as $item):?>
+	<tr>
+		<td class="<?php echo $arrCount[$item->EventType]?>"></td>
+		<td><?php echo $item->Title?></td>
+		<td><?php echo Qss_Lib_Date::mysqltodisplay($item->Date)?></td>
+		<td><?php echo substr($item->STime, 0,5)?> - <?php echo substr($item->ETime, 0,5)?>
+		</td>
+		<td><?php echo $item->Note?></td>
+		<td><?php echo ''?></td>
+		<td
+			class="center <?php if ($item->Status==2) echo 'done'; elseif (Qss_Lib_Date::i_fString2Time($item->Date) > time()) echo 'error'?>"><?php echo $arrStatus[$item->Status]?>
+		</td>
+	</tr>
+	<?php endforeach;?>
+</table>
+<?php endif;?>

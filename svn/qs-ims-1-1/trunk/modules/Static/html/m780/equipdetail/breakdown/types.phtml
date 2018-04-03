@@ -1,0 +1,182 @@
+<?php
+$xAxisOfTimes  = '';
+$columnOfTimes   = '';
+$columnOfHours   = '';
+$columnOfFix   = '';
+
+
+foreach ($this->breakdowns as $label)
+{
+	$xAxisOfTimes .= ($xAxisOfTimes != '')?',':'';
+	$xAxisOfTimes .= "'{$label->Ten}'";
+	$columnOfTimes.= ($columnOfTimes != '')?',':'';
+	$columnOfTimes.= $label->total;
+	
+	$columnOfHours.= ($columnOfHours != '')?',':'';
+	$columnOfHours.= $label->ThoiGianDungMay?$label->ThoiGianDungMay:0;
+	
+	$columnOfFix.= ($columnOfFix != '')?',':'';
+	$columnOfFix.= $label->ThoiGianXuLy?$label->ThoiGianXuLy:0;
+}
+
+?>
+<script>
+$(document).ready(function() {
+	var chart;
+	var chart1;
+	chart = new Highcharts.Chart({
+        chart: {
+        	renderTo: 'container',
+       	 	type: 'column',
+	         plotBackgroundColor: null,
+	         plotBorderWidth: null,
+	         plotShadow: false
+        },
+        title: {
+            text: '<?php echo $this->_translate(25)?>'
+        },
+        yAxis: 
+        {
+        	allowDecimals: false,
+            title: {
+                text: '<?php echo $this->_translate(24)?>' // Tran man-day
+            }
+        },
+        xAxis: {
+            categories: [<?php echo $xAxisOfTimes;?>]
+        },
+        tooltip: {
+            formatter: function() {
+                var s;
+                    s = ''+this.x  +': '+ this.y;
+                return s;
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        series:[{
+            name: '',
+            data: [<?php echo $columnOfTimes;?>]
+        }]
+    });
+	chart1 = new Highcharts.Chart({
+        chart: {
+        	renderTo: 'container1',
+       	 	type: 'column',
+	         plotBackgroundColor: null,
+	         plotBorderWidth: null,
+	         plotShadow: false
+        },
+        title: {
+            text: '<?php echo $this->_translate(26)?>'
+        },
+        xAxis: {
+            categories: [<?php echo $xAxisOfTimes?>]
+        },
+        yAxis: {
+        	min: 0,
+            title: {
+                text: '<?php echo $this->_translate(29)?>'
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f} h</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            },
+            series: {
+                pointPadding: 0
+            }
+        },
+        colors: [
+                 'orange',
+                 'green'
+             ]
+        ,
+        series: [{
+        	showInLegend: false,  
+            name: '<?php echo $this->_translate(27)?>',
+            data: [<?php echo $columnOfHours?>]
+
+        }, {
+        	showInLegend: false,  
+            name: '<?php echo $this->_translate(28)?>',
+            data: [<?php echo $columnOfFix?>]
+
+        }]
+    });
+});
+</script>
+<div>
+<div id="container" style="width: 47%; height: 200px; margin: 0 auto;float: left;"></div>
+<div id="container1" style="width: 47%; height: 200px; margin: 0 auto;float: left;"></div>
+</div>
+<table cellpadding="0" cellspacing="0" class="border_table"
+       style="width: 100%;" id=''>
+    <tr class="bggrey center">
+        <th style="width: 10%"><?php echo $this->_translate(2);?> <!-- Ngày yêu cầu -->
+        </th>
+        <th style="width: 10%"><?php echo $this->_translate(14);?> <!-- Mo ta -->
+        </th>
+        
+        <th style="width: 5%"><?php echo $this->_translate(1);?> <!-- Số phiếu -->
+        </th>
+       
+        <th style="width: 10%"><?php echo $this->_translate(13);?> <!-- Nguyen nhân su co -->
+        </th>
+
+        <th style="width: 10%"><?php echo $this->_translate(12);?> <!-- Loai su co -->
+        </th>
+
+        
+        <th style="width: 8%"><?php echo $this->_translate(10);?> <!-- Xử lý -->
+        </th>
+
+    </tr>
+
+    <?php $CountLine = 0; ?>
+    <?php foreach ($this->history as $h): ?>
+        <tr class="pointer einfo-historytab-row"
+            ifid="<?php echo $h->IFID_M759 ?>"
+            deptid="<?php echo $this->deptid ?>"
+            title="Click đúp để xem chi tiết bảo trì thiết bị!">
+            
+            <td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($h->NgayDungMay); ?></td>
+              <td class="left"><?php echo Qss_Lib_Date::mysqltodisplay($h->NgayKetThucDungMay); ?>
+            </td>
+			<td class="left"><?php echo $h->SoPhieu; ?></td>
+            <td class="left"><?php echo $h->MaNguyenNhanSuCo; ?></td>
+
+              <td style="width: 10%"><?php echo $h->TenNguyenNhanSuCo;?> 
+            <td class="center">
+                <a href="#" onclick="popupFormDetail('<?php echo $h->IFID ?>','<?php echo $h->DeptID?>')">
+                    <?php echo $this->_translate(10);?>
+                    <!-- Chi tiết -->
+                </a></td>
+        </tr>
+        <?php $CountLine++; ?>
+    <?php endforeach; ?>
+
+    <?php if ($CountLine <= 10): ?>
+        <?php for ($i = $CountLine; $i < 10; $i++): ?>
+            <tr class="pointer einfo-historytab-row"
+                onclick="einfo_select_history_row(this)">
+                <td class="left">&nbsp;</td>
+                <td class="center">&nbsp;</td>
+                <td class="center">&nbsp;</td>
+                <td class="left">&nbsp;</td>
+                <td class="left">&nbsp;</td>
+                <td class="left">&nbsp;</td>
+            </tr>
+        <?php endfor; ?>
+    <?php endif; ?>
+</table>

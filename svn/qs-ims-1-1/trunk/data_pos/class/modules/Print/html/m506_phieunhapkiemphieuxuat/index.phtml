@@ -1,0 +1,204 @@
+<?php
+$stt             = 0;
+$tongCongDonHang = 0;
+?>
+
+<script>
+    function excelRender() {
+        $('#report').submit();
+    }
+</script>
+
+<form id="report" action="/print/m506_phieunhapkiemphieuxuat/excel">
+    <input type="hidden" name="popup" value="1">
+    <input type="hidden" name="ifid" value="<?php echo @(int)$this->OXuatKho->IFID_M506;?>" />
+</form>
+
+
+<div class="portrait">
+
+    <h2 class="center">CÔNG TY CỔ PHẦN DỊCH VỤ LẮP ĐẶT, VẬN HÀNH</h2>
+    <h2 class="center">VÀ BẢO DƯỠNG CÔNG TRÌNH DẦU KHÍ BIỂN PTSC</h2>
+    <h2 class="center" style="border-bottom: 1px #000 solid">65A Đường 30/4, Phường Thắng Nhất Tp. Vũng Tàu</h2>
+
+    <div class="overflow">
+        <div class="fr" style="padding-right: 20px; margin-top: 10px;">
+            Số phiếu: <?php echo @$this->OXuatKho->SoChungTu;?>
+        </div>
+    </div>
+    <div class="clear"></div>
+
+    <h2 class="center">PHIẾU NHẬP KHO KIÊM PHIẾU XUẤT KHO</h2>
+    <p class="center">Ngày …… tháng ……    năm ……</p>
+
+
+    <p>&nbsp;</p>
+    <table cellspacing="0" cellpadding="0">
+
+        <tr height="21">
+            <td  style="width:200px" >Họ    tên người giao hàng:</td>
+            <td ><?php echo @$this->OXuatKho->NguoiGiao;?></td>
+
+        </tr>
+        <tr height="21">
+            <td>Đơn vị:</td>
+            <td><?php echo '';?></td>
+
+        </tr>
+        <tr height="21">
+
+            <td>Địa chỉ:</td>
+
+            <td><?php echo '';?></td>
+
+        </tr>
+        <tr height="21">
+            <td>Số hóa đơn:</td>
+            <td><?php echo @$this->OXuatKho->SoDonHang;?></td>
+        </tr>
+        <tr height="21">
+            <td>Tài khoản có:</td>
+            <td><?php echo '';?></td>
+        </tr>
+        <tr height="21">
+            <td>Nội dung:</td>
+            <td><?php echo @$this->OXuatKho->MoTa;?></td>
+        </tr>
+        <tr height="21">
+            <td>Kho: </td>
+            <td><?php echo @$this->OXuatKho->Kho;?></td>
+        </tr>
+    </table>
+    <p>&nbsp;</p>
+    <table cellspacing="0" cellpadding="0" border="0" class="border">
+        <col width="53" />
+        <col width="132" />
+        <col width="135" />
+        <col width="61" />
+        <col width="54" />
+        <col width="62" />
+        <col width="100" />
+        <col width="50" />
+        <col width="64" />
+        <col width="100" />
+        <tr height="42" class="bggrey">
+            <th height="42" width="53">STT</th>
+            <th width="132">MÃ VT/ TTB </th>
+            <th width="135">TÊN VẬT    TƯ/<br />
+                TBB </th>
+            <th width="61">ĐVT </th>
+            <th width="54">TK</th>
+            <th width="62">TK CP</th>
+            <th width="100">VỤ VIỆC</th>
+            <th width="50">SL</th>
+            <th width="64">GIÁ</th>
+            <th width="100">TIỀN</th>
+        </tr>
+
+        <?php foreach ($this->ODanhSachXuatKho as $item):?>
+            <?php $tongCongDonHang += $item->ThanhTien;?>
+            <tr height="21">
+                <td height="21" width="53" class="center"><?php echo ++$stt;?></td>
+                <td width="132" class="left"><?php echo $item->MaSP;?></td>
+                <td width="135" class="left"><?php echo $item->TenSP;?></td>
+                <td width="61"  class="left"><?php echo $item->DonViTinh;?></td>
+                <td width="54"  class="left"><?php echo '';?></td>
+                <td width="62"  class="left"><?php echo '';?></td>
+                <td width="100" class="left"><?php echo '';?></td>
+                <td width="50"  class="right"><?php echo Qss_Lib_Util::formatNumber($item->SoLuong);?></td>
+                <td width="64"  class="right"><?php echo Qss_Lib_Util::formatMoney($item->DonGia);?></td>
+                <td width="100" class="right"><?php echo Qss_Lib_Util::formatMoney($item->ThanhTien);?></td>
+            </tr>
+        <?php endforeach;?>
+
+        <tr height="21">
+            <td colspan="9" height="21" class="right bold">TỔNG CỘNG TIỀN HÀNG</td>
+            <td class="right"><?php echo Qss_Lib_Util::formatMoney($tongCongDonHang);?></td>
+        </tr>
+        <tr height="21">
+            <td colspan="9" height="21" class="right bold">CHI PHÍ</td>
+            <td class="right"><?php echo Qss_Lib_Util::formatMoney(0);?></td>
+            <?php $tongCongDonHang += 0;?>
+        </tr>
+        <tr height="21">
+            <td colspan="9" height="21" class="right bold">TỔNG CỘNG TIỀN THUẾ</td>
+            <td class="right"><?php echo Qss_Lib_Util::formatMoney(0);?></td>
+            <?php $tongCongDonHang += 0;?>
+        </tr>
+        <tr height="21">
+            <td colspan="9" height="21" class="right bold">TỔNG CỘNG</td>
+            <td class="right"><?php echo Qss_Lib_Util::formatMoney($tongCongDonHang);?></td>
+        </tr>
+    </table>
+    <p>&nbsp;</p>
+
+    <p class="right"> Bằng chữ: <?php echo Qss_Lib_Util::VndText($tongCongDonHang);?> </p>
+    <p>&nbsp;</p>
+    <p class="right">Ngày … tháng … năm … </p>
+
+    <table>
+        <tr>
+            <td class="bold center" style="width: 20%">Kế Toán</td>
+            <td class="bold center" style="width: 20%">Thủ kho</td>
+            <td class="bold center" style="width: 20%">Người nhận</td>
+            <td class="bold center" style="width: 20%">Phòng KHĐT/ KT (**)</td>
+            <td class="bold center" style="width: 20%">P.TCKT </td>
+        </tr>
+    </table>
+
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+
+    <table cellspacing="0" cellpadding="0">
+        <col width="53" />
+        <col width="132" />
+        <col width="135" />
+        <col width="61" />
+        <col width="54" />
+        <col width="62" />
+        <col width="100" />
+        <col width="50" />
+        <col width="64" />
+        <col width="100" />
+
+        <tr height="21">
+            <td height="21"></td>
+            <td>Note: </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr height="21">
+            <td height="21"></td>
+            <td colspan="3">      -    (*) Là Giám Đốc hoặc    người được ủy quyền.</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr height="21">
+            <td height="21"></td>
+            <td colspan="8">      -       (**) Phòng KT ký xác nhận vào phiếu Nhập – Xuất    kho VT/ TTB của phương tiện hàng hải</td>
+            <td></td>
+        </tr>
+        <tr height="21">
+            <td height="21"></td>
+            <td colspan="7">      -       Phiếu xuất kho được lập riêng cho trang thiết bị    và vật tư theo từng phiếu riêng biệt.</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+</div>

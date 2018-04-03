@@ -1,0 +1,58 @@
+<script type="text/javascript">
+$('#container_m705_countbygroup').highcharts({
+	chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Số lượng thiết bị theo nhóm'
+    },
+    xAxis: {
+        type: 'category'
+    },
+    yAxis: {
+        title: {
+            text: 'Số lượng'
+        }
+
+    },
+    legend: {
+        enabled: false
+    },
+    plotOptions: {
+        series: {
+            borderWidth: 0,
+            dataLabels: {
+                enabled: true,
+                format: '{point.y}'
+            }
+        }
+    },
+
+    tooltip: {
+        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b><br/>'
+    },
+
+    series: [{
+        name: 'Nhóm',
+        colorByPoint: true,
+        data: [
+        <?php $first = true;?>
+        <?php foreach ($this->countOut as $item):?>      
+         	<?php if(!$first):?>,<?php endif;?>
+	        {
+	            name: '<?php echo $item->NhomThietBi?>',
+	            y: <?php echo $item->TongSo?>
+	        }
+        <?php $first = false;?>
+        <?php endforeach;?>
+        ]
+    }]
+	
+});
+
+</script>		
+
+<div id="container_m705_countbygroup" style="width: 1000px; height: 300px;">
+
+</div>

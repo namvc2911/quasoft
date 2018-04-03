@@ -1,0 +1,75 @@
+<?php
+$widthTable = array(1, 3,3,3,3,3);
+$widthTable = Qss_Lib_Report::changeWidthToFitScreen3($widthTable);
+
+$select     = '';
+foreach ($this->assetTypes as $item) {
+    $select .= "<option value=\"{$item->IOID}\">";
+    $select .= $item->Loai;
+    $select .= "</option>";
+}
+?>
+
+<script src="/js/common.js"></script>
+<script src="/js/jquery.tablescroll.js"></script>
+
+<table id="grid1" class="border_table" cellspacing="0" cellpadding="0" border="0">
+    <thead>
+        <?php $begin = 0;?>
+        <tr class="bggrey">
+            <th style="width: <?php echo $widthTable[$begin++];?>%"><input type="checkbox" onclick="common_check_all_table_line(this, '.cwpo_line_checkbok', '.cwpo_line_checkbok_val')"/> </th>
+            <th style="width: <?php echo $widthTable[$begin++];?>%">Mã thiết bị</th>
+            <th style="width: <?php echo $widthTable[$begin++];?>%">Tên thiết bị</th>
+            <th style="width: <?php echo $widthTable[$begin++];?>%">Mã tài sản</th>
+            <th style="width: <?php echo $widthTable[$begin++];?>%">Tên tài sản</th>
+            <th style="width: <?php echo $widthTable[$begin++];?>%">Loại tài sản</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <?php foreach($this->equips as $item):?>
+            <tr>
+                <td class="center">
+                    <input type="checkbox" class="cwpo_line_checkbok " onclick="common_check_table_line(this, '.cwpo_line_checkbok_val')">
+                    <input type="hidden" class="table_line_disabled cwpo_line_checkbok_val" name=""  value="0">
+
+                    <input type="hidden" class="table_line_disabled" disabled name="M151_Convert_Equip_IOID[]"
+                           value="<?php echo @$item->IOID;?>"/>
+                </td>
+                <td class="left break"><?php echo @$item->MaThietBi;?>
+
+                </td>
+                <td class="left"><?php echo @$item->TenThietBi;?></td>
+                <td class="center required">
+                    <input type="text" class="table_line_disabled" disabled name="M151_Convert_Equip_MaTaiSan[]" style="width: 120px;"
+                           value="<?php echo @$item->MaTaiSan?@$item->MaTaiSan:@$item->MaThietBi;?>"/>
+                </td>
+                <td class="center required">
+                    <input type="text" class="table_line_disabled" disabled name="M151_Convert_Equip_TenTaiSan[]" style="width: 120px;"
+                           value="<?php echo @$item->TenTaiSan?@$item->TenTaiSan:@$item->TenThietBi;?>"/>
+                </td>
+                <td class="center required">
+                    <select name="M151_Convert_Equip_LoaiTaiSan[]" disabled class="table_line_disabled" style="width: 120px;">
+                        <option>--- Chọn ---</option>
+                        <?php echo $select;?>
+                    </select>
+                </td>
+            </tr>
+        <?php endforeach;?>
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function() {
+        // SET LẠI CHIỀU CAO BẢNG
+        $('#grid1').tableScroll({height:260,width:'100%'});
+
+        /// SET LẠI TRANG
+        $('#M151_Convert_Equip_Prev').attr('onclick', "$('#M151_Convert_Equip_PageNo').val('<?php echo @(int)$this->prev;?>'); m151_convert_equip.show();");
+        $('#M151_Convert_Equip_Next').attr('onclick', "$('#M151_Convert_Equip_PageNo').val('<?php echo @(int)$this->next;?>'); m151_convert_equip.show();");
+        $('#M151_Convert_Equip_PageNo').val('<?php echo $this->page;?>');
+        $('#M151_Convert_Equip_TotalPage').text('<?php echo $this->total;?>');
+        $('#M151_Convert_Equip_Total').text('<?php echo $this->count;?>');
+        $('#M151_Convert_Equip_Display').val('<?php echo $this->display;?>')
+    });
+</script>

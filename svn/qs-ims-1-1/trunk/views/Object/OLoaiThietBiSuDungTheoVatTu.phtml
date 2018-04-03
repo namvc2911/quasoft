@@ -1,0 +1,89 @@
+<?php $i=0;?>
+
+<script>
+    var OLoaiThietBiSuDungTheoVatTu =
+    {
+        changeClickSave :function () {
+            var onlickTextSave     = $('#btnSAVE').attr('onclick');
+            var onlickTextSaveBack = $('#btnSAVEBACK').attr('onclick');
+            var saveText           = ' if (typeof OLoaiThietBiSuDungTheoVatTu.save !== "undefined") {';
+            saveText              += 'OLoaiThietBiSuDungTheoVatTu.save();';
+            saveText              += '} ';
+
+            $('#btnSAVE').attr('onclick', '');
+            $('#btnSAVE').attr('onclick', saveText + onlickTextSave   );
+
+            $('#btnSAVEBACK').attr('onclick', '');
+            $('#btnSAVEBACK').attr('onclick', saveText + onlickTextSaveBack  );
+        },
+        
+        save : function () {
+            var url  = '/static/m113/save/';
+            var data = $('#OLoaiThietBiSuDungTheoVatTu_form').serialize();
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != '')
+                {
+                    qssAjax.notice(jreturn.message);
+                }
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+        }
+    }
+
+    $(document).ready(function () {
+        OLoaiThietBiSuDungTheoVatTu.changeClickSave();
+    });
+</script>
+
+<script src="/js/common.js"></script>
+
+<style>
+    .marker_check
+    {
+        background: none !important;
+    }
+</style>
+
+<form id="OLoaiThietBiSuDungTheoVatTu_form">
+    <div id="qss_object" style="border-top: 1px solid #999">
+        <?php if(count($this->htmlData)):?>
+            <table class="detail grid_edit tablescroll_body" id="grid" style="width:50%" cellspacing="0">
+                <?php foreach ($this->htmlData as $item):?>
+                    <?php ++$i;?>
+
+                    <tr >
+                        <td class="center">
+                            <input type="checkbox" class="cwpo_line_checkbok "
+                                   onclick="common_check_table_line(this, '.cwpo_line_checkbok_val')"
+                                <?php echo $item->ExIOID?'checked':'';?>
+                                <?php echo $item->ExIOID?'notdisable="1"':'';?>
+                            />
+                            <input type="hidden" class="table_line_disabled cwpo_line_checkbok_val"
+                                   name="CheckBox[]"
+                                   value="<?php echo $item->ExIOID?1:0;?>"
+                            />
+                        </td>
+
+                        <td class="left">
+                            <input class="table_line_disabled" type="hidden" value="<?php echo $item->IFID_M770;?>" name="ifid[]" <?php echo $item->ExIOID?'':'disabled';?> />
+                            <input class="table_line_disabled" type="hidden" value="<?php echo @(int)$this->htmlItem->IOID;?>" name="item[]" <?php echo $item->ExIOID?'':'disabled';?> />
+                            <input class="table_line_disabled" type="hidden" value="<?php echo @(int)$item->ExIOID;?>" name="ioid[]" <?php echo $item->ExIOID?'':'disabled';?> />
+
+
+
+                            <label for="idIndex<?php echo $i;?>">
+                                <?php echo @$item->TenLoai;?> <?php echo @$item->MaLoai;?>
+                            </label>
+                        </td>
+                    </tr>
+                <?php endforeach;?>
+            </table>
+        <?php else:?>
+            Chưa tạo loại thiết bị. <a onclick="openModule('M770');" href="#1">Tạo mới loại thiết bị.</a>
+        <?php endif;?>
+    </div>
+</form>
+
+

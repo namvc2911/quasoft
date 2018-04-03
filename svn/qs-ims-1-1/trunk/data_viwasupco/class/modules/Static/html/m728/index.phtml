@@ -1,0 +1,276 @@
+<div id="m728_wrap">
+<?php
+$begin  = 0;
+$widths = array(5, 5, 3, 3, 4, 5, 4, 3, 4, 2, 2, 3);
+$widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+?>
+
+<style>
+    .fly_table tr td, .fly_table tr th
+    {
+        height: 50px !important;
+        line-height: 16px;
+        font-size: 12px;
+        font-weight: bold;
+        padding: 0px 5px;
+    }
+
+    /*.fly_table tr:first-child*/
+    /*{*/
+    /*background: green !important;*/
+    /*color: white;*/
+    /*font-weight: bold;*/
+    /*}*/
+
+    /*.fly_table tr:nth-child(even)*/
+    /*{*/
+    /*background: blue;*/
+    /*color: white;*/
+    /*}*/
+
+    /*.fly_table tr:nth-child(odd)*/
+    /*{*/
+    /*background: darkblue;*/
+    /*color: white;*/
+    /*}*/
+
+    .fly_table {
+        border: 1px solid #aaa;
+    }
+
+    .fly_table tr th {
+        border: 1px solid #ccc;
+    }
+
+    .fly_table tr td {
+        border-bottom: 1px solid #ccc;
+    }
+
+    .fly_table tr td, .fly_table tr th {
+        word-wrap: break-word;
+    }
+</style>
+
+<script>
+    var time = new Date().getTime();
+
+    $(document.body).bind("mousemove keypress", function(e) {
+        time = new Date().getTime();
+    });
+
+    function refresh() {
+        if(new Date().getTime() - time >= 10000)
+        {
+            trackBreakdown()
+        }
+        else
+        {
+            setTimeout(refresh, 8000);
+        }
+    }
+    
+    function trackBreakdown() {
+        var url  = sz_BaseUrl + '/static/m728?start='+$('#start').val()+'&end='+$('#end').val();
+        var data = {};
+        var view_heigth = (parseInt($('#view').height));
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#rightside').html(jreturn);
+            $('#view').css({'height':view_heigth+'px'});
+        });
+    }
+
+    function showHideMenu() {
+        if($('#leftside').is(':hidden'))
+        {
+            $('#leftside, #header-menu,  .searchmodule, .ddsmoothmenu,.header-quick').show();
+
+            if (document.cancelFullScreen) {
+                document.cancelFullScreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitCancelFullScreen) {
+                document.webkitCancelFullScreen();
+            }
+        }
+        else
+        {
+            $('#leftside, #header-menu,   .searchmodule,  .ddsmoothmenu,.header-quick').hide();
+
+            if (document.documentElement.requestFullScreen) {
+                document.documentElement.requestFullScreen();
+            } else if (document.documentElement.mozRequestFullScreen) {
+                document.documentElement.mozRequestFullScreen();
+            } else if (document.documentElement.webkitRequestFullScreen) {
+                document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+            }
+        }
+    }
+
+    $(document).ready(function () {
+       $('#start').change(function () {
+           trackBreakdown();
+       });
+
+        $('#end').change(function () {
+            trackBreakdown();
+        });
+    });
+
+    setTimeout(refresh, 8000);
+</script>
+
+<div class="clear"></div>
+
+<div id="view">
+
+
+
+
+    <div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+        <?php echo $this->_translate(1);?>: <?php  echo $this->views->Report->Datepicker('start', $this->start);?>
+        <?php echo $this->_translate(2);?>: <?php  echo $this->views->Report->Datepicker('end', $this->end);?>
+        <button type="button" onclick="showHideMenu(); " class="btn"> <?php echo $this->_translate(8);?></button>
+    </div>
+
+    <div>
+        <table cellpadding="0" cellspacing="0" border="0" class="fly_table">
+            <tr class="bggrey">
+                <!-- Tên thiết bị -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                    <?php echo $this->_translate(19);?>
+                </th>
+
+                <!-- Tên thiết bị -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                    <?php echo $this->_translate(9);?>
+                </th>
+
+                <!--  Khu vực -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                   <?php echo $this->_translate(10);?>
+                </th>
+
+                <!-- Ngày sự cố -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                    <?php echo $this->_translate(11);?>
+                </th>
+
+                <!-- Người yêu cầu -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                    <?php echo $this->_translate(12);?>
+                </th>
+
+                <!-- Người yêu cầu -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                   <?php echo $this->_translate(13);?>
+                </th>
+
+                <!-- Tình trạng -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                    <?php echo $this->_translate(14);?>
+                </th>
+
+                <!-- Tình trạng -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                    <?php echo $this->_translate(15);?>
+                </th>
+
+                <!-- Đảm nhiệm -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                    <?php echo $this->_translate(16);?>
+                </th>
+
+
+                <!-- Tình trạng -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                   <?php echo $this->_translate(17);?>
+                </th>
+
+                <!-- Tình trạng -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                    <?php echo $this->_translate(18);?>
+                </th>
+
+                <!-- Tình trạng -->
+                <th style="width:<?php echo $widths[$begin++];?>%">
+                    <?php echo $this->_translate(20);?>
+                </th>
+            </tr>
+
+            <?php $i = 0;?>
+
+            <?php foreach($this->data as $item):?>
+
+            <tr class="<?php echo (++$i%2==0)?'bglightblue':'bgwhite';?>">
+                <!-- Tên thiết bị -->
+                <td class="left">
+                    <?php if($item->iTinhTrang == 1):?>
+                    <div style="float: left"><img src="/images/warning.gif"/></div>
+                    <div style="float: left"><a href="/user/form/edit?ifid=<?php echo $item->IFID;?>&deptid=<?php echo $this->deptid;?>" target="_blank"><?php echo $item->SoPhieu;?></a></div>
+                    <?php else:?>
+                        <a href="/user/form/edit?ifid=<?php echo $item->IFID;?>&deptid=<?php echo $this->deptid;?>" target="_blank"><?php echo $item->SoPhieu;?></a>
+                    <?php endif;?>
+                </td>
+
+                <!-- Tên thiết bị -->
+                <td class="left break">
+                    <?php echo $item->TenThietBi;?>
+                </td>
+
+                <!--  Khu vực -->
+                <td class="left break">
+                    <?php echo $item->MaKhuVuc;?>
+                </td>
+
+                <!-- Ngày yêu cầu -->
+                <td class="center">
+                    <?php echo $item->ThoiGian;?> <?php echo Qss_Lib_Date::mysqltodisplay($item->Ngay);?>
+                </td>
+
+                <!-- Người yêu cầu -->
+                <td class="left">
+                    <?php echo $item->NguoiYeuCau;?>
+                </td>
+
+                <!-- Nội dung sự cố -->
+                <td class="left">
+                    <?php echo $item->MoTa;?>
+                </td>
+
+                <!-- Tình trạng -->
+                <td class="center <?php echo $item->Color;?>">
+                    <?php echo $item->TinhTrang;?>
+                </td>
+
+                <!-- Dự kiến hoàn thành -->
+                <td class="center">
+                    <?php echo @$item->ThoiGianKetThucDuKien;?> <?php echo Qss_Lib_Date::mysqltodisplay(@$item->NgayDuKienHoanThanh);?>
+                </td>
+
+                <!-- Đảm nhiệm -->
+                <td class="left">
+                    <?php  echo @$item->NguoiChiuTranhNhiem;?>
+                </td>
+
+                <!-- Mức độ ưu tiên -->
+                <td class="left">
+                    <?php echo @$item->MucDoUuTien;?>
+                </td>
+
+                <!-- Thời gian dừng máy-->
+                <td class="right">
+                    <?php  echo Qss_Lib_Util::formatNumber($item->ThoiGianDungMay);?>
+                </td>
+
+                <!-- Thời gian dừng máy-->
+                <td class="left">
+                    <?php  echo $item->GhiChu;?>
+                </td>
+            </tr>
+            <?php endforeach;?>
+        </table>
+    </div>
+</div>
+
+<div id="qss_trace"></div>
+</div>

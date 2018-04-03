@@ -1,0 +1,169 @@
+<?php // @todo: Can sua lai bao cao nay them bao tri theo ngay ko theo ky ?>
+<?php $excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN); ?>
+<?php
+//$solar    = new Qss_Model_Calendar_Solar();
+//$end      = $this->end;
+//$print    = array();
+//$i        = 0;
+//$totalCol = @(int)count($this->shift) + 3;
+//
+//foreach ($this->data as $item)
+//{
+//	$start                                     = $this->start;
+//	$print[$item->Ref_MaThietBi]['MaThietBi']  = $item->MaThietBi;
+//	$print[$item->Ref_MaThietBi]['TenThietBi'] = $item->TenThietBi;
+//
+//	while ($start <= $end)
+//	{
+//		$day     = $start->format('d');
+//		$week    = $start->format('w');
+//		$month   = $start->format('m');
+//		$year    = $start->format('Y');
+//		$quarter = $solar->getQuarter((int)$month);
+//		$monthNo = $solar->getMonthNo((int)$month);
+//			$x     = '';
+//			$title = '';
+//			if((($item->MaKy == 'D')
+//			|| ($item->MaKy == 'W'&& $week == $item->GiaTri)
+//			|| ($item->MaKy == 'M'&& $day == $item->Ngay)
+//			|| ($item->MaKy == 'Q'&& $day == $item->Ngay && $monthNo == $item->ThangThu)
+//			|| ($item->MaKy == 'Y'&& $day == $item->Ngay && $month == $item->Thang)
+//			))
+//			{
+//
+//				$x     = 'x';
+//				$title =  "+ {$this->_translate(8)}: {$item->LoaiBaoTri}\n"
+//				."{$this->_translate(9)}: {$item->MucDoUuTien}\n"
+//				;
+//			}
+//
+//			if($x)
+//			{
+//				$print[$item->Ref_MaThietBi]['Tick'][$start->format('d-m-Y')][$item->Ref_Ca]['Tick'] = $x;
+//			}
+//
+//			if(!isset($print[$item->Ref_MaThietBi]['Tick'][$start->format('d-m-Y')][$item->Ref_Ca]['Title']))
+//			{
+//				$print[$item->Ref_MaThietBi]['Tick'][$start->format('d-m-Y')][$item->Ref_Ca]['Title'] = $title;
+//			}
+//			else
+//			{
+//				$print[$item->Ref_MaThietBi]['Tick'][$start->format('d-m-Y')][$item->Ref_Ca]['Title'] .= $title;
+//			}
+//
+//		$i++;
+//		$start = Qss_Lib_Date::add_date($start, 1);
+//	}
+//}
+?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+    <input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="landscape">
+    <excel orientation="landscape" font-name="Arial" font-size="9"
+           margin-left="0.5" margin-right="0.5" margin-top="0.75"
+           margin-bottom="0.75"/>
+
+    <div id="head_print">
+        <?php echo $this->views->Common->Landscape() ?>
+        <?php $row = 2; ?>
+        <center>
+            <h2>
+                <xls row="<?php echo $row ?>" column="A"
+                     column-merge="<?php echo $excel_col[($totalCol + 1)] ?>"
+                     font-size="12" wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(1) ?>
+                    <?php echo $this->_translate(2) ?><?php echo $this->start->format('d-m-Y') ?>
+                    <?php echo $this->_translate(3) ?><?php echo $this->end->format('d-m-Y') ?></xls>
+            </h2>
+        </center>
+    </div>
+    <?php $row++ ?>
+
+    <div id="container">
+        <table border="1" class="border width_auto" cellspacing="0"
+               cellpadding="0">
+            <tr class="bggrey">
+                <th style="width: 55px">
+                    <div style="width: 55px" class="center">
+                        <xls row="<?php echo $row ?>" column="A" row-merge="1" bold="1"
+                             border="1" wrap-text="1" v-align="center"
+                             h-align="center"> <?php echo $this->_translate(6) ?></xls>
+                    </div>
+                </th>
+                <th style="width: 100px">
+                    <div style="width: 100px">
+                        <xls row="<?php echo $row ?>" column="B" row-merge="1" bold="1"
+                             border="1" wrap-text="1" v-align="center"
+                             h-align="center"> <?php echo $this->_translate(4) ?></xls>
+                    </div>
+                </th>
+                <th style="width: 150px">
+                    <div style="width: 150px">
+                        <xls row="<?php echo $row ?>" column="C" row-merge="1" bold="1"
+                             border="1" wrap-text="1" v-align="center"
+                             h-align="center"> <?php echo $this->_translate(5) ?></xls>
+                    </div>
+                </th>
+                <?php $start = $this->start ?>
+                <?php $end = $this->end ?>
+                <?php $j = 1; ?>
+
+                <?php foreach ($this->dates as $item): ?>
+                    <th>
+                        <xls row="<?php echo $row ?>"
+                             column="<?php echo $excel_col[$j++] ?>" bold="1" border="1"
+                             wrap-text="1" v-align="center" h-align="center"> <?php echo $item['Display'] ?></xls>
+                    </th>
+                <?php endforeach; ?>
+            </tr>
+            <?php $row++ ?>
+
+            <?php $i = 0 ?>
+            <?php foreach ($this->data as $item): ?>
+                <tr>
+                    <?php $row++ ?>
+                    <?php $i++ ?>
+                    <td class="center">
+                        <xls row="<?php echo $row ?>" column="A"
+                             border="1" wrap-text="1" v-align="center" h-align="center"> <?php echo $i ?></xls>
+                    </td>
+                    <td>
+                        <xls row="<?php echo $row ?>" column="B" border="1" wrap-text="1">
+                            <?php echo $item['MaThietBi']; ?></xls>
+                    </td>
+                    <td>
+                        <xls row="<?php echo $row ?>" column="C" border="1" wrap-text="1">
+                            <?php echo $item['TenThietBi']; ?></xls>
+                    </td>
+                    <?php $start = $this->start ?>
+                    <?php $j = 0; ?>
+                    <?php while ($start <= $this->end): ?>
+
+                        <?php $title = "+ {$this->_translate(4)}: {$item['MaThietBi']}\n"
+                            . "+ {$this->_translate(10)}: " . $start->format('d-m-Y') . "\n";
+                        ?>
+                        <?php foreach ($this->shift as $item1): ?>
+                            <?php $j++; ?>
+                            <?php
+
+                            if (isset($item['Tick'][$start->format('d-m-Y')][$item1->IOID]['Title'])) {
+                                $title .= "+ {$this->_translate(11)}: {$item1->MaCa}\n"."+ Loại bảo trì\n" . $item['Tick'][$start->format('d-m-Y')][$item1->IOID]['Title'];
+                            }
+                            $tick = isset($item['Tick'][$start->format('d-m-Y')][$item1->IOID]['Tick']) ? $item['Tick'][$start->format('d-m-Y')][$item1->IOID]['Tick'] : '';
+                            ?>
+
+                        <?php endforeach; ?>
+                        <td class="center" style="cursor: pointer;"
+                            title="<?php echo $title; ?>">
+                            <xls row="<?php echo $row ?>"
+                                 column="<?php echo $excel_col[$j + 3] ?>" border="1" wrap-text="1"
+                                 v-align="center" h-align="center"> <?php echo $tick; ?></xls>
+                        </td>
+                        <?php $start = Qss_Lib_Date::add_date($start, 1); ?>
+                    <?php endwhile; ?>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    </div>
+</div>

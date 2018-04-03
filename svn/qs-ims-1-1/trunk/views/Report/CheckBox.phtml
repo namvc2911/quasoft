@@ -1,0 +1,130 @@
+<?php
+$id   = $this->id;
+?>
+    <div name = "<?php echo $id;?>" id= "<?php echo $id;?>" <?php echo $this->attributes;?>></div>
+
+<?php if($this->required): ?><span class="red bold">(*)</span> <?php endif;?>
+    <script>
+        $(function () {
+            reportComboboxSelect_<?php echo $id;?>();
+            <?php foreach($this->getLookupFilter as $conf):?>
+            $('#<?php echo $conf['id']?>').change(function(){
+                $('#<?php echo $id?>').val('');
+                reportComboboxSelect_<?php echo $id;?>();
+            } );
+            <?php endforeach;?>
+        });
+        function reportComboboxSelect_<?php echo $id;?>()
+        {
+
+            var data = {};
+            var filterByLookupArr = {};
+            var getFields = {};
+            var excludeObj = {};
+
+
+
+            <?php  $i = 0;?>
+            <?php foreach($this->getLookupFilter as $conf):?>
+            var filterLookupVal = $('#<?php echo $conf['id']?>').val();
+            filterLookupVal     = (!filterLookupVal || filterLookupVal == undefined)?'':filterLookupVal;
+
+            filterByLookupArr[<?php echo $i;?>] = {};
+            filterByLookupArr[<?php echo $i;?>]['required'] = <?php echo $conf['required']?>;
+            filterByLookupArr[<?php echo $i;?>]['val']      = filterLookupVal;
+
+            <?php foreach($conf['refField'] as $objKey=>$refField):?>
+            filterByLookupArr[<?php echo $i;?>]['objects'] = {};
+            filterByLookupArr[<?php echo $i;?>]['objects']['<?php echo $objKey;?>'] = '<?php echo $refField;?>';
+            <?php endforeach;?>
+
+            <?php $i++;?>
+            <?php endforeach;?>
+
+
+            getFields['num']     = <?php echo @(int)$this->getFields['num'];?>;
+            getFields['objects'] = {};
+            <?php  foreach($this->getFields['objects'] as $objectKey=>$field):?>
+            getFields['objects']['<?php echo $objectKey;?>'] = {};
+            getFields['objects']['<?php echo $objectKey;?>']['id'] = '<?php echo $field['id']?>';
+
+            <?php if(isset($field['where'])):?>
+            getFields['objects']['<?php echo $objectKey;?>']['where'] = '<?php echo serialize($field['where'])?>';
+            <?php endif;?>
+
+            <?php if(isset($field['order'])):?>
+            getFields['objects']['<?php echo $objectKey;?>']['order'] = '<?php echo serialize($field['order'])?>';
+            <?php endif;?>
+
+            <?php if(isset($field['group'])):?>
+            getFields['objects']['<?php echo $objectKey;?>']['group'] = '<?php echo serialize($field['group'])?>';
+            <?php endif;?>
+
+            <?php if(isset($field['limit'])):?>
+            getFields['objects']['<?php echo $objectKey;?>']['limit'] = '<?php echo $field['limit']?>';
+            <?php endif;?>
+
+            <?php for($i = 1;$i <= $this->getFields['num']; $i++):?>
+            <?php if(isset($field["display{$i}"]) && $field["display{$i}"]):?>
+            getFields['objects']['<?php echo $objectKey;?>']['display<?php echo $i;?>'] = '<?php echo $field["display{$i}"]?>';
+            <?php endif;?>
+            <?php endfor;?>
+            <?php endforeach;?>
+
+
+
+
+            <?php foreach($this->excludeObject as $exclude):?>
+            excludeObj[] = '<?php echo $exclude?>';
+            <?php endforeach;?>
+
+
+            var data = {
+                filterByLookupArr:filterByLookupArr,
+                getFields:getFields,
+                excludeObj:excludeObj
+            };
+
+            var url = sz_BaseUrl + '/user/report/combobox';
+            var html = '';
+            var oSelected = '';
+            data = decodeURIComponent($.param(data));
+
+            qssAjax.call(url, data, function(jreturn) {
+
+                var length = jreturn.length;
+                var checkBoxName = '<?php echo $id;?>[]';
+
+                for(var i in jreturn)
+                {
+                    html += '<input type="checkbox" name="'+checkBoxName+'" class="checkbox" value="'+jreturn[i].id+'"'+
+                    '> '
+                    +jreturn[i].value
+                    + '<br>';
+                }
+
+                $('#<?php echo $id?>').html(html);
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+        }
+
+    </script>
+
+
+<?php
+/* #====== old version ======#
+<select name = "<?php echo $this->name?>" id= "<?php echo $this->name?>">
+<option value="">--- <?php echo $this->_translate(1)?> ----
+<?php foreach ($this->data as $item):?>
+<option value="<?php echo $item->{$this->key};?>">
+<?php $begin = true;?>
+<?php foreach ($this->display as $val):?>
+<?php if(!$begin):?> - <?php endif;?>
+<?php echo $item->{$val};?>
+<?php $begin = false;?>
+<?php endforeach;?>
+<?php endforeach;?>
+</select>
+*/
+?>

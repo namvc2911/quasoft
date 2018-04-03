@@ -1,0 +1,219 @@
+<style>
+    .filter_bar input[type="text"]
+    {
+        width: 150px !important;
+    }
+
+    .filter_bar select
+    {
+        width: 150px !important;
+    }
+</style>
+
+<script>
+    var m184 = {
+        show : function()
+        {
+            var url = sz_BaseUrl + '/static/m184/show';
+            var data = $('#M184_form').serialize();
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#m184_show').html(jreturn);
+            });
+        },
+
+        history : function (handover_ioid, employee_ioid, asset_ioid)
+        {
+            var url = sz_BaseUrl + '/static/m184/history';
+            var data = {handover: handover_ioid, employee: employee_ioid, asset: asset_ioid};
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#qss_trace').dialog('close');
+                $('#qss_trace').html(jreturn);
+                $('#qss_trace').dialog({width: 800, height: 400});
+            });
+        },
+
+        detail : function (ele, employee, asset, all, factory)
+        {
+            var url  = sz_BaseUrl + '/static/m184/detail';
+            var data = {employee: employee, asset: asset, all: all, start: $('#start').val(), end: $('#end').val(), factory: factory};
+            var id   = $(ele).attr('id');
+
+            if(parseInt($(ele).attr('load_data')) == 0)
+            {
+                qssAjax.getHtml(url, data, function(jreturn) {
+                    $(jreturn).insertAfter(ele);
+                    $(ele).find('td').eq(0).removeClass('tree_close').addClass('tree_open');
+                    $(ele).attr('open_element', 1);
+                    $(ele).attr('load_data', 1);
+                });
+            }
+            else
+            {
+                if(parseInt($(ele).attr('open_element')) == 0)
+                {
+                    $('.'+id).show();
+                    $(ele).find('td').eq(0).removeClass('tree_close').addClass('tree_open');
+                    $(ele).attr('open_element', 1);
+                }
+                else
+                {
+                    $('.'+id).hide();
+                    $(ele).find('td').eq(0).removeClass('tree_open').addClass('tree_close');
+                    $(ele).attr('open_element', 0);
+                }
+            }
+        },
+
+        filterDepartment : function()
+        {
+            var url  = sz_BaseUrl + '/static/m184/departments/';
+            var data = {factory:$('#factory').val()};
+            var html = '<option value="">--- Chọn --- </option>';
+
+            qssAjax.call(url, data, function(jreturn) {
+                for(i in jreturn.data)
+                {
+                    html += '<option value="'+jreturn.data[i].BoPhan+'">'+jreturn.data[i].BoPhan+'</option>'
+                }
+
+                $('#department').html(html);
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+        }
+    };
+
+    $(document).ready(function(){
+        var he = $('#view').height() - 72;
+        $('#view').css({'height': he+'px'});
+
+        // m184.filterDepartment();
+        m184.show();
+
+
+    })
+</script>
+
+<form id="M184_form">
+    <div style="line-height: 24px; height: 24px;" id="horizontal-toolbar" class="horizontal-toolbar clearfix filter_bar">
+        <div class="fl" style="padding-right: 5px; padding-left: 5px; width: 60px;">
+            Nhà máy:
+        </div>
+
+        <div class="fl" style="width: 170px;">
+            <?php //echo $this->views->Report->SimpleComboBox('factory', $this->factories, ' onchange="m184.filterDepartment()"');?>
+            <?php
+            $id            = 'factory';
+            $getFields     = array('num'=>3,
+                'objects'=>array('OPhongBan'=>array(
+                    'id'=>'IOID'
+                ,'display1'=>'TenPhongBan'
+                ,'order' =>'TenPhongBan') ));
+            ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+        </div>
+
+        <div class="fl" style="padding-right: 5px; padding-left: 5px; width: 60px;">
+            Bộ phận:
+        </div>
+
+        <div class="fl" style="width: 170px;">
+            <?php //echo $this->views->Report->SimpleComboBox('department', $this->departments);?>
+            <?php
+            $id            = 'department';
+            $getFields     = array('num'=>3,
+                'objects'=>array('OBoPhan'=>array(
+                    'id'=>'IOID'
+                ,'display1'=>'TenBoPhan'
+                ,'order' =>'TenBoPhan') ));
+            $filter         = array(
+                0 => array(
+                    'id' => 'factory'
+                , 'refField' => array(
+                        'OBoPhan' => 'Ref_MaPhongBan'
+                    )
+                , 'required' => 1
+                )
+            );
+            ?><?php echo $this->views->Report->ComboBox($id,$getFields,$filter);?>
+        </div>
+
+    </div>
+
+    <div class="clear"></div>
+    <div style="line-height: 24px; height: 24px;" id="horizontal-toolbar" class="horizontal-toolbar clearfix filter_bar">
+
+        <div class="fl" style="padding-right: 5px; padding-left: 5px; width: 60px;">
+            Nhân viên:
+        </div>
+
+        <div class="fl" style="width: 170px;">
+            <?php echo $this->views->Report->SimpleListBox('employee', '/static/m184/employees/');?>
+        </div>
+
+        <?php /*
+        <div class="fl" style="padding-right: 5px; padding-left: 5px; width: 60px;">
+            Loại:
+        </div>
+
+        <div class="fl">
+            <?php echo $this->views->Report->SimpleComboBox('asset_type', $this->assetTypes);?>
+        </div>
+        */?>
+
+        <div class="fl" style="padding-right: 5px; padding-left: 5px; width: 60px;">
+            Tài sản:
+        </div>
+
+        <div class="fl" style="width: 170px;">
+            <?php echo $this->views->Report->SimpleListBox('asset', '/static/m184/assets/');?>
+        </div>
+
+
+
+    </div>
+
+    <div class="clear"></div>
+
+    <div style="line-height: 24px; height: 24px;" id="horizontal-toolbar" class="horizontal-toolbar clearfix filter_bar">
+        <div class="fl" style="padding-right: 5px; padding-left: 5px;">
+            <input type="checkbox" name="all" value="1" id="m184_all"/>
+        </div>
+
+        <div class="fl">
+            <label for="m184_all">Tất cả (Bao gồm thu hồi hết)</label>
+        </div>
+
+
+    </div>
+
+    <div class="clear"></div>
+    <div style="line-height: 24px; height: 24px;" id="horizontal-toolbar" class="horizontal-toolbar clearfix filter_bar">
+
+        <div class="fl" style="padding-right: 5px; padding-left: 5px;">
+            <input type="checkbox" name="rest" value="1" id="m184_rest"/>
+        </div>
+
+        <div class="fl">
+            <label for="m184_rest">Chỉ hiện nhân viên chưa làm thủ tục bàn giao (Chuyển nhà máy)</label>
+        </div>
+
+        <div class="fl" style="padding-left: 5px;">
+            <button type="button" class="btn_main_top btn" onclick="m184.show()"> Xem </button>
+        </div>
+    </div>
+
+
+    <div class="clear"></div>
+
+    <div id="view">
+        <div id="wrap">
+            <div id="m184_show">
+
+            </div>
+            <!-- end #show_box -->
+        </div>
+    </div>
+</form>
+
+<div id="qss_trace"></div>
+<div id="qss_combo"></div>

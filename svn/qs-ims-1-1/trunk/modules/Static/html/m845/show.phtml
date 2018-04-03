@@ -1,0 +1,91 @@
+<?php
+$widths = array(3, 3, 2, 3, 2, 2, 2, 3);
+$widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+$oldDoiTac = '';
+?>
+
+<div class="landscape">
+    <!-- REPORT TITLE -->
+	<div id="head_print">
+		<?php echo $this->views->Common->Landscape() ?>
+        <?php //echo $this->views->Common->Legal() ?>
+        <h2 class="center">DANH SÁCH ĐƠN VỊ CUNG CẤP DỊCH VỤ – LIST OF SERVICE PROVIDER</h2>
+	</div><!-- end div#head_print -->
+    <br/>
+
+    <!-- REPORT DATA -->
+    <div id="container">
+        <!-- General -->
+
+        <div class="fr italic" style="padding-right: 90px;">
+            Lập ngày/Updated: <?php echo date('d/m/Y');?>
+        </div>
+
+        <table cellpadding="0" cellspacing="0" border="1" class="border" style="">
+            <?php $begin = 0;?>
+            <tr class="bggrey">
+                <th style="width:<?php echo $widths[$begin++];?>%">Nhà cung cấp<br/>
+                    Partner</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Địa chị<br/>
+                    Address</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Số điện thoại<br/>
+                    Telephone</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Tên người LH<br/>
+                    Full name</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Chức danh<br/>
+                    Position</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Điện thoại<br/>
+                    Mobile</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Email</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Ghi chú<br/>
+                    Remark</th>
+            </tr>
+
+            <?php foreach($this->report as $item):?>
+                <?php if($oldDoiTac != TRIM($item->TenDoiTac)):?>
+                    <?php
+                        $rowspan = (isset($this->count[$item->IFID_M118])?"rowspan=".$this->count[$item->IFID_M118]:"");
+                    ?>
+
+                    <tr>
+                        <td class="left" <?php echo $rowspan;?>><?php echo $item->TenDoiTac;?></td>
+                        <td class="left" <?php echo $rowspan;?>><?php echo $item->DiaChiDoiTac;?></td>
+                        <td class="left" <?php echo $rowspan;?>><?php echo $item->DienThoaiDoiTac;?></td>
+                        <td class="left"><?php echo $item->HoTen;?></td>
+                        <td class="left"><?php echo $item->ChucDanh;?></td>
+                        <td class="left"><?php echo $item->DienThoaiDiDongLienHe;?></td>
+                        <td class="left"><?php echo $item->EmailLienHe;?></td>
+                        <td class="left"><?php echo $item->GhiChu;?></td>
+                    </tr>
+                <?php else:?>
+                    <tr>
+                        <td class="left"><?php echo $item->HoTen;?></td>
+                        <td class="left"><?php echo $item->ChucDanh;?></td>
+                        <td class="left"><?php echo $item->DienThoaiDiDongLienHe;?></td>
+                        <td class="left"><?php echo $item->EmailLienHe;?></td>
+                        <td class="left"><?php echo $item->GhiChu;?></td>
+                    </tr>
+                <?php endif;?>
+
+                <?php $oldDoiTac = TRIM($item->TenDoiTac);?>
+            <?php endforeach;?>
+        </table>
+        <br/>
+        <br/>
+
+        <p class="fl bold" style="margin-left: 40px;"> Người lập/ Prepared by    </p>
+
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+        </p>
+    </div><!-- end div#container -->
+</div><!-- END REPORT -->
+
+

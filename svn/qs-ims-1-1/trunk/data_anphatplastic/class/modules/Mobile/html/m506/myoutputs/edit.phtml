@@ -1,0 +1,260 @@
+<style>
+    #OXuatKho_NgayBatDau
+    {
+        width: 100px;
+    }
+</style>
+
+<script src="/js/bash-list.js"></script>
+<script>
+    var mobile_m759_approval = {
+        addMaterial : function (ifid) {
+            location.href = '/mobile/m506/myoutputs/addmaterials/index?fid=M759&ifid='+ifid;
+        },
+
+        editMaterial : function (ifid, ioid, deptid) {
+            location.href = '/mobile/m506/myoutputs/addmaterials/index?fid=M759&ifid='+ifid+'&ioid='+ioid+'&deptid='+deptid;
+        },
+
+        save : function ($back) {
+            var url  = sz_BaseUrl + '/mobile/m506/myoutputs/save';
+            url += ($back && $back != undefined)?'?back=1':'?back=0';
+            var data = $('#form_M759_edit').serialize();
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != '')
+                {
+                    qssAjax.notice(jreturn.message);
+                }
+
+                $('#OVatTuPBT_Add').removeClass('btn-disabled');
+                $('#OVatTuPBT_Add').removeAttr('disabled');
+
+                if($back && $back != undefined)
+                {
+                    location.href = '/mobile/m506/myoutputs/list';
+                }
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+        },
+
+        back : function () {
+            location.href = '/mobile/m506/myoutputs/list';
+        },
+
+        getTime : function()
+        {
+            var d = new Date();
+            var n = d.getHours() + ':' + d.getMinutes();
+
+            return n;
+        },
+
+        insertStart : function()
+        {
+            var time = mobile_m759_approval.getTime();
+            $('#OXuatKho_GioBatDau').val(time);
+        },
+
+        insertEnd : function()
+        {
+            var time = mobile_m759_approval.getTime();
+            $('#OXuatKho_GioKetThuc').val(time);
+        }
+    };
+</script>
+
+<?php date_default_timezone_set("Asia/Bangkok");?>
+<form id="form_M759_edit" method="post">
+    <input type="hidden" name="fid" id="fid" value="M759">
+    <input type="hidden" name="ifid" id="ifid" value="<?php echo $this->ifid?>">
+    <input type="hidden" name="deptid" id="deptid" value="<?php echo $this->deptid;?>">
+
+    <div id="qss_form">
+        <div>
+            <div class="control-box right control-box-wo">
+                <div class="btn-in-control-box">
+                    <div>
+                        <?php if($this->status != 1):?>
+                            <button id="btnSAVE" type="button" class="btn btn_main_top btn-disabled" disabled>
+                                Lưu lại
+                            </button>
+                            <button id="btnSAVEBACK" type="button" class="btn btn_main_top btn-disabled" disabled>
+                                Lưu lại & Đóng
+                            </button>
+                        <?php else:?>
+                            <button id="btnSAVE" type="button" class="btn btn_main_top"
+                                    onclick="mobile_m759_approval.save();">
+                                Lưu lại
+                            </button>
+                            <button id="btnSAVEBACK" type="button" class="btn btn_main_top"
+                                    onclick="mobile_m759_approval.save(1);">
+                                Lưu lại & Đóng
+                            </button>
+                        <?php endif;?>
+
+                        <button id="btnDETAIL" type="button" class="btn btn_main_top"
+                            <?php /*if(!$this->form->i_IFID):?>disabled<?php endif;*/?>
+                                onclick="mobile_m759_approval.back();">
+                            Đóng
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="mobile-box-wrap">
+                <div class="mobile-box-head-line bold">
+                    <div class="fl">
+                        Xuất kho <?php if($this->ifid):?><span class="<?php echo $this->output->Color;?>">(<?php echo $this->output->Name;?>)</span><?php endif;?>
+                    </div>
+                </div>
+
+
+                <div class="mobile-box-normal-line">
+                    <div class="edit-line-label">
+                        <label>Kho</label>
+                    </div>
+
+                    <div class="edit-line-data">
+                        <?php
+                        $id            = 'OXuatKho_Kho';
+                        $getFields     = array('num'=>2,
+                            'objects'=>array('ODanhSachKho'=>array(
+                                'id'=>'IOID'
+                            ,'display1'=>'MaKho'
+                            ,'display2'=>'TenKho'
+                            , 'order'=>'MaKho'
+                            , 'where'=>array("LoaiKho"=>'VATTU'))) );
+                        ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+                    </div>
+
+
+                </div>
+
+                <div class="mobile-box-normal-line">
+                    <div class="edit-line-label">
+                        <label>Loại</label>
+                    </div>
+
+                    <div class="edit-line-data">
+                        <div class="required">
+                            <?php
+                            $ioidSelected = 0;
+                            if(($this->type && !$this->ifid))
+                            {
+                                $ioidSelected = $this->type->IOID;
+                            }
+
+                            $id            = 'OXuatKho_LoaiXuatKho';
+                            $getFields     = array('num'=>2,
+                                'objects'=>array('OLoaiXuatKho'=>array(
+                                    'id'=>'IOID'
+                                ,'display1'=>'Ten'
+                                , 'order'=>'Ten')) );
+                            ?> <?php echo $this->views->Report->ComboBox($id,$getFields, array(), array(), false, 'style="width:180px"', true, $ioidSelected); ?>
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mobile-box-normal-line">
+                    <div class="edit-line-label">
+                        <label>Ngày</label>
+                    </div>
+
+                    <div class="edit-line-data">
+                        <?php echo $this->views->Report->Datepicker('OXuatKho_NgayBatDau', date('d-m-Y') );?>
+                    </div>
+                </div>
+                
+                <div class="mobile-box-head-line bold">
+                    <div class="fl">
+                        Vật tư
+                    </div>
+
+                    <div class="fr">
+                        <button id="OVatTuPBT_Add" class="btn-custom btn btn_main_top  <?php echo ($this->ifid  && $this->status == 1)?'':'btn-disabled';?>"
+                                type="button"
+                            <?php echo ($this->ifid && $this->status == 1)?'':'disabled';?>
+                                onclick="mobile_m759_approval.addMaterial(<?php echo $this->ifid;?>)"> Thêm vật tư </button>
+
+
+                    </div>
+                </div>
+
+                <div class="mobile-box-normal-line">
+                    <table cellspacing="0" cellpadding="0" border="0" class="border_table">
+                        <tr>
+                            <th style="width: 30%">
+                                Mã VT
+                            </th>
+                            <th style="width: 30%">
+                                Tên VT
+                            </th>
+                            <th style="width: 20%">
+                                ĐVT
+                            </th>
+                            <th style="width: 20%">
+                                SL
+                            </th>
+                        </tr>
+
+                        <?php $stt = 0;?>
+                        <?php foreach($this->materials as $item):?>
+                            <tr onclick="mobile_m759_approval.editMaterial(<?php echo $item->IFID_M506;?>, <?php echo $item->IOID;?>, <?php echo $this->deptid;?>);">
+                                <td class="left">
+                                    <?php echo $item->MaSP;?>
+                                </td>
+                                <td class="left">
+                                    <?php echo $item->TenSP;?>
+                                </td>
+                                <td class="left">
+                                    <?php echo $item->DonViTinh;?>
+                                </td>
+                                <td class="right">
+                                    <?php echo Qss_Lib_Util::formatNumber($item->SoLuong);?>
+                                </td>
+                            </tr>
+                        <?php endforeach;?>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="margin-bottom-36">&nbsp;</div>
+
+<?php if(!$this->ifid):?>
+    <script>
+        $(document).ready(function () {
+            $( document ).ajaxComplete(function( event,request, settings ) {
+                $('#OXuatKho_LoaiXuatKho').val(<?php echo (int)$this->TypeMaintain->IOID;?>);
+            });
+        });
+    </script>
+<?php endif;?>
+
+<?php if($this->output):?>
+    <script>
+        $(document).ready(function () {
+            $('#OXuatKho_NgayBatDau').val('<?php echo Qss_Lib_Date::mysqltodisplay($this->output->NgayChungTu);?>');
+
+            $( document ).ajaxComplete(function( event,request, settings ) {
+                $('#OXuatKho_Kho').val(<?php echo (int)$this->output->Ref_Kho;?>);
+                $('#OXuatKho_LoaiXuatKho').val(<?php echo (int)$this->output->Ref_LoaiXuatKho;?>);
+            });
+
+            <?php if($this->status > 1):?>
+                $('#OXuatKho_Kho').attr('disabled', true);
+                $('#OXuatKho_LoaiXuatKho').attr('disabled', true);
+                $('#OXuatKho_NgayBatDau').attr('disabled', true);
+            <?php endif;?>
+        });
+    </script>
+<?php endif;?>

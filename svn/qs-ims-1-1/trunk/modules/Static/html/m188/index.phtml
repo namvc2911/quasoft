@@ -1,0 +1,411 @@
+<style>
+    .empty_block
+    {
+        width: 36px;
+        position: relative;
+        display: block;
+        float: left;
+    }
+
+    .empty_block_100
+    {
+        width: 100px;
+        position: relative;
+        display: block;
+        float: left;
+    }
+       .status_color
+    {
+        float: left;
+        padding: 6px;
+        text-align: center;
+        border: 1px #ccc solid;
+    }
+
+    .status_one_color
+    {
+        font-weight: bold;
+        background: yellow;
+    }
+
+    .status_two_color
+    {
+        font-weight: bold;
+        background: orange;
+    }
+
+    .status_three_color
+    {
+        font-weight: bold;
+        background: aqua;
+    }
+
+    .status_four_color
+    {
+        font-weight: bold;
+        background: green;
+        color: white;
+    }
+
+    .status_five_color
+    {
+        font-weight: bold;
+        background: red;
+        color: white;
+    }
+
+    .status_text
+    {
+        float: left;
+        padding:6px;
+    }
+</style>
+<script type="text/javascript">
+    var calendar_index_file = {
+        material: function()
+        {
+            var url = sz_BaseUrl + '/static/m188/material/';
+            var data = $('#cal_form').serialize();
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#qss_trace').dialog('close');
+                $('#qss_trace').html(jreturn);
+                $('#qss_trace').dialog({width: 800, height: 400});
+            });
+        },
+
+
+        removeEffectCheckAll : function()
+        {
+            $('#checkOrUnCheckAllWo').text('<?php echo $this->_translate(1);?>');
+            $('#checkOrUnCheckAllWo').attr('ctype', 1);
+        },
+
+        checkOrUnCheckAllWo: function(ele)
+        {
+            var check = $(ele).attr('ctype');
+            var cWorkorder = $('.workorder_select').length;
+
+            if(!cWorkorder)
+            {
+                alert('<?php echo $this->_translate(2);?>')
+                return;
+            }
+            if(check == 1)
+            {
+                $('#checkOrUnCheckAllWo').text('<?php echo $this->_translate(3);?>');
+                $(ele).attr('ctype', 0);
+
+
+                $('.workorder_select').each(function(){
+                    if($(this).is(':checked'))
+                    {
+
+                    }
+                    else
+                    {
+                        $(this).attr('checked', true);
+                    }
+                });
+            }
+            else
+            {
+                $('#checkOrUnCheckAllWo').text('<?php echo $this->_translate(1);?>');
+                $(ele).attr('ctype', 1);
+
+                $('.workorder_select').each(function(){
+                    if($(this).is(':checked'))
+                    {
+                        $(this).removeAttr('checked');
+                    }
+                    else
+                    {
+
+                    }
+                });
+            }
+        },
+
+        showSearchBox: function()
+        {
+            if($('#search-button').hasClass('extra-selected'))
+            {
+                $('#div-search').css({'display':'none'});
+                $('#search-button').removeClass('extra-selected');
+            }
+            else
+            {
+                $('#div-search').css({'display':'block'});
+                $('#search-button').addClass('extra-selected');
+            }
+
+        },
+
+        cleanSearch: function()
+        {
+            $('#responseid_select').val(0);
+            $('#workcenter_select').val(0);
+
+            reloadCalendar();
+            calendar_index_file.removeEffectCheckAll();
+        },
+
+        removeOrders: function()
+        {
+            var cWorkorder = $('.workorder_select:checked').length;
+
+
+            if(cWorkorder)
+            {
+                qssAjax.confirm(Language.translate('CONFIRM_DELETE'),function(){
+                    var data = $('.workorder_select').serialize();
+                    var url  = sz_BaseUrl + '/static/m188/remove';
+
+                    qssAjax.call(url, data, function(jreturn) {
+                        if(jreturn.message != '')
+                        {
+                            qssAjax.alert(jreturn.message);
+                        }
+                        reloadCalendar();
+                        calendar_index_file.removeEffectCheckAll();
+                    }, function(jreturn) {
+                        qssAjax.alert(jreturn.message);
+                    });
+                });
+
+            }
+            else
+            {
+                qssAjax.alert('<?php echo $this->_translate(4);?>');
+            }
+        },
+
+ 
+        showStatus : function(ele)
+        {
+            if(!$(ele).parent().find('.dropdown-content').is(':visible')){
+                setTimeout(function(){
+                    $(ele).parent().find('.dropdown-content').show();
+                }, 100);
+
+
+
+            }
+
+        },
+
+        createOrders : function() {
+            var data = $('#M188_Form').serialize();
+            var url  = sz_BaseUrl + '/static/m188/convert';
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != '')
+                {
+                    qssAjax.alert(jreturn.message);
+                }
+                window.close();
+                reloadCalendar();
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+        }
+
+    };
+
+</script>
+
+
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+
+    <!-- Button: Tải lại -->
+    <button type="button" class="btn extra-button" onclick="showToDay()">
+        <?php //echo $this->_translate(1) ?>
+        <?php echo $this->_translate(5);?>
+    </button>
+
+    <!-- Button: Lịch tuần -->
+    <button
+        id="btnWEEK"
+        type="button"
+        class="btn extra-button <?php echo ($this->type == 'week')?'extra-selected':''; ?>"
+        onclick="showWeek()">
+
+        <?php echo $this->_translate(6);?>
+    </button>
+
+    <!-- Button: Lịch tháng -->
+    <button
+        id="btnMONTH"
+        type="button"
+        class="btn extra-button <?php echo ($this->type == 'month')?'extra-selected':''; ?>"
+        onclick="showMonth()">
+        <?php echo $this->_translate(7);?>
+    </button>
+
+    <div class="empty_block">&nbsp;</div>
+
+
+    <?php /*
+    <!-- Tạo mới -->
+    <button
+        type="button"
+        class="btn extra-button"
+        onclick="popupWindowFormInsert( 'M724',1, {});">
+        <?php echo $this->_translate(8);?>
+    </button>
+
+    <!-- Chọn tất cả -->
+    <button type="button" class="btn extra-button" id="checkOrUnCheckAllWo" onclick="calendar_index_file.checkOrUnCheckAllWo(this)" ctype="1">
+        <?php echo $this->_translate(1);?>
+    </button>
+
+    <!-- Xóa -->
+    <button type="button" class="btn extra-button" onclick="calendar_index_file.removeOrders()">
+        <?php echo $this->_translate(9);?>
+    </button>
+    */ ?>
+	<!-- Chọn tất cả -->
+    <button type="button" class="btn extra-button" id="checkOrUnCheckAllWo" onclick="calendar_index_file.checkOrUnCheckAllWo(this)" ctype="1">
+        <?php echo $this->_translate(1);?>
+    </button>
+	
+	<button type="button" class="btn extra-button" onclick="calendar_index_file.createOrders()">
+        <?php echo $this->_translate(19);?>
+    </button>
+    <!-- Tìm kiếm -->
+    <div class="fr">
+        <button
+            id="search-button"
+            type="button"
+            class="btn fr extra-button"
+            onclick="calendar_index_file.showSearchBox(this)">
+            <?php echo $this->_translate(10);?>
+        </button>
+    </div>
+
+    <div style="height: 301px;">
+        <div id="div-search" class="clearfix" style="right: 12px; top: 100px; display: none;">
+            <form name="cal_form" id="cal_form">
+                <input type="hidden"
+                       id="fid"
+                       name="fid"
+                       value="<?php echo $this->fid ?>">
+
+                <input type="hidden"
+                       id="type"
+                       name="type"
+                       value="<?php echo $this->type ?>">
+
+                <input
+                    type="hidden"
+                    id="day"
+                    name="day"
+                    value="<?php echo $this->day ?>">
+
+                <input
+                    type="hidden"
+                    id="week"
+                    name="week"
+                    value="<?php echo $this->week ?>">
+
+                <input type="hidden"
+                       id="month"
+                       name="month"
+                       value="<?php echo $this->month ?>">
+
+                <input type="hidden"
+                       id="year"
+                       name="year"
+                       value="<?php echo $this->year ?>">
+
+                <div class="fl">
+                    <table>
+                        <tr>
+                            <!-- Đơn vị bảo trì -->
+                            <th class="left">
+                                <?php echo $this->_translate(11);?>:&nbsp;&nbsp;</th>
+                            <td>
+                                <select
+                                    name="workcenter" id="workcenter_select" style="width: 200px">
+                                    <option value="0">&nbsp;</option>
+                                    <?php foreach ($this->workcenters as $item): ?>
+                                        <option <?php if ($item->IOID == $this->workcenter): ?> selected
+                                        <?php endif; ?> value="<?php echo $item->IOID ?>">
+                                            <?php echo $item->Ten ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="fl">
+
+                    <!-- Tìm kiếm -->
+                    <div onclick="reloadCalendar();" style="width:70px" class="btn-custom center"><?php echo $this->_translate(10);?></div>
+
+                    <div class="clearfix"><br></div>
+
+                    <!-- Xóa điều kiện -->
+                    <div onclick="calendar_index_file.cleanSearch();" style="width:70px" class="btn-custom center"><?php echo $this->_translate(13);?></div>
+
+                    <div class="clearfix"><br></div>
+
+                    <!-- Đóng -->
+                    <div onclick="calendar_index_file.showSearchBox();" style="width:70px" class="btn-custom center"><?php echo $this->_translate(14);?></div>
+                </div>
+
+
+            </form>
+        </div>
+    </div>
+
+</div>
+<div class="clear"></div>
+
+
+
+<div id="view">
+
+    <div class="clear status_box">
+ 		<div class="fl">
+            <!-- Có hiệu lực -->
+            <div class="status_color bgskype" > A </div>
+            <div class="status_text"> <?php echo $this->_translate(15);?></div>
+
+            <!-- Đã tạo phiếu -->
+            <div class="status_color bgskype blue" > A </div>
+            <div class="status_text"> <?php echo $this->_translate(16);?> </div>
+
+            <!-- Hết hiệu lực -->
+            <div class="status_color bginactive"> A </div>
+            <div class="status_text"> <?php echo $this->_translate(17);?> </div>
+        </div>
+
+        <div class="fr">
+            <button class="btn extra-button" type="button"
+                    onclick="calendar_index_file.material()"
+                    title="<?php echo $this->_translate(18);?>">
+                <?php echo $this->_translate(18);?>
+            </button>
+        </div>
+
+    </div>
+
+    <div class="clear"></div>
+
+    <form id="M188_Form">
+        <div class="cal_view" id="cal_view">
+            <div class="cal_content_wrap">
+                <div class="cal_content" style="margin-left: 0px !important">
+                    <?php echo $this->content ?>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+<div id="qss_combo" title=""></div>
+<div id="qss_trace" title=""></div>

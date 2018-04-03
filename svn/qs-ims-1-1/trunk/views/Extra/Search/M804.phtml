@@ -1,0 +1,13 @@
+<div class="fl">
+    <div class="fr">
+        <select onchange="rowSearch('M804');" style="width: 250px;" size="1" name="filter_phase" id="filter_phase">
+        	<option value="0">--- Chọn phân đoạn ---</option>
+        	<?php foreach ($this->phases as $item):?>
+				<option <?php if($item->IOID == $this->selectedPhanDoan):?>selected<?php endif;?> value="<?php echo $item->IOID?>"><?php echo $item->PhanDoan?></option>
+			<?php endforeach;?>
+        </select>
+    </div>
+    <div class="fr">
+        <?php echo $this->views->Extra->Project($this->form,$this->selected);?>
+    </div>
+</div>

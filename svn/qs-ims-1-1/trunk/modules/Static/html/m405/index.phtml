@@ -1,0 +1,224 @@
+<script type="text/javascript">    
+    var M405 = {
+        // In bang kiem tra ke hoach
+        request : function()
+        {
+            M405.selectAllRequests();
+            
+        	var url  = sz_BaseUrl + '/static/M405/request';
+        	var data = $('#M405_request_form').serialize();
+        	
+        	qssAjax.getHtml(url, data, function(jreturn) {
+        		$('#M405_compare_box').html(jreturn);
+        	});                
+        },
+
+        // Lap hop dong nguyen tac
+        agreement : function()
+        {
+        	var url  = sz_BaseUrl + '/static/M405/agreement';
+        	var data = $('#M405_request_form').serialize();
+        	
+        	qssAjax.getHtml(url, data, function(jreturn) {
+        		$('#M405_agreement_box').html(jreturn);
+        		$('#M405_agreement_box').dialog({width: 800, height: 400});
+        	});             
+        },
+
+        // Lap ke hoach mua sam
+        plan : function()
+        {
+        	var url  = sz_BaseUrl + '/static/M405/plan';
+        	var data = $('#M405_request_form').serialize();
+        	
+        	qssAjax.getHtml(url, data, function(jreturn) {
+        		$('#M405_plan_box').html(jreturn);
+        		$('#M405_plan_box').dialog({width: 800, height: 400});
+        	});  
+        },
+
+        // Tao don hang
+        createOrder : function(formID)
+        {
+        	var url  = sz_BaseUrl + '/static/M405/createorder';
+        	var data = $('#'+formID).serialize();
+        	var data2 = common_url_to_array(data);
+        	var AllQtyZero = 1; 
+
+        	if(data2.itemioid == undefined)
+        	{
+            	qssAjax.alert('Bạn cần chọn ít nhất một mặt hàng để tạo đơn hàng!');
+            	return;
+        	}
+        	else
+        	{
+            	for(i in data2.qty)
+            	{
+                	if(data2.qty[i] != 0)
+                	{
+                		AllQtyZero = 0;
+                	}
+            	}  
+
+            	if(AllQtyZero == 1)
+            	{
+                	qssAjax.alert('Bạn cần có ít nhất mặt hàng có số lượng lớn hơn 0 để tạo đơn hàng!');
+                	return;                	
+            	}          	
+        	}          	
+
+        	qssAjax.confirm('Bạn có thực sự muốn tạo đơn hàng này?',function(){
+        		qssAjax.call(url, data, function(jreturn) {
+        			if(jreturn.message != '')
+        			{
+        				qssAjax.notice(jreturn.message);
+        			}
+
+        			M405.request();
+        			M405.agreement();
+        		}, function(jreturn) {
+        			qssAjax.alert(jreturn.message);
+        		});
+        	});
+
+        },
+
+        createPlan : function(formID)
+        {
+        	var url  = sz_BaseUrl + '/static/M405/createplan';
+        	var data = $('#M405_plan_form').serialize();
+        	var data2 = common_url_to_array(data);
+        	var AllQtyZero = 1; 
+        	var alertMess  = '';
+
+        	if(data2.itemioid == undefined)
+        	{
+        		alertMess += 'Bạn cần chọn ít nhất một mặt hàng để lập kế hoạch!\n';
+        	}
+        	else
+        	{
+            	for(i in data2.qty)
+            	{
+                	if(data2.qty[i] != 0)
+                	{
+                		AllQtyZero = 0;
+                	}
+            	}  
+
+            	if(AllQtyZero == 1)
+            	{
+            		alertMess += 'Bạn cần có ít nhất mặt hàng có số lượng lớn hơn 0 để lập kế hoạch!\n';
+            	}          	
+        	}        	
+
+            if(data2.date == undefined || !data2.date)
+            {
+            	alertMess += 'Ngày yêu cầu bắt buộc!\n';
+            }
+
+            if(alertMess != '')
+            {
+            	qssAjax.alert(alertMess);
+            	return;
+            }        	
+
+
+        	qssAjax.confirm('Bạn có thực sự muốn tạo kế hoạch này?',function(){
+        		qssAjax.call(url, data, function(jreturn) {
+        			if(jreturn.message != '')
+        			{
+        				qssAjax.notice(jreturn.message);
+        			}
+        			
+        			$('#M405_plan_box').dialog('close');
+        			M405.request();
+        			
+        		}, function(jreturn) {
+        			qssAjax.alert(jreturn.message);
+        		});
+        	});
+
+        },        
+
+        // Xu ly nhu cau vat tu
+        material : function()
+        {
+
+        },
+
+        selectAllRequests : function()
+        {
+            $("#requests option").each(function(){
+                $(this).attr('selected', true);
+            });
+        },
+
+        changeTotalAmountInAgreement: function(ele)
+        {
+            var qty       = $(ele).val();
+            var unitprice = $(ele).parent().parent().find('.M405_agreement_unitprice').val();
+            var ret       = common_format_money(qty * unitprice);
+
+            $(ele).parent().parent().find('.M405_agreement_totalamount').text('').text(ret);
+        }
+
+        
+    }  
+</script>
+
+<div class="clear"></div>
+
+<div id="view">
+    <div id="M405_wrap">
+
+        <!-- Dial box: Chọn kế hoạch cần xử lý -->
+        <div id="M405_request_selector">
+            <form id="M405_request_form">
+                <?php echo $this->views->Report->DialBox('requests', $this->requestDialBox);?>
+            </form>
+            
+        </div>
+        <!-- END #M405_request_selector -->
+        
+        <div class="clear"></div>
+        <br/>
+
+        <div id="M405_control_box">
+            <!-- Button: Kiểm tra yêu cầu -->
+            <button type="button" class="btn btn-custom" onclick="M405.request();">
+                <?php echo $this->_translate(1);?>
+            </button>
+        </div>
+        <!-- END #M405_control_box -->
+        
+        <div class="clear"></div>
+        <br/>
+
+        <!-- Table: Kiểm tra phiếu yêu cầu -->
+        <div id="M405_compare_box">
+
+        </div>
+        <!-- END #M405_compare_box -->
+        
+        <div class="clear"></div>
+        
+        <!-- Table: Kiểm tra hợp đồng nguyên tắc -->
+        <div id="M405_agreement_box" title="<?php echo $this->_translate(11);?>">
+
+        </div>
+        <!-- END #M405_agreement_box -->       
+        
+        <div class="clear"></div>
+        
+        <!-- Table: Kế hoạch mua sắm -->
+        <div id="M405_plan_box" title="<?php echo $this->_translate(12);?>">
+
+        </div>
+        <!-- END #M405_plan_box -->  
+
+    </div><!-- END #M405_wrap -->
+</div>
+
+<!-- POPUP -->
+<div id="qss_combo"></div>
+<div id="qss_trace"></div>

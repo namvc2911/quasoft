@@ -1,0 +1,32 @@
+<div class="box_das2">
+    <div class="inside_das2 " id="">
+        <div class="dash_box_heading">
+            <div class="fl" style="">
+                Kiến thức
+            </div>
+        </div>
+
+        <div style="clear: both; width: 100%">
+
+        </div>
+
+        <div style="clear: both; border-top: 1px #cccccc dotted; padding-top: 5px;" id=""  class="dash_box_content">
+            <?php foreach($this->news as $item):?>
+                <div style="border-bottom: 1px #ccc dotted; padding-bottom: 5px;">
+                    <p style="padding-left: 5px; margin-bottom: 4px;">
+                        <i><b style="font-size: 13px;">- <?php echo $item->DeptName;?> :</b></i>
+                        <?php echo $item->TieuDe;?>
+                        <a href="#1" onclick="popupFormDetail(<?php echo $item->IFID_M152;?>, <?php echo $this->deptid;?>)">
+                            <b> >>> Chi tiết</b>
+                        </a>
+                    </p>
+
+                    <p style="padding-left: 5px;">
+                        &gt;&gt;&nbsp;<b><i>Nhóm kiến thức:</i></b> <?php echo $item->NhomKienThuc;?>
+                    </p>
+                </div>
+
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,178 @@
+<script src="/js/common.js"></script>
+<script>
+    function printPreview(){
+        var eq = $('#eq').val();
+        var msg   = '';
+
+        msg += common_checkEmpty(eq, '<?php echo $this->_translate(7) ?>');
+
+
+        if(msg != '')
+        {
+            qssAjax.alert(msg);
+            return;
+        }
+        else
+        {
+            var url = sz_BaseUrl + '/static/m778/show';
+            var data = $('#report').serialize();
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                    $('#print-area').html(jreturn);
+                    removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+            });
+        }
+    }
+
+    function excelReport()
+    {
+        var eq = $('#eq').val();
+        var msg   = '';
+
+        msg += common_checkEmpty(eq, '<?php echo $this->_translate(7) ?>');
+
+
+        if(msg != '')
+        {
+            qssAjax.alert(msg);
+            return;
+        }
+        else
+        {
+            $('#report').submit();
+        }
+    }
+
+    function removePrintToolbarDisabled()
+    {
+        $('.pt-button').each(function(){
+            $(this).prop('disabled',false);
+        });
+    }
+
+//	$(document).ajaxStop(function () {
+//		$('#start').val(common_get_url_parameter('start'));
+//		$('#end').val(common_get_url_parameter('end'));
+//		$('#location').val(common_get_url_parameter('location'));
+//		$('#type').val(common_get_url_parameter('type'));
+//		$('#eq').val(common_get_url_parameter('eq'));
+//		$('#eq_tag').text(common_get_url_parameter('eq_tag'));
+//
+//		if(common_get_url_parameter('eq'))
+//		{
+//			printPreview();
+//		}
+//	});
+
+    $(document).ready(function () {
+		if(common_get_url_parameter('eq'))
+		{
+			printPreview();
+		}
+	});
+</script>
+
+
+<div class="clear"></div>
+<div id="view">
+	<div class="line-hr">
+		<span><?php echo $this->_translate(4) ?> </span>
+	</div>
+	<form id="report" method="get" action="/static/m778/excel">
+
+        <input type="hidden" name="popup" value="1" />
+
+		<table class="detail">
+
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Ngày bắt đầu --> <?php echo $this->_translate(9)?> </th>
+				<td><?php echo $this->views->Report->Datepicker('start', '');?>
+				</td>
+			</tr>
+
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Ngày kết thúc --> <?php echo $this->_translate(10)?></th>
+				<td><?php echo $this->views->Report->Datepicker('end', '');?>
+				</td>
+			</tr>
+
+
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(8) ?>
+				</th>
+				<td><?php
+					$id = 'location';
+					$getFields = array('num' => 3,
+						'objects' => array('OKhuVuc' => array(
+							'id' => 'IOID'
+						, 'display1' => 'MaKhuVuc'
+						, 'display2' => 'Ten')));
+					?> <?php echo $this->views->Report->ComboBox($id, $getFields); ?>
+
+			</tr>
+
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(6) ?>
+				</th>
+				<td><?php
+					$id = 'type';
+					$getFields = array('num' => 2,
+						'objects' => array('OLoaiThietBi' => array(
+							'id' => 'IOID'
+							, 'display1' => 'TenLoai'
+							, 'order' => 'TenLoai'
+						)));
+					?> <?php echo $this->views->Report->ComboBox($id, $getFields); ?>
+
+			</tr>
+
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(7) ?>
+				</th>
+				<td><?php
+					$id = array('id'=>'eq', 'require'=>1, 'size'=>300);
+					$getDataObject = array('ODanhSachThietBi' => array('MaThietBi', 'TenThietBi'));
+					//,'OKhuVuc'=>array('MaKhuVuc','Ten')
+					$getFields = array('num' => 2,
+						'objects' => array('ODanhSachThietBi' => array(
+							'id' => 'IOID'
+						, 'display1' => 'MaThietBi'
+						, 'display2' => 'TenThietBi')));
+					$getLookupFilter = array(array('id' => 'group'
+					, 'refField' => array('ODanhSachThietBi' => 'Ref_NhomThietBi') // Nhom TB
+					, 'required' => 0)
+					, array('id' => 'type'
+						, 'refField' => array('ODanhSachThietBi' => 'Ref_LoaiThietBi') // Loai TB
+						, 'required' => 0)
+					, array('id' => 'costcenter'
+						, 'refField' => array('ODanhSachThietBi' => 'Ref_TrungTamChiPhi') // TT Chi phi
+						, 'required' => 0)
+
+					, array('id' => 'location'
+						, 'refField' => array('ODanhSachThietBi' => 'Ref_MaKhuVuc') // TT Chi phi
+						, 'required' => 0)
+					);
+					?> <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields, $getLookupFilter, array()
+						, ''
+						, $this->eq_tag , $this->eq); ?>
+				</td>
+			</tr>
+		</table>
+	</form>
+	<p>
+
+
+	<hr>
+
+    <div id="print-toolbar">
+        <button id="pt-showreport" class="btn-custom" onclick="printPreview()" type="button">Xem báo cáo</button>
+        <button class="btn-custom pt-button" onclick="printPage()" type="button">In html</button>
+        <button class="btn-custom pt-button" onclick="excelReport()" type="button"> Kiết xuất excel </button>
+    </div>
+
+	<div id="print-content">
+		<div id="print-area"></div>
+	</div>
+</div>

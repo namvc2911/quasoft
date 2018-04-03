@@ -1,0 +1,277 @@
+<!-- Báo cáo chấm công theo tháng  -->
+<?php
+$excel_col         = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$no                = 1; // Số thứ tự
+$solar             = new Qss_Model_Calendar_Solar();
+$dayInMonth        = $solar->getDaysInMonth($this->month, $this->year);
+$month             = ($this->month<10)?'0'.$this->month:$this->month;
+$countLeaveTypes   = count((array)$this->leaveTypes);
+$staticColumn      = 8;
+$rowspan           = $dayInMonth + $countLeaveTypes + $staticColumn;
+$countLeaveByTypes = $this->countLeaveByTypes;
+$printArray        = array();
+$oldEmployee       = ''; // Để gộp nhóm theo nhân viên
+$workingday        = array();
+
+for($d = 1;$d <= $dayInMonth; $d++)
+{
+	$workingday[]  = $d;
+}
+
+// Sắp xếp để in
+foreach ($this->timesheet as $ts)
+{
+	if($oldEmployee != $ts->Ref_MaNhanVien)
+	{
+		if(isset($printArray[$oldEmployee]['NgayCong']))
+		{
+			for($d = 1;$d <= $dayInMonth; $d++)
+			{
+				if(!key_exists($d, $printArray[$oldEmployee]['NgayCong']))
+				{
+					$printArray[$oldEmployee]['NgayCong'][$d] = 0;
+				}
+			}
+		}
+		$printArray[$ts->Ref_MaNhanVien]['MaNhanVien']  = $ts->MaNhanVien;
+		$printArray[$ts->Ref_MaNhanVien]['TenNhanVien'] = $ts->TenNhanVien;
+		$printArray[$ts->Ref_MaNhanVien]['PhongBan']    = $ts->PhongBan;
+		$printArray[$ts->Ref_MaNhanVien]['SoGio']       = 0;
+		if(isset($countLeaveByTypes[$ts->Ref_MaNhanVien])) // Nếu có nghỉ
+		{
+			foreach ($this->leaveTypes as $val)// Số lượng ngày nghỉ theo phân loại
+			{
+				//echo isset($countLeaveByTypes[$ts->Ref_MaNhanVien][$val->IOID])?$countLeaveByTypes[$ts->Ref_MaNhanVien][$val->IOID]:0;
+				$printArray[$ts->Ref_MaNhanVien]['SoLanNghi'][] = isset($countLeaveByTypes[$ts->Ref_MaNhanVien][$val->IOID])?$countLeaveByTypes[$ts->Ref_MaNhanVien][$val->IOID]:0;
+			}
+		}
+		else
+		{
+			foreach ($this->leaveTypes as $val)// Số lượng ngày nghỉ theo phân loại
+			{
+				$printArray[$ts->Ref_MaNhanVien]['SoLanNghi'][] = 0;
+			}
+		}
+	}
+	$printArray[$ts->Ref_MaNhanVien]['NgayCong'][$ts->NgayTrongThang] = floor($ts->SoGio/$ts->SoGioYeuCau * 10)/10;
+	$printArray[$ts->Ref_MaNhanVien]['SoGio']                        += $ts->SoGio;
+	$printArray[$ts->Ref_MaNhanVien]['DiMuon']                        = $ts->SoLanDiMuon;
+	$printArray[$ts->Ref_MaNhanVien]['VeSom']                         = $ts->SoLanVeSom;
+
+	//echo '<pre>'; print_r($printArray); die;
+	$oldEmployee = $ts->Ref_MaNhanVien;
+}
+
+if(isset($printArray[$oldEmployee]['NgayCong']))
+{
+	for($d = 1;$d <= $dayInMonth; $d++)
+	{
+		if(!key_exists($d, $printArray[$oldEmployee]['NgayCong']))
+		{
+			$printArray[$oldEmployee]['NgayCong'][$d] = 0;
+		}
+	}
+}
+$totalColumn = $staticColumn + $countLeaveTypes + $dayInMonth;
+?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="landscape">
+	<excel orientation="landscape" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+	<div id="head_print">
+	<?php echo $this->views->Common->Landscape()?>
+	<?php $row = 9;?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row?>" column="A"
+					column-merge="<?php echo $excel_col[$totalColumn]?>" bold="1"
+					font-size="11" wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(1)?>
+				(<?php echo $this->_translate(2)?> 01-<?php echo $month;?>-<?php echo $this->year;?>
+				<?php echo $this->_translate(3);?> <?php echo $dayInMonth;?>-<?php echo $month;?>-<?php echo $this->year;?>)
+				</xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++?>
+
+
+	<div id="container">
+		<table cellpadding="0" cellspacing="0" class="border" border="1">
+			<!--  Tiêu đề  -->
+			<tr class="bggrey">
+				<th rowspan="2" width="8px;">
+					<!-- STT --> <xls row="<?php echo $row?>" row-merge="1"
+						column="<?php echo $excel_col[1]?>" width="4" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(4)?></xls>
+				</th>
+				<th rowspan="2" width="55px;">
+					<!-- Mã nhân viên --> <xls row="<?php echo $row?>" row-merge="1"
+						column="<?php echo $excel_col[2]?>" width="12" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(5)?></xls>
+				</th>
+				<th rowspan="2" width="100px;">
+					<!-- Tên nhân viên --> <xls row="<?php echo $row?>" row-merge="1"
+						column="<?php echo $excel_col[3]?>" width="18" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(6)?></xls>
+				</th>
+				<th rowspan="2" width="65px;">
+					<!-- Phòng ban --> <xls row="<?php echo $row?>" row-merge="1"
+						column="<?php echo $excel_col[4]?>" width="16" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(7)?></xls>
+				</th>
+				<?php $currentExcelCol = 5;?>
+				<?php $colMerge        = ($countLeaveTypes + $currentExcelCol) - 1;?>
+				<?php $beginLeave      = $currentExcelCol;?>
+				<th colspan="<?php echo $countLeaveTypes;?>">
+					<!-- Nghỉ --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[$currentExcelCol]?>"
+						column-merge="<?php echo $excel_col[$colMerge]?>" width="4"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1"> <?php echo $this->_translate(8)?></xls></th>
+						<?php $currentExcelCol = ++$colMerge;?>
+						<?php $colMerge        = ($colMerge + $dayInMonth)-1;?>
+				<th colspan="<?php echo $dayInMonth;?>">
+					<!-- Ngày --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[$currentExcelCol]?>"
+						column-merge="<?php echo $excel_col[$colMerge]?>" width="4"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1"> <?php echo $this->_translate(9)?></xls>
+				</th>
+				<th rowspan="2" width="35px;">
+					<!-- Tổng số lần đi muộn --> <xls row="<?php echo $row?>"
+						row-merge="1" column="<?php echo $excel_col[++$colMerge]?>"
+						width="9" wrap-text="1" h-align="center" v-align="center"
+						border="1" bold="1"> <?php echo $this->_translate(10)?></xls>
+				</th>
+				<th rowspan="2" width="35px;">
+					<!-- Tổng số lần về sớm --> <xls row="<?php echo $row?>"
+						row-merge="1" column="<?php echo $excel_col[++$colMerge]?>"
+						width="9" wrap-text="1" h-align="center" v-align="center"
+						border="1" bold="1"> <?php echo $this->_translate(11)?></xls>
+				</th>
+				<th rowspan="2" width="35px;">
+					<!-- Tổng công --> <xls row="<?php echo $row?>" row-merge="1"
+						column="<?php echo $excel_col[++$colMerge]?>" width="9"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1"> <?php echo $this->_translate(12)?></xls>
+				</th>
+				<th rowspan="2" width="35px;">
+					<!-- Tổng giờ làm --> <xls row="<?php echo $row?>" row-merge="1"
+						column="<?php echo $excel_col[++$colMerge]?>" width="9"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1"> <?php echo $this->_translate(13)?></xls>
+				</th>
+			</tr>
+			<?php $row++;// Lên một hàng?>
+			<tr class="bggrey">
+				<!-- Nhãn phân loại nghỉ -->
+			<?php foreach ($this->leaveTypes as $type):?>
+				<th width="25px;">
+					<!-- Nghỉ --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[$beginLeave++]?>" width="4"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1"> <?php echo $type->MaLoaiNghi;?></xls>
+				</th>
+				<?php endforeach;?>
+				<!-- Nhãn ngày trong tháng -->
+				<?php for($i = 1; $i <= $dayInMonth; $i++):?>
+				<th width="25px;">
+					<!-- Ngày trong tháng --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[$beginLeave++]?>" width="4"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1"> <?php echo $i;?></xls>
+				</th>
+				<?php endfor;?>
+			</tr>
+			<?php $row++;// Lên một hàng?>
+
+
+			<!-- Nội dung -->
+			<?php //@todo : Hiện tại phòng ban đang để dạng chữ sau phải chuyển sang dạng id?>
+			<?php $oldDepartment = ''; // Để gộp nhóm theo phòng ban?>
+			<?php foreach ($printArray as $ts): // chấm công?>
+
+			<?php if($oldDepartment != $ts['PhongBan']):// Group theo phòng ban?>
+			<tr>
+				<td colspan="<?php echo $rowspan?>" class="left bold tree_level_1">
+					<!-- Phòng ban --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[1]?>"
+						column-merge="<?php echo $excel_col[$colMerge]?>" width="4"
+						wrap-text="1" h-align="left" v-align="center" border="1" bold="1">
+						<?php echo $ts['PhongBan'];?></xls></td>
+			</tr>
+			<?php $row++;// Lên một hàng?>
+			<?php endif;//Group theo phòng ban?>
+			<?php $oldDepartment = $ts['PhongBan'];?>
+
+			<tr>
+				<td class="center">
+					<!-- STT --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[1]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1"> <?php echo $no;?></xls></td>
+				<td class="left">
+					<!-- Mã nhân viên --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[2]?>" wrap-text="1" h-align="left"
+						v-align="center" border="1"> <?php echo $ts['MaNhanVien'];?></xls>
+				</td>
+				<td class="left">
+					<!-- Tên nhân viên --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[3]?>" wrap-text="1" h-align="left"
+						v-align="center" border="1"> <?php echo $ts['TenNhanVien'];?></xls>
+				</td>
+				<td class="left">
+					<!-- Phòng ban --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[4]?>" wrap-text="1" h-align="left"
+						v-align="center" border="1"> <?php echo $ts['PhongBan'];?></xls></td>
+
+						<?php $currentExecelCol = 5;?>
+						<?php foreach ($ts['SoLanNghi'] as $leave):?>
+				<td class="right">
+					<!-- Nghỉ --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[$currentExecelCol]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo $leave;?></xls>
+				</td>
+				<?php $currentExecelCol++;?>
+				<?php endforeach;?>
+
+				<?php $totalManDay = 0;?>
+				<?php for($d = 1;$d <= $dayInMonth;$d++):?>
+				<td class="right">
+					<!-- Công --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[$currentExecelCol]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo $ts['NgayCong'][$d];?></xls>
+				</td>
+				<?php $totalManDay +=  $ts['NgayCong'][$d];?>
+				<?php $currentExecelCol++;?>
+				<?php endfor;?>
+
+				<td class="right">
+					<!-- Di Muon --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[$currentExecelCol]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo $ts['DiMuon'];?></xls>
+				</td>
+				<td class="right">
+					<!-- Ve Som --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$currentExecelCol]?>"
+						wrap-text="1" h-align="right" v-align="center" border="1"> <?php echo $ts['VeSom'];?></xls>
+				</td>
+				<td class="right">
+					<!-- Tong Ngay COng --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$currentExecelCol]?>"
+						wrap-text="1" h-align="right" v-align="center" border="1"> <?php echo $totalManDay; ?></xls>
+				</td>
+				<td class="right">
+					<!-- Tong Gio lam --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$currentExecelCol]?>"
+						wrap-text="1" h-align="right" v-align="center" border="1"> <?php echo $ts['SoGio'];?></xls>
+				</td>
+			</tr>
+			<?php $no++;?>
+			<?php $row++;// Lên một hàng?>
+			<?php endforeach;?>
+		</table>
+	</div>
+</div>

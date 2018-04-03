@@ -1,0 +1,129 @@
+<?php
+    $title                 = 'Biểu đồ theo dõi công việc';
+    $subTitle              = '';
+    $arrQty                = array();
+    $arrQty['DUNGHAN']     = 0;
+    $arrQty['QUAHAN']      = 0;
+    $arrQty['HUY']         = 0;
+    $arrQty['CHUALAM']     = 0;
+    $arrPercent            = array();
+    $arrPercent['DUNGHAN'] = 0;
+    $arrPercent['QUAHAN']  = 0;
+    $arrPercent['HUY']     = 0;
+    $arrPercent['CHUALAM'] = 0;
+    $total                 = 0; // Tổng số công việc
+
+    // Hiển thị title ngày theo thời gian truyền vào
+    if($this->start && $this->end) {
+        $title .= " từ {$this->start} đến {$this->end}";
+    }
+    elseif($this->start) {
+        $title .= " từ {$this->start}";
+    }
+    elseif($this->end) {
+        $title .= " đến {$this->end}";
+    }
+
+    // Hiển thị sub title đơn vị khi chọn đơn vị
+    if($this->objWc) {
+        $subTitle .= $this->objWc?"Đơn vị: {$this->objWc->Ten}":'';
+    }
+
+    // Hiển thị sub title nhân viên khi chọn nhân viên
+    if($this->objEmp) {
+        $subTitle .= $subTitle?' <br/> ':'';
+        $subTitle .= $this->objEmp?"Nhân viên: {$this->objEmp->TenNhanVien}":'';
+    }
+
+    if($this->arrCountByStatus) {
+        $arrQty['DUNGHAN'] = (int)$this->arrCountByStatus->CountDue;
+        $arrQty['QUAHAN']  = (int)$this->arrCountByStatus->CountOver;
+        $arrQty['HUY']     = (int)$this->arrCountByStatus->CountStep5;
+        $arrQty['CHUALAM'] = (int)$this->arrCountByStatus->CountStep1 + (int)$this->arrCountByStatus->CountStep2;
+        $total =
+            (int)$this->arrCountByStatus->CountDue
+            + (int)$this->arrCountByStatus->CountOver
+            + (int)$this->arrCountByStatus->CountStep5
+            + (int)$this->arrCountByStatus->CountStep1 + (int)$this->arrCountByStatus->CountStep2;
+
+        if($total > 0) {
+            $arrPercent['DUNGHAN'] = ($arrQty['DUNGHAN']/$total) * 100;
+            $arrPercent['QUAHAN']  = ($arrQty['QUAHAN']/$total) * 100;
+            $arrPercent['HUY']     = ($arrQty['HUY']/$total) * 100;
+            $arrPercent['CHUALAM'] = ($arrQty['CHUALAM']/$total) * 100;
+        }
+    }
+?>
+
+<script>
+    $(document).ready(function() {
+        var timechart;
+
+        // m1 : BIểu đồ chấm công
+        timechart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'container',
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: '<?php echo $title;?>'
+            },
+            subtitle: {
+                text: '<?php echo $subTitle;?>'
+            },
+            tooltip: {
+                shared: true,
+                pointFormat: '<b>{point.percentage:f}% ({point.qty})</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:f} % ({point.qty})',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        }
+                    },
+                    showInLegend: true
+                    , startAngle: 0
+                }
+            },
+
+            series: [{
+                name: '',
+                colorByPoint: true,
+                data: [{
+                    name: 'Đúng hạn',
+                    qty: <?php echo $arrQty['DUNGHAN'];?>,
+                    y: <?php echo $arrPercent['DUNGHAN'];?>,
+                    color: 'lightgreen'
+                }, {
+                    name: 'Quá hạn',
+                    qty: <?php echo $arrQty['QUAHAN'];?>,
+                    y: <?php echo $arrPercent['QUAHAN'];?>,
+                    sliced: true,
+                    selected: true,
+                    color: 'lightblue'
+                }, {
+                    name: 'Chưa thực hiện',
+                    qty: <?php echo $arrQty['CHUALAM'];?>,
+                    y: <?php echo $arrPercent['CHUALAM'];?>,
+                    color: 'orange'
+                }, {
+                    name: 'Hủy',
+                    qty: <?php echo $arrQty['HUY'];?>,
+                    y: <?php echo $arrPercent['HUY'];?>,
+                    color: 'pink'
+                }]
+            }]
+        });
+    });
+</script>
+
+<div id="container"
+     style="width: 80%; margin: auto;"></div>

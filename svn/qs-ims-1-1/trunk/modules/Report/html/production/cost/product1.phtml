@@ -1,0 +1,278 @@
+<?php
+$excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg = "#EEEEEE";
+$row = 2;
+$totalColumn = 15;
+?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="portrait">
+	<excel orientation="portrait" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+	<div id="head_print">
+	<?php echo $this->views->Common->Portrait() ?>
+
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalColumn] ?>"
+					font-size="12" wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(1) ?>
+				</xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++ ?>
+
+
+
+
+	<div id="container">
+		<table cellspacing="0" cellpadding="0" border="1" id="" class="border"
+			width="100%">
+			<tr class="bggrey">
+			<?php $begin = 0; ?>
+				<!--  -->
+				<th class="center"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						bgcolor="<?php echo $bg; ?>"> <?php echo $this->_translate(2) ?></xls>
+				</th>
+				<!--  -->
+				<th class="center"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						bgcolor="<?php echo $bg; ?>"> <?php echo $this->_translate(10) ?></xls>
+				</th>
+				<!--  -->
+				<th class="center"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						bgcolor="<?php echo $bg; ?>"> <?php echo $this->_translate(3) ?></xls>
+				</th>
+				<!--  -->
+				<th class="center"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						bgcolor="<?php echo $bg; ?>"> <?php echo $this->_translate(11) ?></xls>
+				</th>
+				<!--  -->
+				<th class="center"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						bgcolor="<?php echo $bg; ?>"> <?php echo $this->_translate(4) ?></xls>
+				</th>
+				<!--  -->
+				<th class="center"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						bgcolor="<?php echo $bg; ?>"> <?php echo $this->_translate(12) ?></xls>
+				</th>
+				<!--  -->
+				<th class="center"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						bgcolor="<?php echo $bg; ?>"> <?php echo $this->_translate(5) ?></xls>
+				</th>
+				<!--  -->
+				<th class="center"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						bgcolor="<?php echo $bg; ?>"> <?php echo $this->_translate(13) ?></xls>
+				</th>
+				<!--  -->
+				<th class="center"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						bgcolor="<?php echo $bg; ?>"> <?php echo $this->_translate(6) ?></xls>
+				</th>
+				<!--  -->
+				<th class="center"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						bgcolor="<?php echo $bg; ?>"> <?php echo $this->_translate(14) ?></xls>
+				</th>
+				<!--  -->
+				<th class="center"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						bgcolor="<?php echo $bg; ?>"> <?php echo $this->_translate(7) ?></xls>
+				</th>
+				<!--  -->
+				<th class="center"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						bgcolor="<?php echo $bg; ?>"> <?php echo $this->_translate(15) ?></xls>
+				</th>
+				<!--  -->
+				<th class="center"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						bgcolor="<?php echo $bg; ?>"> <?php echo $this->_translate(8) ?></xls>
+				</th>
+				<!--  -->
+				<th class="center"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						bgcolor="<?php echo $bg; ?>"> <?php echo $this->_translate(16) ?></xls>
+				</th>
+				<!--  -->
+				<th class="center"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						v-align="center" h-align="center" border="1" repeat="1" bold="1"
+						bgcolor="<?php echo $bg; ?>"> <?php echo $this->_translate(9) ?></xls>
+				</th>
+			</tr>
+			<?php $row++ ?>
+
+			<?php foreach ($this->report as $item): // In danh sach?>
+			<?php
+			//                c in tieu de
+			$print = '';
+			if($item['RealAttribute'])
+			{
+				$print = "{$item['RealItemName']} - {$item['RealItemCode']} - {$item['RealAttribute']} - {$item['RealUOM']}";
+			}
+			else
+			{
+				$print = "{$item['RealItemName']} - {$item['RealItemCode']} - {$item['RealUOM']}";
+			}
+			?>
+			<tr>
+				<!-- -->
+				<th class="left" colspan="<?php echo $totalColumn;?>"><xls
+						row="<?php echo $row ?>" column="A"
+						column-merge="<?php echo $excel_col[$totalColumn] ?>"
+						wrap-text="1" h-align="left" v-align="center" border="1"> <?php echo $print ?>
+					</xls></th>
+			</tr>
+			<?php $row++;?>
+			<?php $itemPlanQty = 0;?>
+			<?php $itemRealQty = 0;?>
+			<?php $itemPlanUnit = 0;?>
+			<?php $itemRealUnit = 0;?>
+			<?php $itemPlanTotal = 0;?>
+			<?php $itemRealTotal = 0;?>
+
+
+			<?php foreach ($item['Detail'] as $operator): // In tung cong doan ?>
+			<tr>
+			<?php $begin = 0; ?>
+				<!--  -->
+				<td class="left" width=""><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" width="" wrap-text="1"
+						v-align="center" h-align="left" border="1"> <?php echo $operator['RealOperator'] ?></xls>
+				</td>
+				<!--  -->
+				<td class="right" width=""><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" width="" wrap-text="1"
+						v-align="center" h-align="right" border="1"> <?php echo $operator['PlanQty'] ?>
+						<?php $itemPlanQty += $operator['PlanQty']; ?></xls></td>
+				<!--  -->
+				<td class="right" width=""><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" width="" wrap-text="1"
+						v-align="center" h-align="right" border="1"> <?php echo $operator['RealQty'] ?>
+						<?php $itemRealQty += $operator['RealQty']; ?></xls></td>
+				<!--  -->
+				<td class="right" width=""><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" width="" wrap-text="1"
+						v-align="center" h-align="right" border="1"> <?php echo Qss_Lib_Util::formatMoney($operator['PlanConsumption'], $this->defaultCurrency) ?></xls>
+				</td>
+				<!--  -->
+				<td class="right" width=""><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" width="" wrap-text="1"
+						v-align="center" h-align="right" border="1"> <?php echo Qss_Lib_Util::formatMoney($operator['RealConsumption'], $this->defaultCurrency) ?></xls>
+				</td>
+				<!--  -->
+				<td class="right" width=""><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" width="" wrap-text="1"
+						v-align="center" h-align="right" border="1"> <?php echo Qss_Lib_Util::formatMoney($operator['PlanEmployee'], $this->defaultCurrency) ?></xls>
+				</td>
+				<!--  -->
+				<td class="right" width=""><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" width="" wrap-text="1"
+						v-align="center" h-align="right" border="1"> <?php echo Qss_Lib_Util::formatMoney($operator['RealEmployee'], $this->defaultCurrency) ?></xls>
+				</td>
+				<!--  -->
+				<td class="right" width=""><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" width="" wrap-text="1"
+						v-align="center" h-align="right" border="1"> <?php echo Qss_Lib_Util::formatMoney($operator['PlanMachine'], $this->defaultCurrency) ?></xls>
+				</td>
+				<!--  -->
+				<td class="right" width=""><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" width="" wrap-text="1"
+						v-align="center" h-align="right" border="1"> <?php echo Qss_Lib_Util::formatMoney($operator['RealMachine'], $this->defaultCurrency) ?></xls>
+				</td>
+				<!--  -->
+				<td class="right" width=""><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" width="" wrap-text="1"
+						v-align="center" h-align="right" border="1"> <?php echo Qss_Lib_Util::formatMoney($operator['PlanIndirect'], $this->defaultCurrency) ?></xls>
+				</td>
+				<!--  -->
+				<td class="right" width=""><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" width="" wrap-text="1"
+						v-align="center" h-align="right" border="1"> <?php echo Qss_Lib_Util::formatMoney($operator['RealIndirect'], $this->defaultCurrency) ?></xls>
+				</td>
+				<!--  -->
+				<td class="right" width=""><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" width="" wrap-text="1"
+						v-align="center" h-align="right" border="1"> <?php echo Qss_Lib_Util::formatMoney($operator['PlanUnit'], $this->defaultCurrency) ?>
+						<?php $itemPlanUnit += $operator['PlanUnit'];?></xls></td>
+				<!--  -->
+				<td class="right" width=""><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" width="" wrap-text="1"
+						v-align="center" h-align="right" border="1"> <?php echo Qss_Lib_Util::formatMoney($operator['RealUnit'], $this->defaultCurrency) ?>
+						<?php $itemRealUnit += $operator['RealUnit'];?></xls></td>
+				<!--  -->
+				<td class="right" width=""><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" width="" wrap-text="1"
+						v-align="center" h-align="right" border="1"> <?php echo Qss_Lib_Util::formatMoney($operator['PlanTotal'], $this->defaultCurrency) ?>
+						<?php $itemPlanTotal += $operator['PlanTotal'];?></xls></td>
+				<!--  -->
+				<td class="right" width=""><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" width="" wrap-text="1"
+						v-align="center" h-align="right" border="1"> <?php echo Qss_Lib_Util::formatMoney($operator['RealTotal'], $this->defaultCurrency) ?>
+						<?php $itemRealTotal += $operator['RealTotal'];?></xls></td>
+			</tr>
+			<?php $row++ ?>
+			<?php endforeach;// in tung cong doan?>
+
+			<?php
+			$planUnit = $itemPlanQty?$itemPlanTotal/$itemPlanQty:0;
+			$realUnit = $itemRealQty?$itemRealTotal/$itemRealQty:0;
+			?>
+			<!-- Tong so -->
+			<tr>
+				<!-- -->
+				<th colspan="<?php echo ($totalColumn-4);?>"><xls
+						row="<?php echo $row ?>" column="A"
+						column-merge="<?php echo $excel_col[$totalColumn-4] ?>"
+						wrap-text="1" h-align="center" v-align="center" border="1"></xls>
+				</th>
+				<!-- -->
+				<th class="right"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[$totalColumn-3] ?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php  echo Qss_Lib_Util::formatMoney(($planUnit),  $this->defaultCurrency);?></xls>
+				</th>
+				<!-- -->
+				<th class="right"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[$totalColumn-2] ?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney(($realUnit),  $this->defaultCurrency);?></xls>
+				</th>
+				<!-- -->
+				<th class="right"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[$totalColumn-1] ?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($itemPlanTotal, $this->defaultCurrency);?></xls>
+				</th>
+				<!-- -->
+				<th class="right"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[$totalColumn] ?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo Qss_Lib_Util::formatMoney($itemRealTotal, $this->defaultCurrency);?></xls>
+				</th>
+			</tr>
+			<?php $row++ ?>
+			<?php endforeach; // Ket thuc in danh sach?>
+		</table>
+	</div>
+</div>

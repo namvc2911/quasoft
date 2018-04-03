@@ -1,0 +1,42 @@
+<?php
+$width  = 1200;
+$widths = array(1,1,1,1,1);
+$widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+?>
+<div id="M174_UNDER_MINIMUM_ITEMS">
+    <table id="grid" cellspacing="0" cellpadding="0" border="0" class="grid grid_edit " >
+        <?php $begin = 0;?>
+        <thead>
+            <tr>
+                <th style="width:<?php echo $widths[$begin++];?>%">Mã mặt hàng</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Tên mặt hàng</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Đơn vị tính cơ sở</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Số lượng tối thiểu</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Số lượng hiện có</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <?php $ci = 0;?>
+            <?php foreach($this->items as $item):?>
+                <?php if($item->SoLuongHienCoTheoCoSo > 0 && $item->SoLuongHienCoTheoCoSo < $item->SoLuongToiThieuTheoCoSo):?>
+                    <tr <?php echo ++$ci%2==0?'bgcolor="#f7f9f9"':'';?>>
+                        <td class="left"> <?php echo $item->MaSanPham;?> </td>
+                        <td class="left"> <?php echo $item->TenSanPham;?> </td>
+                        <td class="left"> <?php echo $item->DonViTinhCoSo;?> </td>
+                        <td class="right"> <?php echo $item->SoLuongToiThieuTheoCoSo;?> </td>
+                        <td class="right"> <?php echo $item->SoLuongHienCoTheoCoSo;?> </td>
+                    </tr>
+                <?php endif;?>
+            <?php endforeach;?>
+        </tbody>
+
+    </table>
+</div>
+
+<script>
+    $(document).ready(function() {
+        var height = $(window).height() - 180 - $('#grid thead').height();//-8
+        $('#grid').tableScroll({height:height,width:'100%'});
+    });
+</script>

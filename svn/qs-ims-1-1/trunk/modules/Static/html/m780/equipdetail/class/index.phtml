@@ -1,0 +1,55 @@
+<script>
+    jQuery(document).ready(function() {
+
+        $('.datepicker').each(function() {
+            $(this).datepicker({dateFormat: "dd-mm-yy"});
+            $(this).attr('placeholder', 'dd-mm-yyyy');
+        });/* Datepicker*/
+
+        einfo_failure_class_show_failure();
+        $('#m780_equip_class_index_start').change(function () {
+            einfo_failure_class_show_failure();
+        });
+
+        $('#m780_equip_class_index_end').change(function () {
+            einfo_failure_class_show_failure();
+        });
+    });
+</script>
+<div id="m780_equip_class_index_wrap">
+
+    <div>
+        <?php echo $this->_translate(1)?>
+        <input type="text" class="datepicker" name="m780_equip_class_index_start" id="m780_equip_class_index_start" value="<?php echo date('01-m-Y',strtotime('-1 years'));?>">
+        <?php echo $this->_translate(2)?>
+        <input type="text" class="datepicker" name="m780_equip_class_index_end" id="m780_equip_class_index_end" value="<?php echo date('d-m-Y');?>">
+    </div>
+
+    <!-- Loai hu hong -->
+    <fieldset style="overflow: auto; height: 350px">
+        <legend><?php echo $this->_translate(3)?></legend>
+        <div id="m780_equip_class_types">
+
+        </div>
+    </fieldset>
+
+
+    <!-- Nguyen nhan hu hong -->
+    <fieldset style="overflow: auto; height: 130px">
+        <legend>Nguyên nhân hư hỏng</legend>
+        <div id="m780_equip_class_reasons">
+
+        </div>
+    </fieldset>
+
+    <!-- Bien phap khac phuc -->
+    <fieldset style="overflow: auto; height: 130px">
+        <legend>Biện pháp khắc phục</legend>
+        <div id="m780_equip_class_remedies">
+
+        </div>
+    </fieldset>
+</div><!-- End #m780_equip_class_index_wrap -->
+
+
+

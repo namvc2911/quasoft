@@ -1,0 +1,103 @@
+<script>
+    $(document).ready(function(){
+        $('#madate').keypress(function (e) {
+            if (e.which == 13) {
+                loadManufacturings();
+                return false;    //<---- Add this line
+            }
+        });
+
+        $('#madate').change(function ()
+        {
+            loadManufacturings();
+        });
+    });
+</script>
+
+<div class="box_das2">
+    <div class="inside_das2 inside_das1" id="">
+        <div class="dash_box_heading">
+            <div class="" >
+
+                <div class="fl" >
+                    Tin hoạt động sản xuất
+                </div>
+
+                <div class="fr" style="">
+                    <?php echo $this->views->Report->Datepicker('madate', $this->date);?>
+                </div>
+            </div>
+        </div>
+
+        <div style="clear: both; width: 100%">
+
+        </div>
+
+        <div style="clear: both; border-top: 1px #cccccc dotted; padding-top: 5px;" class="dash_box_content">
+            <table class="grid">
+            <tr>
+                <th rowspan="2" style="width: 20%;"> Đơn vị </th>
+                <th rowspan="2" style="width: 8%;"> Than kéo mỏ (Tấn) </th>
+                <th rowspan="2" style="width: 8%;"> Than bốc lên (Tấn) </th>
+                <th rowspan="2" style="width: 8%;"> Than vào sàng (Tấn) </th>
+                <th colspan="2" style="width: 8%;"> Than sạch (Tấn) </th>
+                <th colspan="2" style="width: 8%;"> Than tiêu thụ (Tấn) </th>
+                <th colspan="2" style="width: 8%;"> Điện năng </th>
+                <th rowspan="2" style="width: 8%;"> STH Ngày </th>
+                <th rowspan="2" style="width: 8%;"> STH Tháng </th>
+                <th rowspan="2" style="width: 8%;"> STH Kế hoạch </th>
+            </tr>
+            <tr>
+                <th style="width: 8%;">Trong ngày</th>
+                <th style="width: 8%;">Lũy kế tháng</th>
+                <th style="width: 8%;">Trong ngày</th>
+                <th style="width: 8%;">Lũy kế tháng</th>
+                <th style="width: 8%;">Trong ngày</th>
+                <th style="width: 8%;">Lũy kế tháng</th>
+            </tr>
+            <?php foreach($this->news as $item):?>
+                <?php
+                $SuatDienNang = 0;
+
+                switch($item->DeptCode)
+                {
+                    case 'TT1':
+                    case 'TT2':
+                    case 'TT3':
+                    case 'PMT':
+                        $SuatDienNang = ($item->ThanSach != 0)?$item->DienNang/$item->ThanSach:0;
+                        break;
+
+                    case 'KB1':
+                    case 'KB2':
+                        $SuatDienNang = ($item->ThanTieuThu != 0)?$item->DienNang/$item->ThanTieuThu:0;
+                        break;
+
+                    case 'CTY':
+                        $tongThanSach = $this->tt?$this->tt->TongThanSach:0;
+                        $SuatDienNang = ($tongThanSach!=0)?($item->DienNang/$item->ThanSach):0;
+                    break;
+                }
+                ?>
+
+
+                <tr>
+                    <td> <?php echo $item->DeptName;?> </td>
+                    <td class="right"> <?php echo Qss_Lib_Util::formatNumber($item->ThanKeoMo);?> </td>
+                    <td class="right"> <?php echo Qss_Lib_Util::formatNumber($item->ThanBocLen);?> </td>
+                    <td class="right"> <?php echo Qss_Lib_Util::formatNumber($item->ThanVaoSang);?></td>
+                    <td class="right bold red"> <?php echo Qss_Lib_Util::formatNumber($item->ThanSach);?> </td>
+                    <td class="right"> <?php echo Qss_Lib_Util::formatNumber($item->LuyKeThanSach);?> </td>
+                    <td class="right bold red"> <?php echo Qss_Lib_Util::formatNumber($item->ThanTieuThu);?> </td>
+                    <td class="right"> <?php echo Qss_Lib_Util::formatNumber($item->LuyKeThanTieuThu);?> </td>
+                    <td class="right bold red"><?php echo Qss_Lib_Util::formatNumber($item->DienNang);?> </td>
+                    <td class="right"><?php echo Qss_Lib_Util::formatNumber($item->LuyKeDienNang);?> </td>
+                    <td class="right bold red"><?php echo Qss_Lib_Util::formatNumber($SuatDienNang);?> </td>
+                    <td class="right"><?php echo ($item->LuyKeThanSach != 0)?(Qss_Lib_Util::formatNumber(round($item->LuyKeDienNang/$item->LuyKeThanSach,2))):'';?> </td>
+                    <td class="right"><?php echo Qss_Lib_Util::formatNumber($item->STHKeHoach);?> </td>
+                </tr>
+            <?php endforeach; ?>
+            </table>
+        </div>
+    </div>
+</div>

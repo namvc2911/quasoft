@@ -1,0 +1,177 @@
+<script>
+    function excelRender() {
+        $('#report').submit();
+    }
+</script>
+
+<form id="report" method="post" action="/print/m759/viwasupco/acceptanceexcel">
+    <input type="hidden" name="popup" value="1" />
+    <input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" />
+
+    <div class="portrait">
+        <excel
+            orientation="<?php echo Qss_Lib_Extra_Const::REPORT_ORIENTATION_PORTRAIT; ?>"
+            font-name="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_NAME; ?>"
+            font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_SIZE; ?>"
+            margin-left="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_LEFT; ?>"
+            margin-right="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_RIGHT; ?>"
+            margin-top="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_TOP; ?>"
+            margin-bottom="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_BOTTOM; ?>" />
+
+        <!-- REPORT TITLE -->
+        <div id="head_print"></div>
+
+        <?php echo $this->views->Common->Portrait()?>
+
+        <div id="container">
+            <div>
+
+
+                <br/>
+
+                <h2 class="bold center">
+                    BIÊN BẢN NGHIỆM THU
+                </h2>
+
+                <h2 class="bold center">
+                    <?php echo $this->SoPhieu;?>
+                </h2>
+
+                <br/>
+
+               <div class="bold">
+                    I/ Thời gian - địa điểm:
+                </div>
+
+                <div class="">
+                    Vào lúc : ............................ ngày: ........................................
+                </div>
+				<br/>
+                <div style="border-bottom: 1px dashed #000; width:100%;">
+                    Địa điểm :
+                </div>
+				<br/>
+
+                <div class="bold">
+                    II/ Thành phần tham dự :
+                </div>
+				<br/>
+                <div class="bold">
+                    Ban Kỹ Thuật :
+                </div>
+				 <br />
+                <div style="border-bottom: 1px dashed #000; width:100%;">
+                    1/
+                </div>
+		
+				<br />
+                <div style="border-bottom: 1px dashed #000; width:100%;">
+                    2/
+                </div>
+				<div>&nbsp;</div>
+
+                <div class="bold">
+                    Đội BT-SC :
+                </div>
+				 <br />
+                <div style="border-bottom: 1px dashed #000; width:100%;">
+                    1/
+                </div>
+		
+				<br />
+                <div style="border-bottom: 1px dashed #000; width:100%;">
+                    2/
+                </div>
+				<div>&nbsp;</div>
+
+                <div class="bold">
+                    Đơn vị sản xuất :
+                </div>
+				 <br />
+                <div style="border-bottom: 1px dashed #000; width:100%;">
+                    1/
+                </div>
+		
+				<br />
+                <div style="border-bottom: 1px dashed #000; width:100%;">
+                    2/
+                </div>
+
+
+
+                <div class="bold">
+                    III/ Nội dung nghiệm thu :
+                </div>
+				<br/>
+                <div class="bold">
+                    1/ Nội dung :
+                </div>
+
+                <br/>
+				
+                <div style="border-bottom: 1px dashed #000; width:100%;">
+                    <?php echo $this->NoiDung;?>
+                </div>
+				<br/>
+				<div style="border-bottom: 1px dashed #000; width:100%;">&nbsp;&nbsp;</div>
+				<br/>
+				<div style="border-bottom: 1px dashed #000; width:100%;">&nbsp;&nbsp;</div>
+				<br/>
+
+                <div class="bold">
+                    2/ Nhận xét chất lượng :
+                </div>
+
+                <br/>
+
+                <div style="border-bottom: 1px dashed #000; width:100%;">
+                    <?php echo $this->NhanXetChatLuong;?>
+                </div>
+				<br/>
+				<div style="border-bottom: 1px dashed #000; width:100%;">&nbsp;&nbsp; </div>
+				<br/>
+				<div style="border-bottom: 1px dashed #000; width:100%;">&nbsp;&nbsp;</div>
+				<br/>
+
+                <div class="bold">
+                    3/ Kết luận :
+                </div>
+                <br/>
+
+                <div style="border-bottom: 1px dashed #000; width:100%;">
+                    <?php echo $this->KetLuan;?>
+                </div>
+				<br/>
+				<div style="border-bottom: 1px dashed #000; width:100%;">&nbsp;&nbsp; </div>
+				<br/>
+				<div style="border-bottom: 1px dashed #000; width:100%;">&nbsp;&nbsp;</div>
+				<br/>
+
+                <div class="right">
+                    Hòa Bình, ngày ....tháng.... năm <?php echo $this->Nam;?>.
+                </div>
+
+                <br/>
+
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td style="width:33%;" class="center bold">BAN KỸ THUẬT </td>
+                        <td style="width:33%;" class="center bold">ĐƠN VỊ VẬN HÀNH</td>
+                        <td style="width:33%;" class="center bold">ĐỘI BTSC&XD</td>
+                    </tr>
+                </table>
+
+
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+
+

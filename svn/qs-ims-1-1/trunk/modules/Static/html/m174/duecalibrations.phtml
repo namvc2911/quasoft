@@ -1,0 +1,85 @@
+<?php
+$width  = 1200;
+$widths = array(1,1,1,1,1,1);
+$widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+$fields = Qss_Lib_System::getFieldsByObject('M753', 'OHieuChuanKiemDinh');
+?>
+
+
+<table id="grid" cellspacing="0" cellpadding="0" border="0" class="grid" >
+    <?php $begin = 0;?>
+
+    <thead>
+        <tr>
+            <!-- Mã thiết bị -->
+            <th style="width:<?php echo $widths[$begin++];?>%"><?php echo $fields->getFieldByCode('MaThietBi')->szFieldName;?></th>
+            <!-- Tên thiết bị -->
+            <th style="width:<?php echo $widths[$begin++];?>%"><?php echo $fields->getFieldByCode('TenThietBi')->szFieldName;?></th>
+            <!-- Loại -->
+            <th style="width:<?php echo $widths[$begin++];?>%"><?php echo $fields->getFieldByCode('Loai')->szFieldName;?></th>
+            <!-- Chu kỳ -->
+            <th style="width:<?php echo $widths[$begin++];?>%"><?php echo $fields->getFieldByCode('ChuKy')->szFieldName;?></th>
+            <!-- Ngày kiểm định -->
+            <th style="width:<?php echo $widths[$begin++];?>%"><?php echo $fields->getFieldByCode('Ngay')->szFieldName;?></th>
+            <!-- Ngày kiểm định tiếp theo -->
+            <th style="width:<?php echo $widths[$begin++];?>%"><?php echo $fields->getFieldByCode('NgayKiemDinhTiepTheo')->szFieldName;?></th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+    <?php $ci = 0;?>
+        <?php foreach($this->calibrations as $item):?>
+            <?php if($item->Status == 5 || $item->Status == 4) { continue; }?>
+
+            <tr class="<?php //echo $item->Class;?>" <?php echo ++$ci%2==0?'bgcolor="#f7f9f9"':'';?>>
+                <td class="left"><?php echo $item->MaThietBi;?></td>
+                <td class="left"><?php echo $item->TenThietBi;?></td>
+                <td class="center"><?php echo $item->Ref_Loai;?></td>
+                <td class="center"><?php echo $item->Ref_ChuKy;?></td>
+                <td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item->Ngay);?></td>
+                <td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item->NgayKiemDinhTiepTheo);?></td>
+            </tr>
+        <?php endforeach;?>
+    </tbody>
+
+</table>
+
+<script>
+    $(document).ready(function() {
+        var height = $(window).height() - 210 - $('#grid thead').height();//-8
+        $('#grid').tableScroll({height:height,width:'100%'});
+    });
+</script>
+<?php
+/*
+$width  = 1200;
+$widths = array(1,2,1,1,1,1,1,1);
+$widths = Qss_Lib_Report::changeWidthToFitScreen2($widths, $width);
+?>
+<div>
+    <table cellspacing="0" cellpadding="0" border="0" style="width: <?php echo $width;?>px; table-layout: fixed;" class="border_table">
+        <?php $begin = 0;?>
+        <tr>
+            <th style="width:<?php echo $widths[$begin++];?>px">Mã thiết bị</th>
+            <th style="width:<?php echo $widths[$begin++];?>px">Tên thiết bị</th>
+            <th style="width:<?php echo $widths[$begin++];?>px">Bộ phận</th>
+
+            <th style="width:<?php echo $widths[$begin++];?>px">Chu kỳ</th>
+            <th style="width:<?php echo $widths[$begin++];?>px"></th>
+        </tr>
+
+        <?php foreach($this->calibrations as $item):?>
+            <?php if($item->Status == 5 || $item->Status == 4) { continue; }?>
+
+            <tr class="<?php //echo $item->Class;?>">
+                <td class="left"><?php echo $item->MaThietBi;?></td>
+                <td class="left"><?php echo $item->TenThietBi;?></td>
+                <td class="left"><?php echo $item->BoPhan;?></td>
+                <td class="center"><?php echo $item->ChuKy;?></td>
+                <td class="center"><?php echo $item->SoPhieu;?></td>
+            </tr>            
+        <?php endforeach;?>
+    </table>
+</div>
+<?php */ ?>

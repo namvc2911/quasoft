@@ -1,0 +1,186 @@
+<input type="hidden" name="ioid" value="<?php echo $this->generalPlan->IOID;?>">
+<input type="hidden" name="ifid" value="<?php echo $this->generalPlan->IFID_M838;?>">
+
+<div class="full-width-line-wrap" id="filter">
+    <div class="ui-box">
+        <div class="ui_box_s50_left">
+            <fieldset>
+
+                <table class="" cellspacing="0" cellpadding="0" border="0" style="">
+
+                    <tr>
+                        <th class="left" style="width: 100px;">
+                            Mã :
+                        </th>
+
+                        <td class="left">
+                            <input type="text" style="width: 200px;"
+                                value="<?php echo $this->generalPlan->Ma;?>"
+                                   name="OKeHoachTongThe_Ma"
+                                />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th class="left">
+                            Tên :
+                        </th>
+
+                        <td class="left" >
+                            <input type="text" style="width: 200px;"
+                                value="<?php echo $this->generalPlan->Ten;?>"
+                                   name="OKeHoachTongThe_Ten"
+                                />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th class="left">
+                            Mô tả :
+                        </th>
+
+                        <td class="left" style="padding: 0px 3px">
+                            <textarea style="width: 300px; height: 50px"  name="OKeHoachTongThe_MoTa"><?php echo $this->generalPlan->MoTa;?></textarea>
+                        </td>
+                    </tr>
+                </table>
+
+            </fieldset>
+        </div>
+
+        <div class="ui_box_s50_right">
+            <fieldset>
+
+                <table class="" cellspacing="0" cellpadding="0" border="0" style="">
+                    <tr>
+                        <th class="left">
+                            Loại lịch :
+                        </th>
+
+                        <td class="left">
+                            <div class="radio">
+                                <select  name="OKeHoachTongThe_LoaiLich">
+                                    <option value=""> --- Chọn --- </option>
+                                    <?php foreach($this->calType as $key=>$item):?>
+                                        <option value="<?php echo $key;?>" <?php echo ($this->generalPlan->LoaiLich == $key)?'selected':'';?>>
+                                            <?php echo $item;?>
+                                        </option>
+                                    <?php endforeach;?>
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th class="left">
+                            Thời gian :
+                        </th>
+
+                        <td class="left">
+                            <?php  echo $this->views->Report->Datepicker('OKeHoachTongThe_NgayBatDau', Qss_Lib_Date::mysqltodisplay($this->generalPlan->NgayBatDau));?>
+
+                            <?php  echo $this->views->Report->Datepicker('OKeHoachTongThe_NgayKetThuc', Qss_Lib_Date::mysqltodisplay($this->generalPlan->NgayKetThuc));?>
+
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <th class="left" style="width: 100px;">
+                            Tạo :
+                        </th>
+
+                        <td class="left" >
+                            <div class="fl">
+
+                                    <?php
+                                    $id            = array('id'=>'OKeHoachTongThe_NguoiTao');
+                                    $getDataObject = array('ODanhSachNhanVien'=>array('MaNhanVien', 'TenNhanVien'));
+                                    //,'OKhuVuc'=>array('MaKhuVuc','Ten')
+                                    $getFields     = array('num'=>2,
+                                        'objects'=>array('ODanhSachNhanVien'=>array(
+                                            'id'=>'IOID'
+                                        ,'display1'=>'TenNhanVien'
+                                        ,'display2'=>'MaNhanVien')) );
+                                    ?>
+                                    <?php
+                                    echo $this->views->Report->ListBox(
+                                        $id
+                                        , $getDataObject
+                                        , $getFields
+                                        , array()
+                                        , array()
+                                        , ''
+                                        , @$this->generalPlan->NguoiTao
+                                        , @(int)$this->generalPlan->Ref_NguoiTao
+                                    );?>
+
+                            </div>
+
+                            <div class="fl">
+                                <b>Ngày :</b>
+                                <?php  echo $this->views->Report->Datepicker('OKeHoachTongThe_NgayTao', Qss_Lib_Date::mysqltodisplay($this->generalPlan->NgayTao));?>
+
+
+                            </div>
+
+
+
+
+
+
+
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <th class="left" style="width: 100px;">
+                            Phê duyệt :
+                        </th>
+
+                        <td class="left" >
+                            <div class="fl">
+
+                                    <?php
+                                    $id            = array('id'=>'OKeHoachTongThe_NguoiPheDuyet');
+                                    $getDataObject = array('ODanhSachNhanVien'=>array('MaNhanVien', 'TenNhanVien'));
+                                    //,'OKhuVuc'=>array('MaKhuVuc','Ten')
+                                    $getFields     = array('num'=>2,
+                                        'objects'=>array('ODanhSachNhanVien'=>array(
+                                            'id'=>'IOID'
+                                        ,'display1'=>'TenNhanVien'
+                                        ,'display2'=>'MaNhanVien')) );
+                                    ?>
+                                    <?php
+                                    echo $this->views->Report->ListBox(
+                                        $id
+                                        , $getDataObject
+                                        , $getFields
+                                        , array()
+                                        , array()
+                                        , ''
+                                        , @$this->generalPlan->NguoiPheDuyet
+                                        , @(int)$this->generalPlan->Ref_NguoiPheDuyet
+                                    );?>
+
+                            </div>
+
+                            <div class="fl">
+                                <b>Ngày :</b>
+                                <?php  echo $this->views->Report->Datepicker('OKeHoachTongThe_NgayPheDuyet', Qss_Lib_Date::mysqltodisplay($this->generalPlan->NgayPheDuyet));?>
+
+
+                            </div>
+                        </td>
+                    </tr>
+
+
+                </table>
+            </fieldset>
+        </div>
+    </div>
+
+
+
+</div>

@@ -1,0 +1,133 @@
+<script>
+    function show_detail(deptid, date)
+    {
+        $('#qss_combo').html('');
+
+        var url = sz_BaseUrl + '/extra/dashboard/news/plantasks3';
+        var data = {deptid:deptid, date:date};
+
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#qss_combo').html(jreturn);
+            $('#qss_combo').dialog({ width: 900,height:450,closeOnEscape: false});
+        });
+    }
+</script>
+
+
+<link rel="stylesheet" href="/css/calendar.css"/>
+<?php $oldIFID   = '';?>
+<?php $oldDeptID = '';?>
+<?php $depIndex  = 0;?>
+
+<div class="" style="">
+    <div id="task_menu" style="padding: 10px 0px; overflow: hidden">
+        <div style="float: right">
+            <button type="button"  class="btn btn-custom"   onclick="window.location.href = '/user/form/dashboad';">Quay lại</button>
+        </div>
+
+    </div>
+
+
+    <div id="task_content">
+
+
+        <div id="task_day_content" style="float: left; width: 78%;">
+
+            <table class="grid grid_edit tablescroll_body" style="border-left: 1px #ccc solid;">
+
+                <?php /*
+                <tr class="  bggrey">
+                    <th style="width: 10%;"> Ngày </th>
+                    <th style="width: 10%;"> Thời gian (Phút) </th>
+                    <th style="width: 70%;"> Nội dung </th>
+                    <th style="width: 10%;"> Kết quả </th>
+<!--                    <th style="width: 10%;"> Chi tiết </th>-->
+                </tr>
+                */?>
+
+
+                <?php if(!count($this->data)) echo '&nbsp;';?>
+                <?php foreach($this->data as $item):?>
+
+                    <?php if($oldDeptID != $item->DeptID):?>
+                        <tr class="">
+                            <td colspan="4" class="left tree_level_1">
+                                <b>
+                                    <a href="#1" onclick="show_detail('<?php echo $item->DeptID;?>', '<?php echo $this->date;?>')">
+                                        <?php echo Qss_Lib_Util::numberToRome(++$depIndex);?>. <?php echo $item->DeptName;?> - <?php echo $item->DeptCode;?>
+                                    </a>
+                                </b>
+                            </td>
+                        </tr>
+
+                    <?php endif;?>
+
+                <?php /*
+                    <?php if($oldIFID != $item->IFID):?>
+                        <tr class="">
+                            <td colspan="4" class="left tree_level_2">
+                                <b>
+                                    <?php echo $item->EquipName;?>
+                                    (
+                                    Mã TB: <?php echo $item->EquipCode;?>
+                                    - Ngày BĐ: <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayBatDau)?>
+                                    <?php if($item->NgayKetThuc):?>- Ngày KT: <?php echo $item->NgayKetThuc?Qss_Lib_Date::mysqltodisplay($item->NgayKetThuc):'--- ';?><?php endif;?>
+                                    - Loại BT: <?php echo $item->LoaiBaoTri;?>
+                                    - TG DM: <?php echo $item->ThoiGianDungMay?$item->ThoiGianDungMay:0;?> giờ)
+                                </b>
+                            </td>
+                        </tr>
+
+                    <?php endif;?>
+
+                    <tr class="">
+                        <td class="center">
+                            <?php echo Qss_Lib_Date::mysqltodisplay($item->Ngay);?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo $item->ThoiGian;?>
+                        </td>
+
+                        <td class="left">
+                            <?php echo $item->MoTaCongViec;?>
+                        </td>
+
+                        <td class="right">
+                            <?php echo @$item->KetQua?$item->KetQua:0;?>
+                        </td>
+
+                        <?php
+                        /*
+                        <td class="center">
+                            <button type="button"
+                                    class="btn btn_main_top"
+                                    onclick="popupFormDetail(<?php echo $item->IFID;?>, <?php echo $this->deptid;?>)"
+                                    style="margin: 2px;">
+                                Chi tiết
+                            </button>
+                        </td>
+                        * /
+                        ?>
+                    </tr>
+                */?>
+
+                    <?php $oldIFID   = $item->IFID;?>
+                    <?php $oldDeptID = $item->DeptID;?>
+                <?php endforeach;?>
+
+            </table>
+
+        </div>
+
+
+
+        <div id="task_month_view" style="float: left; width: 22%;">
+            <div style="float: right">
+                <?php echo $this->monthView;?>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div id="qss_combo"></div>

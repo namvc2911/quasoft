@@ -1,0 +1,113 @@
+<script type="text/javascript">
+<!--
+jQuery(document).ready(function($){
+  	$('.datepicker').each(function(){ $(this).datepicker({ dateFormat: "dd-mm-yy" }); });/* Datepicker*/
+});
+//-->
+</script>
+
+<form id="show_form">
+	<table width="100%" cellspacing="0" cellpadding="0" border="1" id=""
+		class="borderX">
+		<tr class="bggrey">
+			<th class="" width="">
+				<!--  --> <?php  echo $this->_translate(1);?></th>
+			<th class="" width="">
+				<!--  --> <?php  echo $this->_translate(2);?></th>
+			<th class="" width="">
+				<!--  --> <?php  echo $this->_translate(3);?></th>
+			<th class="" width="">
+				<!--  --> <?php  echo $this->_translate(4);?></th>
+			<th class="" width="">
+				<!--  --> <?php  echo $this->_translate(5);?></th>
+			<th class="" width="">
+				<!--  --> <?php  echo $this->_translate(6);?></th>
+			<th class="" width="">
+				<!--  --> <?php  echo $this->_translate(7);?></th>
+			<th class="" width="">
+				<!--  --> <?php  echo $this->_translate(8);?></th>
+		</tr>
+
+		<?php foreach ($this->order as $key=>$orderItem): // In danh sach dong chinh?>
+		<tr>
+			<th class="left" colspan="7">
+				<!--  --> <?php  echo $this->_translate(9);?>: <?php echo $orderItem['DocumentNo'];?>
+				- <?php echo $this->_translate(10);?> <?php echo $this->module;?></th>
+			<th class="center"><?php if(isset($this->deliveryPlan[$key])) { ?> <input
+				type="checkbox" onclick="checkAllLine(this)"
+				value="<?php echo $key;?>" /> <?php } else { // Else ?> &nbsp; <?php } // Endif?>
+			</th>
+		</tr>
+
+		<?php if(isset($this->deliveryPlan[$key])): // Neu ton tai ke hoach giao hang thi in dong phu?>
+		<?php foreach ($this->deliveryPlan[$key] as $planItem): // In danh sach dong phu?>
+		<?php if(!$planItem['FromIOID'] || $planItem['ToIOID']): // Tranh lay them obj khac khi link sang nhieu obj?>
+		<tr class="line_<?php echo $key?>" permission="1">
+			<td class="left"><input type="hidden" name="ItemCode[]"
+				class="disabled_input disabled_input_<?php echo $key?>"
+				value="<?php echo $planItem['ItemCode'];?>" disabled /> <input
+				type="hidden" name="ItemQty[]"
+				class="disabled_input disabled_input_<?php echo $key?>"
+				value="<?php echo $planItem['ItemQty'];?>" disabled /> <input
+				type="hidden" name="ItemUOM[]"
+				class="disabled_input disabled_input_<?php echo $key?>"
+				value="<?php echo $planItem['ItemUOM'];?>" disabled /> <input
+				type="hidden" name="Attribute[]"
+				class="disabled_input disabled_input_<?php echo $key?>"
+				value="<?php echo $planItem['Attribute'];?>" disabled /> <input
+				type="hidden" name="Ref[]"
+				class="disabled_input disabled_input_<?php echo $key?>"
+				value="<?php echo $orderItem['DocumentNo'];?>" disabled /> <input
+				type="hidden" name="IOID[]"
+				class="disabled_input disabled_input_<?php echo $key?>"
+				value="<?php echo $planItem['IOID'];?>" disabled /> <input
+				type="hidden" name="ToIOID[]"
+				class="to_ioid disabled_input disabled_input_<?php echo $key?>"
+				value="<?php echo $planItem['ToIOID'];?>" disabled /> <?php echo $planItem['ItemCode'];?>
+			</td>
+			<td class="left"><?php echo $planItem['ItemName'];?></td>
+			<td class="<?php echo $planItem['Attribute']?'left':'center'; ?>"><?php echo $planItem['Attribute']?$planItem['Attribute']:'-';?>
+			</td>
+			<td class="left"><?php echo $planItem['ItemUOM'];?></td>
+			<td class="right"><?php echo $planItem['ItemQty'];?></td>
+			<td class="center"><input type="text" name="BeginDate[]"
+				class="disabled_input disabled_input_<?php echo $key?> width_100 datepicker"
+				value="<?php echo Qss_Lib_Date::mysqltodisplay($orderItem['BeginDate']);?>"
+				disabled />
+			</td>
+			<td class="center"><input type="text" name="EndDate[]"
+				class="disabled_input disabled_input_<?php echo $key?> width_100 datepicker"
+				value="<?php echo Qss_Lib_Date::mysqltodisplay($planItem['EndDate']);?>"
+				disabled /></td>
+			<td class="center"><input type="checkbox" onclick="checkLine(this)"
+				value="<?php echo $key?>"
+				class="checkbox checkbox_<?php echo $key;?>" /></td>
+		</tr>
+		<?php endif;// Tranh lap lai?>
+		<?php endforeach; // Ket thuc in danh sach dong phu?>
+		<?php else: // Neu ko ton tai ke hoach giao hang?>
+		<tr>
+			<td class="left" colspan="8"><?php  echo $this->_translate(11);?></td>
+		</tr>
+		<?php endif;// Neu ko ton tai ke hoach giao hang?>
+		<?php endforeach; // Tranh lay them obj khac khi link sang nhieu obj?>
+	</table>
+</form>
+<!-- end form #show_form -->
+
+<script>
+var finder;
+$('.to_ioid').each(function(){
+	if($(this).val() != 0)
+	{
+		finder = $(this).parent().parent();
+		//finder.find('.disabled_input').each(function(){
+		//	$(this).removeAttr('disabled');
+		//});
+		finder.find('.checkbox').attr('checked', true);
+		finder.find('.checkbox').attr('disabled', true);
+		finder.attr('permission', 0);
+		finder.addClass('bgyellow');
+	}
+});
+</script>

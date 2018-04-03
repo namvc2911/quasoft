@@ -1,0 +1,140 @@
+<script src="/js/form-edit.js"></script>
+<script src="/js/form-list.js"></script>
+
+<div class="ui_box_s100">
+	<form id="work_order_form">
+		<input type="hidden" name="ifid" id="ifid"
+			value="<?php echo $this->ifid;?>" /> <input type="hidden"
+			name="module" id="module" value="<?php echo $this->module;?>" />
+		<fieldset>
+			<legend>Phiếu bảo trì</legend>
+			<div class="ui_box_s50_left">
+				<div class="ui_box_line">
+					<div class="label">
+						<label>Mã ĐVBT</label>
+					</div>
+					<div class="element">
+					<?php
+					$id            = 'workcenter';
+					$getDataObject = array('ODonViSanXuat'=>array('Ma', 'Ten'));
+					//,'OKhuVuc'=>array('MaKhuVuc','Ten')
+					$getFields     = array('num'=>2,
+											   'objects'=>array('ODonViSanXuat'=>array(
+																		'id'=>'Ma'
+																		,'display1'=>'Ma'
+																		,'display2'=>'Ten')) );
+																		?>
+																		<?php
+																		$extend = (!$this->update)?'disabled':'';
+																		echo $this->views->Report->ListBox(
+																		$id
+																		, $getDataObject
+																		, $getFields
+																		, array()
+																		, array()
+																		, $extend
+																		, $this->wo->MaDVBT
+																		, $this->wo->MaDVBT );
+																		?>
+					</div>
+				</div>
+
+				<div class="ui_box_line">
+					<div class="label">
+						<label>Ngày bắt đầu</label>
+					</div>
+					<div class="element">
+						<input type="text" name="start_date" id="start_date"
+						<?php if($this->update):?> class="datepicker" <?php endif;?>
+							value="<?php echo Qss_Lib_Date::mysqltodisplay($this->wo->NgayBatDau);?>"
+							<?php if(!$this->update) echo 'disabled';?> />
+					</div>
+				</div>
+
+				<div class="ui_box_line">
+					<div class="label">
+						<label>Ngày hoàn thành</label>
+					</div>
+					<div class="element">
+						<input type="text" name="end_date" id="end_date"
+							value="<?php echo Qss_Lib_Date::mysqltodisplay($this->wo->Ngay);?>"
+							<?php if($this->update):?> class="datepicker" <?php endif;?>
+							<?php if(!$this->update) echo 'disabled';?> />
+					</div>
+				</div>
+
+			</div>
+
+			<div class="ui_box_s50_right">
+				<div class="ui_box_line">
+					<div class="label">
+						<label>Chịu trách nhiệm</label>
+					</div>
+					<div class="element">
+					<?php
+					$id            = 'employee';
+					$getDataObject = array('ODanhSachNhanVien'=>array('MaNhanVien', 'TenNhanVien'));
+					//,'OKhuVuc'=>array('MaKhuVuc','Ten')
+					$getFields     = array('num'=>2,
+											   'objects'=>array('ODanhSachNhanVien'=>array(
+																		'id'=>'IOID'
+																		,'display1'=>'MaNhanVien'
+																		,'display2'=>'TenNhanVien')) );
+																		?>
+																		<?php
+																		$extend = (!$this->update)?'disabled':'';
+																		echo $this->views->Report->ListBox(
+																		$id
+																		, $getDataObject
+																		, $getFields
+																		, array()
+																		, array()
+																		, $extend
+																		, $this->wo->NguoiThucHien
+																		, $this->wo->Ref_NguoiThucHien );
+																		?>
+					</div>
+				</div>
+
+				<div class="ui_box_line">
+					<div class="label">
+						<label>Giờ bắt đầu</label>
+					</div>
+					<div class="element">
+						<input type="text" name="start_time" id="start_time"
+							value="<?php echo $this->wo->GioBatDau;?>"
+							<?php if(!$this->update) echo 'disabled';?> />
+					</div>
+				</div>
+
+				<div class="ui_box_line">
+					<div class="label">
+						<label>Giờ kết thúc</label>
+					</div>
+					<div class="element">
+						<input type="text" name="end_time" id="end_time"
+							value="<?php echo $this->wo->GioKetThuc;?>"
+							<?php if(!$this->update) echo 'disabled';?> />
+					</div>
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</div>
+
+
+<div class="clearfix  ui_box_s100 right">
+	<button
+		class="btn-custom" <?php if(!$this->update):?>disabled<?php endif;?>
+		type="button" onclick="saveWorkOrder()" <?php if(!$this->update):?>
+		disabled <?php endif;?>>Lưu phiếu bảo trì</button>
+	<button
+		class="btn-custom" <?php if(!$this->update):?>disabled<?php endif;?>
+		type="button"
+		onclick="popupObjectInsert(<?php echo $this->ifid;?>, 1, 264, function(){reloadTasks('<?php echo $this->module;?>',<?php echo $this->ifid;?>,1)})"
+		<?php if(!$this->update):?> disabled <?php endif;?>>Thêm công việc</button>
+</div>
+
+
+<div id="tasks_box"></div>
+<script>reloadTasks('<?php echo $this->module;?>', <?php echo $this->ifid;?>, 1);</script>

@@ -1,0 +1,35 @@
+<div class="q_setting">
+	<div style="height: 200px; overflow: auto;">
+		<table class="datagrid">
+			<tr style="position: absolute; top: 0; background: #ccc; width: 100%">
+				<td></td>
+				<td><div id="search">
+						<input style="margin: 0; padding: 0" type="text" size="35"
+							onkeyup="filterQuickAccess(this)" name="keyword"
+							onfocus="if(this.value=='<?php echo $this->_translate(1)?>') this.value='';"
+							onblur="if(this.value=='') this.value='<?php echo $this->_translate(1)?>';"
+							value="<?php echo $this->_translate(1)?>">
+
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">&nbsp;</td>
+			</tr>
+			<?php foreach ($this->blocklist as $data): ?>
+			<tr class="dashboad_tr">
+				<td width="18"><input type="checkbox" class="dashboad_checkbox"
+					name="chk[]" id="checkBX_<?php echo $data->URID ;?>"
+					<?php if($data->checked):?> checked <?php endif;?>
+					onClick="openReportSetting(<?php echo $data->URID ;?>,$(this).is(':checked')?1:0,'<?php echo $data->Params?>')" />
+				</td>
+				<td style="white-space: nowrap;; line-height: 25px"><label
+					style="display: block; cursor: pointer;"
+					for="checkBX_<?php echo $data->URID ;?>"> <?php echo $data->FName;?>
+						- <?php echo $data->Name;?>
+				</label></td>
+			</tr>
+			<?php endforeach ; ?>
+		</table>
+	</div>
+</div>

@@ -1,0 +1,40 @@
+<div>
+    <?php /*?>
+    <a href="#1" onclick="M415.step3.loadOrders(1)"> Lấy theo đơn hàng gần nhất </a>
+    / <a href="#1" onclick="M415.step3.loadOrders(2)"> Lấy theo đơn hàng giá thấp nhất </a>
+    / <a href="#1" onclick="M415.step3.loadOrders(3)"> Lấy theo đơn hàng thời gian giao hàng ngắn nhất </a>
+    */?>
+    
+    <?php 
+        $cookie = isset($_COOKIE["getOrdersBy"])?$_COOKIE["getOrdersBy"]:1;
+    ?>
+
+    Lấy theo:
+
+    <select id="M415_step3_option">
+        <option value="1" <?php echo ($cookie == 1)?'selected':'';?>>Đơn hàng gần nhất </option>
+        <option value="2" <?php echo ($cookie == 2)?'selected':'';?>>Đơn hàng giá thấp nhất </option>
+        <option value="3" <?php echo ($cookie == 3)?'selected':'';?>>Đơn hàng thời gian giao hàng ngắn nhất </option>
+    </select>
+
+    Từ ngày: <?php echo $this->views->Report->Datepicker('from_date', date('d-m-Y', strtotime(date('d-m-Y').' -6 months')));?>
+    
+    <button type="button" class="btn btn-custom" onclick="M415.step3.loadOrders2()">
+        Lọc
+    </button>
+
+
+
+
+</div>
+<div>
+    <span class="red bold">(*) Đơn hàng mặc định được kiểm tra trong 6 tháng gần đây.</span>
+</div>
+<br/>
+<br/>
+
+<div id="M415_step3_show"></div>
+
+<script>
+M415.step3.loadOrders();
+</script>

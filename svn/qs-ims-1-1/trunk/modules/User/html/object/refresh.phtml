@@ -1,0 +1,69 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	$('.datepicker').each(function(){
+		$(this).datepicker({ 
+			dateFormat: "dd-mm-yy" ,
+			onClose: function(dateText, inst) { 
+		        $(this).attr("disabled", false);
+		    },
+		    beforeShow: function(input, inst) {
+		        $(this).attr("disabled", true);
+		    }
+	    });
+	});
+	$(function() {
+		// Display the first tab content
+		// Set the first tab as start tab onload: if you want to set no start tab
+		// comment it.
+		// DisplayTabContent(10);
+		// get index of the clicked navigation item in the list
+		$("ul.tabslist_sub li a").click(
+				function() {
+					// if animation has finished: meaning size()==0 then allow for
+					// other clicks
+					var ifid = $('#ifid').val();
+					var deptid = $('#deptid').val();
+					if(ifid && ifid != 0){
+						if ($('div.tabscontent_container > div.tabcontent:animated')
+								.size() == 0) {
+							$("ul.tabslist_sub li").removeClass('current');
+							var $listItem = $(this).parent().addClass('current');
+							var objid = $(this).parent().attr('objid');
+							var fieldid = $(this).parent().attr('fieldid');
+							var vid = $(this).parent().attr('vid');
+							var ioid = $(this).parent().attr('ioid');
+							var html = $(this).children().html();
+							if (ifid && deptid && objid) {
+								DisplayTabContent(ifid, deptid, objid, fieldid, vid,
+										ioid, html);
+							}
+						}	
+					}
+				});
+		return false;
+	});
+	$('input.integer').number( true, 0 );
+	$('input.decimal').each(function(){
+		var decimals		= (typeof $(this).attr('precision') !== 'undefined' ) ? $(this).attr('precision') : 2;
+		$(this).number( true, decimals);
+	});
+	$('input.money').each(function(){
+		var thousands_sep	= (typeof $(this).attr('thousandssep') !== 'undefined') ? $(this).attr('thousandssep') : thousands_sep;
+		var dec_point		= (typeof $(this).attr('decpoint') !== 'undefined') ? $(this).attr('decpoint') : dec_point;
+		var decimals		= (typeof $(this).attr('precision') !== 'undefined' ) ? $(this).attr('precision') : decimals;
+		$(this).number( true, decimals,dec_point,thousands_sep);
+	});
+	<?php $fields = $this->object->loadFields()?>
+	<?php foreach ($fields as $field):?>
+		<?php if( (($field->bGrid & 4) && !$this->mobile) || (($field->bGrid & 8) && $this->mobile)) :?>
+			$('.<?php echo $field->ObjectCode?>_<?php echo $field->FieldCode?>').hide();
+		<?php endif;?>
+	<?php endforeach;?>
+	$('fieldset').each(function(){
+		if($(this).find('.ui_box_line:visible').length == 0){
+			$(this).hide();
+		}
+	});
+});
+</script>
+<?php echo $this->content?>

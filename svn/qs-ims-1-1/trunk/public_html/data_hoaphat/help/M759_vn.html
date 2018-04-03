@@ -1,0 +1,327 @@
+<div id="info">
+    <div id="info-title" class="main-title"> M759 - Phiếu bảo trì thiết bị </div>
+    <table class="border helper-table" cellpadding="0" cellspacing="0" border="1">
+        <tr>
+            <td> <span class="info_title"> Module: <!-- trans --></span> </td>
+            <td> M759 - Phiếu bảo trì thiết bị </td>
+        </tr>
+        <tr>
+            <td> <span class="info_title"> Mô tả: <!-- trans --></span> </td>
+            <td> 
+                M759 - Phiếu bảo trì thiết bị
+                <p>- Phiếu bảo trì lưu lại thông tin bảo trì, bảo dưỡng, trùng tu, kiểm định, hiệu chỉnh, xử lý sự cố phát sinh của thiết bị. Phiếu bảo trì là trung tâm của phân hệ bảo trì. </p>
+                <p>- Các cách tạo phiếu bảo trì:</p>
+                <p>+ Tạo tự động theo cài đặt trong "Kế hoạch bảo trì" - M724.</p>
+                <p>+ Tạo phiếu bán tự động bằng nút mở rộng <span class="anchor goto_anchor" goto="extButton1">&quot;Xem kế hoạch bảo trì&quot;</span> để lấy kế hoạch của những ngày tiếp theo. </p>
+                <p>+  Tạo thủ công phiếu bảo trì bằng cách nhập trực tiếp vào module.(Chủ yêu trong trường hợp đặc biệt hoặc sự cố)</p>
+                <p>- Quy trình thực hiện: Khi một phiếu bảo trì được tạo bằng một trong ba cách trên, quản lý bảo trì giao việc cho kỹ thuật viên xử lý bảo trì. Trong quá trình bảo trì và sau khi công việc bảo trì được hoàn thành, phụ trách bảo trì tiến hành cập nhật lại thông tin và tính trạng phiếu bảo trì.</p>
+            </td>
+        </tr>
+    </table>
+</div><!-- end #info -->
+
+<div class="objects">
+    <div id="objects-title" class="main-title"> Danh sách đối tượng </div>
+    <div class="object">
+        <div class="object-title sub-title"> Phiếu bảo trì <div class="remove-effect"></div> </div>
+        <table class="border helper-table" cellpadding="0" cellspacing="0" border="1">
+            <tr>
+                <td> Số phiếu </td>
+                <td> Số phiếu định danh duy nhất cho một phiếu bảo trì. Được hệ thống tự động sinh ra, có thể tùy chỉnh theo yêu cầu của đơn vị.  </td>
+            </tr>
+            <tr>
+                <td> Ngày yêu cầu </td>
+                <td> Ngày yêu cầu thực hiện bảo trì (Ngày trong hệ thống có định dạng "dd-mm-YYYY", ngày, tháng năm )  </td>
+            </tr>
+            <tr>
+                <td> Ngày bắt đầu </td>
+                <td> Ngày bắt đầu thực sự thực hiện phiếu, không nhất thiết phải bắt đầu bằng ngày yêu cầu. (Ngày trong hệ thống có định dạng "dd-mm-YYYY", ngày, tháng năm ) </td>
+            </tr>
+            <tr>
+                <td> Giờ bắt đầu </td>
+                <td> Giờ bắt đầu thực sự thực hiện phiếu (Giờ hệ thống thuộc hệ 24 giờ có định hạng "hh:mm", giờ đến phút. Trong hệ thống 24:00 được nhập là 00:00. Có thể nhập giờ là số ví dụ như 8, 18 tương ứng với 08:00 và 18:00) </td>
+            </tr>
+            <tr>
+                <td> Ngày hoàn thành </td>
+                <td> Ngày hoàn thành phiếu bảo trì (Ngày trong hệ thống có định dạng "dd-mm-YYYY", ngày, tháng năm ) </td>
+            </tr>
+            <tr>
+                <td> Giờ kết thúc </td>
+                <td> Giờ kết thúc phiếu bảo trì (Giờ hệ thống thuộc hệ 24 giờ có định hạng "hh:mm", giờ đến phút. Trong hệ thống 24:00 được nhập là 00:00. Có thể nhập giờ là số ví dụ như 8, 18 tương ứng với 08:00 và 18:00) </td>
+            </tr>
+            <tr>
+                <td> Ca </td>
+                <td> Ca bắt đầu thực hiện bảo trì, dữ liệu được lấy từ module "Ca" - M701 </td>
+            </tr>
+            <tr>
+                <td> Mức độ ưu tiên </td>
+                <td> Phân loại ưu tiên của phiếu để giúp kỹ thuật viên sắp xếp thứ tự thực hiện phiếu khi được giao nhiều phiếu cùng lúc.  </td>
+            </tr>
+            <tr>
+                <td> Ghi vào lý lịch </td>
+                <td> Ghi vào lý lịch giúp hiển thị thông tin phiếu bảo trì trong phần lý lịch thiết bị. Có thể chọn ở tất cả các bước. (Chọn: Ghi vào lý lịch/ Không chọn: Không ghi vào lý lịch) </td>
+            </tr>
+            <tr>
+                <td> Đánh giá </td>
+                <td> Đánh giá tổng quan chất lượng thực hiện phiếu bảo trì, gồm 4 thang cơ bản (Yếu => Trung bình => Khá => Tốt).  </td>
+            </tr>
+            <tr>
+                <td> Mã TB </td>
+                <td> Mã thiết bị được bảo trì được lấy dữ liệu từ module "Danh sách thiết bị" - M705 </td>
+            </tr>
+            <tr>
+                <td> Tên TB </td>
+                <td> Tên thiết bị được lấy tự động theo "Mã TB", dữ liệu được lấy từ module "Danh sách thiết bị" - M705 </td>
+            </tr>
+            <tr>
+                <td> Loại BT </td>
+                <td> Loại bảo trì thiết bị được lấy dữ liệu từ module "Phân loại bảo trì" - M708 </td>
+            </tr>
+            <tr>
+                <td> Mã ĐVBT </td>
+                <td> Mã đơn vị bảo trì được lấy dữ liệu từ module "Đơn vị thực hiện" - M125 </td>
+            </tr>
+            <tr>
+                <td> Tên ĐVBT </td>
+                <td> Tên đơn vị bảo trì được lấy tự động theo "Mã ĐVBT" dữ liệu được lấy từ module "Đơn vị thực hiện" - M125 </td>
+            </tr>
+            <tr>
+                <td> Chịu trách nhiệm </td>
+                <td> Người chịu trách nhiệm của phiếu được lấy dữ liệu từ module "Danh sách nhân viên" - M316 </td>
+            </tr>
+            <tr>
+                <td> Nguyên nhân sc </td>
+                <td> Nguyên nhân sự cố được lấy dữ liệu từ module "Nguyên nhân sự cố" - M127 </td>
+            </tr>
+            <tr>
+                <td> Khu vực dừng máy </td>
+                <td> Khu vực ngừng hoạt động khi thực hiện phiếu bảo trì được lấy dữ liệu từ module "Khu vực" - M720 </td>
+            </tr>
+            <tr>
+                <td> TG xử lý (Phút) </td>
+                <td> Thời gian xử lý phiếu bảo trì tính bằng phút.</td>
+            </tr>
+            <tr>
+                <td> Ngày dừng máy </td>
+                <td> Ngày bắt đầu dừng máy với loại bảo trì là sự cố.</td>
+            </tr>
+            <tr>
+                <td> Thời gian bắt đầu dừng máy </td>
+                <td> Thời gian bắt đầu dừng máy với loại bảo trì là sự cố.</td>
+            </tr>
+            <tr>
+                <td> Ngày kết thúc dừng máy </td>
+                <td> Ngày kết thúc dừng máy với loại bảo trì là sự cố.</td>
+            </tr>
+            <tr>
+                <td> Thời gian kết thúc dùng máy </td>
+                <td> Thời gian kết thúc dùng máy với loại bảo trì là sự cố.</td>
+            </tr>
+            <tr>
+                <td> Thời gian dừng máy(Giờ) </td>
+                <td> Thời gian dừng máy tình bằng giờ. </td>
+            </tr>
+            <tr>
+                <td> Mô tả </td>
+                <td> Mô tả về mục đích, nguyên nhân bảo trì. </td>
+            </tr>
+            <tr>
+                <td> Xử lý </td>
+                <td> Mô tả về việc xử lý phiếu bảo trì. </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="object">
+        <div class="object-title sub-title"> Công việc bảo trì <div class="remove-effect"></div> </div>
+        <table class="border helper-table" cellpadding="0" cellspacing="0" border="1">
+            <tr>
+                <td> Tên </td>
+                <td> Tên công việc bảo trì được lấy dữ liệu từ module "Phân loại công việc bảo trì" - M714 </td>
+            </tr>
+            <tr>
+                <td> Vị trí </td>
+                <td> Vị trí (Bộ phận của thiết bị) được lấy dữ liệu từ module "Danh sách thiết bị" - M705 </td>
+            </tr>
+            <tr>
+                <td> Bộ phận </td>
+                <td> Bộ phận được lấy tự động theo "Vị trí" dữ liệu được lấy  từ module "Danh sách thiết bị" - M705 </td>
+            </tr>
+            <tr>
+                <td> Mô tả </td>
+                <td> Mô tả về công việc cần thực hiện.</td>
+            </tr>
+            <tr>
+                <td> Thực hiện </td>
+                <td> Xác định công việc có được thực hiện hay không? (Chọn: Đã thực hiện/Không chọn: Chưa thực hiện)</td>
+            </tr>
+            <tr>
+                <td> Đánh giá </td>
+                <td> Đánh giá chi tiết chất lượng thực hiện từng công việc, gồm 4 thang cơ bản (Yếu => Trung bình => Khá => Tốt).  </td>
+            </tr>
+            <tr>
+                <td> Người thực hiện </td>
+                <td> Người thực hiện công việc bảo trì được lấy dữ liệu từ module "Danh sách nhân viên" - M316 </td>
+            </tr>
+            <tr>
+                <td> Thời gian (Phút) </td>
+                <td> Thời gian thực hiện công việc tính bằng phút </td>
+            </tr>
+            <tr>
+                <td> Ngày </td>
+                <td> Ngày thực hiện công việc, nếu một công việc thực hiện trong nhiều ngày thì tạo ra nhiều công việc giống nhau trong nhiều ngày. (Ngày trong hệ thống có định dạng "dd-mm-YYYY", ngày, tháng năm ) </td>
+            </tr>
+            <tr>
+                <td> Giờ bắt đầu </td>
+                <td> Giờ bắt đầu thực hiện công việc (Giờ hệ thống thuộc hệ 24 giờ có định hạng "hh:mm", giờ đến phút. Trong hệ thống 24:00 được nhập là 00:00. Có thể nhập giờ là số ví dụ như 8, 18 tương ứng với 08:00 và 18:00)</td>
+            </tr>
+            <tr>
+                <td> Giờ kết thúc </td>
+                <td> Giờ kết thúc thực hiện công việc.Lưu ý: Giờ bắt đầu và kết thúc phải trong một ngày. Nếu công việc sang ngày khác thì tạo thêm dòng công việc mới. (Giờ hệ thống thuộc hệ 24 giờ có định hạng "hh:mm", giờ đến phút. Trong hệ thống 24:00 được nhập là 00:00. Có thể nhập giờ là số ví dụ như 8, 18 tương ứng với 08:00 và 18:00) </td>
+            </tr>
+            <tr>
+                <td> Thuê ngoài </td>
+                <td> Xác định công việc công việc có thuê đối tác bên ngoài thực hiện hay không? (Chọn: thuê ngoài/ Không chọn: Đơn vị thực hiện) </td>
+            </tr>
+            <tr>
+                <td> Mã đối tác </td>
+                <td> Mã đối tác thực hiện công việc đối với trường hợp thuê ngoài. Mã đối tác được lấy dữ liệu từ module "Đối tác" - M118 </td>
+            </tr>
+            <tr>
+                <td> Chi phí </td>
+                <td> Chi phí thuê thực hiện bảo trì bên ngoài. </td>
+            </tr>
+            <tr>
+                <td> Ghi chú </td>
+                <td> Ghi chú khác </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="object">
+        <div class="object-title sub-title"> Vật tư <div class="remove-effect"></div> </div>
+        <table class="border helper-table" cellpadding="0" cellspacing="0" border="1">
+            <tr>
+                <td> Vị trí </td>
+                <td> Vị trí (Bộ phận của thiết bị) được lấy dữ liệu từ module "Danh sách thiết bị" - M705 </td>
+            </tr>
+            <tr>
+                <td> Bộ phận </td>
+                <td> Bộ phận được lấy tự động theo "Vị trí" dữ liệu được lấy  từ module "Danh sách thiết bị" - M705 </td>
+            </tr>
+            <tr>
+                <td> Mã vật tư </td>
+                <td> Mã vật tư, phụ tùng thay thế được lấy dữ liệu từ module "Mặt hàng" - M113 </td>
+            </tr>
+            <tr>
+                <td> Tên vật tư </td>
+                <td> Tên vật tư, phụ tùng được lấy tự động theo "Mã vật tư" , dữ liệu được lấy từ module "Mặt hàng" - M113 </td>
+            </tr>
+            <tr>
+                <td> Đơn vị tính </td>
+                <td> Đơn vị tính của vật tư, phụ tùng được lấy dữ liệu từ module "Mặt hàng" - M113 </td>
+            </tr>
+            <tr>
+                <td> Đặc tính KT </td>
+                <td> Đặc tính kỹ thuật của vật tư, phụ tùng ược lấy tự động theo "Mã vật tư" lấy dữ liệu từ module "Mặt hàng" - M113 </td>
+            </tr>
+            <tr>
+                <td> SL sử dụng </td>
+                <td> Số lượng đã sử dụng </td>
+            </tr>
+            <tr>
+                <td> SL trả lại </td>
+                <td> Số lượng thừa trả lại sau khi bảo trì. </td>
+            </tr>
+            <tr>
+                <td> SL mất </td>
+                <td> Số lượng mất trong quá trình bảo trì. </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="object">
+        <div class="object-title sub-title"> Kiểm tra thông số <div class="remove-effect"></div> </div>
+        <table class="border helper-table" cellpadding="0" cellspacing="0" border="1">
+            <tr>
+                <td> Chỉ số </td>
+                <td> Chỉ số cần đo đạc được lấy dữ liệu từ module "Chỉ số máy móc" - M719 </td>
+            </tr>
+            <tr>
+                <td> Đơn vị tính </td>
+                <td> Đơn vị tính của chỉ số được lấy dữ liệu từ module "Chỉ số máy móc" - M719 </td>
+            </tr>
+            <tr>
+                <td> Giờ </td>
+                <td> Giờ đo đạc (Giờ hệ thống thuộc hệ 24 giờ có định hạng "hh:mm", giờ đến phút. Trong hệ thống 24:00 được nhập là 00:00. Có thể nhập giờ là số ví dụ như 8, 18 tương ứng với 08:00 và 18:00) </td>
+            </tr>
+            <tr>
+                <td> Giá trị </td>
+                <td> Giá trị đo đạc được</td>
+            </tr>
+            <tr>
+                <td> KBT </td>
+                <td> Xác định kết quả là có bình thường hay không? (Chọn: Không bình thường/Không chọn: Bình thường) </td>
+            </tr>
+            <tr>
+                <td> Mô tả </td>
+                <td> Mô tả kết quả đo đạc.</td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+<div id="steps">
+    <div id="steps-title" class="main-title"> Danh sách các bước </div>
+    <div class="step">
+    <div class="step-title sub-title"> Bước 1: Chưa xử lý</div>
+    <!-- end .step-title -->
+    <div class="step-des">Bước đầu tiên của phiếu bảo trì, mọi thông tin trên phiếu bảo trì đều có thể thay đổi. Khi người quản lý giao phiếu bảo trì cho kỹ thuật viên, người quản lý đồng thời chuyển sang bước 2 là &quot;Đang xử lý&quot;. Ở bước &quot;<span class="step-title sub-title">Chưa xử lý</span>&quot; bạn có thể xóa phiếu bảo trì.</div>
+    <!-- end .step-des--> 
+  </div>
+  <!-- end .step -->
+  <div class="step">
+    <div class="step-title sub-title"> Bước 2: Đang xử lý</div>
+    <!-- end .step-title -->
+    <div class="step-des"> Trong quá trình kỹ thuật viên xử lý, mọi thông tin trừ số phiếu, ngày yêu cầu, loại bảo trì, thiết bị bảo trì, mức độ ưu tiên đều có thể cập nhật lại. Sau khi hoàn thành việc bảo trì, người quản lý bảo trì chuyển phiếu sang bước &quot;Hoàn thành&quot; để đóng phiếu bảo trì. Từ bước &quot;<span class="step-title sub-title">Đang xử lý</span>&quot; phiếu bảo trì không thể xóa đi được nữa.</div>
+    <!-- end .step-des--> 
+  </div>
+  <!-- end .step -->
+  <div class="step">
+    <div class="step-title sub-title"> Bước 3: Hoàn thành</div>
+    <!-- end .step-title -->
+    <div class="step-des"> Phiếu bảo trì được đóng lại, mọi thông tin trên phiếu bảo trì đều không thể thay đổi được nữa.</div>
+    <!-- end .step-des--> 
+  </div>
+  
+    <div class="step">
+        <div class="step-title sub-title"> Bước 4: Đóng</div>
+        <!-- end .step-title -->
+        <div class="step-des"> Phiếu bảo trì được đóng lại, mọi thông tin trên phiếu bảo trì đều không thể thay đổi được nữa.</div>
+        <!-- end .step-des--> 
+    </div>
+
+    <div class="step">
+        <div class="step-title sub-title"> Bước 5: Hủy</div>
+        <!-- end .step-title -->
+        <div class="step-des"> Phiếu bảo trì bị hủy.</div>
+        <!-- end .step-des--> 
+    </div>
+    <!-- end .step -->   
+    <!-- end .step -->   
+</div>
+
+<div id="extra_button">
+    <div id="extra-button-title" class="main-title"> Các nút mở rộng </div>
+    <div class="extra-button">
+        <div class="extra-button-title sub-title"> <span id="extButton1"> Nút: Xem kế hoạch bảo trì</span> </div><!-- end .extra-button-title -->
+        <div class="extra-button-des">
+            <p > <img src="/images/help/759/show-plan.jpg" class="help_image"/> </p>
+            <p class="help_image_title"> Hình 1: Nút mở rộng "Xem kế hoạch bảo trì" </p> 
+            <p>Khi tổ bảo trì đã thực hiện xong công việc bảo trì của ngày được tạo tự động theo kế hoạch, người quản lý có thể lấy kế hoạch bảo trì của ngày tiếp theo ra để thực hiện trước.Nút xem kế hoạch giúp tạo phiếu bảo trì bán tự động từ &quot;Kế hoạch bảo trì&quot; - M724 theo ngày và đơn vị bảo trì. Để thêm phiếu bảo trì, bạn chỉ cần chọn dòng và kéo xuống cuối trang ấn nút &quot;Thêm&quot; để thêm phiếu bảo trì. </p>
+            <p>&nbsp;</p>
+            <p>Lưu ý: Kế hoạch bảo trì trên khung hình được phân thành nhiều trang, bạn chỉ có thể thêm phiếu bảo trì trên từng trang để tránh tình trạng quá tải dữ liệu.</p>
+        </div><!-- end .extra-button-des-->
+    </div><!-- end .extra-button -->
+</div><!-- end #extra_button -->

@@ -1,0 +1,83 @@
+<div id="portrait-company-header">
+    <div class="overflow">
+        <div class="fl " style="width:300px;">
+            <p class="center">
+                <xls
+                    row="1"
+                    column="<?php echo ($this->titleFromCol != '')?$this->titleFromCol:'A';?>"
+                    column-merge="<?php echo $this->titleToCol?$this->titleToCol:'C';?>"
+                    v-align="center"
+                    h-align="center"
+                    repeat="1"
+                    bold="1"> TẬP ĐOÀN CÔNG NGHIỆP  </xls>
+
+                <BR>
+
+                <xls
+                    row="2"
+                    column="<?php echo ($this->titleFromCol != '')?$this->titleFromCol:'A';?>"
+                    column-merge="<?php echo $this->titleToCol?$this->titleToCol:'C';?>"
+                    v-align="center"
+                    h-align="center"
+                    repeat="1"
+                    bold="1"> THAN - KHOÁNG SẢN VIỆT NAM </xls>
+
+            </p>
+            <p class="center bold">
+
+                <xls
+                    row="3"
+                    column="<?php echo ($this->titleFromCol != '')?$this->titleFromCol:'A';?>"
+                    column-merge="<?php echo $this->titleToCol?$this->titleToCol:'C';?>"
+                    v-align="center"
+                    h-align="center"
+                    repeat="1"
+                    bold="1"> CÔNG TY TUYỂN THAN CỬA ÔNG - TKV </xls>
+
+            </p>
+        </div>
+
+
+        <div class="fr" style="width:175px;">
+
+
+
+
+            <?php $bieuMau = '';?>
+            <?php
+            if(isset($this->ini['bieumau'])){
+                $bieuMau .= "Biểu mẫu số: {$this->ini['bieumau']}";
+            }
+            ?>
+
+            <?php
+            if(
+                isset($this->ini['ngaybanhanh']) && $this->ini['ngaybanhanh']
+                && isset($this->ini['bieumau']) && $this->ini['bieumau']
+            ){
+                $bieuMau .= ', ';
+            }
+            ?>
+
+
+            <?php
+            if(isset($this->ini['ngaybanhanh']))
+            {
+                $bieuMau .= $this->ini['ngaybanhanh'];
+            }
+            ?>
+
+
+            <xls
+                row="1"
+                column="<?php echo ($this->noFromCol != '')?$this->noFromCol:'F';?>"
+                column-merge="<?php echo $this->noToCol?$this->noToCol:'G';?>"
+                v-align="center"
+                h-align="center"
+                repeat="1"
+                bold="1"> <?php echo $bieuMau;?> </xls>
+        </div>
+    </div>
+</div>
+<br/>
+<div class="clear">&nbsp;</div>

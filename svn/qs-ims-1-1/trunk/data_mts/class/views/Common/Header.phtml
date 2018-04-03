@@ -1,0 +1,160 @@
+<style>
+    #header-menu {
+        background: #1A5C7E;
+    }
+</style>
+
+<?php foreach ($this->quickmenu as $item):?>
+	<?php 
+	if($item->classMobile && !$item->class)
+	{
+		continue;
+	}
+	if($item->class && $item->Type != Qss_Lib_Const::FORM_TYPE_PROCESS)
+	{
+		$url =  Qss_Params::getInstance()->requests->getBaseUrl() .$item->class;
+	}
+	else
+	{
+		$url =  Qss_Params::getInstance()->requests->getBaseUrl() . "/user/form?fid=" . $item->FormCode;
+	}
+	?>
+	<input type="hidden" id="<?php echo $item->FormCode?>" value="<?php echo $url?>">
+<?php endforeach;?>
+<?php if($this->o_User->user_id == -1):?>
+	<input type="hidden" id="param" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/param'?>">
+	<input type="hidden" id="object" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/object'?>">
+	<input type="hidden" id="list1" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/form?type=1'?>">
+	<input type="hidden" id="list2" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/form?type=2'?>">
+	<input type="hidden" id="module" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/form?type=3'?>">
+	<input type="hidden" id="report" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/form?type=4'?>">
+	<input type="hidden" id="process" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/form?type=5'?>">
+	<input type="hidden" id="transfer" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/form/transfer'?>">
+	<input type="hidden" id="bash" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/bash'?>">
+	<input type="hidden" id="inherit" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/form/inherit'?>">
+	<input type="hidden" id="menu" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/menu'?>">
+	<input type="hidden" id="calendar" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/calendar'?>">
+	<input type="hidden" id="database" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/database'?>">
+	<input type="hidden" id="language" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/language'?>">
+	<input type="hidden" id="translate" value="<?php echo Qss_Params::getInstance()->requests->getBaseUrl().'/system/translate'?>">
+<?php endif;?>
+<?php if ( $this->o_User instanceof Qss_Model_UserInfo ):?>
+	<div id="header-menu"> 
+		<div class="logo">
+			<a title="Homepage" class="menu-button" href="#" onclick="openModule('M000')"></a>
+		</div>
+			
+		<div class="right">
+			<span style="font-size: 16px;font-weight: 600;color: #f9f9f9;"><?php echo $this->title?></span>
+		</div>
+				
+		<div id='header-box'>
+
+			<div class="notify notify1" onclick="showNotify(event);">
+				<span class="notify-bell"></span>
+				<span class="badge-default <?php if($this->notifycount):?>badge<?php endif;?>"><?php if($this->notifycount):?><?php echo $this->notifycount?><?php endif;?></span>
+				<div id="qss_notify"></div>
+			</div>
+			
+			<div class="notify notify2" onclick="showMessage(event);">
+				<span class="notify-envelope-open"></span>
+				<span class="badge-default <?php if($this->messagecount):?>badge<?php endif;?>"><?php if($this->messagecount):?><?php echo $this->messagecount?><?php endif;?></span>
+			</div>
+			
+			<div class="notify notify3" onclick="showEvent(event);">
+				<span class="notify-calendar"></span>
+				<span class="badge-default <?php if($this->eventcount):?>badge<?php endif;?>"><?php if($this->eventcount):?><?php echo $this->eventcount?><?php endif;?></span>
+			</div>			
+			<div class='contentheadbox'>
+				<div id="module-status">
+					<span>
+					<?php
+					echo $this->o_User->user_desc;
+					if(isset($this->o_User->user_dept_name) && $this->o_User->user_dept_name) 
+					{
+						echo ' (' .$this->o_User->user_dept_name. ')';
+					}
+					?>
+					</span>
+					<span class="loggedin-users">
+						<a href="#1" onclick="openModule('M012')"><?php echo $this->_translate(4)?></a>
+					</span> 
+					<div class="icon-32_separator"></div>
+					<span class="logout"><a href="#1" onclick="logout()"><?php echo $this->_translate(6)?></a></span>
+					<span class="help"><a href="#1" onclick="showHelper()"><?php echo $this->_translate(3)?></a></span>
+				</div>
+				<div class="clr"><a></a></div>
+			</div>
+		</div>
+		
+		<br style="clear: left" />
+		
+	</div>
+	<div class='clearfix'></div>
+	<div class='searchmodule'><input id="searchModule" type='text' class='inputtext' placeholder="<?php echo $this->_translate(8)?>"><a href='#1' onclick="searchModule()" class='btn_searchmodule' title="<?php echo $this->_translate(2)?>"></a></div>
+	<div class='ddsmoothmenu '>
+	<?php $lastActive = Qss_Cookie::get('lastActiveModule');//die($lastActive.'aaa');?>
+	<?php $lastActive = $lastActive?$lastActive:'M000';?>
+	<?php 
+		$moduleOrders = Qss_Cookie::get('moduleOrders');
+		$arrOrders = array();
+		if($moduleOrders)
+		{
+			$arrOrders = Qss_Json::decode($moduleOrders);
+			$n = count($arrOrders) - 10; 
+			if($n > 0)
+			{
+				array_splice($arrOrders, 0, $n);
+			}
+			if(!in_array($lastActive,$arrOrders) )
+			{
+				array_splice($arrOrders, 0, 1);
+				$arrOrders[] =  $lastActive;		
+			}
+			$arrOrders = array_reverse($arrOrders);
+		}
+		else 
+		{
+			$arrOrders[] = $lastActive;
+		}
+		$orderString = 'Name';
+		if(count($arrOrders))
+		{
+			$arrOrders = array_reverse($arrOrders);
+			$orderString = "Field(qsforms.FormCode,'" . implode("','", $arrOrders)."') DESC";
+			//echo $orderString ;die;
+		}
+	?>
+	<?php Qss_Cookie::set('lastActiveModule',$lastActive);?>
+		<ul>
+			<?php echo $this->views->Common->Menu(Qss_Register::get('userinfo',1));?>&nbsp;
+		</ul>
+	</div>
+	<div class="header-quick">
+		<select id="header-quick" onchange="openModule(this.value)">
+			<?php if($this->o_User->user_name !== 'sysAdmin'):?>
+				<?php $forms = $this->o_User->getOpenModules($orderString)?>
+				<?php $limit = 0?>
+				<?php foreach ($forms as $item):?>
+					<?php 
+						$length = 40;
+						$arr = explode('__BREAK__', wordwrap($item->Name, $length, "__BREAK__", true));
+						$name = $arr[0];
+						if(strlen($name) < strlen($item->Name))
+						{
+							$name .= '...';
+						}
+					?>
+					<?php //$active = Qss_Cookie::get($item->FormCode); không cần vì lấy mặc định?>
+					<?php if($limit < 10):?>
+						<?php if($item->FormCode !== $lastActive):?>
+							<option value="<?php echo $item->FormCode?>"><?php echo $name?></option>
+						<?php endif;?>
+					<?php endif;?>
+					<?php $limit++?>
+				<?php endforeach;?>
+			<?php endif;?>
+		</select>
+		<button type="button" onclick="openModule($('#header-quick').val())">&nbsp;</button>
+	</div>
+<?php endif;?>

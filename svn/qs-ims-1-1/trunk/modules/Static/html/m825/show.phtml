@@ -1,0 +1,54 @@
+<?php
+$width      = 1200;
+$widths     = array(1,3,4,2,2,2,3);
+$totalCols  = count($widths);
+$widths     = Qss_Lib_Report::changeWidthToFitScreen2($widths, $width);
+$sttMatHang = 0;
+$oldOrder   = '';
+?>
+
+<div class="clear">&nbsp;</div>
+<div id="view">
+    <table class="border_table" cellpadding="0" cellspacing="0" border="0">
+
+        <!-- REPORT TITLE -->
+        <?php $begin = 0;?>
+        <tr>
+            <th style="width:<?php echo $widths[$begin++];?>px">STT</th>
+            <th style="width:<?php echo $widths[$begin++];?>px">Mã MH</th>
+            <th style="width:<?php echo $widths[$begin++];?>px">Tên MH</th>
+            <th style="width:<?php echo $widths[$begin++];?>px">ĐVT</th>
+            <th style="width:<?php echo $widths[$begin++];?>px">Số lượng</th>
+            <th style="width:<?php echo $widths[$begin++];?>px">Số ngày thuê</th>
+            <th style="width:<?php echo $widths[$begin++];?>px">Số yêu cầu</th>
+        </tr>
+
+        <?php foreach($this->report as $item): // Begin A22: In danh sách đơn hàng và mặt hàng thuê của đơn ?>
+
+        <!-- In Tieu de don hang -->
+        <?php if($oldOrder !== $item->IFID_M401): // Begin B28: In tiêu đề đơn hàng ?>
+        <tr>
+            <td class="left bold" colspan="<?php echo $totalCols;?>">
+                <?php echo $item->SoDonHang;?>
+                (Ngày đặt hàng: <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayDatHang);?>
+                ; Ngày nhận hàng: <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayYCNH);?>
+                ; Nhà cung cấp: <?php echo $item->TenNCC;?>
+                ; Tình Trạng: <span class="<?php echo $item->Color;?>"><?php echo $item->Name;?></span>)
+            </td>
+        </tr>
+        <?php endif;  // End B28: In tiêu đề đơn hàng ?>
+
+        <?php $oldOrder = $item->IFID_M401;?>
+
+        <tr>
+            <td class="center"> <?php echo ++$sttMatHang;?>  </td>
+            <td class="left"> <?php echo $item->MaSP;?></td>
+            <td class="left"> <?php echo $item->TenSanPham;?></td>
+            <td class="left"> <?php echo $item->DonViTinh;?></td>
+            <td class="right"> <?php echo $item->SoLuong;?></td>
+            <td class="right"> <?php echo $item->SoNgay;?></td>
+            <td class="left"> <?php echo $item->SoYeuCau;?></td>
+        </tr>
+        <?php endforeach; // End A22: In danh sách đơn hàng và mặt hàng thuê của đơn ?>
+    </table>
+</div>

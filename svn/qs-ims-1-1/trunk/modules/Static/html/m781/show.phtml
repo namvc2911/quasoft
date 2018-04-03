@@ -1,0 +1,99 @@
+<?php
+$series = '';
+$min    = '';
+$max   = '';
+$plan   = '';
+$xAxis = '';
+
+foreach($this->works  as $w)
+{
+	$min .= ($min != '')?',':'';
+	$min .= isset($this->available['min'][$w->IOID])?$this->available['min'][$w->IOID]:0;
+
+	$max .= ($max != '')?',':'';
+	$max .= isset($this->available['max'][$w->IOID])?$this->available['max'][$w->IOID]:0;
+
+	$plan .= ($plan != '')?',':'';
+	$plan .= isset($this->plan[$w->IOID])?ceil($this->plan[$w->IOID]/60):0;
+
+	$xAxis .= ($xAxis != '')?',':'';
+	$xAxis .= "'{$w->Ten}'";
+}
+$series .= '{';
+$series .= 'name: \'Thời gian thực tế\',';
+$series .= 'data: [';
+$series .= $min;
+$series .= '],';
+$series .= 'pointPlacement: \'on\'';
+$series .= '},';
+
+$series .= '{';
+$series .= 'name: \'Thời gian tối đa có thể\',';
+$series .= 'data: [';
+$series .= $max;
+$series .= '],';
+$series .= 'pointPlacement: \'on\'';
+$series .= '},';
+
+$series .= '{';
+$series .= 'name: \'Thời gian yêu cầu\',';
+$series .= 'data: [';
+$series .= $plan;
+$series .= '],';
+$series .= 'pointPlacement: \'on\'';
+$series .= '}';
+
+
+
+?>
+
+
+<script>
+$(document).ready(function() {
+        var timechart;
+
+        // m1 : BIểu đồ chấm công
+        timechart = new Highcharts.Chart({
+        chart: {
+                renderTo: 'container',
+                polar: true,
+                type: 'line'
+        },
+        title: {
+            text: '<?php echo $this->_translate(1)?> (<?php echo $this->_translate(2)?> <?php echo $this->start;?> <?php echo $this->_translate(3)?> <?php echo $this->end;?> )',
+            x: -80
+        },
+        pane: {
+            size: '80%'
+        },
+        xAxis: {
+            categories: [<?php echo $xAxis;?>],
+            tickmarkPlacement: 'on',
+            lineWidth: 0
+        },
+
+        yAxis: {
+            gridLineInterpolation: 'polygon',
+            lineWidth: 0,
+            min: 0
+        },
+
+        tooltip: {
+            shared: true,
+            pointFormat: '<span style="color:{series.color}">{series.name}: <b>{point.y:,.0f}</b><br/>'
+        },
+
+        legend: {
+            align: 'right',
+            verticalAlign: 'top',
+            y: 70,
+            layout: 'vertical'
+        },
+
+        series: [<?php echo $series;?>]
+        });
+});
+</script>
+
+<div id="container"
+	style="width: 80%; margin: auto;"></div>

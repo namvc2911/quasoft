@@ -1,0 +1,87 @@
+<?php
+$width    = '800';
+$widths   = array(5, 1, 1);
+$fit      = Qss_Lib_Report::changeWidthToFitScreen2($widths, $width);
+$LoaiLich = Qss_Lib_System::getFieldRegx('OKeHoachTongThe', 'LoaiLich');
+$i        = 0;
+?>
+
+<div class="clear"></div>
+
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+    <div class="full-width-line-wrap" id="filter">
+        <div class="bold">
+            Năm : <input type="text" id="year" name="year" value="<?php echo $this->year;?>" size="20"/>
+            <button type="button" class="btn btn-custom" onclick="m838.filter(parseInt($('#year').val()))"> Lọc </button>
+
+            <button type="button" class="btn btn-custom" onclick="popupFormInsert('M838', {}, function(){ m838.filter(); })"> Tạo mới </button>
+        </div>
+    </div>
+</div>
+
+<div class="clear"></div>
+
+<div id="view">
+    <div id="qss_form">
+        <div class="tablescroll">
+            <div class="full-width-line-wrap">
+                <?php foreach($this->plans as $item):?>
+                    <div class="full-width-line <?php if($i%2):?>bgwhite<?php else:?>bglightblue<?php endif;?>">
+                        <?php $i++;?>
+                        <table cellspacing="0" cellpadding="0" border="0" style="width:<?php echo $width;?>px">
+                            <?php $begin = 0;?>
+                            <tr>
+                                <td class="left" style="width: <?php echo $fit[$begin++];?>px">
+                                    <div>
+                                    <span class="full-width-line-title">
+                                        <?php echo $i;?>. <?php echo $item->Ma;?> - <?php echo $item->Ten;?>
+                                    </span>
+
+                                        (Duyệt:
+                                    <span class="bold <?php if($item->SoChiTietDuocDuyet < $item->TongSoChiTiet):?>red<?php endif;?>">
+                                        <?php echo $item->SoChiTietDuocDuyet?$item->SoChiTietDuocDuyet:0;?>
+                                    </span>/ Tổng số: <span class="bold">
+
+                                        <?php echo $item->TongSoChiTiet?$item->TongSoChiTiet:0;?>
+                                    </span>)
+
+                                    <span class="<?php echo $item->Color;?>" style="padding: 3px;">
+                                        <?php echo $item->StepName;?>
+                                    </span>
+                                    </div>
+
+                                    <div>
+                                        Từ <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayBatDau);?>
+                                        đến <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayKetThuc);?>
+                                    </div>
+
+                                    <div>
+                                        Người tạo: <?php echo $item->NguoiTao;?> -
+                                        Ngày tạo: <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayTao);?>
+                                    </div>
+
+                                    <div>
+                                        Người phê duyệt: <?php echo $item->NguoiPheDuyet;?> -
+                                        Ngày phê duyệt: <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayPheDuyet);?>
+                                    </div>
+                                </td>
+
+                                <td class="left" valign="middle" style="width: <?php echo $fit[$begin++];?>px">
+                                    <div>
+                                        <?php echo @$LoaiLich[$item->LoaiLich];?>
+                                    </div>
+                                </td>
+
+                                <td class="left" valign="middle" style="width: <?php echo $fit[$begin++];?>px">
+                                    <div>
+                                        <button type="button" class="btn btn-custom" onclick="m838.edit(<?php echo $item->IFID_M838;?>)"> Sửa </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                <?php endforeach;?>
+            </div>
+        </div>
+    </div>
+</div>

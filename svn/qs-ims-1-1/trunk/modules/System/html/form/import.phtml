@@ -1,0 +1,22 @@
+<input type="hidden" value="1" name="readay" />
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+	<button id="btnUPDATE" type="button" class="btn btn_main_top" onclick="formImport();" disabled>
+		<?php echo $this->_translate(39)?>
+	</button>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#1"><span>Import mô đun</span>
+			</a></li>
+		</ul>
+	</div>
+	<form method="post" id="qss_form">
+		<input type="file" id="module_import_file" name="module_import_file"
+			size="40" onchange="return uploadFile('module_import');" /> <input
+			type="hidden" id="module_import" name="module_import" value="" />
+		<hr />
+	</form>
+	<div id="qss_import"></div>
+</div>

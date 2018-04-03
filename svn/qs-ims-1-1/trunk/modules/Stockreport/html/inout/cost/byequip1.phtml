@@ -1,0 +1,898 @@
+<?php
+$excel_col    = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg           = "#EEEEEE";
+$row          = 2;
+$totalColumn  = 7;// So cot tinh + loai bao tri
+$defaultWidth = 50;
+$defaultExcelWidth = 10;
+$htmlWidth    = array(1,2,2,5,2,2,2);
+$htmlWidth    = Qss_Lib_Report::changeWidthToFitScreen($htmlWidth);
+$excelWidth   = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($htmlWidth);
+$stt          = 0;
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+    <input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="portrait">
+    <excel
+        orientation="<?php echo Qss_Lib_Extra_Const::REPORT_ORIENTATION_PORTRAIT;?>"
+        font-name="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_NAME;?>"
+        font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_SIZE;?>"
+        margin-left="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_LEFT;?>"
+        margin-right="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_RIGHT;?>"
+        margin-top="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_TOP;?>"
+        margin-bottom="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_BOTTOM;?>"  />
+
+    <!-- REPORT TITLE -->
+    <div id="head_print">
+        <?php echo $this->views->Common->Portrait() ?>
+
+        <center>
+            <h2>
+                <xls row="<?php echo $row;?>"
+                     column="A"
+                     column-merge="<?php echo $excel_col[$totalColumn];?>"
+                     font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_TITLE_FONT_SIZE;?>"
+                     wrap-text="1"
+                     h-align="center"
+                     v-align="center"
+                    > <?php echo $this->_translate(1);?> </xls>
+            </h2>
+        </center>
+        <?php $row++ ?>
+
+        <div class="center">
+            <xls row="<?php echo $row;?>"
+                 column="A"
+                 column-merge="<?php echo $excel_col[$totalColumn];?>"
+                 wrap-text="1"
+                 h-align="center"
+                 v-align="center"
+                > <?php echo $this->_translate(2);?> <?php echo $this->start;?> <?php echo $this->_translate(3);?> <?php echo $this->end;?> </xls>
+        </div>
+        <?php $row++ ?>
+        <br/>
+
+        <div class="left">
+            <xls row="<?php echo $row;?>"
+                 column="A"
+                 column-merge="<?php echo $excel_col[$totalColumn];?>"
+                 wrap-text="1"
+                 h-align="left"
+                 v-align="center"
+                > <?php echo @$this->equip->MaThietBi;?> </xls>
+        </div>
+        <?php $row++ ?>
+        <br/>
+
+    </div><!-- end div#head_print -->
+
+
+
+    <div id="container">
+        <table cellpadding="0" cellspacing="0" class="border" style="table-layout: fixed !important; width: auto !important;  " >
+            <?php $begin = 0; ?>
+            <tr class="bggrey">
+
+                <!-- STT -->
+                <th style="width:<?php echo $htmlWidth[$begin];?>px">
+                    <xls row="<?php echo $row?>"
+                         width="<?php echo $excelWidth[$begin];?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="center"
+                         v-align="center"
+                         border="1"
+                         bold="1"
+                         repeat="1">  <?php echo $this->_translate(4);?> </xls>
+                </th>
+
+                <!-- Ngày -->
+                <th style="width:<?php echo $htmlWidth[$begin];?>px">
+                    <xls row="<?php echo $row?>"
+                         width="<?php echo $excelWidth[$begin];?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="center"
+                         v-align="center"
+                         border="1"
+                         bold="1"
+                         repeat="1">  <?php echo $this->_translate(5);?> </xls>
+                </th>
+
+                <!-- Số phiếu -->
+                <th style="width:<?php echo $htmlWidth[$begin];?>px">
+                    <xls row="<?php echo $row?>"
+                         width="<?php echo $excelWidth[$begin];?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="center"
+                         v-align="center"
+                         border="1"
+                         bold="1"
+                         repeat="1">  <?php echo $this->_translate(6);?> </xls>
+                </th>
+
+                <!-- Nội dung -->
+                <th style="width:<?php echo $htmlWidth[$begin];?>px">
+                    <xls row="<?php echo $row?>"
+                         width="<?php echo $excelWidth[$begin];?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="center"
+                         v-align="center"
+                         border="1"
+                         bold="1"
+                         repeat="1">  <?php echo $this->_translate(7);?> </xls>
+                </th>
+
+                <!-- Số lương -->
+                <th style="width:<?php echo $htmlWidth[$begin];?>px">
+                    <xls row="<?php echo $row?>"
+                         width="<?php echo $excelWidth[$begin];?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="center"
+                         v-align="center"
+                         border="1"
+                         bold="1"
+                         repeat="1">  <?php echo $this->_translate(8);?> </xls>
+                </th>
+
+                <!-- Đơn giá -->
+                <th style="width:<?php echo $htmlWidth[$begin];?>px">
+                    <xls row="<?php echo $row?>"
+                         width="<?php echo $excelWidth[$begin];?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="center"
+                         v-align="center"
+                         border="1"
+                         bold="1"
+                         repeat="1">  <?php echo $this->_translate(9);?> </xls>
+                </th>
+
+                <!-- Thành tiền -->
+                <th style="width:<?php echo $htmlWidth[$begin];?>px">
+                    <xls row="<?php echo $row?>"
+                         width="<?php echo $excelWidth[$begin];?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="center"
+                         v-align="center"
+                         border="1"
+                         bold="1"
+                         repeat="1">  <?php echo $this->_translate(10);?> </xls>
+                </th>
+            </tr>
+
+            <!-- INPUT -->
+            <?php if(isset($this->report['Input'])):?>
+
+                <tr>
+                    <td class="bold left" style="padding-left: 30px;" colspan="<?php echo $totalColumn;?>">
+                        <xls row="<?php echo $row;?>"
+                             column="A"
+                             column-merge="<?php echo $excel_col[$totalColumn];?>"
+                             wrap-text="1"
+                             h-align="left"
+                             v-align="center"
+                            > Phiếu nhập vật tư thu hồi </xls>
+                    </td>
+                </tr>
+                <?php $row++;?>
+
+
+                <?php $oldViTri = '';?>
+                <?php foreach($this->report['Input'] as $refViTri=>$item):?>
+                    <?php if(!is_numeric($refViTri)) continue;?>
+
+                    <?php if($oldViTri !== $refViTri):?>
+                        <tr>
+                            <td class="bold left" style="padding-left: 40px;" colspan="<?php echo $totalColumn;?>">
+                                <xls row="<?php echo $row;?>"
+                                     column="A"
+                                     column-merge="<?php echo $excel_col[$totalColumn];?>"
+                                     wrap-text="1"
+                                     h-align="left"
+                                     v-align="center"
+                                    > Tên vị trí: <?php echo @$item['Name'];?> </xls>
+                            </td>
+                        </tr>
+                        <?php $row++;?>
+                    <?php endif;?>
+
+                    <?php if(isset($item['Item'])):?>
+                    <?php $oldSanPham = '';?>
+                    <?php foreach($item['Item'] as $products):?>
+
+                        <?php foreach($products as $product):?>
+
+
+
+                        <?php if($oldSanPham !== $product['ID'] && $oldSanPham !== ''):?>
+
+                            <?php $begin = 0;?>
+                            <tr>
+                                <td class="bold left" style="padding-left: 40px;" colspan="4">
+                                    <xls row="<?php echo $row;?>"
+                                         column="A"
+                                         column-merge="<?php echo $excel_col[($begin + 4)];?>"
+                                         wrap-text="1"
+                                         h-align="left"
+                                         v-align="center"
+                                        > Cộng theo vật tư: <?php echo $oldTenSanPham;?>  </xls>
+                                </td>
+                                <?php $begin += 4;?>
+
+                                <!--SL -->
+                                <td class="right">
+                                    <xls row="<?php echo $row?>"
+                                         column="<?php echo $excel_col[++$begin]?>"
+                                         wrap-text="1"
+                                         h-align="right"
+                                         v-align="center"
+                                         border="1"> <?php echo @$this->report['Input']['Total']['QtyByPosition'][$refViTri][$oldSanPham];?> </xls>
+                                </td>
+
+                                <!--Đơn giá -->
+                                <td class="right">
+                                    <xls row="<?php echo $row?>"
+                                         column="<?php echo $excel_col[++$begin]?>"
+                                         wrap-text="1"
+                                         h-align="right"
+                                         v-align="center"
+                                         border="1"> &nbsp; </xls>
+                                </td>
+
+                                <!-- Thành tiền -->
+                                <td class="right">
+                                    <xls row="<?php echo $row?>"
+                                         column="<?php echo $excel_col[++$begin]?>"
+                                         wrap-text="1"
+                                         h-align="right"
+                                         v-align="center"
+                                         border="1"> <?php echo Qss_Lib_Util::formatMoney(@$this->report['Input']['Total']['TotalByPosition'][$refViTri][$oldSanPham]);?> </xls>
+                                </td>
+                            </tr>
+                            <?php $row++;?>
+                        <?php endif;?>
+
+                        <?php if($oldSanPham !== $product['ID']):?>
+
+                            <tr>
+                                <td class="bold left" style="padding-left: 80px;" colspan="<?php echo $totalColumn;?>">
+                                    <xls row="<?php echo $row;?>"
+                                         column="A"
+                                         column-merge="<?php echo $excel_col[$totalColumn];?>"
+                                         wrap-text="1"
+                                         h-align="left"
+                                         v-align="center"
+                                        > <?php echo $product['Name'];?> </xls>
+                                </td>
+                            </tr>
+                            <?php $row++;?>
+                        <?php endif;?>
+
+                        <tr>
+                            <?php $begin = 0;?>
+                            <!-- STT -->
+                            <td class="center">
+                                <xls row="<?php echo $row?>"
+                                     column="<?php echo $excel_col[++$begin]?>"
+                                     wrap-text="1"
+                                     h-align="center"
+                                     v-align="center"
+                                     border="1"> <?php echo ++$stt;?> </xls>
+                            </td>
+
+                            <!-- Ngày -->
+                            <td class="center">
+                                <xls row="<?php echo $row?>"
+                                     column="<?php echo $excel_col[++$begin]?>"
+                                     wrap-text="1"
+                                     h-align="center"
+                                     v-align="center"
+                                     border="1"> <?php echo $product['Date'];?> </xls>
+                            </td>
+
+                            <!-- Số chứng từ -->
+                            <td class="left">
+                                <xls row="<?php echo $row?>"
+                                     column="<?php echo $excel_col[++$begin]?>"
+                                     wrap-text="1"
+                                     h-align="left"
+                                     v-align="center"
+                                     border="1"> <?php echo $product['DocNo'];?> </xls>
+                            </td>
+
+                            <!-- Nội dung -->
+                            <td class="left">
+                                <xls row="<?php echo $row?>"
+                                     column="<?php echo $excel_col[++$begin]?>"
+                                     wrap-text="1"
+                                     h-align="left"
+                                     v-align="center"
+                                     border="1"> <?php echo $product['Note'];?> </xls>
+                            </td>
+
+                            <!--SL -->
+                            <td class="right">
+                                <xls row="<?php echo $row?>"
+                                     column="<?php echo $excel_col[++$begin]?>"
+                                     wrap-text="1"
+                                     h-align="right"
+                                     v-align="center"
+                                     border="1"> <?php echo $product['Qty'];?> </xls>
+                            </td>
+
+                            <!--Đơn giá -->
+                            <td class="right">
+                                <xls row="<?php echo $row?>"
+                                     column="<?php echo $excel_col[++$begin]?>"
+                                     wrap-text="1"
+                                     h-align="right"
+                                     v-align="center"
+                                     border="1"> <?php echo $product['Price'];?> </xls>
+                            </td>
+
+                            <!-- Thành tiền -->
+                            <td class="right">
+                                <xls row="<?php echo $row?>"
+                                     column="<?php echo $excel_col[++$begin]?>"
+                                     wrap-text="1"
+                                     h-align="right"
+                                     v-align="center"
+                                     border="1"> <?php echo $product['Total'];?> </xls>
+                            </td>
+                        </tr>
+                        <?php $row++;?>
+
+
+
+
+                        <?php $oldTenSanPham = $product['Name'];?>
+                        <?php $oldSanPham = $product['ID'];?>
+                        <?php endforeach;?>
+                    <?php endforeach;?>
+                    <?php endif;?>
+
+                    <?php if(isset($item['Item']) && count($item['Item'])):?>
+
+                        <?php $begin = 0;?>
+                        <tr>
+                            <td class="bold left" style="padding-left: 40px;" colspan="4">
+                                <xls row="<?php echo $row;?>"
+                                     column="A"
+                                     column-merge="<?php echo $excel_col[($begin + 4)];?>"
+                                     wrap-text="1"
+                                     h-align="left"
+                                     v-align="center"
+                                    > Cộng theo vật tư: <?php echo $product['Name'];?>  </xls>
+                            </td>
+                            <?php $begin += 4;?>
+
+                            <!--SL -->
+                            <td class="right">
+                                <xls row="<?php echo $row?>"
+                                     column="<?php echo $excel_col[++$begin]?>"
+                                     wrap-text="1"
+                                     h-align="right"
+                                     v-align="center"
+                                     border="1"> <?php echo @$this->report['Input']['Total']['QtyByPosition'][$refViTri][$product['ID']];?> </xls>
+                            </td>
+
+                            <!--Đơn giá -->
+                            <td class="right">
+                                <xls row="<?php echo $row?>"
+                                     column="<?php echo $excel_col[++$begin]?>"
+                                     wrap-text="1"
+                                     h-align="right"
+                                     v-align="center"
+                                     border="1"> &nbsp; </xls>
+                            </td>
+
+                            <!-- Thành tiền -->
+                            <td class="right">
+                                <xls row="<?php echo $row?>"
+                                     column="<?php echo $excel_col[++$begin]?>"
+                                     wrap-text="1"
+                                     h-align="right"
+                                     v-align="center"
+                                     border="1"> <?php echo Qss_Lib_Util::formatMoney(@$this->report['Input']['Total']['TotalByPosition'][$refViTri][$product['ID']]);?> </xls>
+                            </td>
+                        </tr>
+                        <?php $row++;?>
+                    <?php endif;?>
+
+
+
+
+                    <?php $begin = 0;?>
+                    <tr>
+                        <td class="bold left" style="padding-left: 40px;" colspan="4">
+                            <xls row="<?php echo $row;?>"
+                                 column="A"
+                                 column-merge="<?php echo $excel_col[($begin + 4)];?>"
+                                 wrap-text="1"
+                                 h-align="left"
+                                 v-align="center"
+                                > Cộng theo vị trí máy: <?php echo $item['Name'];?>  </xls>
+                        </td>
+                        <?php $begin += 4;?>
+
+                        <!--SL -->
+                        <td class="right">
+                            <xls row="<?php echo $row?>"
+                                 column="<?php echo $excel_col[++$begin]?>"
+                                 wrap-text="1"
+                                 h-align="right"
+                                 v-align="center"
+                                 border="1"> <?php echo isset($this->report['Input']['Total']['QtyByPosition'][@(int)$refViTri])?array_sum($this->report['Input']['Total']['QtyByPosition'][@(int)$refViTri]):0;?> </xls>
+                        </td>
+
+                        <!--Đơn giá -->
+                        <td class="right">
+                            <xls row="<?php echo $row?>"
+                                 column="<?php echo $excel_col[++$begin]?>"
+                                 wrap-text="1"
+                                 h-align="right"
+                                 v-align="center"
+                                 border="1"> &nbsp; </xls>
+                        </td>
+
+                        <!-- Thành tiền -->
+                        <td class="right">
+                            <xls row="<?php echo $row?>"
+                                 column="<?php echo $excel_col[++$begin]?>"
+                                 wrap-text="1"
+                                 h-align="right"
+                                 v-align="center"
+                                 border="1"> <?php echo isset($this->report['Input']['Total']['TotalByPosition'][@(int)$refViTri])?Qss_Lib_Util::formatMoney(array_sum($this->report['Input']['Total']['TotalByPosition'][@(int)$refViTri])):0;?></xls>
+                        </td>
+                    </tr>
+                    <?php $row++;?>
+
+
+                    <?php $oldViTri = $refViTri;?>
+                    <?php $oldTenViTri = $item['Name'];?>
+                <?php endforeach;?>
+
+                <?php if($refViTri !== '' && isset($this->report['Input'])):?>
+                    <?php $begin = 0;?>
+                    <tr>
+                        <td class="bold left" style="padding-left: 10px;" colspan="4">
+                            <xls row="<?php echo $row;?>"
+                                 column="A"
+                                 column-merge="<?php echo $excel_col[($begin + 4)];?>"
+                                 wrap-text="1"
+                                 h-align="left"
+                                 v-align="center"
+                                > Cộng theo nghiệp vụ: Phiếu nhập vật tư thu hồi</xls>
+                        </td>
+                        <?php $begin += 4;?>
+
+                        <!--SL -->
+                        <td class="right">
+                            <xls row="<?php echo $row?>"
+                                 column="<?php echo $excel_col[++$begin]?>"
+                                 wrap-text="1"
+                                 h-align="right"
+                                 v-align="center"
+                                 border="1"> <?php echo isset($this->report['Input']['TotalByNghiepVu']['Qty'])?$this->report['Input']['TotalByNghiepVu']['Qty']:0;?> </xls>
+                        </td>
+
+                        <!--Đơn giá -->
+                        <td class="right">
+                            <xls row="<?php echo $row?>"
+                                 column="<?php echo $excel_col[++$begin]?>"
+                                 wrap-text="1"
+                                 h-align="right"
+                                 v-align="center"
+                                 border="1"> &nbsp; </xls>
+                        </td>
+
+                        <!-- Thành tiền -->
+                        <td class="right">
+                            <xls row="<?php echo $row?>"
+                                 column="<?php echo $excel_col[++$begin]?>"
+                                 wrap-text="1"
+                                 h-align="right"
+                                 v-align="center"
+                                 border="1"> <?php echo isset($this->report['Input']['TotalByNghiepVu']['Total'])?Qss_Lib_Util::formatMoney($this->report['Input']['TotalByNghiepVu']['Total']):0;?></xls>
+                        </td>
+                    </tr>
+                    <?php $row++;?>
+                <?php endif;?>
+
+            <?php endif;?>
+
+
+            <!-- OUTPUT -->
+            <?php if(isset($this->report['Output'])):?>
+                <tr>
+                    <td class="bold left" style="padding-left: 30px;" colspan="<?php echo $totalColumn;?>">
+                        <xls row="<?php echo $row;?>"
+                             column="A"
+                             column-merge="<?php echo $excel_col[$totalColumn];?>"
+                             wrap-text="1"
+                             h-align="left"
+                             v-align="center"
+                            > Phiếu xuất nội bộ </xls>
+                    </td>
+                </tr>
+                <?php $row++;?>
+
+                <?php $oldViTri = '';?>
+                <?php foreach($this->report['Output'] as $refViTri=>$item):?>
+                    <?php if(!is_numeric($refViTri)) continue;?>
+
+                    <?php if($oldViTri !== $refViTri):?>
+                        <tr>
+                            <td class="bold left" style="padding-left: 40px;" colspan="<?php echo $totalColumn;?>">
+                                <xls row="<?php echo $row;?>"
+                                     column="A"
+                                     column-merge="<?php echo $excel_col[$totalColumn];?>"
+                                     wrap-text="1"
+                                     h-align="left"
+                                     v-align="center"
+                                    > Tên vị trí: <?php echo @$item['Name'];?> </xls>
+                            </td>
+                        </tr>
+                        <?php $row++;?>
+                    <?php endif;?>
+
+                    <?php if(isset($item['Item'])):?>
+                    <?php $oldSanPham = '';?>
+                    <?php foreach($item['Item'] as $products):?>
+
+                        <?php foreach($products as $product):?>
+
+
+                        <?php if($oldSanPham !== $product['ID'] && $oldSanPham !== ''):?>
+                            <?php $begin = 0;?>
+                            <tr>
+                                <td class="bold left" style="padding-left: 40px;" colspan="4">
+                                    <xls row="<?php echo $row;?>"
+                                         column="A"
+                                         column-merge="<?php echo $excel_col[($begin + 4)];?>"
+                                         wrap-text="1"
+                                         h-align="left"
+                                         v-align="center"
+                                        > Cộng theo vật tư: <?php echo $product['Name'];?>  </xls>
+                                </td>
+                                <?php $begin += 4;?>
+
+                                <!--SL -->
+                                <td class="right">
+                                    <xls row="<?php echo $row?>"
+                                         column="<?php echo $excel_col[++$begin]?>"
+                                         wrap-text="1"
+                                         h-align="right"
+                                         v-align="center"
+                                         border="1"> <?php echo isset($this->report['Output']['Total']['QtyByPosition'][$refViTri][$product['ID']])?$this->report['Output']['Total']['QtyByPosition'][$refViTri][$product['ID']]:0;?> </xls>
+                                </td>
+
+                                <!--Đơn giá -->
+                                <td class="right">
+                                    <xls row="<?php echo $row?>"
+                                         column="<?php echo $excel_col[++$begin]?>"
+                                         wrap-text="1"
+                                         h-align="right"
+                                         v-align="center"
+                                         border="1"> &nbsp; </xls>
+                                </td>
+
+                                <!-- Thành tiền -->
+                                <td class="right">
+                                    <xls row="<?php echo $row?>"
+                                         column="<?php echo $excel_col[++$begin]?>"
+                                         wrap-text="1"
+                                         h-align="right"
+                                         v-align="center"
+                                         border="1">
+                                        <?php echo isset($this->report['Output']['Total']['TotalByPosition'][$refViTri][$product['ID']])?Qss_Lib_Util::formatMoney($this->report['Output']['Total']['TotalByPosition'][$refViTri][$product['ID']]):0;?></xls>
+                                </td>
+                            </tr>
+                            <?php $row++;?>
+                        <?php endif;?>
+
+
+                        <?php if($oldSanPham !== $product['ID']):?>
+
+                            <tr>
+                                <td class="bold left" style="padding-left: 80px;" colspan="<?php echo $totalColumn;?>">
+                                    <xls row="<?php echo $row;?>"
+                                         column="A"
+                                         column-merge="<?php echo $excel_col[$totalColumn];?>"
+                                         wrap-text="1"
+                                         h-align="left"
+                                         v-align="center"
+                                        > <?php echo @$product['Name'];?> </xls>
+                                </td>
+                            </tr>
+                            <?php $row++;?>
+                        <?php endif;?>
+
+                        <tr>
+                            <?php $begin = 0;?>
+                            <!-- STT -->
+                            <td class="center">
+                                <xls row="<?php echo $row?>"
+                                     column="<?php echo $excel_col[++$begin]?>"
+                                     wrap-text="1"
+                                     h-align="center"
+                                     v-align="center"
+                                     border="1"> <?php echo ++$stt;?> </xls>
+                            </td>
+
+                            <!-- Ngày -->
+                            <td class="center">
+                                <xls row="<?php echo $row?>"
+                                     column="<?php echo $excel_col[++$begin]?>"
+                                     wrap-text="1"
+                                     h-align="center"
+                                     v-align="center"
+                                     border="1"> <?php echo $product['Date'];?> </xls>
+                            </td>
+
+                            <!-- Số chứng từ -->
+                            <td class="left">
+                                <xls row="<?php echo $row?>"
+                                     column="<?php echo $excel_col[++$begin]?>"
+                                     wrap-text="1"
+                                     h-align="left"
+                                     v-align="center"
+                                     border="1"> <?php echo $product['DocNo'];?> </xls>
+                            </td>
+
+                            <!-- Nội dung -->
+                            <td class="left">
+                                <xls row="<?php echo $row?>"
+                                     column="<?php echo $excel_col[++$begin]?>"
+                                     wrap-text="1"
+                                     h-align="left"
+                                     v-align="center"
+                                     border="1"> <?php echo $product['Note'];?> </xls>
+                            </td>
+
+                            <!--SL -->
+                            <td class="right">
+                                <xls row="<?php echo $row?>"
+                                     column="<?php echo $excel_col[++$begin]?>"
+                                     wrap-text="1"
+                                     h-align="right"
+                                     v-align="center"
+                                     border="1"> <?php echo $product['Qty'];?> </xls>
+                            </td>
+
+                            <!--Đơn giá -->
+                            <td class="right">
+                                <xls row="<?php echo $row?>"
+                                     column="<?php echo $excel_col[++$begin]?>"
+                                     wrap-text="1"
+                                     h-align="right"
+                                     v-align="center"
+                                     border="1"> <?php echo $product['Price'];?> </xls>
+                            </td>
+
+                            <!-- Thành tiền -->
+                            <td class="right">
+                                <xls row="<?php echo $row?>"
+                                     column="<?php echo $excel_col[++$begin]?>"
+                                     wrap-text="1"
+                                     h-align="right"
+                                     v-align="center"
+                                     border="1"> <?php echo $product['Total'];?> </xls>
+                            </td>
+                        </tr>
+                        <?php $row++;?>
+
+
+
+
+                        <?php $oldSanPham = $product['ID'];?>
+                        <?php endforeach;?>
+                    <?php endforeach;?>
+                    <?php endif;?>
+
+                    <?php if(isset($item['Item']) && count($item['Item'])):?>
+                        <?php $begin = 0;?>
+                        <tr>
+                            <td class="bold left" style="padding-left: 40px;" colspan="4">
+                                <xls row="<?php echo $row;?>"
+                                     column="A"
+                                     column-merge="<?php echo $excel_col[($begin + 4)];?>"
+                                     wrap-text="1"
+                                     h-align="left"
+                                     v-align="center"
+                                    > Cộng theo vật tư: <?php echo $product['Name'];?>  </xls>
+                            </td>
+                            <?php $begin += 4;?>
+
+                            <!--SL -->
+                            <td class="right">
+                                <xls row="<?php echo $row?>"
+                                     column="<?php echo $excel_col[++$begin]?>"
+                                     wrap-text="1"
+                                     h-align="right"
+                                     v-align="center"
+                                     border="1"> <?php echo isset($this->report['Output']['Total']['QtyByPosition'][$refViTri][$product['ID']])?$this->report['Output']['Total']['QtyByPosition'][$refViTri][$product['ID']]:0;?> </xls>
+                            </td>
+
+                            <!--Đơn giá -->
+                            <td class="right">
+                                <xls row="<?php echo $row?>"
+                                     column="<?php echo $excel_col[++$begin]?>"
+                                     wrap-text="1"
+                                     h-align="right"
+                                     v-align="center"
+                                     border="1"> &nbsp; </xls>
+                            </td>
+
+                            <!-- Thành tiền -->
+                            <td class="right">
+                                <xls row="<?php echo $row?>"
+                                     column="<?php echo $excel_col[++$begin]?>"
+                                     wrap-text="1"
+                                     h-align="right"
+                                     v-align="center"
+                                     border="1">
+                                    <?php echo isset($this->report['Output']['Total']['TotalByPosition'][$refViTri][$product['ID']])?Qss_Lib_Util::formatMoney($this->report['Output']['Total']['TotalByPosition'][$refViTri][$product['ID']]):0;?></xls>
+                            </td>
+                        </tr>
+                        <?php $row++;?>
+                    <?php endif;?>
+
+
+                    <?php $begin = 0;?>
+                    <tr>
+                        <td class="bold left" style="padding-left: 40px;" colspan="4">
+                            <xls row="<?php echo $row;?>"
+                                 column="A"
+                                 column-merge="<?php echo $excel_col[($begin + 4)];?>"
+                                 wrap-text="1"
+                                 h-align="left"
+                                 v-align="center"
+                                > Cộng theo vị trí máy: <?php echo $item['Name'];?>  </xls>
+                        </td>
+                        <?php $begin += 4;?>
+
+                        <!--SL -->
+                        <td class="right">
+                            <xls row="<?php echo $row?>"
+                                 column="<?php echo $excel_col[++$begin]?>"
+                                 wrap-text="1"
+                                 h-align="right"
+                                 v-align="center"
+                                 border="1"> <?php echo isset($this->report['Output']['Total']['QtyByPosition'][$refViTri])?array_sum($this->report['Output']['Total']['QtyByPosition'][$refViTri]):0;?> </xls>
+                        </td>
+
+                        <!--Đơn giá -->
+                        <td class="right">
+                            <xls row="<?php echo $row?>"
+                                 column="<?php echo $excel_col[++$begin]?>"
+                                 wrap-text="1"
+                                 h-align="right"
+                                 v-align="center"
+                                 border="1"> &nbsp; </xls>
+                        </td>
+
+                        <!-- Thành tiền -->
+                        <td class="right">
+                            <xls row="<?php echo $row?>"
+                                 column="<?php echo $excel_col[++$begin]?>"
+                                 wrap-text="1"
+                                 h-align="right"
+                                 v-align="center"
+                                 border="1"> <?php echo isset($this->report['Output']['Total']['TotalByPosition'][$refViTri])?Qss_Lib_Util::formatMoney(array_sum($this->report['Output']['Total']['TotalByPosition'][$refViTri])):0;?></xls>
+                        </td>
+                    </tr>
+                    <?php $row++;?>
+
+
+                    <?php $oldViTri = $refViTri;?>
+                <?php endforeach;?>
+
+
+
+
+                <?php if(isset($this->report['Output'])):?>
+                    <?php $begin = 0;?>
+                    <tr>
+                        <td class="bold left" style="padding-left: 10px;" colspan="4">
+                            <xls row="<?php echo $row;?>"
+                                 column="A"
+                                 column-merge="<?php echo $excel_col[($begin + 4)];?>"
+                                 wrap-text="1"
+                                 h-align="left"
+                                 v-align="center"
+                                > Cộng theo nghiệp vụ: Phiếu xuất nội bộ</xls>
+                        </td>
+                        <?php $begin += 4;?>
+
+                        <!--SL -->
+                        <td class="right">
+                            <xls row="<?php echo $row?>"
+                                 column="<?php echo $excel_col[++$begin]?>"
+                                 wrap-text="1"
+                                 h-align="right"
+                                 v-align="center"
+                                 border="1"> <?php echo isset($this->report['Output']['TotalByNghiepVu']['Qty'])?$this->report['Output']['TotalByNghiepVu']['Qty']:0;?> </xls>
+                        </td>
+
+                        <!--Đơn giá -->
+                        <td class="right">
+                            <xls row="<?php echo $row?>"
+                                 column="<?php echo $excel_col[++$begin]?>"
+                                 wrap-text="1"
+                                 h-align="right"
+                                 v-align="center"
+                                 border="1"> &nbsp; </xls>
+                        </td>
+
+                        <!-- Thành tiền -->
+                        <td class="right">
+                            <xls row="<?php echo $row?>"
+                                 column="<?php echo $excel_col[++$begin]?>"
+                                 wrap-text="1"
+                                 h-align="right"
+                                 v-align="center"
+                                 border="1"> <?php echo isset($this->report['Output']['TotalByNghiepVu']['Total'])?Qss_Lib_Util::formatMoney($this->report['Output']['TotalByNghiepVu']['Total']):0;?></xls>
+                        </td>
+                    </tr>
+                    <?php $row++;?>
+                <?php endif;?>
+
+            <?php endif;?>
+
+            <?php $begin = 0;?>
+            <tr>
+                <td class="bold left" style="padding-left: 25px;" colspan="4">
+                    <xls row="<?php echo $row;?>"
+                         column="A"
+                         column-merge="<?php echo $excel_col[($begin + 4)];?>"
+                         wrap-text="1"
+                         h-align="left"
+                         v-align="center"
+                        > Tổng cộng theo máy </xls>
+                </td>
+                <?php $begin += 4;?>
+
+                <!--SL -->
+                <td class="right">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="right"
+                         v-align="center"
+                         border="1"> <?php echo isset($this->report['TotalByMay']['Qty'])?$this->report['TotalByMay']['Qty']:0;?> </xls>
+                </td>
+
+                <!--Đơn giá -->
+                <td class="right">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="right"
+                         v-align="center"
+                         border="1"> &nbsp; </xls>
+                </td>
+
+                <!-- Thành tiền -->
+                <td class="right">
+                    <xls row="<?php echo $row?>"
+                         column="<?php echo $excel_col[++$begin]?>"
+                         wrap-text="1"
+                         h-align="right"
+                         v-align="center"
+                         border="1"> <?php echo isset($this->report['TotalByMay']['Total'])?Qss_Lib_Util::formatMoney($this->report['TotalByMay']['Total']):0;?></xls>
+                </td>
+            </tr>
+            <?php $row++;?>
+
+        </table>
+    </div>
+</div>

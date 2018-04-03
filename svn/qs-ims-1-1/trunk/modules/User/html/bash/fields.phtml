@@ -1,0 +1,60 @@
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+	<div id="btnINSERT"
+		onClick="bashFieldInsert(<?php echo $this->bashid?>)"
+		title="<?php echo $this->_translate(12,'Tạo mới')?>"
+		class="btn_main_top">
+		<a class="icon-32-new" href="#1"></a>
+	</div>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="item-actions">
+		<ul>
+			<li class="item-action"><a onclick="rowBack()" href="#1"><span>Kết
+						chuyển tự động</span>
+			</a>
+			</li>
+			<li class="item-action active"><a href="#!"><span>Thuộc tính kết
+						chuyển</span>
+			</a>
+			</li>
+			<li class="item-action"><a
+				onclick="rowBashHistory(<?php echo $this->bashid?>)" href="#!"><span>Lịch
+						sử</span>
+			</a>
+			</li>
+		</ul>
+	</div>
+	<div id="qss_list">
+		<table class="grid">
+			<tr>
+				<th class="nocount">Stt</th>
+				<th>Tên Trường</th>
+				<th>Lấy từ</th>
+				<th>Hàm tự động tính toán</th>
+				<th>Sửa</th>
+				<th>Xóa</th>
+			</tr>
+			<?php $i = 0;?>
+			<?php foreach($this->fields as $field):?>
+			<?php $i++;?>
+			<tr>
+				<td class="nocount"><?php echo $i?>
+				</td>
+				<td><?php echo $field->sName?> - <?php echo $field->FieldName?>
+				</td>
+				<td><?php echo $field->dName?> - <?php echo $field->fromfield?>
+				</td>
+				<td><?php echo $field->Regx?>
+				</td>
+				<td class="center"><a href="#!"
+					onclick="bashFieldEdit(<?php echo $this->bashid?>,<?php echo $field->BFID?>)">Sửa</a>
+				</td>
+				<td class="center"><a href="#!"
+					onclick="bashFieldDelete(<?php echo $field->BFID?>)">Xóa</a>
+				</td>
+			</tr>
+			<?php endforeach;?>
+		</table>
+	</div>
+</div>

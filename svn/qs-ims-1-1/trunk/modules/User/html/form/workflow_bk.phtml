@@ -1,0 +1,93 @@
+<script>
+$(document).ready(function(){
+	<!-- For owner -->
+	<?php foreach($this->nextsteps as $step):?>
+	$('#step_<?php echo $step->StepNo?>').prop('disabled',false);
+	<?php endforeach;?>
+	<!-- check steptype of current status, if type of verify, request to approver for return, other is samse as next step process  -->
+	<?php foreach($this->backsteps as $step):?>
+	$('#step_<?php echo $step->StepNo?>').prop('disabled',false);
+	<?php endforeach;?>
+});
+
+</script>
+	<?php
+	$lang = Qss_Translation::getInstance()->getLanguage();
+	$lang = ($lang=='vn')?'':'_'.$lang;
+	?>
+	<?php if($this->step->intStepType && $this->single):?>
+<div class="line-hr">
+	<span><?php echo $this->_translate(13)?> (<?php switch ($this->step->intStepType):
+case 1:?> Phê duyệt tuần tự <?php break;?> <?php case 2:?> Tất cả được
+		duyệt <?php break;?> <?php case 3:?> Phê duyệt cuối cùng <?php break;?>
+		<?php case 4:?> Phê duyệt bất kỳ <?php break;?> <?php endswitch;?> ) </span>
+</div>
+<table class="detail">
+<?php foreach ($this->approvers as $item):?>
+	<tr>
+		<td width="5%"><input type="checkbox" disabled="disabled" <?php if($item->StepNo):?> checked <?php endif;?>></td>
+		<td width="40%">
+		<?php if($item->StepNo):?> 
+			<span class="green"><?php echo $item->GroupName?>đã duyệt</span> 
+			(<?php echo $item->UserName?>)
+		<?php else:?> 
+			<span class="<?php if(!$this->ok):?>red<?php endif;?>"><?php echo $item->GroupName?>chưa duyệt</span> 
+		<?php endif;?>
+		</td>
+	</tr>
+	<?php endforeach;?>
+</table>
+	<?php endif;?>
+<div class="line-hr">
+	<span><?php echo $this->_translate(1)?> </span>
+</div>
+<table class="detail">
+<?php $i = 0?>
+<?php $lang = Qss_Translation::getInstance()->getLanguage();?>
+<?php $lang = ($lang=='vn')?'':'_'.$lang;?>
+<?php foreach($this->allsteps as $step):?>
+	<tr>
+		<td width="5%"><input disabled="true" type="radio"
+			id="step_<?php echo $step->StepNo?>" name="stepno"
+			value="<?php echo $step->StepNo?>"></td>
+		<td width="40%"><label class="<?php echo $step->Color?>"
+			for="step_<?php echo $step->StepNo?>"><?php echo $step->{"Name".$lang}?>
+		</label> <?php if($step->StepNo == $this->step->intStepNo):?><span
+			class="green">(<?php echo $this->_translate(12)?>)</span> <?php endif;?>
+		</td>
+	</tr>
+	<?php $i++?>
+	<?php endforeach;?>
+	<tr>
+		<td><?php echo $this->_translate(2)?>
+		</td>
+		<td><textarea rows="3" cols="30" id="comment"></textarea>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<button class="btn-custom"
+				onclick="sendRequest('<?php echo $this->form->FormCode?>','<?php echo $this->ifids?>','<?php echo $this->deptids?>')">OK</button>
+			<button type="button" onclick="$('#qss_trace').dialog('close');"
+				class="btn-custom">
+				<?php echo $this->_translate(72)?>
+			</button>
+		</td>
+	</tr>
+</table>
+				<?php if(count($this->traces)):?>
+<div class="line-hr">
+	<span><?php echo $this->_translate(81)?> </span>
+</div>
+<table class="detail">
+<?php foreach ($this->traces as $item):?>
+	<tr>
+		<td><span class="notify_time"><?php echo date('d-m-Y: H:m',$item->Date)?>
+		</span> <span class="green"><?php echo $item->UserName?> </span>
+		</td>
+		<td><span class="italic"><?php echo $item->Logs?> </span>
+		</td>
+	</tr>
+	<?php endforeach;?>
+</table>
+	<?php endif;?>

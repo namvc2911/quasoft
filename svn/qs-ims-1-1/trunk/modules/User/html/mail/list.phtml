@@ -1,0 +1,47 @@
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+	<div id="btnINSERT" onClick="rowMailListInsert()"
+		title="<?php echo $this->_translate(12,'Tạo mới')?>"
+		class="btn_main_top">
+		<a class="icon-32-new" href="#1"></a>
+	</div>
+	<div id="btnEDIT" title="<?php echo $this->_translate(13,'Sửa đổi')?>"
+		onClick="rowMailListEdit()" class="btn_main_top btn_disabled">
+		<a class="icon-32-edit" href="#1"></a>
+	</div>
+	<div id="btnDELETE" title="<?php echo $this->_translate(14,'Xóa')?>"
+		onClick="rowMailListDelete()" class="btn_main_top btn_disabled">
+		<a class="icon-32-delete" href="#1"></a>
+	</div>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#1"><span>Danh sách gửi mail</span>
+			</a></li>
+			<li class="item-action"><a onclick="rowMailRefer()" href="#!"><span>Danh
+						sách địa chỉ</span> </a></li>
+		</ul>
+	</div>
+	<div id="qss_list">
+		<table class="grid">
+			<tr>
+				<th class="nocount">STT</th>
+				<th width="250">Tên</a></th>
+				<th>Mô tả</th>
+				<th width="150">Ngày tạo</th>
+			</tr>
+			<?php $i = 0?>
+			<?php foreach ($this->lists as $item):?>
+			<?php $i++?>
+			<tr rights="63" id="<?php echo $item->MLID;?>"
+				onclick="rowCLK(this);">
+				<td class="nocount"><?php echo $i?></td>
+				<td><?php echo $item->Name;?></td>
+				<td><?php echo $item->Description;?></td>
+				<td><?php echo date('d-m-Y H:i:s',strtotime($item->CDate));?></td>
+			</tr>
+			<?php endforeach;?>
+		</table>
+	</div>
+</div>

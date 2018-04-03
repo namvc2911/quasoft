@@ -1,0 +1,142 @@
+<style>
+    #m705_copy_wrap
+    {
+
+    }
+
+    #m705_copy_wrap  #equip
+    {
+
+    }
+
+    #m705_copy_wrap #equip fieldset
+    {
+        height: 120px;
+        overflow: auto;
+    }
+
+    #m705_copy_wrap  #equip .title
+    {
+
+    }
+
+    #m705_copy_wrap  #equip .select
+    {
+
+    }
+
+    #m705_copy_wrap  #component
+    {
+
+    }
+
+    #m705_copy_wrap #component fieldset
+    {
+        height: 150px;
+        overflow: auto;
+    }
+
+    #m705_copy_wrap  #component .title
+    {
+
+    }
+
+    #m705_copy_wrap  #component .select_equip
+    {
+
+    }
+
+    #m705_copy_wrap  #component .select
+    {
+
+    }
+
+    #m705_copy_wrap #save_button
+    {
+
+    }
+</style>
+
+<?php
+// Listbox thiet bi den
+$equipID      = 'to_equip';
+$equipFilter  = array('ODanhSachThietBi'=>array('MaThietBi', 'TenThietBi'));
+$equipDisplay = array(
+    'num'=>2,
+    'objects'=>array(
+        'ODanhSachThietBi'=>array(
+            'id'=>'IOID'
+            ,'display1'=>'MaThietBi'
+            ,'display2'=>'TenThietBi'))
+);
+?>
+
+<div id="m705_copy_wrap">
+    <div id="equip">
+        <fieldset>
+            <legend> <input type="checkbox" onclick="" checked/> Copy thiết bị </legend>
+
+            <div class="select">
+                <input type="checkbox" onclick="" id="checkbox_CauTrucThietBi" checked/>
+                <label for="checkbox_CauTrucThietBi">Cấu trúc thiết bị</label>
+
+                <input type="checkbox" onclick="" id="checkbox_DanhSachPhuTung" checked/>
+                <label for="checkbox_DanhSachPhuTung">Danh sách phụ tùng</label>
+
+                <input type="checkbox" onclick="" id="checkbox_ThongSoThietBi" checked/>
+                <label for="checkbox_ThongSoThietBi">Thông số thiết bị</label>
+
+                <input type="checkbox" onclick="" id="checkbox_DacTinhKyThuat" checked/>
+                <label for="checkbox_DacTinhKyThuat">Đặc tính kỹ thuật</label>
+
+                <input type="checkbox" onclick="" id="checkbox_ChuKyHieuChuan" checked/>
+                <label for="checkbox_ChuKyHieuChuan">Chu kỳ hiệu chuẩn</label>
+
+                <input type="checkbox" onclick="" id="checkbox_BaoHiemThietBi" checked/>
+                <label for="checkbox_BaoHiemThietBi">Bảo hiểm thiết bị</label>
+            </div>
+        </fieldset>
+    </div>
+
+    <div id="component">
+        <fieldset>
+            <legend> <div class="fl"> <input type="checkbox" onclick=""/> Copy cấu trúc thiết bị đến </div> <div class="fl"><?php echo $this->views->Report->ListBox('to_equip', $equipFilter, $equipDisplay);?></div></legend>
+
+            <div class="select_equip">
+
+
+
+            </div>
+
+            <div class="select">
+                <table cellpadding="0" cellspacing="0" border="1" class="border_table">
+                    <tr>
+                        <th class="center">
+                            <input type="checkbox" onclick=""/>
+                        </th>
+
+                        <th>
+                            Bộ phận
+                        </th>
+
+                    </tr>
+
+                    <?php foreach($this->components as $item):?>
+                        <tr>
+                            <td class="center">
+                                <input type="checkbox" onclick=""/>
+                            </td>
+                            <td class="tree_level_<?php echo $item->LEVEL;?>">
+                                <?php echo $item->ViTri;?> - <?php echo $item->BoPhan;?>
+                            </td>
+                        </tr>
+                    <?php endforeach;?>
+                </table>
+            </div>
+        </fieldset>
+    </div>
+
+    <div id="save_button" class="fr">
+        <button type="button" class="btn-custom" onclick=""> Cập nhật </button>
+    </div>
+</div>

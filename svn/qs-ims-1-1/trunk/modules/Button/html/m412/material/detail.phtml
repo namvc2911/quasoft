@@ -1,0 +1,22 @@
+<p class="bold">Mã mặt hàng: <?php echo @$this->detail[0]->MaSP;?></p>
+<p class="bold"> Tên mặt hàng: <?php echo @$this->detail[0]->TenSP;?></p>
+
+<br/>
+
+<table cellspacing="0" cellpadding="0" border="0" class="border_table">
+    <tr>
+        <th style="width: 33%">Kho</th>
+        <th style="width: 33%">Đơn vị tính</th>
+        <th style="width: 33%">Số lượng</th>
+    </tr>
+
+    <?php foreach ($this->detail as $item):?>
+        <?php if($item->LoaiKho == Qss_Lib_Extra_Const::WAREHOUSE_TYPE_MATERIAL && $item->SoLuongHC != 0):?>
+            <tr>
+                <td class="left"><?php echo $item->Kho;?></td>
+                <td class="left"><?php echo $item->DonViTinh;?></td>
+                <td class="right"><?php echo Qss_Lib_Util::formatNumber($item->SoLuongHC);?></td>
+            </tr>
+        <?php endif;?>
+    <?php endforeach;?>
+</table>

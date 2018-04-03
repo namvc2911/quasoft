@@ -1,0 +1,28 @@
+<table class="border_table">
+    <tr class="bggrey">
+        <th class="center" style="width: 10%">
+            <input type="checkbox" onclick="common_check_all_table_line(this, '.cwpo_line_checkbok', '.cwpo_line_checkbok_val')"/>
+        </th>
+        <th  style="width: 55%" class="">  </th>
+        <th  style="width: 10%" class="center"> Khách hàng </th>
+        <th  style="width: 10%" class="center"> Nhà cung cấp </th>
+        <th  style="width: 10%" class="center"> Lead </th>
+    </tr>
+
+    <?php foreach($this->customer as $cus):?>
+        <tr class="customer1" khachhang="<?php echo (int)$cus->KhacHang;?>" nhacungcap="<?php echo (int)$cus->NhaCungCap;?>"
+            lead="<?php echo (int)$cus->Lead;?>"
+        >
+            <td class="center">
+
+                <input type="checkbox" class="cwpo_line_checkbok " onclick="common_check_table_line(this, '.cwpo_line_checkbok_val')">
+                <input type="hidden" class="table_line_disabled cwpo_line_checkbok_val" name="CheckBox[]"  value="0">
+                <input type="hidden" class="table_line_disabled" name="Customer[]" value="<?php echo $cus->IOID;?>" disabled/>
+            </td>
+            <td  style="" class=""> <?php echo $cus->TenDoiTac;?> </td>
+            <td  style="" class="center"> <?php echo $cus->KhacHang?'KH':'';?> </td>
+            <td  style="" class="center"> <?php echo $cus->NhaCungCap?'NCC':'';?> </td>
+            <td  style="" class="center"> <?php echo $cus->Lead?'L':'';?> </td>
+        </tr>
+    <?php endforeach;?>
+</table>

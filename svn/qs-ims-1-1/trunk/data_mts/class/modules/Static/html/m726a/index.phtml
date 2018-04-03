@@ -1,0 +1,124 @@
+<script>
+    function printPreview() {
+
+        var eType = $('#type').val();
+        var url   = sz_BaseUrl + '/static/m726A/show';
+
+        switch (eType) {
+            case 'VTB':
+                url   = sz_BaseUrl + '/static/m726A/vantaibo';
+            break;
+
+            case 'VTT':
+                url   = sz_BaseUrl + '/static/m726A/vantaithuy';
+            break;
+
+            case 'GAU':
+                url   = sz_BaseUrl + '/static/m726A/gaungoam';
+            break;
+
+            case 'GPS':
+                url   = sz_BaseUrl + '/static/m726A/gps';
+            break;
+
+            case 'PLC':
+                url   = sz_BaseUrl + '/static/m726A/plc';
+            break;
+
+            case 'STEC':
+                url   = sz_BaseUrl + '/static/m726A/stec';
+            break;
+
+            case 'NANGVAAPLUC':
+                url   = sz_BaseUrl + '/static/m726A/nangvaapluc';
+            break;
+        }
+
+        var data = $('#report').serialize();
+
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#print-area').html(jreturn);
+            removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+        });
+    }
+
+//    function excelRender()
+//    {
+//        $('#report').submit();
+//    }
+
+//    $(document).ready(function () {
+//       $('#type').change(function () {
+//           var eType = $(this).val();
+//           var url   = sz_BaseUrl + '/static/m726A/show';
+//
+//           switch (eType) {
+//               case 'VTB':
+//                   url   = sz_BaseUrl + '/static/m726A/vantaiboexcel';
+//                   break;
+//
+//               case 'VTT':
+//                   url   = sz_BaseUrl + '/static/m726A/vantaithuyexcel';
+//                   break;
+//
+//               case 'GAU':
+//                   url   = sz_BaseUrl + '/static/m726A/gaungoamexcel';
+//                   break;
+//
+//               case 'GPS':
+//                   url   = sz_BaseUrl + '/static/m726A/gpsexcel';
+//                   break;
+//
+//               case 'PLC':
+//                   url   = sz_BaseUrl + '/static/m726A/plcexcel';
+//                   break;
+//
+//               case 'STEC':
+//                   url   = sz_BaseUrl + '/static/m726A/stecexcel';
+//                   break;
+//           }
+//
+//           $('#report').attr('action', url);
+//       });
+//    });
+</script>
+
+<div class="clear"></div>
+<div id="view">
+    <div class="line-hr">
+        <span><?php echo $this->_translate(1) ?> </span>
+    </div>
+    <form id="report" method="get"
+          action="/report/maintenance/equipment/costcenter1">
+
+        <input type="hidden" name="popup" value="1">
+        <table class="detail">
+            <?php if (Qss_Lib_Extra::checkFieldExists('ODanhSachThietBi', 'Ref_LoaiThietBi')): ?>
+                <tr>
+                    <th width="20%" class="report-param-label"><?php echo $this->_translate(6) ?>
+                    </th>
+                    <td>
+                        <select name="type" id="type" style="width:180px">
+                            <option value="VTB">Thiết bị vận tải bộ </option>
+                            <option value="VTT">Thiết bị vận tải thủy </option>
+                            <option value="GPS">Thiết bị GPS </option>
+                            <option value="PLC">Thiết bị PLC </option>
+                            <option value="GAU">Gàu ngoạm </option>
+                            <option value="STEC">Stéc </option>
+                            <option value="NANGVAAPLUC">Thiết bị nâng và áp lực</option>
+                        </select>
+                    </td>
+
+                </tr>
+            <?php endif; ?>
+        </table>
+    </form>
+    <p>
+
+
+    <hr>
+    <?php echo $this->views->Report->PrintToolbar(); ?>
+    <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>

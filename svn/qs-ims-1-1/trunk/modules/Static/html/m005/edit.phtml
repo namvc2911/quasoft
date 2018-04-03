@@ -1,0 +1,218 @@
+
+<form id="qss_form" method="post">
+	<div id="horizontal-toolbar" class="horizontal-toolbar">
+		<button id="btnSAVE" type="button" class="btn btn_main_top"
+			onclick="userSave(<?php echo $this->user->intUID?>)">
+			<?php echo $this->_translate(34)?>
+		</button>
+		
+		<button type="button" class="btn btn_main_top"
+			onclick="userBack()">
+			<?php echo $this->_translate(32)?>
+		</button>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<?php if($this->user->intUID):?>
+			<input type="hidden" name="szUserID" value="<?php echo $this->user->szUserID?>">
+		<?php endif;?>
+		<table class="detail">
+			<tr>
+				<th width="110"><?php echo $this->_translate(48,'Tên người sử dụng')?>
+				</th>
+				<td width="338"><input value="<?php echo $this->user->szUserName?>"
+					style="width: 300px;" name="szName" />
+				</td>
+			</tr>
+			<tr>
+				<th><?php echo $this->_translate(49,'Chức danh')?>
+				</th>
+				<td><input value="<?php echo $this->user->szTitleName?>"
+					style="width: 300px;" name="szTitle" />
+				</td>
+			</tr>
+			<tr>
+				<th><?php echo $this->_translate(2,'Tên truy nhập')?>
+				</th>
+				<td><input <?php if($this->user->intUID) echo 'disabled';?>
+					value="<?php echo $this->user->szUserID?>" style="width: 200px;"
+					name="szUserID" />
+				</td>
+			</tr>
+			<tr>
+				<th><?php echo $this->_translate(51,'Mật khẩu')?>
+				</th>
+				<td><input type="password" style="width: 200px;" name="szPassWord" <?php if($this->user->intUID == 1):?>readonly class="readonly"<?php endif;?>/>
+				</td>
+			</tr>
+			<tr>
+				<th><?php echo $this->_translate(52,'E-Mail')?>
+				</th>
+				<td><input value="<?php echo $this->user->szEMail?>"
+					style="width: 200px;" name="szEMail" />
+				</td>
+			</tr>
+
+			<tr>
+				<th><?php echo $this->_translate(100,'Điện thoại')?>
+				</th>
+				<td><input value="<?php echo $this->user->szMobile?>"
+					style="width: 200px;" name="szMobile" />
+				</td>
+			</tr>
+			<tr>
+				<th><?php echo $this->_translate(6)?>
+				</th>
+				<td>
+					<select style="width: 200px;" name="intMenuID">
+						<?php foreach ($this->menus as $item):?>
+						<option <?php if($this->user->intMenuID == $item->ID):?>selected<?php endif;?> 
+							value="<?php echo $item->ID?>"><?php echo $item->Name?></option>
+						<?php endforeach;?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th><?php echo $this->_translate(53,'Hoạt động')?>
+				</th>
+				<td><input type="checkbox" value="1"
+				<?php if($this->user->bActive):?> checked <?php endif;?>
+					name="bActive" />
+				</td>
+			</tr>
+
+			<tr>
+				<th><?php echo $this->_translate(54,'Phân loại')?>
+				</th>
+				<td><input type="checkbox" disabled="" value="1" name="sysadmin" />
+				<?php echo $this->_translate(56,'Quản trị hệ thống.')?><br /> <input
+					type="checkbox"
+					<?php if($this->user->intType & 2) echo 'checked';?> value="1"
+					name="admin" />
+					<?php echo $this->_translate(57,'Quản trị viên.')?><br /> <input
+					type="checkbox"
+					<?php if($this->user->intType & 4) echo 'checked';?> value="1"
+					name="designer" />
+					<?php echo $this->_translate(59,'Thiết kế mẫu.')?><br /> <input
+					type="checkbox"
+					<?php if($this->user->intType & 8) echo 'checked';?> value="1"
+					name="sysuser" />
+					<?php echo $this->_translate(50,'Người sử dụng trong hệ thống.')?><br />
+					<input type="checkbox"
+					<?php if($this->user->intType & 16) echo 'checked';?> value="1"
+					name="xuser" />
+					<?php echo $this->_translate(58,'Người sử dụng bên ngoài.')?><br />
+				</td>
+			</tr>
+
+			<tr>
+				<th valign="top"><?php echo $this->_translate(55,'Phân quyền')?>
+				</th>
+				<td><?php foreach($this->deptgroup as $key=>$value):?>
+					<fieldset style="width: 500px;">
+						<legend>
+						<?php echo $key?>
+						</legend>
+						<?php foreach($value as $group):?>
+						<input type="checkbox" <?php if($group->Checked) echo 'checked';?>
+							value="1"
+							name="G_<?php echo $group->DepartmentID?>_<?php echo $group->GroupID?>" />
+							<?php echo $group->GroupName?>
+						<br />
+						<?php endforeach;?>
+					</fieldset> <?php endforeach;?>
+				</td>
+			</tr>
+			
+			<?php foreach($this->secure as $item):?>
+			<tr>
+				<th width="200" valign="top"><?php echo $item->FormCode?>: <?php echo $item->Name?>
+				</th>
+				<td>
+					<div style="height:300px; width:600px; overflow: scroll; border: 1px solid #ccc;">
+						<table>
+							<tr>
+								<th>
+									&nbsp;
+								</th>
+								<th>
+									Thêm DL
+								</th>
+								<th>
+									Xem DL
+								</th>
+								<th>
+									Sửa DL
+								</th>
+								<th>
+									Xóa DL
+								</th>
+							</tr>
+							<?php $recordRights = $this->user->getRecordRights($item->FormCode,$item->ObjectCode,$item->Tree);?>
+							<?php foreach($recordRights as $data):?>
+							<?php 
+								$level = (int)@$data->level;
+								$level = ($level > 0)?($level -1):0;
+								$whitespace = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',$level);
+							?>
+							<tr>
+								<td>
+									<?php echo $whitespace . $data->{$item->Field1};?>
+									<?php if($item->Field2):?>
+										- <?php echo $data->{$item->Field2};?>
+									<?php endif;?>
+								</td>
+								<td align="center" width="10%">
+									<input class="secure <?php echo str_ireplace('Record_','Record_C_', @$data->parentclass)?>" type="checkbox" <?php if($data->Rights & 1):?>checked<?php endif;?> name="Record_C_<?php echo $item->FormCode?>_<?php echo $data->{'IFID_'.$item->FormCode}?>" value="1">
+								</td>
+								<td align="center" width="10%">
+									<input class="secure <?php echo str_ireplace('Record_','Record_R_', @$data->parentclass)?>" type="checkbox" <?php if($data->Rights & 2):?>checked<?php endif;?> name="Record_R_<?php echo $item->FormCode?>_<?php echo $data->{'IFID_'.$item->FormCode}?>" value="1">
+								</td>
+								<td align="center" width="10%">
+									<input class="secure <?php echo str_ireplace('Record_','Record_U_', @$data->parentclass)?>" type="checkbox" <?php if($data->Rights & 4):?>checked<?php endif;?> name="Record_U_<?php echo $item->FormCode?>_<?php echo $data->{'IFID_'.$item->FormCode}?>" value="1">
+								</td>
+								<td align="center" width="10%">
+									<input class="secure <?php echo str_ireplace('Record_','Record_D_', @$data->parentclass)?>" type="checkbox" <?php if($data->Rights & 8):?>checked<?php endif;?> name="Record_D_<?php echo $item->FormCode?>_<?php echo $data->{'IFID_'.$item->FormCode}?>" value="1">
+								</td>
+							</tr>
+							<?php endforeach;?>
+						</table>
+					</div>
+				</td>
+			</tr>
+			<?php endforeach;?>
+			
+			<tr>
+				<th width="200" valign="top">Chức năng phê duyệt
+				</th>
+				<td>
+					<div style="height:300px; width:600px; overflow: scroll; border: 1px solid #ccc;">
+						<table>
+							<?php foreach($this->approverRigths as $data):?>
+							<tr>
+								<td align="center" width="10%">
+									<input type="checkbox" <?php if($data->Checked):?>checked<?php endif;?> name="Approver_<?php echo $data->SAID?>" value="1">
+								</td>
+								<td>
+									<?php echo $data->Name;?> (<?php echo $data->FormName;?> - <?php echo $data->FormCode;?>)
+								</td>
+							</tr>
+							<?php endforeach;?>
+						</table>
+					</div>
+				</td>
+			</tr>
+			
+			
+			
+		</table>
+	</div>
+</form>
+<script type="text/javascript">
+<!--
+$('.secure').click(function(){
+	var id = $(this).attr('name');
+	$('.'+id).prop('checked',this.checked);
+});
+//-->
+</script>

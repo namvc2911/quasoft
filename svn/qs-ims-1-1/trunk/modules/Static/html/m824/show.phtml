@@ -1,0 +1,481 @@
+<?php
+    $iDay = 0;
+    // Ty le cac cot bao cao
+    $widths        = array(
+        'STT'=> 1
+        , 'MaThietBi'=>3
+        , 'TenThietBi'=>3
+        , 'CaMay'=>1.5
+        , 'TongSoGioThang'=>2
+    );
+
+    foreach($this->aDate as $date)
+    {
+        $iDay++;
+        $widths['Ngay'.$iDay] = 1;
+    }
+
+    // echo '<pre>'; print_r($widths); die;
+
+    $totalColumn    = count($widths);
+    $excel_col      = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+    $htmlWidth      = Qss_Lib_Report::changeWidthToFitScreen($widths, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+    $excelWidth     = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($widths, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+    $row            = 5; // Row bat dau
+    $bg             = "#EEEEEE"; // Mau nen cua cot tieu de
+    $bgLoaiThietBi  = "#FF0000"; // Mau nen cua loai thiet bi
+    $bgTongGioThang = "#CC99FF"; // Mau nen cua cot tong so gio cuoi cung cho mot ngay, ca
+    $bgTongGioNgay  = "#FFFF99";  // Mau nen cua hang ngay
+	$sttLoaiThietBi = 0; // STT của loại thiết bị
+	$sttThietBi     = 0; // STT của danh mục thiết bị
+    $rowSpanEquip   = $this->countShifts + 1 + 1; // row span cua thiet bi = so ca cong voi 1 dong ngay + 1 cho dan no html
+    $tongTheoNgay   = array(); // Tổng số giờ làm việc trong một ngày <Tổng dọc>, reset lai sau khi chuyen sang thiet bi khac
+    $oldEquipType   = '';
+    $reportTitle    = "SỔ THEO DÕI GIỜ HOẠT ĐỘNG THIẾT BỊ CƠ ĐIỆN THÁNG ". date('m', strtotime($this->start));
+?>
+
+<div class="landscape">
+
+    <form id="excel" method="post" action="/report/index/excel" target="new">
+        <input type="hidden" id="content" name="content" value="">
+    </form>
+
+    <excel orientation="landscape" font-name="Arial" font-size="10"
+           margin-left="0.5" margin-right="0.5" margin-top="0.75"
+           margin-bottom="0.75" />
+
+    <div id="head_print">
+        <?php echo $this->views->Common->Landscape('A', 'E', 'AD', 'AI'); ?>
+
+        <center>
+            <h2 class="report-title">
+                <xls row="<?php echo $row ?>"
+                     column="A"
+                     column-merge="<?php echo $excel_col[$totalColumn] ?>"
+                     font-size="14"
+                     wrap-text="1"
+                     h-align="center"
+                     v-align="center"> <?php echo $reportTitle;?></xls>
+            </h2>
+            <?php $row++; ?>
+        </center>
+    </div>
+
+    <div id="container">
+        <table cellspacing="0" cellpadding="0" border="1" class="border">
+            <!-- REPORT TITLE: Line 1 -->
+            <?php $begin = 0; ?>
+
+            <tr class="bggrey">
+                <!-- STT -->
+                <th rowspan="2" class="center" style="width:<?php echo $htmlWidth['STT']; ?>px">
+                    <xls
+                        row="<?php echo $row ?>"
+                        row-merge="1"
+                        width="<?php echo $excelWidth['STT']; ?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg; ?>"> STT </xls>
+                </th>
+
+                <th rowspan="2" class="center" style="width:<?php echo $htmlWidth['MaThietBi']; ?>px">
+                    <xls
+                        row="<?php echo $row ?>"
+                        row-merge="1"
+                        width="<?php echo $excelWidth['MaThietBi']; ?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg; ?>"> Mã thiết bị </xls>
+                </th>
+
+                <!-- Tên thiết bị/HT -->
+                <th rowspan="2" class="center" style="width:<?php echo $htmlWidth['TenThietBi']; ?>px">
+                    <xls
+                        row="<?php echo $row ?>"
+                        row-merge="1"
+                        width="<?php echo $excelWidth['TenThietBi']; ?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg; ?>"> Tên thiết bị/HT </xls>
+                </th>
+
+                <!-- Ca máy IV -->
+                <th rowspan="2" class="center" style="width:<?php echo $htmlWidth['CaMay']; ?>px">
+                    <xls
+                        row="<?php echo $row ?>"
+                        row-merge="1"
+                        width="<?php echo $excelWidth['CaMay']; ?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg; ?>"> Ca máy IV </xls>
+                </th>
+
+                <!-- Giờ làm việc thiết bị các ngày trong tháng -->
+                <th colspan="<?php echo $this->countDate;?>" class="center">
+                    <xls
+                        row="<?php echo $row ?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        column-merge="<?php echo $excel_col[($begin + $this->countDate - 1)] ?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg; ?>"> Giờ làm việc thiết bị các ngày trong tháng </xls>
+                </th>
+                <?php $begin = $begin + ($this->countDate - 1); // Tien them 31 cot ngay ;?>
+
+                <!-- Tổng giờ làm việc tháng -->
+                <th rowspan="2" class="center" style="width:<?php echo $htmlWidth['TongSoGioThang']; ?>px">
+                    <xls
+                        row="<?php echo $row ?>"
+                        row-merge="1"
+                        width="<?php echo $excelWidth['TongSoGioThang']; ?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg; ?>"> Tổng giờ LV tháng </xls>
+                </th>
+            </tr>
+            <?php $row++; // Tăng hàng trong excel lên 1 ?>
+
+            <!-- REPORT TITLE: Line 2 -->
+            <?php $begin = 4; // Bắt đầu từ cột trước nhóm cột ngày  ?>
+
+            <tr class="bggrey">
+
+                <?php $iDay = 0;?>
+                <?php foreach($this->aDate as $item): // Begin C173: In tieu đê cac ngày trong thang  ?>
+                <?php $iDay++;?>
+
+                <!-- Ngay <?php echo $iDay;?> -->
+                <th class="center" style="width:<?php echo $htmlWidth['Ngay'.$iDay]; ?>px">
+                    <xls
+                        row="<?php echo $row ?>"
+                        width="<?php echo $excelWidth['Ngay'.$iDay]; ?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg; ?>"> <?php echo $item['SimpleDisplay'];?> </xls>
+                </th>
+                <?php endforeach; // End C173: In tieu dề ngày trong tháng ?>
+            </tr>
+            <?php $row++; // Tăng hàng trong excel lên 1 ?>
+
+
+            <?php foreach($this->oDaily as $daily): // Begin H178: In so hoat dong thiet bi ?>
+            <!-- TITLE: Loại thiết bị -->
+            <?php $begin = 0;?>
+
+            <?php if($oldEquipType != $daily->IFIDLoaiThietBi): // Begin I182: In loai thiet bi?>
+            <tr>
+                <!-- Số thú tự loại thiết bị <Tương ứng STT> -->
+                <td class="center bold" style="background:<?php echo $bgLoaiThietBi; ?>">
+                    <xls
+                        row="<?php echo $row ?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        bold="1"
+                        bgcolor="<?php echo $bgLoaiThietBi; ?>"> <?php echo Qss_Lib_Util::numberToRome(++$sttLoaiThietBi);?></xls>
+                </td>
+
+                <!-- Tên loại thiết bị <Tương ứng tên thiết bị> -->
+                <td class="center bold" style="background:<?php echo $bgLoaiThietBi; ?>">
+                    <xls
+                        row="<?php echo $row ?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        bold="1"
+                        bgcolor="<?php echo $bgLoaiThietBi; ?>"> <?php echo $daily->TenLoaiThietBi;?> </xls>
+                </td>
+
+                <!-- Tên loại thiết bị <Tương ứng tên thiết bị> -->
+                <td class="center bold" style="background:<?php echo $bgLoaiThietBi; ?>">
+                    <xls
+                        row="<?php echo $row ?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        bold="1"
+                        bgcolor="<?php echo $bgLoaiThietBi; ?>">  </xls>
+                </td>
+
+                <!-- Tương ứng Ca máy -->
+                <td style="background:<?php echo $bgLoaiThietBi; ?>">
+                    &nbsp;
+                    <xls
+                        row="<?php echo $row ?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        bold="1"
+                        bgcolor="<?php echo $bgLoaiThietBi; ?>"> </xls>
+                </td>
+
+                <?php $iDay = 0;?>
+                <?php foreach($this->aDate as $item): // Begin F217: In loại thiết bị ?>
+                <!-- Tương ứng Ngày <?php echo ++$iDay;?> -->
+                <td>
+                    &nbsp;
+                    <xls
+                        row="<?php echo $row ?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"> </xls>
+                </td>
+                <?php endforeach; // End F217: In loại thiết bị?>
+
+                <!-- Tương ứng Tổng số giờ tháng -->
+                <td>
+                    &nbsp;
+                    <xls
+                        row="<?php echo $row ?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"> </xls>
+                </td>
+            </tr>
+            <?php $row++; // Tăng hàng trong excel lên 1 ?>
+            <?php endif; // End I182: In loai thiet bi ?>
+            <?php $oldEquipType = $daily->IFIDLoaiThietBi;?>
+
+
+            <!-- Thiết bị -->
+            <?php $begin = 0;?>
+            <tr>
+                <td rowspan="<?php echo $rowSpanEquip;?>" class="center">
+                    <xls
+                        row="<?php echo $row ?>"
+                        row-merge="<?php echo ($rowSpanEquip - 1 - 1);?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"> <?php echo ++$sttThietBi;?></xls>
+                </td>
+
+                <td rowspan="<?php echo $rowSpanEquip;?>" class="center">
+                    <xls
+                        row="<?php echo $row ?>"
+                        row-merge="<?php echo ($rowSpanEquip - 1 - 1);?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"> <?php echo $daily->MaThietBi;?> </xls>
+                </td>
+
+                <td rowspan="<?php echo $rowSpanEquip;?>" class="center">
+                    <xls
+                        row="<?php echo $row ?>"
+                        row-merge="<?php echo ($rowSpanEquip - 1 - 1);?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"> <?php echo $daily->TenThietBi;?> </xls>
+                </td>
+            </tr>
+            <?php // Không tăng hàng trong excel lên 1 sau row group này bởi nó ăn theo hàng đầu tiên trong group này tức là thẻ tr bên dưới thẻ tr này ?>
+
+            <!-- Ca theo tung thiet bi -->
+            <?php foreach($this->shifts as $shift): // Begin G281: In cac dong ca lam viec theo thiet bi?>
+                <?php $begin          = 3; // Bắt đầu từ cột tên thiết bị ?>
+                <?php $tongTheoNgayCa = 0; // Tong số giờ làm việc theo một ca trong một khoảng ngày <Tong ngang> ?>
+
+            <!-- In thời gian từng ngày theo ca làm việc -->
+            <tr>
+                <!-- Ca làm việc -->
+                <td class="center">
+                    <xls
+                        row="<?php echo $row ?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"> <?php echo $shift->TenCa;?> </xls>
+                </td>
+
+                <?php $iDay = 0;?>
+                <?php foreach($this->aDate AS $key=>$item): // Begin A1085: Thời gian làm việc theo ca theo từng ngày ?>
+                    <?php ++$iDay;?>
+
+                    <?php $giaTriCuaCa = 0;?>
+
+                    <?php
+                        // Lay so hoat dong cua ca lam viec
+                        if(isset($this->activeByShifts[$daily->IOID][$key][$shift->IOID]))
+                        {
+                            $giaTriCuaCa = $this->activeByShifts[$daily->IOID][$key][$shift->IOID];
+                        }
+
+                    ?>
+
+                    <?php $tongTheoNgayCa += $giaTriCuaCa; // Cộng số giờ làm việc theo ngày và ca ?>
+
+                    <?php
+                    // Khoi tao luu tru cho mot ngay
+                    if(!isset($tongTheoNgay[$iDay]))
+                    {
+                        $tongTheoNgay[$iDay] = 0;
+                    }
+
+                    // Them thoi giam lam viec cua ca
+                    $tongTheoNgay[$iDay] += $giaTriCuaCa;
+                    ?>
+
+                    <!-- TG ngày <?php echo $iDay;?> -->
+                    <td class="right">
+                        <xls
+                            row="<?php echo $row ?>"
+                            column="<?php echo $excel_col[++$begin] ?>"
+                            wrap-text="1"
+                            v-align="center"
+                            h-align="right"
+                            border="1"> <?php echo $giaTriCuaCa;?></xls>
+                    </td>
+                <?php endforeach; // End A1085: Thời gian làm việc theo ca theo từng ngày ?>
+
+                <!-- Tổng thời gian làm việc từng ca -->
+                <td class="right">
+                    <xls
+                        row="<?php echo $row ?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="right"
+                        border="1"> <?php echo $tongTheoNgayCa;?> </xls>
+                </td>
+            </tr>
+            <?php $row++; // Tăng hàng trong excel lên 1 ?>
+            <?php endforeach; // END G281: In cac dong ca lam viec theo thiet bi?>
+
+            <?php $begin = 3;?>
+            <!-- Tong theo ngay tung thiet bi -->
+            <tr style="background:<?php echo $bgTongGioNgay;?>">
+                <td class="center">
+                    <xls
+                        row="<?php echo $row ?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"> Ngày </xls>
+                </td>
+
+                <?php $iDay = 0;?>
+                <?php $tongNgay = 0;?>
+                <?php foreach($this->aDate as $item): // Begin B1139: Thời gian làm việc theo ngày?>
+                    <!-- TG ngày <?php echo ++$iDay;?> -->
+                    <?php $tongNgay += $tongTheoNgay[$iDay];?>
+                    <td class="right">
+                        <xls
+                            row="<?php echo $row ?>"
+                            column="<?php echo $excel_col[++$begin] ?>"
+                            wrap-text="1"
+                            v-align="center"
+                            h-align="right"
+                            border="1"
+                            bgcolor="<?php echo $bgTongGioNgay; ?>"> <?php echo $tongTheoNgay[$iDay];?> <?php $tongTheoNgay[$iDay] = 0; //reset ?> </xls>
+                    </td>
+                <?php endforeach; // End B1139: Thời gian làm việc theo ngày ?>
+
+                <!-- Tong thoi gian lam viec -->
+                <td class="right" style="background:<?php echo $bgTongGioThang;?>">
+                    <xls
+                        row="<?php echo $row ?>"
+                        column="<?php echo $excel_col[++$begin] ?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="right"
+                        border="1"
+                        bgcolor="<?php echo $bgTongGioThang; ?>"> <?php echo $tongNgay;?> </xls>
+                </td>
+            </tr>
+            <?php $row++; // Tăng hàng trong excel lên 1 ?>
+
+            <?php endforeach; // End H178: In so hoat dong thiet bi ?>
+        </table>
+    </div>
+
+    <div class="clear"></div>
+    <br/>
+    <?php $row++; // Tăng hàng trong excel lên 1 ?>
+
+    <table cellspacing="0" cellpadding="0" border="0" >
+
+
+        <tr>
+            <?php $endLapBieu   = (int)$totalColumn/2; ?>
+            <?php $startQuanDoc = $endLapBieu + 1;?>
+
+            <td style="width: 50%; text-align: center; font-weight: bold;">
+                <xls
+                    row="<?php echo $row ?>"
+                    column="<?php echo $excel_col[1]; ?>"
+                    column-merge="<?php echo $excel_col[$endLapBieu]; ?>"
+                    wrap-text="1"
+                    v-align="center"
+                    h-align="center"
+                    bold="1"> LẬP BIỂU </xls>
+            </td>
+
+            <td style="width: 50%; text-align: center; font-weight: bold;">
+                <xls
+                    row="<?php echo $row ?>"
+                    column="<?php echo $excel_col[$startQuanDoc]; ?>"
+                    column-merge="<?php echo $excel_col[$totalColumn]; ?>"
+                    wrap-text="1"
+                    v-align="center"
+                    h-align="center"
+                    bold="1"> Q.ĐỐC PX </xls>
+            </td>
+        </tr>
+    </table>
+
+    <div id="qss_trace"></div>
+</div>
+<?php die;?>

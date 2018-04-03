@@ -1,0 +1,72 @@
+<form id="param_save">
+	<table id="cwpo_search_detail" class="borderX" cellpadding="0"
+		cellspacing="0" border="1" style="width: 100%">
+		<tr class="bggrey">
+			<th>Mã lệnh sản xuất</th>
+			<th>Loại sản xuất</th>
+			<th>Từ ngày</th>
+			<th>Đến ngày</th>
+			<th>Thời gian (Giờ)</th>
+			<th>Dây chuyền</th>
+			<th>Mã MH</th>
+			<th>Tên MH</th>
+			<th>Đơn vị tính</th>
+			<th>Thuộc tính</th>
+			<th>Thiết kế</th>
+			<th>Tháo dỡ</th>
+			<th>Số lượng KH</th>
+			<th>Số lượng đã sx</th>
+			<th><input type="checkbox" class="cwpo_line_checkbok"
+				onclick="common_check_all_table_line(this, '.cwpo_line_checkbok', '.cwpo_line_checkbok_val')">
+			</th>
+		</tr>
+
+		<?php foreach ($this->ProductionOrder as $item):?>
+		<?php
+		$col_check = $item->ThaoDo?'class="col-checked"':'class="col-unchecked"';
+		?>
+		<tr>
+			<td><?php echo $item->MaLenhSX;?> <input type="hidden" name="DocNo[]"
+				value="<?php echo $item->MaLenhSX;?>" class="table_line_disabled"
+				disabled="" /> <input type="hidden" name="Date[]"
+				value="<?php echo $this->date;?>" class="table_line_disabled"
+				disabled="" /> <input type="hidden" name="RefLine[]"
+				value="<?php echo $item->Ref_DayChuyen;?>"
+				class="table_line_disabled" disabled="" /> <input type="hidden"
+				name="RefBOM[]" value="<?php echo $item->Ref_ThietKe;?>"
+				class="table_line_disabled" disabled="" /></td>
+			<td><?php echo $item->LoaiSanXuat;?>
+			</td>
+			<td><?php echo Qss_Lib_Date::mysqltodisplay($item->TuNgay);?>
+			</td>
+			<td><?php echo Qss_Lib_Date::mysqltodisplay($item->DenNgay);?>
+			</td>
+			<td class="right"><?php echo Qss_Lib_Extra::returnNumber($item->ThoiGian);?>
+			</td>
+			<td><?php echo $item->DayChuyen;?>
+			</td>
+			<td><?php echo $item->MaSP;?>
+			</td>
+			<td><?php echo $item->TenSP;?>
+			</td>
+			<td><?php echo $item->DonViTinh;?>
+			</td>
+			<td><?php echo $item->ThuocTinh;?>
+			</td>
+			<td><?php echo $item->ThietKe;?>
+			</td>
+			<td <?php echo $col_check;?>>&nbsp;</td>
+			<td class="right"><?php echo Qss_Lib_Extra::returnNumber($item->SoLuong);?>
+			</td>
+			<td class="right"><?php echo Qss_Lib_Extra::returnNumber($item->SoLuongThucTe);?>
+			</td>
+			<td class="center"><input type="checkbox" class="cwpo_line_checkbok"
+				onclick="common_check_table_line(this, '.cwpo_line_checkbok_val')">
+				<input type="hidden"
+				class="cwpo_line_checkbok_val table_line_disabled" value="0"></td>
+		</tr>
+		<?php endforeach;?>
+	</table>
+</form>
+<button type="button" class="btn-custom" onclick="cwpo_save_wo()">Lưu
+	lại</button>

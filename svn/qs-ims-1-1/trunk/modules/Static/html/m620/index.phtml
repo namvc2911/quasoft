@@ -1,0 +1,87 @@
+<script>
+    function printPreview() {
+        var ngaybd  = $('#start_date').val();
+        var ngaykt  = $('#end_date').val();
+        var project = $('#project_ioid').val();
+        var msg     = '';
+
+        msg += common_checkEmpty(project, '<?php echo $this->_translate(6) ?>');
+        msg += common_checkEmpty(ngaybd, '<?php echo $this->_translate(4) ?>');
+        msg += common_checkEmpty(ngaykt, '<?php echo $this->_translate(5) ?>');
+        msg += common_compareStartAndEnd(
+            ngaybd
+            , ngaykt
+            , '<?php echo $this->_translate(4) ?>'
+            , '<?php echo $this->_translate(5) ?>'
+        );
+
+        if (msg)
+        {
+            qssAjax.alert(msg);
+            return;
+        }
+        else
+        {
+            var url = sz_BaseUrl + '/static/m620/show';
+            var data = $('#report').serialize();
+
+            qssAjax.getHtml(url, data, function (jreturn) {
+                $('#print-area').html(jreturn);
+            });
+        }
+    }
+</script>
+
+<div class="clear"></div>
+<div id="view">
+	<div class="line-hr">
+		<span><?php echo $this->_translate(3) ?> </span>
+	</div>
+	<form id="report" method="get" action="/static/m620/show">
+		<table class="detail">
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(4) ?>
+				</th>
+				<td><?php echo $this->views->Report->Datepicker('start_date', '01-' . date('m') . '-' . date('Y')); ?>
+					<span class="bold red">(*)</span>
+				</td>
+			</tr>
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(5) ?>
+				</th>
+				<td><?php echo $this->views->Report->Datepicker('end_date', date('d-m-Y')); ?>
+					<span class="bold red">(*)</span>
+				</td>
+			</tr>
+
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(6) ?>
+				</th>
+
+				<td><?php
+				$id = array('id'=>'project_ioid', 'require'=>1);
+				$getDataObject = array('ODuAn' => array('MaDuAn', 'TenDuAn'));
+				$getFields = array(
+                        'num' => 2,
+                        'objects' => array('ODuAn' => array(
+                                'id' => 'IOID'
+                                , 'display1' => 'MaDuAn'
+                                , 'display2' => 'TenDuAn'
+                                )
+                                )
+                                );
+                                ?> <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields); ?>
+
+				</td>
+			</tr>
+		</table>
+	</form>
+	<p>
+	
+	
+	<hr>
+	<?php echo $this->views->Report->PrintToolbar(); ?>
+	<div id="print-content">
+		<div id="print-area"></div>
+	</div>
+</div>

@@ -1,0 +1,66 @@
+<script type="text/javascript">
+    function printPreview() {
+        var url = sz_BaseUrl + '/static/m874/show';
+        var data = $('#report').serialize();
+
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#print-area').html(jreturn);
+            removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+        });
+    }
+</script>
+
+<div class="clear">&nbsp;</div>
+<div id="view">
+    <div class="line-hr">
+        <span><?php echo Qss_Lib_System::getReportTitle('M874');?> </span>
+    </div>
+
+    <form id="report" method="get" action="/static/m874/show">
+        <table class="detail">
+
+            <tr>
+                <th width="20%" class="report-param-label"><?php echo $this->_translate(1) ?>
+                    <span class="red bold">(*)</span>
+                </th>
+                <td>
+                    <?php
+                    $id = 'project';
+                    $getDataObject = array('ODuAn' => array('MaDuAn', 'TenDuAn'));
+                    $getFields = array('num' => 2,
+                        'objects' => array('ODuAn' => array(
+                            'id' => 'IOID'
+                        , 'display1' => 'MaDuAn'
+                        , 'display1' => 'TenDuAn')));
+                    $getLookupFilter = array();
+                    ?> <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields, $getLookupFilter); ?>
+                </td>
+            </tr>
+             <tr>
+                <th width="20%" class="report-param-label">Số YCCC
+                    <span class="red bold">(*)</span>
+                </th>
+                <td>
+                    <?php
+                    $id = 'yccc';
+                    $getDataObject = array('OYeuCauTrangThietBiVatTu' => array('SoPhieu'));
+                    $getFields = array('num' => 1,
+                        'objects' => array('OYeuCauTrangThietBiVatTu' => array(
+                            'id' => 'IOID'
+                        , 'display1' => 'SoPhieu')));
+                    $getLookupFilter = array(array('id' => 'project'
+					, 'refField' => array('OYeuCauTrangThietBiVatTu' => 'Ref_DuAn') // Nhom TB
+					, 'required' => 0)
+					);
+                    ?> <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields, $getLookupFilter); ?>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <hr />
+
+    <?php echo $this->views->Report->PrintToolbar();?>
+    <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>

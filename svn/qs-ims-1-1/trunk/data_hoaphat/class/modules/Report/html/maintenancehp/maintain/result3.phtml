@@ -1,0 +1,31 @@
+<?php
+
+function print_xu_ly_cong_viec($comment, $mo_ta, $thuc_hien_cong_viec, $phan_tram_hoan_thanh)
+{
+	$xu_ly  = '';
+	$xu_ly .= (trim($comment)) ? "<b>Chỉ đạo:</b><br/> " . addslashes($comment) : '';
+	$xu_ly .= $mo_ta ? ((trim($xu_ly) != '') ? '<br/><br/>' . "<b>Mô tả:</b> " . addslashes($mo_ta): "Mô tả: " . addslashes(mo_ta)) : '';	
+	$xu_ly .= $thuc_hien_cong_viec ? ((trim($xu_ly) != '') ? '<br/><br/>' . "<b>Xử lý:</b> " . addslashes($thuc_hien_cong_viec) : "Xử lý: " . addslashes($thuc_hien_cong_viec)) : '';	
+	$xu_ly .= (trim($xu_ly) != '') ? '<br/><br/>' . "<b>Phần trăm hoàn thành:</b>" . @(int) addslashes($phan_tram_hoan_thanh) . "% " : "<b>Phần trăm hoàn thành:</b>" . @(int) addslashes($phan_tram_hoan_thanh) . '%';	
+	return $xu_ly;
+}	
+?>
+
+<?php if(count((array)$this->data)):?>
+<xls row="<?php echo $this->row ?>" 
+	 column="<?php echo $excel_col[$this->col] ?>" 
+	 wrap-text="1"  
+	 v-align="top" 
+	 h-align="left" 
+	 border="1" ><?php echo print_xu_ly_cong_viec($this->data->Comment
+							 , $this->data->MoTa
+							 , $this->data->ThucHienCongViec
+							 , $this->data->PhanTram);?></xls>
+<?php endif;?>
+
+<?php if($this->countComment):?>
+<script>
+	$('#comment_<?php echo $this->ifid;?>').text(<?php echo $this->countComment;?>);
+</script>
+<?php endif;?>
+

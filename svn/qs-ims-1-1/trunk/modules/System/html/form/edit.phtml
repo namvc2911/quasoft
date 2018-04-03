@@ -1,0 +1,400 @@
+<?php
+if($this->type == 1)
+$id=116;
+elseif($this->type == 2)
+$id=117;
+elseif($this->type == 3)
+$id=118;
+else
+$id = 119;
+?>
+<style type="text/css" media="screen">
+<!--
+.tag-container {
+	position: relative !important;
+}
+
+.group_title {
+	padding-left: 16px;
+	background: url('/images/tree_open.png') no-repeat left 2px;
+	text-align: left;
+	color: red !important;
+	cursor: pointer;
+}
+
+.step_document {
+	padding: 5px 0px;
+	float: left;
+	width: 50%;
+}
+
+.step_activity {
+	padding: 5px 0px;
+	float: right;
+	width: 50%;
+}
+
+.step_add_document select,.step_add_activity select {
+	width: 50%;
+}
+
+.step_show_document select,.step_show_activity select {
+	width: 95%;
+}
+-->
+</style>
+<script>
+function addDocumentStep()
+{
+	/**
+	* Thêm hồ sơ 
+	*/
+	var value  = $('#document').val();
+	var add = true;
+
+	if(value)
+	{
+		$('#document_list option').each(function(){
+			if($(this).val() == value){
+				qssAjax.alert('Tài liệu đã tồn tại!');
+				add = false;
+			}
+		});
+	}
+	else
+	{
+		add = false;
+		qssAjax.alert('Bạn phải chọn một tài liệu!');
+	}
+	if(add){
+		var option = $('#document option[value="'+value+'"]').html();
+		$('#document_list').append("<option value='"+ value +"'>"+option+"</option>");
+	}
+	
+}
+function deleteDocumentStep()
+{
+	/**
+	* Xóa hồ sơ 
+	*/
+	var value  = $('#document_list').val();
+	$('#document_list option[value="'+value+'"]').remove();
+	
+}
+function addActivityStep()
+{
+	/**
+	* Thêm công việc
+	*/
+	var value  = $('#activity').val();
+	var add = true;
+	if(value)
+	{
+		$('#activity_list option').each(function(){
+			if($(this).val() == value){
+				qssAjax.alert('Công việc đã tồn tại!');
+				add = false;
+			}
+		});
+	}
+	else
+	{
+		add = false;
+		qssAjax.alert('Bạn phải chọn một công việc!');
+	}
+	if(add){
+		var option = $('#activity option[value="'+value+'"]').html();
+		$('#activity_list').append("<option value='"+ value +"'>"+option+"</option>");
+	}
+}
+function deleteActivityStep(){
+	/**
+	* Xóa công việc
+	*/
+	var value  = $('#activity_list').val();
+	if(value == ''){
+		qssAjax.alert('Hãy chọn tài liệu để xóa');
+		return false;
+	}
+	//delete
+	$('#activity_list option[value="'+value+'"]').remove();
+	
+}
+
+function checkAll(ele)
+{
+	$(ele).find('input').each(function(){
+		if($(this).is(':checked')){
+			$(this).removeAttr('checked');
+		}
+		else{
+			$(this).attr('checked',true);
+		}
+	});
+}
+function checkAllCol(objid,groupid,type)
+{
+	$('.'+type+'_'+groupid+'_'+objid).each(function(){
+		if($(this).is(':checked')){
+			$(this).removeAttr('checked');
+		}
+		else{
+			$(this).attr('checked',true);
+		}
+	});
+}
+function Toggle(cl){
+	$('.'+cl).toggle();
+}
+</script>
+<form method="post" id="qss_form">
+	<input type="hidden" value="<?php echo $this->form->FormCode?>"
+		name="fid" />
+	<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+		<button id="btnSAVEBACK" class="btn btn_main_top" onclick="formSave(<?php echo @(int)$this->type?>)" type="button">
+			<?php echo $this->_translate(35)?>
+		</button>
+
+		<button id="btnSAVE" class="btn btn_main_top" onclick="formSave(<?php echo @(int)$this->type?>, 1)" type="button">
+			<?php echo $this->_translate(34)?>
+		</button>
+
+		<button type="button" class="btn btn_main_top" onclick="formBack(<?php echo $this->type?>)">
+			<?php echo $this->_translate(32)?>
+		</button>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<div id="item-actions">
+			<ul>
+				<li class="item-action active"><a href="#1"><span><?php echo $this->_translate($id)?>
+					</span> </a></li>
+			</ul>
+		</div>
+		<table border="0" width="450" cellpadding="0" cellspacing="0" class="border_table">
+			<tr>
+				<td width="110">Loại</td>
+				<td width="338"><select style="width: 200px" name="intType">
+						<option value="1"
+						<?php if($this->form->i_Type == 1) echo 'selected';?>>Dữ liệu
+							dùng chung</option>
+						<option value="2"
+						<?php if($this->form->i_Type == 2) echo 'selected';?>>Dữ liệu
+							dùng riêng</option>
+						<option value="3"
+						<?php if($this->form->i_Type == 3) echo 'selected';?>>Mô đun</option>
+						<option value="4"
+						<?php if($this->form->i_Type == 4) echo 'selected';?>>Báo cáo</option>
+						<option value="5"
+						<?php if($this->form->i_Type == 5) echo 'selected';?>>Tiến trình</option>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<td width="110"><?php echo $this->_translate(68)?></td>
+				<td width="338"><input type="text"
+					value="<?php echo $this->form->FormCode?>" style="width: 200px;"
+					name="szCode" /></td>
+			</tr>
+			<?php foreach ($this->languages as $lang):?>
+			<tr>
+				<td><?php echo $this->_translate(44)?> - <?php echo $lang->Name?>:</td>
+				<?php if($lang->Code == 'vn'):?>
+				<td><input type="text" value="<?php echo @$this->data->Name?>"
+					style="width: 200px;" name="szName" /></td>
+					<?php else:?>
+				<td><input type="text" name="szName_<?php echo $lang->Code?>"
+					style="width: 200px;"
+					value="<?php echo @$this->data->{"Name_$lang->Code"}?>" /></td>
+					<?php endif;?>
+			</tr>
+			<?php endforeach;?>
+			<tr>
+				<td><?php echo $this->_translate(53)?></td>
+				<td><input type="checkbox" value="1"
+				<?php if($this->form->b_Effected) echo 'checked';?>
+					name="bEffected" /></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(9)?></td>
+				<td><input type="checkbox" value="1"
+				<?php if($this->form->bSecure) echo 'checked';?>
+					name="bSecure" /></td>
+			</tr>
+			<?php if($this->type == Qss_Lib_Const::FORM_TYPE_REPORT):?>
+			<tr>
+				<td><?php echo $this->_translate(40)?></td>
+				<td><input type="file" onchange="return uploadFile('epFile')"
+					name="epFile_file" id="epFile_file" size="40" /><input
+					type="hidden" name="epFile" id="epFile" /></td>
+			</tr>
+			<?php endif;?>
+			<tr>
+				<td><?php echo $this->_translate(1)?></td>
+				<td><input type="checkbox" value="1"
+				<?php if($this->form->document) echo 'checked';?>
+					name="Document" /></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(3)?></td>
+				<td><input type="checkbox" value="1"
+				<?php if($this->form->comment) echo 'checked';?>
+					name="Comment" /></td>
+			</tr>
+			<tr>
+				<td>Read log</td>
+				<td><input type="checkbox" value="1"
+				<?php if($this->form->reader) echo 'checked';?>
+					name="Reader" /></td>
+			</tr>
+			<tr>
+				<td>Cho phép import từ excel</td>
+				<td><input type="checkbox" value="1"
+				<?php if($this->form->bExcelImport) echo 'checked';?>
+					name="bExcelImport" /></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(95)?></td>
+				<td><input type="text" value="<?php echo $this->form->sz_Class?>"
+					style="width: 200px;" name="szClass" /></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(2)?></td>
+				<td><input type="text" value="<?php echo $this->form->sz_ClassMobile?>"
+					style="width: 200px;" name="szClassMobile" /></td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td>
+					<div class="step_document">
+						<div class="step_add_document">
+							<span>Hồ sơ :</span> <span> <select name="document" id="document">
+									<option value=""></option>
+									<?php foreach ($this->documenttypes as $item):?>
+									<option value="<?php echo $item->DTID?>">
+									<?php echo $item->Code?>
+										-
+										<?php echo $item->Type?>
+									</option>
+									<?php endforeach;?>
+							</select> </span> <span><button type="button"
+									onclick="addDocumentStep()" class="btn-custom">Thêm hồ sơ</button>
+							</span>
+						</div>
+						<!-- end .step_add_document -->
+
+						<div class="step_show_document">
+							<span> <select name="document_list[]" id="document_list"
+								size="10" multiple="multiple">
+								<?php foreach ($this->documents as $item):?>
+									<option value="<?php echo $item->DTID?>">
+									<?php echo $item->Code?>
+										-
+										<?php echo $item->Type?>
+									</option>
+									<?php endforeach;?>
+							</select> </span>
+						</div>
+						<!-- end .step_show_document -->
+
+						<div class="step_delete_document">
+							<span>
+								<button type="button" onclick="deleteDocumentStep()"
+									class="btn-custom">Xóa hồ sơ</button> </span>
+						</div>
+						<!-- end .step_delete_event -->
+					</div> <!-- end .step_document -->
+
+					<div class="step_activity">
+						<div class="step_add_activity">
+							<span>Công việc :</span> <span> <select name="activity"
+								id="activity">
+									<option value=""></option>
+									<!--  <option value="<?php echo $item->ETID?>"><?php echo $item->Name?></option>-->
+									<?php foreach ($this->activitytype as $item):?>
+									<option value="<?php echo $item->TypeID?>">
+									<?php echo $item->TypeName?>
+									</option>
+									<?php endforeach;?>
+							</select> </span> <span><button onclick="addActivityStep()"
+									type="button" class="btn-custom">Thêm công việc</button> </span>
+						</div>
+						<!-- end .step_add_activity -->
+
+						<div class="step_show_activity">
+							<span> <select name="activity_list[]" id="activity_list"
+								size="10" multiple="multiple">
+								<?php foreach ($this->activities as $item):?>
+									<option value="<?php echo $item->TypeID?>">
+									<?php echo $item->TypeName?>
+									</option>
+									<?php endforeach;?>
+							</select> </span>
+						</div>
+						<!-- end .step_show_activity -->
+
+
+						<div class="step_delete_activity">
+							<span>
+								<button onclick="deleteActivityStep()" type="button"
+									class="btn-custom">Xóa công việc</button> </span>
+						</div>
+						<!-- end .step_delete_activity -->
+					</div> <!-- end .step_activity -->
+				</td>
+			</tr>
+		</table>
+		<div class="line-hr">
+			<span>Sự kiện</span>
+		</div>
+		<?php
+		$className = 'Qss_Bin_Validation_'.$this->form->FormCode;
+		?>
+		<?php if(class_exists($className)):?>
+		<?php $ref = new ReflectionClass($className); ?>
+		<?php $method = $ref->getMethod('onValidated');?>
+		<?php if($method->class == $className):?>
+		<h4>Kiểm tra dữ liệu</h4>
+		<?php echo $method->getDocComment()?>
+		<?php endif;?>
+
+		<?php $method = $ref->getMethod('onInsert');?>
+		<?php if($method->class == $className):?>
+		<h4>Trước khi tạo mới</h4>
+		<?php echo $method->getDocComment()?>
+		<?php endif;?>
+		<?php $method = $ref->getMethod('onUpdate');?>
+		<?php if($method->class == $className):?>
+		<h4>Trước khi cập nhật</h4>
+		<?php echo $method->getDocComment()?>
+		<?php //$fileName = $method->getFileName();?>
+		<?php //$startLine = $method->getStartLine();?>
+		<?php //$endLine = $method->getEndLine();?>
+		<?php //$length = $endLine - $startLine;?>
+		<?php //$source  = file($fileName);?>
+		<?php //$body = implode('<br>', array_slice($source, $startLine, $length));?>
+		<?php //echo $body?>
+		<?php endif;?>
+		<?php $method = $ref->getMethod('onDelete');?>
+		<?php if($method->class == $className):?>
+		<h4>Trước khi xóa</h4>
+		<?php echo $method->getDocComment()?>
+		<?php endif;?>
+		<?php $method = $ref->getMethod('onInserted');?>
+		<?php if($method->class == $className):?>
+		<h4>Sau khi tạo mới</h4>
+		<?php echo $method->getDocComment()?>
+		<?php endif;?>
+		<?php $method = $ref->getMethod('onUpdated');?>
+		<?php if($method->class == $className):?>
+		<h4>Sau khi cập nhật</h4>
+		<?php echo $method->getDocComment()?>
+		<?php endif;?>
+		<?php $method = $ref->getMethod('onDeleted');?>
+		<?php if($method->class == $className):?>
+		<h4>Sau khi xóa</h4>
+		<?php echo $method->getDocComment()?>
+		<?php endif;?>
+		<?php endif;?>
+	</div>
+</form>

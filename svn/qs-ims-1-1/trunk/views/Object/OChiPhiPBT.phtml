@@ -1,0 +1,123 @@
+<table cellspacing="0" class="detail grid_edit tablescroll_body" id="grid" style="width:50%">
+	<tr>
+		<?php /*<th colspan="2">Chi phí dự kiến<hr></th> */?>
+		<th colspan="2">
+			<?php if($this->form->i_Status == 4):?>
+				<?php echo $this->_translate(1);?>
+			<?php else:?>
+				<?php echo $this->_translate(2);?>
+			<?php endif;?>
+			<hr>
+		</th>
+	</tr>
+	<tr>
+		<?php /*<th>&nbsp;Chi phí vật tư</th>
+		<th><input readonly class="readonly money right" value="<?php echo @$this->data->ChiPhiVatTuDK/1000;?>"></th>*/?>
+
+		<!-- Chi phí vật tư -->
+		<th>&nbsp;
+			<?php echo $this->_translate(3);?>
+		</th>
+		<th><input  class="readonly money right" value="<?php echo @$this->data->ChiPhiVatTu/1000;?>"></th>
+	</tr>
+	<tr>
+		<?php /*<th>&nbsp;Chi phí nhân công</th>
+		<th><input readonly class="readonly money right" value="<?php echo @$this->data->ChiPhiNhanCongDK/1000;?>"></th>*/?>
+
+		<!-- Chi phí nhân công -->
+		<th>&nbsp;
+			<?php echo $this->_translate(4);?>
+		</th>
+		<th><input readonly class="readonly money right" value="<?php echo @$this->data->ChiPhiNhanCong/1000;?>"></th>
+	</tr>
+	<tr>
+		<?php /*<th>&nbsp;Chi phí dịch vụ</th>
+		<th><input readonly class="readonly money right" value="<?php echo @$this->data->ChiPhiDichVuDK/1000;?>"></th>*/?>
+
+		<!-- Chi phí dịch vụ -->
+		<th>&nbsp;
+			<?php echo $this->_translate(5);?>
+		</th>
+		<th><input readonly class="readonly money right" value="<?php echo @$this->data->ChiPhiDichVu/1000;?>"></th>
+	</tr>
+	<tr>
+		<?php /*<th>&nbsp;</th>
+		<th>&nbsp;</th>*/?>
+
+		<!-- Chi phí thêm giờ -->
+		<th>
+			<?php echo $this->_translate(6);?>
+		</th>
+		<th><input id="chiphithemgio" class="money right" value="<?php echo @$this->data->ChiPhiThemGio/1000;?>"></th>
+	</tr>
+	<tr>
+		<?php /*<th>&nbsp;</th>
+		<th>&nbsp;</th>*/?>
+
+		<!-- Chi phí phát sinh -->
+		<th>&nbsp;
+			<?php echo $this->_translate(7);?>
+		</th>
+		<th><input id="chiphiphatsinh" class="money right" value="<?php echo @$this->data->ChiPhiPhatSinh/1000;?>"></th>
+	</tr>
+	<tr>
+		<?php /*<th colspan="2"><hr></th>*/?>
+		<th colspan="2"><hr></th>
+	</tr>
+	<tr>
+		<?php /*<th>&nbsp;Tổng cộng:</th>
+		<th><input readonly class="readonly money right" value="<?php echo @$this->data->TongChiPhiDK/1000;?>"></th>*/?>
+
+		<!-- Tổng cộng -->
+		<th>&nbsp;
+			<?php echo $this->_translate(8);?>
+		</th>
+		<th><input readonly class="readonly money right" value="<?php echo @$this->data->TongChiPhi/1000;?>"></th>
+	</tr>
+	<tr>
+		<?php /*<th>&nbsp;</th>
+		<th>&nbsp;</th>*/?>
+
+		<!-- Ghi chú -->
+		<th>&nbsp;
+			<?php echo $this->_translate(9);?>
+		</th>
+		<th><input style="width:200px;" id="ghichu" value=""></th>
+	</tr>
+	<tr>
+		<?php /*<th>&nbsp;</th>
+		<th>&nbsp;</th>*/?>
+		<th>&nbsp;</th>
+
+		<!-- Cập nhật chi phí -->
+		<th><button class="btn" type="button" onclick="updateCost()"><?php echo $this->_translate(10);?></button></th>
+	</tr>
+</table>
+<script type="text/javascript">
+	<!--
+	$(document).ready(function(){
+		$('input.money').number( true );
+	});
+	function updateCost(){
+		var ifid = $('#ifid').val();
+		var chiphiphatsinh = $('#chiphiphatsinh').val();
+		var chiphithemgio = $('#chiphithemgio').val();
+		var ghichu = $('#ghichu').val();
+		var url = sz_BaseUrl + '/button/m759/update/cost';
+		var data = {
+			ifid : ifid,
+			chiphiphatsinh : chiphiphatsinh,
+			chiphithemgio : chiphithemgio,
+			ghichu : ghichu,
+		};
+		qssAjax.call(url, data, function(jreturn) {
+			rowObject('OChiPhiPBT');
+		}, function(jreturn) {
+			qssAjax.alert(jreturn.message);
+		});
+	}
+	function save(){
+		return;
+	}
+	//-->
+</script>

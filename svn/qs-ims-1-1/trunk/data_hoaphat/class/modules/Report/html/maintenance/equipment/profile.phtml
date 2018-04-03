@@ -1,0 +1,60 @@
+<script>    
+function printPreview(){
+	var eq = $('#eq').val();
+        var msg   = '';
+
+        msg += common_checkEmpty(eq, '<?php echo $this->_translate(8) ?>');
+        
+        
+        if(msg != '')
+        {
+            qssAjax.alert(msg);
+            return;
+        }
+        else
+        {
+            var url = sz_BaseUrl + '/report/maintenance/equipment/profile2';
+            var data = $('#report').serialize();
+			data += "&equipmentStr=" + encodeURIComponent($('#eq_tag'           ).val());
+            qssAjax.getHtml(url, data, function(jreturn) {
+                    $('#print-area').html(jreturn);
+                    removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+            });
+        }
+}
+</script>
+
+<div class="clear"></div>
+<div id="view">
+	<div class="line-hr">
+		<span><?php echo $this->_translate(4)?> </span>
+	</div>
+	<form id="report" method="get"
+		action="/report/maintenance/equipment/profile2">
+		<table class="detail" style="margin: 10px">
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(8)?>
+				</th>
+				<td><?php
+				$id            = array('id'=>'eq', 'require'=>1);
+				$getDataObject = array('ODanhSachThietBi'=>array('MaThietBi', 'LoaiThietBi'));
+				//,'OKhuVuc'=>array('MaKhuVuc','Ten')
+				$getFields     = array('num'=>2,
+                                      'objects'=>array('ODanhSachThietBi'=>array(
+                                                               'id'=>'IOID'
+                                                               ,'display1'=>'MaThietBi'
+                                                               ,'display2'=>'LoaiThietBi')) );
+                                                               ?> <?php echo $this->views->Report->ListBox($id, $getDataObject,$getFields);?>
+				</td>
+			</tr>
+		</table>
+	</form>
+	<p>
+	
+	
+	<hr>
+	<?php echo $this->views->Report->PrintToolbar();?>
+	<div id="print-content">
+		<div id="print-area"></div>
+	</div>
+</div>

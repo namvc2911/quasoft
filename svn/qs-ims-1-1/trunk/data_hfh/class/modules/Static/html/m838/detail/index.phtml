@@ -1,0 +1,106 @@
+<script>
+    $(document).ready(function () {
+        $('#m838_location').change(function () {
+            m838.listDetail(<?php echo (int)$this->ifid;?>);
+        });
+
+        $('#m838_type').change(function () {
+            m838.listDetail(<?php echo (int)$this->ifid;?>);
+        });
+    });
+</script>
+
+<div class="clear"></div>
+
+<!-- Menu Dieu Khien -->
+<div id="horizontal-toolbar" class="clearfix">
+    <button type="button" class="btn btn-custom" onclick="m838.saveGeneral();"> Cập nhật </button>
+
+    <button type="button" onclick="m838.delete(<?php echo $this->ifid;?>)"
+        class="btn btn-custom ">
+        Xóa toàn bộ
+    </button>
+
+    <div class="fr">
+        <button type="button" class="btn btn-custom" onclick="m838.back()"> Trở lại </button>
+    </div>
+</div>
+
+<div class="clear"></div>
+
+<div id="view">
+    <!-- Kế hoạch tổng thể -->
+    <div class="line-hr">
+        <span>Kế hoạch tổng thể</span>
+    </div>
+
+    <form id="m838_general_form">
+        <div id="m838_general_edit">
+
+        </div>
+    </form>
+
+
+    <div class="clear"></div>
+
+    <!-- ----------------------------------------------------------------------------------------------------------- -->
+
+    <!-- Kế hoạch chi tiết -->
+    <div class="line-hr">
+        <span>Kế hoạch chi tiết</span>
+    </div>
+    <br/>
+
+    <div class="clear"></div>
+
+    <div class="clearfix">
+
+        <div class="fl">
+            <button type="button"
+                    class="btn btn-custom "
+
+                    onclick="m838.deleteDetail(<?php echo $this->ifid;?>);">
+                Xóa chi tiết
+            </button>
+
+            <button class="btn btn-custom "
+
+                    type="button"
+                    onclick="popupWindowFormInsert('M837', <?php echo $this->deptid;?>, {OKeHoachBaoTri_KeHoachTongThe:<?php echo $this->generalPlan->IOID;?>}, function(){ m838.listDetail(<?php echo $this->ifid;?>) })">
+                Thêm chi tiết
+            </button>
+
+            <button type="button" class="btn btn-custom" onclick="m838.rowIOExcel('M837')"> Import excel </button>
+        </div>
+
+        <div class="fr">
+            Nơi lắp đặt: <?php
+            $id            = 'm838_location';
+            $getFields     = array('num'=>3,
+                'objects'=>array('OKhuVuc'=>array(
+                    'id'=>'IOID'
+                ,'display1'=>'MaKhuVuc'
+                ,'display2'=>'Ten') ));
+            ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+
+            Loại thiết bị: <?php
+            $id            = 'm838_type';
+            $getFields     = array('num'=>2,
+                'objects'=>array('OLoaiThietBi'=>array(
+                    'id'=>'IOID'
+                ,'display1'=>'TenLoai'
+                )) );
+            ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+        </div>
+    </div>
+
+    <div class="clear"></div>
+
+    <br/>
+
+    <form class="m838_detail_form">
+        <div id="m838_detail_list">
+
+        </div>
+    </form>
+</div>

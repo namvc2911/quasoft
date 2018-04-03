@@ -1,0 +1,71 @@
+<link rel="stylesheet" href="/js/jstree/themes/default/style.min.css" />
+<link rel="stylesheet" href="/css/extra/static/m052.css" />
+<script type="text/javascript" src="/js/jstree/jstree.js"></script>
+<script type="text/javascript" src="/js/extra/static/m052.js"></script>
+<script type="text/javascript" src="/js/jquery.tablescroll.js"></script>
+
+
+
+<div id="view">
+    <div id="m052_wrap">
+        <input type="hidden" id="m052_nodeid" value="" />
+
+        <!-- Thông tin tìm kiếm phòng ban & nhân viên -->
+        <div id="m052_leftside">
+            <!-- Khung search -->
+            <div id="m052_search_dep" class="m052_leftside_element">
+                <!-- Cột trái phần tìm kiếm nhân viên -->
+                <input type="text" id="m052_search_dept" name="m052_search_dept" class="m052_search_value" placeholder="Nhập từ khóa & ấn enter"/>
+            </div>
+
+            <!-- Khung cây phòng ban bộ phận -->
+            <div id="m052_department" class="m052_leftside_element">
+                <div id="m052_department_tree">
+                    DEPT
+                </div>
+            </div>
+
+            <div id="m052_search_emp" class="m052_leftside_element">
+                <!-- Cột trái phần tìm kiếm nhân viên -->
+                <input type="text" id="m052_search_empl" name="m052_search_emp" class="m052_search_value" placeholder="Nhập từ khóa & ấn enter"/>
+            </div>
+
+            <div class="m052_leftside_element overflow">
+                <div class="fl" id="m052_count_employee">
+                    Tổng số: <span id="m052_employee_count" class="break">0</span>
+                </div>
+
+                <div class="fr">
+
+
+                    <button id="m052_btnPREV" type="button" class="btn btn_main_top icon-32-prev"
+                            onclick="static_m052.loadEmployees();" title="Bản ghi trước">
+                        &nbsp;
+                    </button>
+
+                    <input type="text" id="m052_employee_pageno" value="1"  />/<span id="m052_employee_total_page">1</span>
+
+                    <button id="m052_btnNEXT" type="button" class="btn btn_main_top icon-32-next"
+                            onclick="static_m052.loadEmployees();" title="Bản ghi tiếp theo">
+                        &nbsp;
+                    </button>
+                </div>
+            </div>
+
+            <!-- Khung danh sách nhân viên thuộc phòng ban bộ phận -->
+            <div id="m052_employee" class="m052_leftside_element">
+
+            </div>
+
+        </div>
+
+        <!-- Thông tin chi tiết cho phòng ban & nhân viên -->
+        <div id="m052_rightside">
+            <div id="m052_content">
+
+            </div>
+
+
+        </div>
+    </div>
+</div>

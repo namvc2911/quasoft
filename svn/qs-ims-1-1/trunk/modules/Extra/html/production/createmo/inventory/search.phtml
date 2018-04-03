@@ -1,0 +1,98 @@
+<?php
+// PHP
+$oldItem = '';
+$oldBOM = '';
+$min = array();
+?>
+<div id="keep_item_box"></div>
+
+<table cellspacing="0" cellpadding="0" border="1" id="" class="borderX">
+	<tr class="bggrey">
+		<th class="" width="15%">
+			<!-- general hidden --> <input type="hidden" name="lineFilter"
+			value="<?php echo $this->lineFilter;?>" /> <input type="hidden"
+			name="shiftFilter" value="<?php echo $this->shiftFilter;?>" /> <input
+			type="hidden" name="dateFilter"
+			value="<?php echo $this->dateFilter;?>" /> <input type="hidden"
+			name="itemFilter" value="<?php echo $this->itemFilter;?>" /> <input
+			type="hidden" name="workingHours"
+			value="<?php echo $this->workingHours;?>" /> <!-- Ma mh --> <?php  echo $this->_translate(20);?>
+		</th>
+		<th class="" width="15%">
+			<!-- Ten mh --> <?php  echo $this->_translate(21);?></th>
+		<th class="" width="20%">
+			<!-- Thiet ke --> <?php  echo $this->_translate(22);?></th>
+		<th class="" width="5%">
+			<!-- Thao do --> <?php  echo $this->_translate(28);?></th>
+		<th class="" width="10%">
+			<!-- Thuoc tinh --> <?php  echo $this->_translate(23);?></th>
+		<th class="" width="5%">
+			<!-- Don vi tinh --> <?php  echo $this->_translate(24);?></th>
+		<th class="" width="10%">
+			<!-- SL co the --> <?php  echo $this->_translate(25);?></th>
+		<th class="" width="10%">
+			<!-- Kha nang dc --> <?php  echo $this->_translate(26);?></th>
+		<th class="" width="10%">
+			<!-- SL dat sx --> <?php  echo $this->_translate(27);?></th>
+	</tr>
+
+	<?php if(count((array)$this->lines) ):?>
+	<?php foreach ($this->lines as $item): // In danh sach?>
+	<?php if($oldItem != $item->RefItem || $oldBOM != $item->BOMIOID):// Loai bo trung lap?>
+	<?php
+	//PHP
+	$maxQty = (isset($this->maxQty[$item->BOMIFID]))?$this->maxQty[$item->BOMIFID]:0;
+	$capacity = (isset($this->capacity[$item->BOMIFID]))?$this->capacity[$item->BOMIFID]:0;
+	$min = ($maxQty < $capacity)?$maxQty:$capacity;
+
+	if(!isset($this->operation[$item->BOMIFID]))
+	{
+		// err: Khong co cong doan
+	}
+	?>
+	<tr class="">
+		<td class="left">
+			<!-- input hidden --> <input type="hidden"
+			name="min[<?php echo $item->BOMIFID;?>]" value="<?php echo $min;?>" />
+			<input type="hidden" name="bom[]"
+			value="<?php echo $item->BOMIFID;?>" /> <?php 
+			// Cong doan day chuyen
+			if(isset($this->operation[$item->BOMIFID]))
+			{
+				echo "<input type=\"hidden\" name=\"operation[{$item->BOMIFID}]\" value=\"".htmlspecialchars(serialize($this->operation[$item->BOMIFID]))."\" class=\"saveCondition operation_{$item->BOMIFID}-{$item->RefItem}-{$item->RefAttribute}\" disabled/>";
+			}
+			?> <!-- Ma mh --> <?php echo $item->ItemCode;?>
+		</td>
+		<td class="left">
+			<!-- Ten mh --> <?php echo $item->Item;?></td>
+		<td class="left">
+			<!-- Thiet ke --> <?php echo $item->BOM;?></td>
+		<td class="center">
+			<!-- Thao ro --> <input type="checkbox"
+		<?php if($item->Assembly == 1) echo 'checked';?> disabled /></td>
+		<td class="<?php echo $item->Attribute?'left':'center'?>">
+			<!-- ThuocTinh --> <?php echo $item->Attribute?$item->Attribute:'-';?>
+		</td>
+		<td class="left">
+			<!-- Don vi tinh --> <?php echo $item->UOM;?></td>
+		<td class="right"><?php echo $maxQty;?></td>
+		<td class="right"><?php echo $capacity;?></td>
+		<td class="center">
+			<!-- Sl dat sx --> <input type="text"
+			name="itemQty[<?php echo $item->BOMIFID;?>]" class="item_qty"
+			value="0"
+			code="<?php echo "{$item->BOMIFID}-{$item->RefItem}-{$item->RefAttribute}"?>"
+			size="6" onkeyup="checkQtyAvailable(this)" /></td>
+	</tr>
+	<?php endif;// Loai bo trung lap?>
+	<?php
+	$oldBOM = $item->BOMIOID;
+	$oldItem = $item->RefItem;
+	?>
+	<?php endforeach; // Ket thuc in danh sach?>
+	<?php else:?>
+	<tr>
+		<td class="center" colspan="9"><?php  echo $this->_translate(29);?></td>
+	</tr>
+	<?php endif;?>
+</table>

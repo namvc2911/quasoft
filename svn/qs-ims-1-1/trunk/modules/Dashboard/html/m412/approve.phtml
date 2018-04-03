@@ -1,0 +1,17 @@
+<script>
+    var m412_approve = {
+        list : function () {
+            openModule('', '/user/form?fid=m412');
+        }
+    };
+</script>
+
+<div id="m000_content">
+    <div class="mobile-box-wrap">
+        <?php if($this->rightM412):?>
+            <div class="mobile-box-sub-line">
+                <span href="#1" onclick="m412_approve.list();">Duyệt yêu cầu mua hàng (<span class="red bold"><?php echo $this->countReq;?></span>)</span>
+            </div>
+        <?php endif;?>
+    </div>
+</div>

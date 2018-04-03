@@ -1,0 +1,62 @@
+<script type="text/javascript">
+<!--
+function rowEventTypeInsert() {
+	var url = sz_BaseUrl + '/user/event/type/edit';
+	//window.location.href = url;
+        openModule('',url);
+}
+function rowEventTypeEdit() {
+	if (row == null || isDisabled('btnEDIT')) {
+		return;
+	}
+	var url = sz_BaseUrl + '/user/event/type/edit?id=' + row.id;
+	//window.location.href = url;
+        openModule('',url);
+}
+function rowEventTypeDelete() {
+	if (row == null || isDisabled('btnDELETE')) {
+		return;
+	}
+	qssAjax.confirm(Language.translate('CONFIRM_DELETE'),function(){
+		var id = row.id;
+		var data = {
+			id : id
+		};
+		var url = sz_BaseUrl + '/user/event/type/delete';
+		qssAjax.call(url, data, function(jreturn) {
+			window.location.reload();
+		}, function(jreturn) {
+			qssAjax.alert(jreturn.message);
+		});
+	});
+}
+//-->
+</script>
+<div id="horizontal-toolbar" class="horizontal-toolbar">
+	<div id="btnINSERT" onClick="rowEventTypeInsert()"
+		title="<?php echo $this->_translate(12,'Tạo mới')?>"
+		class="btn_main_top">
+		<a class="icon-32-new" href="#1"></a>
+	</div>
+	<div id="btnEDIT" title="<?php echo $this->_translate(13,'Sửa đổi')?>"
+		onClick="rowEventTypeEdit()" class="btn_main_top btn_disabled">
+		<a class="icon-32-edit" href="#1"></a>
+	</div>
+	<div id="btnDELETE" title="<?php echo $this->_translate(14,'Xóa')?>"
+		onClick="rowEventTypeDelete()" class="btn_main_top btn_disabled">
+			<a class="icon-32-delete" href="#1"></a>
+		</div>
+	</div>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#1"><span>Loại công việc</span>
+			</a></li>
+		</ul>
+	</div>
+	<div id="qss_list">
+	<?php echo $this->listview;?>
+	</div>
+</div>

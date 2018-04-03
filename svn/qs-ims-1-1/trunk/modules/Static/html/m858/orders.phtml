@@ -1,0 +1,5 @@
+<?php foreach ($this->orders as $item):?>
+<option value="<?php echo $item->IOID;?>" ondblclick="dialbox_equips_addItem()" groupmarker="0">
+    <?php echo $item->SoPhieu?> (<?php echo Qss_Lib_Date::mysqltodisplay($item->NgayYeuCau);?>)
+</option>
+<?php endforeach;?>

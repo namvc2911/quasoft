@@ -1,0 +1,85 @@
+<script type="text/javascript">
+<!--
+	function doLogin(){
+		var username = document.getElementById('epUserID').value;
+		var password = document.getElementById('epPassWord').value;
+		if(username == '' || password == ''){
+			qssAjax.alert('<?php echo $this->_translate(6)?>');
+			return false;
+		}
+		return true;
+	}
+//-->
+</script>
+<div class="app_login background">
+	<div class="login_up">&nbsp;</div>
+	<div class="login_logo">
+		<img width="150" src="/images/logoQS.png" />
+	</div>
+	<div id="login_box">
+		<div class="topbox">
+			<div class="title">Truy cập hệ thống</div>
+			<div class="message">
+				<span class="err_msg"><?php if($this->err == 'ERR_AUTHENTICATE') echo $this->_translate(8); elseif($this->err == 'ERR_SESSION') echo $this->_translate(9);?>
+				</span>
+			</div>
+		</div>
+		<form action="login" id="login_form" method="POST"
+			onsubmit="return doLogin();">
+			<div class="midbox">
+				<div class="loginform">
+					<table>
+						<tr>
+							<td width="38%"><?php echo $this->_translate(2)?></td>
+							<td><input type="text" class="field" id="epUserID"
+								name="epUserID" size="30" value=""></td>
+						</tr>
+						<tr>
+							<td><?php echo $this->_translate(3)?></td>
+							<td><input type="password" class="field" id="epPassWord"
+								name="epPassWord" value="" size="30" maxlength="32"></td>
+						</tr>
+						<tr>
+							<td><?php echo $this->_translate(5)?></td>
+							<td><?php echo $this->views->Common->TreeCombo($this->departments,'epDepartmentID',$this->deptid)?></td>
+						</tr>
+						<tr>
+							<td><?php echo $this->_translate(7)?></td>
+							<td><select id="epLanguage" name="epLanguage">
+									<!--<option <?php if($this->lang == 'vn') echo 'selected';?> value="vn">Tiếng việt</option>
+-->
+							<?php foreach ($this->languages as $language):?>
+									<option
+									<?php if($this->lang == $language->Code) echo 'selected';?>
+										value="<?php echo $language->Code?>">
+										<?php echo $language->Name?>
+									</option>
+									<?php endforeach;?>
+							</select></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><input id="epSavePassword" class="checkbox" type="checkbox"
+								name="epSavePassword" value="1" />&nbsp;&nbsp;&nbsp;<label
+								for="epSavePassword"><?php echo $this->_translate(4)?> </label>
+							</td>
+						</tr>
+
+						<tr>
+							<td colspan="2" align="right"><button class="submit"
+									type="submit"">
+									<?php echo $this->_translate(1)?>
+								</button></td>
+						</tr>
+					</table>
+					<p>&nbsp;</p>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="login_copyright">Copyright© by QUASOFT</div>
+	<div class="login_copyright">Power by QS-IMS</div>
+</div>
+<script>
+document.getElementById('epUserID').focus();
+</script>

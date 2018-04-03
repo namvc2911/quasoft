@@ -1,0 +1,84 @@
+<script type="text/javascript">
+<!--
+function rowMailAccountInsert() {
+	var url = sz_BaseUrl + '/user/mail/account/edit';
+	//window.location.href = url;
+        openModule('', url);
+}
+function rowMailAccountEdit() {
+	if (row == null || isDisabled('btnEDIT')) {
+		return;
+	}
+	var url = sz_BaseUrl + '/user/mail/account/edit?id=' + row.id;
+	//window.location.href = url;
+        openModule('', url);
+}
+function rowMailAccountDelete() {
+	if (row == null || isDisabled('btnDELETE')) {
+		return;
+	}
+	qssAjax.confirm(Language.translate('CONFIRM_DELETE'),function(){
+		var id = row.id;
+		var data = {
+			id : id
+		};
+		var url = sz_BaseUrl + '/user/mail/account/delete';
+		qssAjax.call(url, data, function(jreturn) {
+			window.location.reload();
+		}, function(jreturn) {
+			qssAjax.alert(jreturn.message);
+		});
+	});
+}
+//-->
+</script>
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+	<div id="horizontal-toolbar" class="horizontal-toolbar">
+		<div id="btnINSERT" onClick="rowMailAccountInsert()"
+			title="<?php echo $this->_translate(12)?>" class="btn_main_top">
+			<a class="icon-32-new" href="#1"></a>
+		</div>
+		<div id="btnEDIT" title="<?php echo $this->_translate(13)?>"
+			onClick="rowMailAccountEdit()" class="btn_main_top btn_disabled">
+			<a class="icon-32-edit" href="#1"></a>
+		</div>
+		<div id="btnDELETE" title="<?php echo $this->_translate(14)?>"
+			onClick="rowMailAccountDelete()" class="btn_main_top btn_disabled">
+			<a class="icon-32-delete" href="#1"></a>
+		</div>
+	</div>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#1"><span><?php echo $this->_translate(15)?>
+				</span> </a></li>
+		</ul>
+	</div>
+	<div id="qss_list">
+		<table class="grid">
+			<tr>
+				<th class="nocount"><?php echo $this->_translate(16)?></th>
+				<th width="250"><?php echo $this->_translate(17)?></a></th>
+				<th><?php echo $this->_translate(18)?></th>
+				<th>Server</th>
+				<th>Port</th>
+				<th><?php echo $this->_translate(19)?></th>
+			</tr>
+			<?php $i = 0?>
+			<?php foreach ($this->accounts as $item):?>
+			<?php $i++?>
+			<tr rights="63" id="<?php echo $item->MAID;?>"
+				onclick="rowCLK(this);">
+				<td class="nocount"><?php echo $i?></td>
+				<td><?php echo $item->Name;?></td>
+				<td><?php echo $item->Account;?></td>
+				<td><?php echo $item->Server;?></td>
+				<td><?php echo $item->Port;?></td>
+				<td><?php echo Qss_Model_Mail::$arrType[$item->Type];?></td>
+			</tr>
+			<?php endforeach;?>
+		</table>
+	</div>
+</div>

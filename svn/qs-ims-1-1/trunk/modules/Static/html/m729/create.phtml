@@ -1,0 +1,72 @@
+<?php
+$date = date_create();
+$startdate = Qss_Lib_Date::add_date($date,1);
+$enddate = Qss_Lib_Date::add_date($date,8);
+?>
+<script>
+    $(document).ready(function() {
+        $(".datepicker").datepicker();
+        $(".datepicker").datepicker('option', {dateFormat: 'dd-mm-yy'});
+        $('#startdate').val('<?php echo $startdate->format('d-m-Y');?>');
+        $('#enddate').val('<?php echo $enddate->format('d-m-Y');?>');
+    });
+</script>
+<div class="center">
+
+	<form id="filter_plan">
+		<table cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td class="right">Ngày bắt đầu:&nbsp;</td>
+				<td class="left"><input class="datepicker" id="startdate"
+					type="text" name="start_date">
+				</td>
+			</tr>
+
+			<tr>
+				<td class="right">Ngày kết thúc:&nbsp;</td>
+				<td class="left"><input class="datepicker" id="enddate" type="text"
+					name="end_date">
+				</td>
+			</tr>
+
+			<tr>
+				<td class="right">Khu vực:&nbsp;</td>
+				<td class="left"><?php
+				$id            = 'location_ioid';
+				$getFields     = array('num'=>3,
+											   'objects'=>array('OKhuVuc'=>array(
+																	'id'=>'IOID'
+																	,'display1'=>'MaKhuVuc'
+																	,'display2'=>'Ten')));
+																	?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+				</td>
+			</tr>
+
+			<tr>
+				<td class="right">Đơn vị bảo trì:&nbsp;</td>
+				<td class="left"><?php
+				$id            = 'work_center_ioid';
+				$getFields     = array('num'=>3,
+											   'objects'=>array('ODonViSanXuat'=>array(
+																	'id'=>'IOID'
+																	,'display1'=>'Ma'
+																	,'display2'=>'Ten')));
+																	?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>
+
+<div class="center">
+	<div>&nbsp;</div>
+	<!-- end .act_left -->
+
+	<div class="act_right">
+		<button type="button" class="btn-custom" onclick="runCalendar()">&nbsp;Chạy
+			kế hoạch&nbsp;</button>
+		<button type="button" class="btn-custom"
+			onclick="$('#qss_trace').dialog('close')">&nbsp;Đóng lại&nbsp;</button>
+	</div>
+	<!-- end .act_right -->
+</div>

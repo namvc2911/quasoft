@@ -1,0 +1,122 @@
+@CHARSET "UTF-8";
+
+#wrap
+	{
+		font-size:11px;
+	}
+/* Table style */
+/* @todo: update sang class nay bo class borderX*/
+.border_table {
+    border: 1px solid #aaa;
+}
+.border_table tr th {
+    border-bottom: 1px solid #aaa;
+    border-left: 1px solid #aaa;
+}
+.border_table tr td {
+    border-bottom: 1px dotted #ccc;
+    border-left: 1px dotted #ccc;
+}
+.border_table tr td, .border_table tr th {
+    word-wrap: break-word;
+}
+
+
+.borderX
+{
+	border-top:1px dotted #bbb;
+	border-right:1px dotted #bbb;
+}
+.borderX tr
+{
+	border-bottom:1px dotted #bbb;
+}
+.borderX td, .borderX th
+{
+	border-left:1px dotted #bbb;
+}
+.borderX th
+{
+	padding-top:1px;
+	padding-bottom:1px;
+}
+/* End table style*/
+
+/* Width stye */
+/* Note: Su dung cho cac the select hay input */
+.width_50 /* short input */
+{
+	width:50px;
+}
+.width_70 /* date */
+{
+	width:70px;
+}
+.width_100 /* medium iuput */
+{
+	width:100px;	
+}
+.width_150 /* long input */
+{
+	width:150px;	
+}
+.width_200 /* very long input */
+{
+	width:200px;	
+}
+/* End Width stye */
+
+/* button style */
+.button_like_anchor {
+	border: none;
+	background: none;
+	cursor: pointer;
+	padding: 0;
+	margin: 0;
+	font-size: 12px !important;
+	line-heigth: 12px !important;
+}
+.disabled
+{
+	background: #999 !important;
+	color: #ccc;
+}
+/* end button style*/
+
+/* element padding, margin */
+.margin_top_5 
+{
+	margin-top:5px;	
+}
+.margin_left_5
+{
+	margin-left:5px;
+}
+
+.margin_bottom_5 
+{
+	margin-bottom:5px;	
+}
+.margin_right_5
+{
+	margin-left:5px;
+}
+
+.margin_top_10 
+{
+	margin-top:10px;	
+}
+.margin_left_10
+{
+	margin-left:10px;
+}
+
+.margin_bottom_10 
+{
+	margin-bottom:10px;	
+}
+.margin_right_10
+{
+	margin-left:5px;
+}
+/* end element padding, margin */

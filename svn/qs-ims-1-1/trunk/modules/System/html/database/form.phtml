@@ -1,0 +1,67 @@
+	<form id="qss_form" action="" method="post">
+	<table class="grid" style="width:100%" border="0" cellspacing="0">
+		<tr>
+			<th>Current</th>
+			<th></th>
+			<th>Copy</th>
+		</tr>
+		<?php $bgclass = 'bggrey';?>
+		<?php foreach ($this->forms as $key=>$value):?>
+		<?php if($this->viewall || (@$value['current_infor']->Name != @$value['copy_infor']->Name
+				|| @$value['current_infor']->class != @$value['copy_infor']->class  
+				|| @array_keys($value['current']) != @array_keys($value['copy']))):?>
+		<?php $bgclass = $bgclass?'':'bggrey'?>		
+		<tr class="<?php echo $bgclass;?>">
+			<td valign="top" width="45%">
+				<?php if(!@$value['current_infor']):?>
+					<span class="error">Not installed</span>
+				<?php else:?> 
+					<span class="bold"><?php echo $key?> - <?php echo @$value['current_infor']->Name?></span>
+					<?php foreach ($value['current'] as $k=>$v):?>
+						<?php if($k):?>
+						<?php $class = 'green'?>
+						<?php if(!is_array(@$value['copy']) || !array_key_exists($k,$value['copy'])):?>
+							<?php $class = 'red'?>
+						<?php endif;?>
+						<p style="padding-left: 100px;" class="<?php echo $class?>" >- <?php echo $k?> - <?php echo $v->ObjectName?>
+						<?php if($class == 'red'):?>
+							<a href="#" onclick="detachObjectInForm('<?php echo $v->FormCode?>','<?php echo $v->ObjectCode?>')">Xóa</a>
+						<?php endif;?>
+						<?php endif;?>
+					<?php endforeach;?>
+					<?php if(@$value['current_infor']->class):?>
+						<p style="padding-left: 100px;" class=red" >- <?php echo $value['current_infor']->class?>
+					<?php endif;?>
+				<?php endif;?>
+			</td>
+			<td width="10%" class="center">
+				<?php if(@$value['copy_infor'] && ((@$value['current_infor']->Name != @$value['copy_infor']->Name
+				|| @$value['current_infor']->class != @$value['copy_infor']->class  
+				|| @array_keys($value['current']) != @array_keys($value['copy'])))):?>
+				<span><button class="btn-custom" type="button" onclick="showForm('<?php echo $key?>')"><<</button></span>
+				<?php endif;?>
+			</td>
+			<td valign="top">
+				<?php if(!@$value['copy_infor']):?>
+					<span class="red">Not installed</span>
+				<?php else:?> 
+					<span class="bold"><?php echo $key?> - <?php echo @$value['copy_infor']->Name?></span>
+					<?php foreach ($value['copy'] as $k=>$v):?>
+						<?php if($k):?>
+						<?php $class = 'green'?>
+						<?php if(!is_array(@$value['current']) || !array_key_exists($k,$value['current'])):?>
+							<?php $class = 'red'?>
+						<?php endif;?>
+						<p style="padding-left: 100px;" class="<?php echo $class?>" >- <?php echo $k?> - <?php echo $v->ObjectName?>
+						<?php endif;?>
+					<?php endforeach;?>
+					<?php if(@$value['copy_infor']->class):?>
+						<p style="padding-left: 100px;" class=red" >- <?php echo $value['copy_infor']->class?>
+					<?php endif;?>
+				<?php endif;?>	
+			</td>
+		</tr>
+		<?php endif;?>
+		<?php endforeach;?>
+	</table>
+	</form>

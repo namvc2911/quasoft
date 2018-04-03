@@ -1,0 +1,97 @@
+<?php $excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);?>
+<?php
+$widths = array(571, 1729, 1786, 1971, 1729, 1800);
+$widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+$stt    = 0;
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+    <input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="portrait">
+    <excel orientation="portrait" font-name="Arial" font-size="9"
+           margin-left="0.5" margin-right="0.5" margin-top="0.75"
+           margin-bottom="0.75" />
+
+    <div id="head_print">
+        <table>
+            <tr>
+                <td style="width: 40%;" class="center">Công ty…………</td>
+                <td  class="center">Cộng hòa xã hội chủ nghĩa Việt nam</td>
+            </tr>
+            <tr>
+                <td  class="center">Xí nghiệp:………………...……..</td>
+                <td  class="center">Độc lập - Tự do - Hạnh phúc</td>
+            </tr>
+            <tr>
+                <td  class="center">Số:………./BC - KT</td>
+                <td  class="right">…………, ngày……tháng……năm 20….</td>
+            </tr>
+        </table>
+
+        <div class="center">
+<!--            <div class="fl" style="width: 90%">-->
+                <h2 class="center"><?php echo Qss_Lib_System::getUpperCaseReportTitle('M843');?></h2>
+                <p class="center bold"> Năm <?php echo $this->year;?> </p>
+<!--            </div>-->
+<!--            <div class="fr" style="font-weight: normal !important; font-size: 12px !important;">Mẫu số: KH - KT 03</div>-->
+        </div>
+        <div class="clear"></div>
+    </div>
+    <br/>
+
+    <div id="container">
+        <?php $oldKhuVuc = '';?>
+
+        <table cellpadding="0" cellspacing="0" border="1" class="border" style="">
+            <?php $begin = 0;?>
+            <tr class="bggrey">
+                <th style="width:<?php echo $widths[$begin++];?>%">STT</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Tên thiết bị</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Số hợp đồng</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Cơ quan kiểm định</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Ngày kiểm định</th>
+                <th style="width:<?php echo $widths[$begin++];?>%">Chu kỳ kiểm định</th>
+            </tr>
+
+            <?php foreach($this->report as $key=>$items):?>
+                <?php $first   = true;?>
+                <?php $count   = count($items);?>
+                <?php $rowspan = '';?>
+                <?php if($count > 1){ $rowspan = 'rowspan="'.$count.'"'; };?>
+                <?php foreach ($items as $item):?>
+
+                    <?php if($oldKhuVuc != $item->MaKhuVuc):?>
+                        <tr>
+                            <td class="bold left" colspan="6">
+                                <?php echo $item->TenKhuVuc;?>
+                            </td>
+                        </tr>
+                    <?php endif;?>
+
+                    <tr>
+                        <td class="center"><?php echo ++$stt;?></td>
+                        <td class="left"><?php echo $item->TenThietBi;?></td>
+                        <td class="left"><?php echo $item->SoHopDong;?></td>
+                        <td class="left"><?php echo $item->TenDoiTac;?></td>
+
+                        <?php if($first):?>
+                            <td class="center" <?php echo $rowspan;?>>
+                                <?php echo Qss_Lib_Date::mysqltodisplay($item->Ngay);?>
+                            </td>
+
+                            <td class="center" <?php echo $rowspan;?>>
+                                <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayKiemDinhTiepTheo);?>
+                            </td>
+                        <?php endif;?>
+                    </tr>
+
+                    <?php $first = false;?>
+                <?php endforeach;?>
+            <?php endforeach;?>
+        </table>
+        <br/>
+        <br/>
+    </div>
+</div>

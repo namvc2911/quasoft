@@ -1,0 +1,96 @@
+
+
+<?php
+$retval   = array();
+$xAxis    = '';
+$series   = '';
+$nhapHang = '';
+$xuatHang = '';
+$tonKho   = '';
+
+foreach ($this->inOut as $item)
+{
+	$retval[$item->Ref_MaSanPham]['NhapHang'] = $item->NhapHang;
+	$retval[$item->Ref_MaSanPham]['XuatHang'] = $item->XuatHang;
+}
+
+foreach ($this->inventory as $item)
+{
+	$retval[$item->Ref_MaSanPham]['TonKho']   = $item->TonKho;
+	$retval[$item->Ref_MaSanPham]['MaSanPham']= $item->MaSanPham;
+	$retval[$item->Ref_MaSanPham]['SanPham']  = $item->SanPham;
+	$retval[$item->Ref_MaSanPham]['DonViTinh']= $item->DonViTinh;
+
+	if(!isset($retval[$item->Ref_MaSanPham]['NhapHang']))
+	{
+		$retval[$item->Ref_MaSanPham]['NhapHang'] = 0;
+	}
+
+	if(!isset($retval[$item->Ref_MaSanPham]['XuatHang']))
+	{
+		$retval[$item->Ref_MaSanPham]['XuatHang'] = 0;
+	}
+}
+
+foreach ($retval as $item)
+{
+	// Cột x
+	$xAxis .= $xAxis?',':'';
+	$xAxis .= "'{$item['MaSanPham']} - {$item['DonViTinh']}'";
+
+	// Series data: Nhập kho
+	$nhapHang        .= ($nhapHang != '')?',':'';
+	$nhapHang        .= $item['NhapHang'];
+
+	// Series data: Xuất kho
+	$item['XuatHang'] = $item['XuatHang']?-$item['XuatHang']:0;
+	$xuatHang        .= ($xuatHang != '')?',':'';
+	$xuatHang        .= $item['XuatHang'];
+
+	// Series data: Tồn kho
+	$tonKho          .= ($tonKho != '')?',':'';
+	$tonKho          .= $item['TonKho'];
+}
+
+// Series data
+$series = "{ name: '{$this->_translate(1)}', data: [{$nhapHang}]},
+			   { name: '{$this->_translate(2)}', data: [{$xuatHang}]}, 
+			   { name: '{$this->_translate(3)}', data: [{$tonKho}]}"
+
+
+?>
+<?php //echo '<pre>'; print_r($retval); die;?>
+<script>
+<!--
+$(document).ready(function() {
+	workingHours = new Highcharts.Chart({
+	    chart: {
+	    	renderTo: 'container',
+	    	type: 'column'
+	    },
+        title: {
+            text: '<?php echo $this->_translate(4)?>'
+        },
+        credits: {
+            enabled: false
+        },
+        xAxis: {
+            labels: {
+                rotation: -45,
+                align: 'right'
+            },
+            categories: [<?php echo $xAxis;?>]
+        },
+        yAxis: {
+            title: {
+                text: '<?php echo $this->_translate(5)?>'
+            }
+        },
+        series: [<?php echo $series;?>]
+	});	
+});
+
+//-->
+</script>
+
+<div id="container" style="width: 95%; margin: auto;"></div>

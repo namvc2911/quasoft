@@ -1,0 +1,51 @@
+<table height="100%">
+	<tr>
+		<td id="left" width="280px" valign="top"><select id="combobox"
+			onchange="printSearch(this.value)" size="40"
+			style="width: 100%; height: 100%">
+			<?php foreach ($this->forms as $item):?>
+				<option <?php if($item->Quantity):?>
+					style="color: green; font-weight: bold;" <?php endif;?>
+					value="<?php echo $item->FormCode?>">
+					<?php echo $item->FormCode?> - <?php echo $item->Name?>
+					(
+					<?php echo $item->Quantity?>
+					)
+				</option>
+				<?php endforeach;?>
+		</select></td>
+		<td valign="top">
+			<div id="rightside" class="background">
+				<form id="qss_form" method="get" onSubmit="return false;">
+					<input name="Action" type="hidden" value="insert"> <input
+						name="type" type="hidden" value="<?php echo $this->type?>">
+					<div id="horizontal-toolbar" class="horizontal-toolbar">
+						<button id="btnINSERT" type="button" class="btn btn_main_top" disabled
+							onClick="printInsert()">
+							<?php echo $this->_translate(12)?>
+						</button>
+						
+						<button id="btnEDIT" type="button" class="btn btn_main_top" disabled
+							onClick="printEdit()">
+							<?php echo $this->_translate(13)?>
+						</button>
+						
+						<button id="btnDELETE" type="button" class="btn btn_main_top" disabled
+							onClick="printDelete()">
+							<?php echo $this->_translate(14)?>
+						</button>
+					</div>
+					<div class="clear"></div>
+					<div id="view">
+						<div id="qss_list"></div>
+					</div>
+				</form>
+			</div></td>
+	</tr>
+</table>
+
+<?php if($this->fid):?>
+<script type="text/javascript">
+printSearch(<?php echo $this->fid?>);
+</script>
+<?php endif;?>

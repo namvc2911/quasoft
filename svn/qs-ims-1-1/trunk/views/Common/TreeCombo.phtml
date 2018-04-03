@@ -1,0 +1,52 @@
+<?php 
+global $dyn_menu;
+global $selected;
+$selected = $this->selected;
+$dyn_menu = '<select id="'.$this->name.'" name="'.$this->name.'"'.$this->extra.'">';
+foreach($this->data as $item)
+{
+	$names[$item->ID] = $item->Value;
+	$cats[$item->ID] = $item->Parent;
+}
+$hierarchize = hierarchize($cats, 0);
+display_options($hierarchize, $names);
+$dyn_menu .="</select>";
+echo $dyn_menu;
+
+function hierarchize(&$cats, $parent) {
+	if(is_array($cats))
+	{
+		$subs = array_keys($cats, $parent);
+		$tree = array();
+		foreach ($subs as $sub)
+		{
+			$tree[$sub] = hierarchize($cats, $sub);
+		}
+		return count($tree) ? $tree : $parent;
+	}
+}
+
+function display_options(&$tree, &$names, $nest = 0) {
+	global $dyn_menu;
+	global $selected;
+	if(is_array($tree ))
+	{
+		foreach ($tree as $key => $branch) {
+			$indent = $nest ? str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $nest) : '';
+			//echo $selected;die;
+			if($key == $selected)
+			{
+				$dyn_menu .="<option selected value=\"$key\">$indent{$names[$key]}</option>\n";
+			}
+			else
+			{
+				$dyn_menu .="<option value=\"$key\">$indent{$names[$key]}</option>\n";
+			}
+			if (is_array($branch))
+			{
+				display_options($branch, $names, $nest + 1);
+			}
+		}
+	}
+}
+?>

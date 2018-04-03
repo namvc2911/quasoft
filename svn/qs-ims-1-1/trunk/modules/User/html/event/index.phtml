@@ -1,0 +1,106 @@
+<script type="text/javascript">
+<!--
+$(document).ready(function(){
+	$('#left').hide();
+	$('#midle').hide();
+	$('#left').width(0);
+	$('#midle').width(0);
+});
+//-->
+</script>
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+	<div
+		style="width: 250px; position: relative; display: block; float: left;">&nbsp;</div>
+	<div class="extra-button">
+		<a href="#1" onclick="showToDay()"><span>Hôm nay</span> </a>
+	</div>
+	<div
+		style="width: 50px; position: relative; display: block; float: left;">&nbsp;</div>
+	<div id="btnDAY"
+		class="extra-button <?php if($this->type == 'day') echo 'extra-selected'?>">
+		<a href="#1" onclick="showDay()"><span>Lịch ngày</span> </a>
+	</div>
+	<div id="btnWEEK"
+		class="extra-button <?php if($this->type == 'week') echo 'extra-selected'?>">
+		<a href="#1" onclick="showWeek()"><span>Lịch tuần</span> </a>
+	</div>
+	<div id="btnMONTH"
+		class="extra-button <?php if($this->type == 'month') echo 'extra-selected'?>">
+		<a href="#1" onclick="showMonth()"><span>Lịch tháng</span> </a>
+	</div>
+	<div id="btnYEAR"
+		class="extra-button <?php if($this->type == 'year') echo 'extra-selected'?>">
+		<a href="#1" onclick="showYear()"><span>Lịch năm</span> </a>
+	</div>
+	<div
+		style="width: 100px; position: relative; display: block; float: left;">&nbsp;</div>
+	<div class="extra-button">
+		<a href="#1" onclick="rowEventInsert()"><span>Thêm lịch</span> </a>
+	</div>
+	<!--<div onclick="rowEventBack('<?php echo @$this->event->EventID?>')" class="btn_main_top" title="<?php echo $this->_translate(32,'Trở lại')?>"><a
+	class="icon-32-back" href="#"></a></div>-->
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div class="cal_view" id="cal_view">
+		<div class="cal_content_wrap">
+			<div class="cal_content">
+			<?php echo $this->content?>
+			</div>
+		</div>
+		<div class="cal_select">
+		<?php echo $this->select?>
+			<div class="filter">
+				<form name="cal_form" id="cal_form">
+					<input type="hidden" id="fid" name="fid"
+						value="<?php echo $this->fid?>"> <input type="hidden" id="type"
+						name="type" value="<?php echo $this->type?>"> <input type="hidden"
+						id="day" name="day" value="<?php echo $this->day?>"> <input
+						type="hidden" id="week" name="week"
+						value="<?php echo $this->week?>"> <input type="hidden" id="month"
+						name="month" value="<?php echo $this->month?>"> <input
+						type="hidden" id="year" name="year"
+						value="<?php echo $this->year?>">
+					<div class="name">
+						<div class="title">Chọn Lịch</div>
+						<div class="select">
+							<ul>
+							<?php foreach($this->users as $item):?>
+								<li><input type="checkbox" name="user[]"
+									id="user_<?php echo $item->UID?>"
+									value="<?php echo $item->UID?>"
+									<?php if(in_array($item->UID,$this->owner)) echo 'checked';?> />
+									<label for="user_<?php echo $item->UID?>"><?php echo $item->UserName?>
+								</label>
+								</li>
+								<?php endforeach;?>
+							</ul>
+						</div>
+					</div>
+					<?php if(count((array)$this->filters)):?>
+					<div class="form">
+						<div class="title">Lọc Dữ Liệu</div>
+						<div class="select">
+							<ul>
+							<?php foreach($this->filters as $item):?>
+								<li><input type="checkbox" name="filter[]"
+									id="filter_<?php echo $item->TypeID?>"
+									value="<?php echo $item->TypeID?>"
+									<?php if(in_array($item->TypeID,$this->filter)) echo 'checked';?> />
+									<label for="filter_<?php echo $item->TypeID?>"><?php echo $item->TypeName?>
+								</label>
+								</li>
+								<?php endforeach;?>
+							</ul>
+						</div>
+					</div>
+					<?php endif;?>
+					<div class="extra-button">
+						<a onclick="reloadCalendar()" href="#1"><span>Xem lịch</span> </a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="qss_trace" title=""></div>

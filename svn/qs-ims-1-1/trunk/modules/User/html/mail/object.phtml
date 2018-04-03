@@ -1,0 +1,26 @@
+<input type="hidden" name="form" id="form" value="0">
+<input
+	type="hidden" name="object" id="object" value="0">
+<table class="detail">
+	<tr>
+		<th width="100">Tên</th>
+		<td colspan="2"><?php echo $this->list->Name?>
+		</td>
+	</tr>
+	<tr>
+		<th>Chọn mô đun</th>
+		<td colspan="2"><?php foreach ($this->referlist as $item):?> <input
+			onclick="return chooseRefer(this)" type="radio"
+			fid="<?php echo $item->FID?>" objid="<?php echo $iteminitData?>"
+			name="choice"> <?php echo $item->Name?> - <?php echo $item->ObjectName?><br />
+			<?php endforeach;?></td>
+	</tr>
+	<tr>
+		<th></th>
+		<td></td>
+		<td>
+			<button class="btn-custom" type="button"
+				onclick="importMailList(<?php echo $this->list->MLID?>)">Đồng ý</button>
+		</td>
+
+</table>

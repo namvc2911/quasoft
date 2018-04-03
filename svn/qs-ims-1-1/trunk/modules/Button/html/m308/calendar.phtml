@@ -1,0 +1,103 @@
+<style>
+    .empty_block
+    {
+        width: 24px;
+        position: relative;
+        display: block;
+        float: left;
+    }
+
+    .empty_block_100
+    {
+        width: 100px;
+        position: relative;
+        display: block;
+        float: left;
+    }
+
+    .status_box
+    {
+        clear: both;
+        width: 100%;
+        margin: 1px;
+        font-size: 11px;
+    }
+
+    .status_color
+    {
+        float: left;
+        padding: 6px;
+        text-align: center;
+        border: 1px #ccc solid;
+    }
+    .status_text
+    {
+        float: left;
+        padding:6px;
+    }
+</style>
+
+<div id="horizontal-toolbar" class="clearfix">
+	<form name="cal_form" id="cal_form">
+    	<input type="hidden"
+                       id="fid"
+                       name="fid"
+                       value="<?php echo $this->fid ?>">
+        <input type="hidden"
+                       id="month"
+                       name="month"
+                       value="<?php echo $this->month ?>">
+
+        <input type="hidden"
+                       id="year"
+                       name="year"
+                       value="<?php echo $this->year ?>">
+		<table style="width: 50%">
+			<tr>
+				<td>Chọn phòng ban:</td>
+				<td>
+				<?php
+                    $id = 'department';
+                    $getDataObject = array('OPhongBan' => array('MaPhongBan', 'TenPhongBan'));
+                    $getFields = array('num' => 2,
+                        'objects' => array('OPhongBan' => array(
+                            'id' => 'IOID'
+                        , 'display1' => 'MaPhongBan'
+                        , 'display2' => 'TenPhongBan')));
+                    $getLookupFilter = array();
+                    ?> <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields, $getLookupFilter); ?>
+					
+				</td>
+			</tr>
+
+			<tr>
+				<td>&nbsp;</td>
+				<td>
+					 <button
+			            id="search-button"
+			            type="button"
+			            class="btn extra-button"
+			            onclick="m308_calendar.reloadCalendar()">
+			            Xem lịch
+			        </button>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>
+<div class="clear"></div>
+
+
+
+<div id="view">
+    <div class="cal_view" id="cal_view">
+        <div class="cal_content_wrap">
+            <div class="cal_content" style="margin-left: 0px !important">
+                <?php echo $this->content ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="qss_combo" title=""></div>
+<div id="qss_trace" title=""></div>

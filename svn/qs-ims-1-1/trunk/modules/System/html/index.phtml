@@ -1,0 +1,90 @@
+<style>
+.system th {
+	text-align: left;
+}
+
+.system table td {
+	border-bottom: solid 1px #ccc;
+}
+
+.error {
+	background-color: red;
+	text-align: center;
+	color: white;
+	width: 80;
+}
+
+.working {
+	background-color: green;
+	text-align: center;
+	color: white;
+	width: 80;
+}
+</style>
+<div id="view">
+	<table class="system">
+		<tr>
+			<td height="60%" valign="top" style="padding-bottom: 35px;">
+				<table style="width: 50%;">
+					<tr>
+						<td rowspan="5" style="width: 70" valign="top"><img height="64"
+							width="64" src="/images/system-icon-configuration.png"></td>
+						<th colspan="4"><?php echo $this->_translate(190)?>:</th>
+					</tr>
+					<tr>
+						<td>PHP</td>
+						<td><?php echo phpversion();?></td>
+						<td class="working">OK</td>
+					</tr>
+					<tr>
+						<td>Memcache</td>
+						<td><?php echo class_exists('Memcache')?$this->_translate(187):$this->_translate(188)?>
+						</td>
+						<td
+							class="<?php echo class_exists('Memcache')?'working':'error'?>"><?php echo class_exists('Memcache')?'OK':'FAIL'?>
+						</td>
+					</tr>
+					<tr>
+						<td>MySQL</td>
+						<td>MySQL 5.1</td>
+						<td class="working">OK</td>
+					</tr>
+					<tr>
+						<td>View</td>
+						<td><a href="#"><?php echo $this->_translate(23)?> </a></td>
+						<td class="error">FAIL</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td height="60%" valign="top" style="padding-bottom: 35px;">
+				<table style="width: 50%;">
+					<tr>
+						<td
+							rowspan="<?php echo (string) (sizeof((array)$this->forms) + 1);?>"
+							style="width: 70" valign="top"><img height="64" width="64"
+							src="/images/system-icon-configuration.png"></td>
+						<th><?php echo $this->_translate(101)?></th>
+						<th><a href="javascript:deleteAllTemplate()">Xóa tất cả template</a></th>
+						<th colspan="2">&nbsp;</th>
+					</tr>
+					<?php foreach ($this->forms as $form):?>
+					<tr>
+						<td><?php echo $form->name?></td>
+						<?php if($form->actived):?>
+						<td><a
+							href="javascript:deleteFormTemplate('<?php echo $form->FormCode?>')"><?php echo $this->_translate(189)?>
+						</a></td>
+						<td class="working">OK</td>
+						<?php else:?>
+						<td><a href="#"><?php echo $this->_translate(122)?> </a></td>
+						<td class="error">FAIL</td>
+						<?php endif;?>
+					</tr>
+					<?php endforeach;?>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>

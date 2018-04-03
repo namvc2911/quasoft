@@ -1,0 +1,109 @@
+<?php
+	$widths = array(1, 5, 5, 5, 5, 3, 2);
+	$widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+?>
+
+<script>
+	var m005 = {
+		showSearchBox: function()
+		{
+			if($('#search-button').hasClass('extra-selected'))
+			{
+				$('#div-search').css({'display':'none'});
+				$('#search-button').removeClass('extra-selected');
+			}
+			else
+			{
+				$('#div-search').css({'display':'block'});
+				$('#search-button').addClass('extra-selected');
+			}
+
+		}
+	}
+
+	$(document).ready(function () {
+		rowUserSearch();
+	})
+</script>
+
+<form id="qss_form">
+	<input name="Action" type="hidden" value="insert">
+	<input name="type" type="hidden" value="<?php echo $this->type?>">
+
+	<div id="horizontal-toolbar" class="horizontal-toolbar">
+		<button id="btnINSERT" type="button" class="btn btn_main_top" onClick="rowUserInsert()">
+			<?php echo $this->_translate(12)?>
+		</button>
+		
+		<button type="button" class="btn btn_main_top" disabled onClick="rowUserEdit()">
+			<?php echo $this->_translate(13)?>
+		</button>
+		
+		<button id="btnDELETE" type="button" class="btn btn_main_top" disabled onClick="rowUserDelete()">
+			<?php echo $this->_translate(14)?>
+		</button>
+
+		<div class="fr">
+			<button
+				id="search-button"
+				type="button"
+				class="btn fr extra-button"
+				onclick="m005.showSearchBox(this)">
+				<?php echo $this->_translate(24)?>
+			</button>
+		</div>
+	</div>
+
+	<div class="clear"></div>
+
+
+
+	<div id="view">
+
+		<div class="fr">
+			<span class="bold green"><?php echo (int)$this->active;?> Active</span>/ <span class="bold red"><?php echo (int)$this->inactive;?> Inactive</span>/ <span class="bold ">Total <?php echo (int)$this->total;?></span>
+		</div>
+
+		<div class="clear"></div>
+
+		<div id="qss_list">
+
+		</div>
+	</div>
+
+	<div style="height: 301px;">
+		<div id="div-search" class="clearfix" style="right: 12px; top: 100px; display: none;">
+			<form name="cal_form" id="cal_form">
+				<div class="fl">
+					<table>
+						<tr>
+							<th class="left">User:&nbsp;&nbsp;</th>
+
+							<td>
+								<input type="text" value="" style="width: 300px;" name="search" />
+							</td>
+						</tr>
+					</table>
+				</div>
+
+				<div class="fl">
+					<div onclick="rowUserSearch();" style="width:70px" class="btn-custom center">Tìm kiếm</div>
+					<div class="clearfix"><br></div>
+					<div onclick="$('input[name=search]').val(''); rowUserSearch();" style="width:70px" class="btn-custom center">Xóa điều kiện</div>
+					<div class="clearfix"><br></div>
+					<div onclick="m005.showSearchBox();" style="width:70px" class="btn-custom center">Đóng</div>
+				</div>
+
+
+			</form>
+		</div>
+	</div>
+</form>
+
+
+
+<script>
+    $('#qss_list table tr').each(function(){
+        $(this).attr('ondblclick', 'rowUserEdit(); return false;');
+    });
+</script>

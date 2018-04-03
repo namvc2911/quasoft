@@ -1,0 +1,24 @@
+<form id="qss_form" method="get" onSubmit="rowDepartmentSearch(); return false;">
+	<input name="Action" type="hidden" value="insert"> <input name="type" type="hidden" value="<?php echo $this->type?>">
+	<div id="horizontal-toolbar" class="horizontal-toolbar clearfix"> 
+		<button id="btnINSERT" type="button" class="btn btn_main_top"
+			onClick="rowDepartmentInsert()">
+			<?php echo $this->_translate(12)?>
+		</button>
+		<button id="btnUPDATE" type="button" class="btn btn_main_top" disabled
+			onClick="rowDepartmentEdit()">
+			<?php echo $this->_translate(13)?>
+		</button>
+		<button id="btnDELETE" type="button" class="btn btn_main_top" disabled
+			onClick="rowDepartmentDelete()">
+			<?php echo $this->_translate(14)?>
+		</button>
+	</div>
+
+	<div class="clear"></div>
+	<div id="view">
+		<div id="qss_list">
+			<?php echo $this->listview;?>
+		</div>
+	</div>
+</form>

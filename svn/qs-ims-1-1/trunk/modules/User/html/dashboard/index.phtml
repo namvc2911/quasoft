@@ -1,0 +1,202 @@
+<script	type="text/javascript" src="/js/hightchart/highcharts.js"></script>
+<script	type="text/javascript" src="/js/hightchart/highcharts-more.js"></script>
+<script>
+$(document).ready(function(){
+	loadbyid('dashboad_2','/user/statistic/quickreports');
+	$('#settingdashboad').hover(function() {
+		mouse_is_inside = true;
+	}, function() {
+		mouse_is_inside = false;
+	});
+	$('.notify5').hover(function() {
+		mouse_is_click = true;
+	}, function() {
+		mouse_is_click = false;
+	});
+});
+function loadbyid(id,path){
+	var url = sz_BaseUrl + path;
+	var data = {};
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#'+id).html(jreturn);
+		$('#'+id).show();
+	});
+} 
+function hidebyid(id){
+	$('#'+id).html('');
+	$('#'+id).hide();
+} 
+function showSettingDashboad() {
+	var isvisible = $("#settingdashboad").is(":visible");
+	if (isvisible) {
+		$("#settingdashboad").hide();
+	} else {
+		var url = sz_BaseUrl + '/user/statistic/settingdashboad';
+		var data = {};
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#settingdashboad').addClass('qss_notify5');
+			$('#settingdashboad').removeClass('qss_notify5');
+			$('#settingdashboad').html(jreturn);
+			$("#settingdashboad").show('blind', {
+				to : {
+					width : 280,
+					height : 185
+				}
+			}, 500);
+		});
+	}
+}
+function saveDashboad(BlockID,checked,path){
+	var url = sz_BaseUrl + '/user/statistic/savedashboad';
+	var data = {BlockID:BlockID,checked:checked};
+	qssAjax.call(url, data, function(jreturn) {
+		if(checked == 1)
+		loadbyid('dashboad_'+BlockID,path);
+		else
+		hidebyid('dashboad_'+BlockID);
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});	
+}
+
+</script>
+
+<style>
+   table.grid th{
+        border-bottom: 1px solid #ccc;
+    }
+    .qss_block {
+        border: 1pt solid #c8c8c8;
+        margin-bottom: 10px;
+        line-height: 20px
+    }
+
+    .qss_block .topbox {
+        background: url("/images/bg_th.gif") repeat-x scroll 0 0;
+        font-weight: bold;
+        height: 24px;
+        padding-left: 20px;
+    }
+
+    table.datagrid {
+        border-color: #eee
+    }
+
+    table.datagrid tr td,table.datagrid tr th {
+        border-color: #ccc;
+        padding: 0 5px
+    }
+
+    .slidingDiv {
+        position: absolute;
+        background: #fff;
+        right: 0;
+        width: 250px;
+        border: 1pt solid #ccc;
+        z-index: 1000
+    }
+
+    .q_setting {
+        background: #f1f1f1;
+        font-weight: normal;
+    }
+
+    .q_setting .datagrid tr:hover {
+        background: #fff
+    }
+
+    .notify4 {
+        margin: 0
+    }
+
+    .notify4 a,.notify5 a {
+        text-indent: 5000em;
+        display: block;
+        height: 18px;
+        width: 16px;
+        background: url('/images/setting.png') no-repeat 0px 0px;
+        margin: 3px
+    }
+
+    .notify4 a:hover,.notify5 a:hover {
+        background-position: 0 -17px;
+        margin: 3px
+    }
+
+    .box_das2 {
+        float: left;
+        margin: 5px 2px;
+        background: #fff;
+        border: 1px #cccccc solid;
+    }
+    @media screen and (max-width: 500px) {
+   		.box_das2 {
+   			width: 98%;
+   		}	
+	}
+
+    .box_das2 .inside_das2 {
+        width: 590px;
+        /*height: 200px;*/
+        border: 1pt solid #ccc;
+        background:#fff;
+    }
+
+    .box_das2 .inside_das1 {
+        width: 800px;
+    }
+
+    .box_das2 .inside_das3 {
+        width: 350px;
+    }
+
+    .box_das2 .name_box_das2 {
+        background: #fff;
+        padding: 2px 10px;
+        text-align: center;
+        font-weight: bold;
+        border: 1pt solid #ccc;
+        border-top: none;
+        position: relative
+    }
+
+    a.hide_box_das2 {
+        background: url('/images/event/close.png') no-repeat 0px 0px;
+        border: medium none;
+        display: block;
+        float: right;
+        height: 15px;
+        position: absolute;
+        right: 3px;
+        text-indent: 5000em;
+        top: 4px;
+        width: 15px;
+    }
+
+    .dash_box_heading
+    {
+        border-bottom: 1pt solid #ccc;
+        line-height: 36px;
+        font-size: 13px;
+        padding-left: 5px;
+        font-weight: bold;
+        height: 40px;
+    }
+
+    .dash_box_content
+    {
+        padding: 2px 2px;
+        height: 285px;
+        overflow: auto;
+    }
+    /*a.hide_box_das2:hover { background: url('/images/setting.png') no-repeat 0px -17px;}*/
+</style>
+
+<div class="clear"></div>
+<div id="view">
+	<div id="qss_form">
+
+		<div id="dashboad_2"></div>
+
+	</div>
+</div>

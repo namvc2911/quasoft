@@ -1,0 +1,107 @@
+<?php
+/**
+ * *****************************************************************************
+ * Hien Thi Lich Su Bao Tri
+ * *****************************************************************************
+ */
+?>
+
+
+
+<!-- HIEN THI LICH SU BAO TRI -->
+<div id="einfo-tab-show-table">
+    <div class="right">
+        <?php echo $this->_translate(12);?>:
+        <a class="bold"
+           onclick="$('#einfo-history-page').val('<?php echo $this->back;?>'); einfo_history_show_for_component();"
+           href="#" title="Trang trước">
+            <<
+        </a>
+
+        <input id="einfo-history-page"
+               value="<?php echo $this->page;?>"
+               style="width: 20px !important; text-align: center;"
+               onchange="einfo_history_show();"
+               name="einfo_history_page"> / <?php echo $this->totalPage;?>
+
+        <a class="bold"
+           onclick="$('#einfo-history-page').val('<?php echo $this->next;?>'); einfo_history_show_for_component();"
+           href="#"
+           title="Trang sau">
+            >>
+        </a>
+        <?php echo $this->_translate(13);?>:
+
+        <select id="einfo-history-display"
+                onchange="einfo_history_show_for_component();"
+                style="width: 100;"
+                name="einfo_history_display">
+            <option value="10" <?php echo $this->display == 10?'selected':'';?>>10</option>
+            <option value="20" <?php echo $this->display == 20?'selected':'';?>>20</option>
+            <option value="50" <?php echo $this->display == 50?'selected':'';?>>50</option>
+            <option value="100" <?php echo $this->display == 100?'selected':'';?>>100</option>
+        </select>
+
+    </div>
+
+    <div class="clear"></div>
+
+    <table cellpadding="0" cellspacing="0" class="border_table"
+           style="width: 100%;" id=''>
+        <tr class="bggrey center">
+            <th style="width: 5%"><?php echo $this->_translate(1);?>
+                <!-- Số phiếu --></th>
+            <th style="width: 10%"><?php echo $this->_translate(2);?>
+                <!-- Ngày yêu cầu --></th>
+            <th style="width: 10%"><?php echo $this->_translate(3);?>
+                <!-- Ngày thực hiện --></th>
+            <th style="width: 10%"><?php echo $this->_translate(11);?>
+                <!-- Ngày thực hiện --></th>
+            <th style="width: 10%"><?php echo $this->_translate(6);?>
+                <!-- Loại bảo trì --></th>
+            <th style="width: 10%"><?php echo $this->_translate(9);?>
+                <!-- Người thực hiện --></th>
+        </tr>
+
+        <?php $CountLine = 0; ?>
+        <?php foreach ($this->history as $h): ?>
+            <tr class="pointer einfo-historytab-row"
+                ondblclick="einfo_rowDetail(this)"
+                onclick="einfo_select_history_row(this)"
+                ifid="<?php echo $h->IFID_M759 ?>"
+                deptid="<?php echo $this->deptid ?>"
+                title="Click đúp để xem chi tiết bảo trì thiết bị!">
+                <td class="left"><a href="#" onclick="einfo_rowDetail(<?php echo $h->IFID_M759 ?>)"
+                                    ifid="<?php echo $h->IFID_M759 ?>"
+                                    deptid="<?php echo $this->deptid ?>"><?php echo $h->SoPhieu; ?></a>
+                </td>
+                <td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($h->NgayYeuCau); ?>
+                </td>
+                <td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($h->NgayBatDau); ?>
+                </td>
+                <td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($h->Ngay); ?>
+                </td>
+                <td class="left"><?php echo $h->LoaiBaoTri; ?>
+                </td>
+                <td class="left"><?php echo $h->NguoiThucHien; ?>
+                </td>
+            </tr>
+            <?php $CountLine++; ?>
+        <?php endforeach; ?>
+
+        <?php if ($CountLine <= 20): ?>
+            <?php for ($i = $CountLine; $i < 20; $i++): ?>
+                <tr class="pointer einfo-historytab-row"
+                    onclick="einfo_select_history_row(this)">
+                    <td class="left">&nbsp;</td>
+                    <td class="center">&nbsp;</td>
+                    <td class="center">&nbsp;</td>
+                    <td class="left">&nbsp;</td>
+                    <td class="left">&nbsp;</td>
+                    <td class="left">&nbsp;</td>
+                </tr>
+            <?php endfor; ?>
+        <?php endif; ?>
+    </table>
+</div>
+

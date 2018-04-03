@@ -1,0 +1,45 @@
+<table class="grid_navigator">
+	<tr>
+		<td align="center" style="border-right: 0; width: 100px">
+		</td>
+		<td align="right">
+		<?php if(count($this->model->arrGroup)):?>
+		<?php echo $this->_translate(26,'Nhóm theo')?>: <select id="qss_form_groupby"
+			onchange="rowSearch('<?php echo $this->form->FormCode;?>');">
+			<option value="0"></option>
+			<?php foreach($this->model->arrGroup as $key=>$field):?>
+			<option value="<?php echo $key?>"
+			<?php
+			if ( $key == $this->groupby )
+			echo 'selected';
+			?>><?php
+			echo $this->model->arrGroup[$key];
+			?></option>
+			<?php endforeach;?>
+		<?php endif?>
+		</select> 
+		<?php echo $this->_translate(30,'Trang')?>: 
+			<select style="" onchange="rowSearch();" id="qss_form_pageno">
+			<?php for($i = 1;$i <= ceil($this->recordcount/$this->limit);$i++):?>
+				<option <?php if($i == $this->currentpage) echo 'selected';?>><?php echo $i?></option>
+			<?php endfor;?>
+          </select>
+          / <?php echo ceil($this->recordcount/$this->limit);?> 
+		  <?php echo $this->_translate(28,'Hiển thị')?>: <select id="qss_form_perpage"
+			style="width: 100;"
+			onchange="rowSearch();">
+			<?php
+			$arr = array(10, 20, 50, 100);
+			foreach ($arr as $val):?>
+			<option
+			<?php
+			if ( $val == $this->limit )
+			echo 'selected';
+			?>><?php
+			echo $val;
+			?></option>
+			<?php endforeach;?>
+		</select></td>
+	</tr>
+</table>
+

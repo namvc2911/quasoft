@@ -1,0 +1,24 @@
+<form method="post" id="qss_copy_form">
+<?php $arrcopyform = array_values($this->copyform)?>
+<?php $copyform = $arrcopyform[0]?>
+<input type="hidden" value="<?php echo $copyform->FormCode?>" name="fid">
+<h2><?php echo $copyform->FormCode?> - <?php echo $copyform->Name?> <?php if(!count($this->form)):?><span class="red">(Not installed)</span><?php endif;?></h2>
+<?php if($copyform->class):?>
+	<p style="padding-left: 30px;"><?php echo $copyform->class?></p>
+<?php endif;?>
+<p style="padding-left: 100px;"><input type="checkbox" name="effect" value="1" <?php if($copyform->Effected):?>checked<?php endif;?>> Hoạt động</p>
+
+<?php foreach ($this->copyform as $item):?>
+	<?php if($item->ObjectCode):?>
+		<?php $class="green"?>
+		<?php if(!is_array(@$this->form) || !array_key_exists($item->ObjectCode,$this->form)):?>
+			<?php $class = 'red'?>
+		<?php endif;?>
+		<h3 style="padding-left: 30px;" class="<?php echo $class;?>"><?php echo $item->ObjectCode?> - <?php echo $item->ObjectName?> <?php if(!in_array($item->ObjectCode,$this->objects)):?><span class="red">(Not installed)</span><?php endif;?></h3>
+		<p style="padding-left: 100px;"><input type="checkbox" name="public" value="1" <?php if($item->Public):?>checked<?php endif;?>> Không hiển thị</p>
+	<?php endif;?>
+<?php endforeach;?>
+<p>&nbsp;</p>
+<p align="center"><button type="button" class="btn" onclick="copyForm()">Copy</button></p>
+<p>&nbsp;</p>
+</form>

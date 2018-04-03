@@ -1,0 +1,144 @@
+<?php
+$tinhTrang = Qss_Lib_System::getFieldRegx('ONhatTrinhThietBi', 'TinhTrang');
+
+?>
+
+<script>
+    $(document).ready(function(){
+        $('#start').change(function(){
+            calendar_index_file.param();
+        });
+
+        $('#end').change(function(){
+            calendar_index_file.param();
+        });
+    });
+</script>
+
+<form id="m729_failure_param">
+    <div>
+        Ngày bắt đầu: <?php echo $this->views->Report->Datepicker('start', $this->start);?>
+        Ngày kết thúc: <?php echo $this->views->Report->Datepicker('end', $this->end);?>
+    </div>
+    <br/>
+
+    <?php $i = 0;?>
+    <table class="grid border" cellspacing="0" cellpadding="0" border="1">
+
+        <tr>
+            <th style="width: 43%; text-align: center;">&nbsp;Thiết bị</th>
+            <th style="width: 10%; text-align: center;">&nbsp;Ngày</th>
+            <th style="width: 30%; text-align: center;">&nbsp;Số hoạt động</th>
+            <th style="width: 11%; text-align: center;">&nbsp;Tình trạng</th>
+            <th style="text-align: center;"><input type="checkbox" onclick="common_check_all_table_line(this, '.cwpo_line_checkbok', '.cwpo_line_checkbok_val')"/></th>
+        </tr>
+
+        <?php foreach($this->failure as $locioid=>$detail):?>
+
+            <tr common_no_check="1">
+                <td colspan="4" class="left tree_level_<?php echo $detail->Level;?> tree_open">
+                    <b><?php echo $detail->MaKhuVuc.' - '.$detail->TenKhuVuc;?></b>
+                </td>
+            </tr>
+
+            <?php if($locioid > 0 && isset($detail->Equip)):?>
+                <?php foreach($detail->Equip as $item):?>
+                    <?php
+                    $mark = '';
+
+
+                    if(
+                        $item->NhatTrinhIOID
+                        &&
+                        ( $item->DinhLuong
+                            && !($item->GioiHanTren == 0 && $item->GioiHanDuoi == 0)
+                            && ($item->SoGio >= $item->GioiHanTren || $item->SoGio <= $item->GioiHanDuoi)
+                        )
+                        ||
+                        (
+                            !$item->DinhLuong && $item->Dat == 2
+                        )
+                    )
+                    {
+                        $mark = 'bgpink';
+                    }
+                    ?>
+
+                    <tr class="<?php echo $mark;?>"  <?php echo ($item->TinhTrang == 1 || $item->TinhTrang == 2)?'common_no_check="1"':'';?>>
+                        <td class="tree_level_<?php echo ($detail->Level + 1);?>">
+                            <label>
+                                <?php echo $item->TenThietBi.' - '.$item->MaThietBi;?>
+                                <?php if($item->BoPhan):?> - <?php echo $item->BoPhan?><?php endif;?>
+                                (<?php echo $item->Ma?>)
+                            </label>
+                            <input type="hidden" name="diemdo[]" value="<?php echo $item->Ma;?>">
+                        </td>
+
+                        <td class="center">
+                            <?php echo Qss_Lib_Date::mysqltodisplay($item->Ngay);?>
+                        </td>
+
+                        <td>
+                            <input type="hidden" name="dinhluong[]" value="<?php echo @(int)$item->DinhLuong;?>" />
+                            <input type="hidden" class="min" value="<?php echo (double)$item->GioiHanDuoi;?>" />
+                            <input type="hidden" class="max" value="<?php echo (double)$item->GioiHanTren;?>" />
+                            <?php if($item->DinhLuong):?>
+                                <input type="text" size="12" name="val[]" value="<?php echo $item->SoGio;?>" class="m816_value m816_value_text" disabled>
+
+                                MIN: <?php echo (double)$item->GioiHanDuoi;?>
+                                - MAX: <?php echo (double)$item->GioiHanTren;?>
+                            <?php else:?>
+                                <input type="checkbox"
+                                       class="radio_<?php echo $i;?>"
+                                       value="1"
+                                       id="radio_<?php echo $i;?>_true" disabled
+                                    <?php echo ($item->Dat == 1)?'checked':'';?>>
+                                <label for="">TRUE</label>
+
+                                <input type="checkbox"
+                                       class="radio_<?php echo $i;?>"
+                                       value="2"
+                                       id="radio_<?php echo $i;?>_false" disabled
+                                    <?php echo ($item->Dat == 2)?'checked':'';?>>
+                                <label for="">FALSE</label>
+
+                                <input type="hidden" name="val[]" class="m816_value" value="<?php echo (int)$item->Dat;?>" id="m816_checkbox_<?php echo $i++;?>" />
+
+                            <?php endif;?>
+                            (<?php echo $item->DonViTinh?>)
+                        </td>
+
+                        <td class="center">
+                            <?php echo $tinhTrang[$item->TinhTrang];?>
+                        </td>
+
+                        <td class="center">
+
+                            <?php /*
+                        <a href="#1"
+                           onclick="calendar_index_file.createOrder(<?php echo (int)$item->Ref_MaThietBi;?>, <?php echo (int)$item->Ref_BoPhan;?>);">
+                            Tạo phiếu
+                        </a>
+                        */?>
+                            <input class="table_line_disabled" type="hidden" value="<?php echo (int)$item->Ref_MaThietBi;?>" name="Equip[]" disabled>
+                            <input class="table_line_disabled" type="hidden" value="<?php echo (int)$item->Ref_BoPhan;?>" name="Component[]" disabled>
+                            <input class="table_line_disabled" type="hidden" value="<?php echo (int)$item->NhatTrinhIFID;?>" name="DailyIFID[]" disabled>
+                            <input class="table_line_disabled" type="hidden" value="<?php echo (int)$item->NhatTrinhIOID;?>" name="DailyIOID[]" disabled>
+                            <input type="checkbox" class="cwpo_line_checkbok " onclick="common_check_table_line(this, '.cwpo_line_checkbok_val')"
+                                   <?php echo ($item->TinhTrang == 1 || $item->TinhTrang == 2)?'disabled':'';?>
+                            >
+                            <input type="hidden" class="table_line_disabled cwpo_line_checkbok_val" name="CheckBox[]"  value="0" disabled>
+
+                        </td>
+                    </tr>
+                <?php endforeach;?>
+            <?php endif;?>
+        <?php endforeach;?>
+    </table>
+
+    <br/>
+
+    <div class="fr">
+        <button type="button" class="btn-custom" onclick="calendar_index_file.createOrder()"> Tạo phiếu </button>
+    </div>
+</form>

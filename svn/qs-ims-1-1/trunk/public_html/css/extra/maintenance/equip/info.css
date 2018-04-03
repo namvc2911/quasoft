@@ -1,0 +1,249 @@
+.einfo-block-border {
+	border: 1px #ccc solid;
+	background: #fff;
+}
+
+.einfo_delete_eq {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 14px;
+	height: 14px;
+	z-index: 1000;
+	background: #ddd url(/images/event/close.png) no-repeat center;
+}
+
+.einfo_edit_eq {
+	position: absolute;
+	top: 0px;
+	right: 16px;
+	width: 14px;
+	height: 14px;
+	z-index: 1000;
+	background: #ddd url(/images/wrench.png) no-repeat center;
+}
+
+.einfo-no-image {
+	width: 100%;
+	background: #fff;
+	font-size: 72px;
+	line-height: 250px;
+	color: #ccc;
+	text-align: center;
+	margin: auto;
+}
+
+.einfo_generaltab_label {
+	width: 29%;
+	padding: 2px;
+}
+
+.einfo_generaltab_element {
+	width: 29%;
+	padding: 2px;
+}
+
+#equipment_tag {
+	margin-left: 0px !important;
+	width: 89%;
+}
+
+#einfo-filter-one-equip {
+	margin-bottom: 10px;
+}
+
+#einfo-wrap {
+	width: 100%;
+	margin-top: 0px;
+}
+
+#einfo-search-eq {
+	width: 29%;
+	float: left;
+}
+
+#einfo-filter-option {
+	margin-bottom: 10px;
+}
+
+#filterEq,#searchEq {
+	margin: auto;
+	width: 90%;
+}
+
+#einfo-search-eq-input {
+	margin-bottom: 10px;
+}
+
+#einfo-search-eq-table {
+	width: 98%;
+	margin-bottom: 10px;
+	border: 1px #ccc solid;
+	background: #fff;
+	overflow: auto;
+}
+
+.einfo-eq {
+	margin: 1px auto;
+	border-bottom: 1px #ccc dashed;
+	cursor: pointer;
+	position: relative;
+	z-index: 10;
+}
+
+#einfo-info-table {
+	padding: 5px;
+	background: #fff;
+	border: 1px #ccc solid;
+	overflow: hidden;
+}
+
+#einfo-show-info {
+	width: 70%;
+	/*border: 1px #ccc solid;*/
+	float: left;
+}
+
+#einfo-tabs {
+	width: 100%;
+	margin: 4px auto 0px 0px;
+	overflow: hidden;
+	clear: both;
+}
+
+#einfo-tabs ul {
+	overflow: hidden;
+}
+
+#einfo-tabs ul li {
+	float: left;
+}
+
+#einfo-tab2-select-component {
+	width: 20%;
+	/*height: 460px;*/
+	overflow: auto;
+	float: left;
+	border: 1px #ccc solid;
+}
+
+#einfo-tab2-select-component td,#einfo-tab2-select-component th {
+	border-bottom: 1px dashed #ccc;
+}
+
+#einfo-tab2-show-component {
+	width: 79%;
+	overflow: auto;
+	float: right;
+}
+
+.einfo-tab-select-column {
+	border: 1px solid #ccc;
+	float: left;
+	overflow: auto;
+	position: relative;
+	width: 20%;
+}
+
+.einfo-tab-select-column td,.einfo-tab-select-column th {
+	border-bottom: 1px dashed #ccc;
+	height: 20px;
+}
+
+.einfo-tab-show-column {
+	width: 100%;
+	min-height: 1px;
+	overflow: auto;
+}
+
+#einfo-tab3-tech-note { /*height: 100px;*/
+	overflow: auto;
+}
+
+#einfo-tab3-tech-table {
+	min-height: 1px;
+	overflow: auto;
+}
+
+#einfo-info-table {
+	width: 100%;
+	height: auto;
+	margin: auto;
+	clear: both;
+}
+
+#einfo-select-maintaint-plan {
+	margin-bottom: 5px;
+}
+
+.btn-custom {
+	background-color: #58a;
+	border-bottom: 1pt solid #333;
+	border-right: 1pt solid #333;
+	color: white;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 12px;
+	min-width: 60px;
+	padding: 2px 8px;
+	text-align: center;
+	white-space: nowrap;
+}
+
+.pointer {
+	cursor: pointer;
+}
+
+.textarea {
+	background: #fff;
+	overflow: auto;
+	height: 60px;
+	width: 100%;
+	border: 1px #ccc solid;
+}
+
+.textarea  p /* remove default css effect*/ {
+	margin: 0px !important;
+	padding: 0px !important;
+}
+
+
+.marker td {
+	background: #ddd !important;
+}
+
+.light-grey {
+	color: #bbb;
+}
+
+.round-button {
+	width: 50px;
+	height: 50px;
+	position: absolute;
+	top: calc(100% - 50px);
+	right: 0px;
+}
+
+.round-button-circle {
+	display: block;
+	width: 100%;
+	height: 100%;
+	border-radius: 25px;
+	font-size: 30px;
+	font-weight: 600;
+	color: #fff;
+	line-height: 50px;
+	text-shadow: 0 1px 0 #4679BD;
+	text-align: center;
+	text-decoration: none;
+	box-shadow: 1px 1px 2px #ccc;
+	background: #4679BD;
+	opacity: 0.95
+}
+
+.round-button-circle:hover {
+	color: #eee;
+	text-shadow: 0 0 1px #666;
+	text-decoration: none;
+	opacity: 1
+}

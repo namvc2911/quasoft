@@ -1,0 +1,102 @@
+<script type="text/javascript">
+    function printPreview() {
+        var url = sz_BaseUrl + '/static/m864/show';
+        var data = $('#report').serialize();
+
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#print-area').html(jreturn);
+            removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+        });
+    }
+</script>
+
+<div class="clear">&nbsp;</div>
+<div id="view">
+    <div class="line-hr">
+        <span><?php echo Qss_Lib_System::getReportTitle('M864');?> </span>
+    </div>
+
+    <form id="report" method="get" action="/static/m864/show">
+        <table class="detail">
+            <tr>
+                <th width="20%" class="report-param-label"><?php echo $this->_translate(3) ?>
+                </th>
+                <td>
+                    <?php
+                    $id = 'location';
+                    $getDataObject = array('OKhuVuc' => array('MaKhuVuc', 'Ten'));
+                    $getFields = array('num' => 2,
+                        'objects' => array('OKhuVuc' => array(
+                            'id' => 'IOID'
+                            , 'display1' => 'MaKhuVuc'
+                            , 'display2' => 'Ten')));
+                    $getLookupFilter = array();
+                    ?> <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields, $getLookupFilter); ?>
+                </td>
+            </tr>
+
+            <tr>
+                <th width="20%" class="report-param-label"><?php echo $this->_translate(22) ?>
+                </th>
+                <td>
+                    <?php
+                    $id = 'group';
+                    $getDataObject = array('ONhomThietBi' => array('LoaiThietBi'));
+                    $getFields = array('num' => 2,
+                        'objects' => array('ONhomThietBi' => array(
+                            'id' => 'IOID'
+                        , 'display1' => 'LoaiThietBi')));
+                    $getLookupFilter = array();
+                    ?> <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields, $getLookupFilter); ?>
+                </td>
+            </tr>
+
+            <tr>
+                <th width="20%" class="report-param-label"><?php echo $this->_translate(21) ?>
+                </th>
+                <td>
+
+                    <?php
+                    $id = 'type';
+                    $getDataObject = array('OLoaiThietBi' => array('TenLoai'));
+                    $getFields = array('num' => 2,
+                        'objects' => array('OLoaiThietBi' => array(
+                            'id' => 'IOID'
+                        , 'display1' => 'TenLoai')));
+                    $getLookupFilter = array();
+                    ?> <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields, $getLookupFilter); ?>
+                </td>
+            </tr>
+
+            <tr>
+                <th width="20%" class="report-param-label"><?php echo $this->_translate(7) ?>
+                </th>
+                <td><?php
+                    $id = 'equipment';
+                    $getDataObject = array('ODanhSachThietBi' => array('MaThietBi', 'TenThietBi'));
+                    $getFields = array('num' => 2,
+                        'objects' => array('ODanhSachThietBi' => array(
+                            'id' => 'IOID'
+                        , 'display1' => 'MaThietBi'
+                        , 'display2' => 'TenThietBi')));
+                    $getLookupFilter = array();
+                        /*
+                        array(array('id' => 'group'
+                    , 'refField' => array('ODanhSachThietBi' => 'Ref_NhomThietBi')
+                    , 'required' => 0)
+                    , array('id' => 'type'
+                        , 'refField' => array('ODanhSachThietBi' => 'Ref_LoaiThietBi')
+                        , 'required' => 0));
+                        */
+                    ?> <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields, $getLookupFilter); ?>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <hr />
+
+    <?php echo $this->views->Report->PrintToolbar();?>
+    <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>

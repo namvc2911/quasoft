@@ -1,0 +1,186 @@
+<script type="text/javascript" src="/js/common.js"></script>
+
+<script type="text/javascript">
+var M408_getbypo = {
+    save : function(){
+    	var url  = sz_BaseUrl + '/button/M402/getbypo/save';
+    	var data = $('#M408_getbypo_form').serialize();
+    	var data2 = common_url_to_array(data);
+    	var AllQtyZero = 1; 
+
+    	if(data2.itemioid == undefined)
+    	{
+        	qssAjax.alert('Cần chọn ít nhất một dòng dữ liệu để cập nhật!');
+        	return;
+    	}
+    	else
+    	{
+        	for(i in data2.qty)
+        	{
+            	if(data2.qty[i] != 0)
+            	{
+            		AllQtyZero = 0;
+            	}
+        	}  
+
+        	if(AllQtyZero == 1)
+        	{
+            	qssAjax.alert('Cần ít nhất một dòng có số lượng lớn hơn 0 để cập nhật!');
+            	return;                	
+        	}          	
+    	}
+
+        qssAjax.call(url, data, function(jreturn) {
+            if(jreturn.message != '')
+            {
+                qssAjax.notice(jreturn.message);
+            }
+            rowObjectSearch('<?php echo $this->ifid;?>','<?php echo $this->deptid;?>','ODanhSachNhapKho');
+            $('#qss_trace').dialog('close');
+        }, function(jreturn) {
+            qssAjax.alert(jreturn.message);
+        });
+    }    	
+};
+</script>
+
+<?php
+    $oldRequest      = '';
+    $requestWidthArr = array(1,2,4,4,2,2,2,2);
+    $width           = 780;
+    $padding         = 2;
+    $formNo          = 0;
+    
+    $fit = Qss_Lib_Report::changeWidthToFitScreen2($requestWidthArr, $width, $padding);
+    
+//     if(!count($this->agreement))
+//     {
+//         echo 'Không có hợp đồng nguyên tắc!';
+//         die;
+//     }
+?>
+
+<div id="M408_getbypo_wrap">
+    <form id="M408_getbypo_form">
+        <input type="hidden" class="" name="ifid"  value="<?php echo $this->ifid;?>">
+    
+        <table class="border_table" cellpadding="0" cellspacing="0" border="0" style="width:<?php echo $width;?>px">
+            <!-- Title -->
+            <?php $begin = 0; ?>
+            <tr class="bggrey">
+                <!-- STT -->
+                <th style="width:<?php echo $fit[$begin++];?>px;">
+                    <input type="checkbox" onclick="common_check_all_table_line(this, '.cwpo_line_checkbok', '.cwpo_line_checkbok_val')"/>
+                </th>
+                
+                <!-- Số yêu cầu -->
+                <th style="width:<?php echo $fit[$begin++];?>px;">
+                    <?php echo $this->_translate(9);?>
+                </th>                        
+    
+                <!-- Mã mặt hàng -->
+                <th style="width:<?php echo $fit[$begin++];?>px;">
+                    <?php echo $this->_translate(2);?>
+                </th>
+    
+                <!-- Tên mặt hàng -->
+                <th style="width:<?php echo $fit[$begin++];?>px;">
+                    <?php echo $this->_translate(3);?>
+                </th>
+    
+                <!-- ĐVT -->
+                <th style="width:<?php echo $fit[$begin++];?>px;">
+                    <?php echo $this->_translate(4);?>
+                </th>
+                
+                <!-- Đơn hàng  -->
+                <th style="width:<?php echo $fit[$begin++];?>px;">
+                    <?php echo $this->_translate(11);?>
+                </th>                   
+                
+                <!-- Đã nhận  -->
+                <th style="width:<?php echo $fit[$begin++];?>px;">
+                    <?php echo $this->_translate(10);?>
+                </th>                
+    
+                <!-- Số lượng  -->
+                <th style="width:<?php echo $fit[$begin++];?>px;">
+                    <?php echo $this->_translate(5);?>
+                </th>
+    
+            </tr>
+
+            <?php $no = 0;?>     
+            
+            
+            <?php foreach ($this->receive as $dat):?>
+
+            
+                <tr>
+                    <!-- STT -->
+                    <td class="center">
+                        <input type="checkbox" class="cwpo_line_checkbok " onclick="common_check_table_line(this, '.cwpo_line_checkbok_val')">
+                        <input type="hidden" class="table_line_disabled cwpo_line_checkbok_val" name="CheckBox[]"  value="0">
+                        <input class="table_line_disabled" type="hidden" name="itemioid[]" value="<?php echo $dat->Ref_MaSP;?>" disabled /> 
+                        <input class="table_line_disabled" type="hidden" name="uomioid[]" value="<?php echo $dat->Ref_DonViTinh;?>" disabled /> 
+                        <input class="table_line_disabled" type="hidden" name="requestioid[]" value="<?php echo $dat->Ref_SoYeuCau;?>" disabled />                                
+                        
+                    </td>
+                    
+                    <!-- Số yêu cầu -->
+                    <td class="left">
+                        <?php echo $dat->SoYeuCau;?>
+                    </td>                            
+    
+                    <!-- Mã mặt hàng -->
+                    <td class="left">
+                        <?php echo $dat->MaSP;?>
+                    </td>
+    
+                    <!-- Tên mặt hàng -->
+                    <td class="left">
+                        <?php echo $dat->TenSanPham;?>
+                    </td>
+    
+                    <!-- ĐVT -->
+                    <td class="left">
+                        <?php echo $dat->DonViTinh;?>
+                    </td>
+                    
+                    <!-- Đơn hàng -->
+                    <td class="right">
+                        <?php echo $dat->SoLuong;?>
+                    </td>                       
+                    
+                    <!-- Đã nhận -->
+                    <td class="right">
+                        <?php echo $dat->SoLuongDaNhan;?>
+                    </td>                    
+    
+                    <!-- Số lượng -->
+                    <td class="right">
+                        <input type="text" class="table_line_disabled right" name="qty[]" value="<?php echo $dat->SoLuong;?>" size="10" disabled/>
+                    </td>
+    
+                </tr>                
+            <?php endforeach;?>
+            
+            
+        </table>   
+    </form>
+    
+
+    <div class="clear"></div>
+    <br/>
+    
+    
+    <div>
+        <!-- Button: Tạo đơn hàng-->
+        <button type="button" class="btn btn-custom" onclick="M408_getbypo.save();">
+            <?php echo $this->_translate(8);?>
+        </button>
+    </div>        
+    
+</div><!-- END #M411_agreement_wrap -->
+
+

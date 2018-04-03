@@ -1,0 +1,269 @@
+<!--  @todo: fix bug chrome multiple select element -->
+<style>
+#item_dial_box {
+	overflow: hidden;
+}
+
+#select_item_box {
+	float: left;
+	width: 45%;
+}
+
+#select_item_box select {
+	width: 95%;
+}
+
+#button_box {
+	width: 10%;
+	float: left;
+}
+
+#button_box .btn-custom {
+	padding: 0px;
+	margin: 0px;
+	width: 90%;
+}
+
+#add_button {
+	margin-top: 40px;
+}
+
+#items_box {
+	float: left;
+	width: 45%;
+}
+
+#items_box select {
+	width: 95%;
+}
+
+#qss_report {
+	margin: 5px 0px;
+}
+</style>
+
+<script>
+function printPreview(){
+	var items       = $('#items_box select option').length;
+	var ngaybd      = $('#start').val();
+	var ngaykt      = $('#end').val();
+	var firstValue  = ngaybd.split('-');
+	var secondValue = ngaykt.split('-');
+	var firstDate   = new Date();
+	firstDate.setFullYear(firstValue[2],(firstValue[1] - 1 ),firstValue[0]);
+	var secondDate  = new Date();
+	secondDate.setFullYear(secondValue[2],(secondValue[1] - 1 ),secondValue[0]);  
+	var msg         = ''; /* Error message */
+	$('#items_box select option').attr('selected','selected');/* Select all selected item */
+
+	if(ngaybd == '')
+	{
+		msg  += '<?php echo $this->_translate(1);?>';
+	}
+
+	if(ngaykt == '')
+	{
+		msg  += '<?php echo $this->_translate(2);?>';
+	}
+
+	if (firstDate > secondDate)
+	{
+	 	msg += '<?php echo $this->_translate(3)?>';
+	}
+
+	if(items == 0)
+	{
+		msg += '<?php echo $this->_translate(16);?>';
+	}
+
+	if(msg != '')
+	{
+		qssAjax.alert(msg);
+		return;
+	}
+	else
+	{
+		/*
+		var url = sz_BaseUrl + '/report/mrp/monitoring1';
+		var data = $('#report').serialize();
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#qss_report').html(jreturn);
+		});
+		*/
+//		$('#report').submit(function() {
+//		    window.open('', 'formpopup', 'statusbar=no,resizable=yes,scrollbars=yes, addressbar=no,maximize=yes');
+//		    this.target = 'formpopup';
+//			});
+//		$('#report').submit();
+	 var url = sz_BaseUrl + '/report/mrp/monitoring1';
+		var data = $('#report').serialize();
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#print-area').html(jreturn);
+                        removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+		});
+	}
+}
+
+function checkItemTypeTick(id)
+{
+	if($('#'+id).is(':checked'))
+	{
+		$('#'+id).val(1);
+		return 1;
+	}
+	else
+	{
+		$('#'+id).val(0);
+		return 0;
+	}
+}
+
+function changeSelectItem()
+{
+	var url        = sz_BaseUrl + '/report/mrp/monitoring2';
+	var group      = $('#group').val();
+	var purchase   = checkItemTypeTick('purchase');
+	var sale       = checkItemTypeTick('sale');
+	var production = checkItemTypeTick('production');
+	var material   = checkItemTypeTick('material');
+	var data       = {
+						group:group,
+						purchase:purchase,
+						sale:sale,
+						production:production,
+						material:material
+					 };
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#select_item_box select').html(jreturn);
+	});
+}
+
+function addItem()
+{
+	var add       = $('#select_item_box select option:selected');
+	add.each(function(){
+		$('#items_box select').append('<option value="'+$(this).val()+'" groupmarker="'+$(this).attr('groupmarker')+'">'+$(this).text()+'</option>');
+		$(this).remove();
+	});
+}
+
+function removeItem()
+{
+	var remove = $('#items_box select option:selected');
+	remove.each(function(){
+		$('#select_item_box select optgroup[groupmarker="'+$(this).attr('groupmarker')+'"]').prepend('<option value="'+$(this).val()+'" groupmarker="'+$(this).attr('groupmarker')+'">'+$(this).text()+'</option>');
+		$(this).remove();
+	});
+}
+</script>
+
+<div class="clear"></div>
+<div id="view">
+	<div class="line-hr">
+		<span><?php echo $this->_translate(4)?> </span>
+	</div>
+	<form id="report" method="post" action="/report/mrp/monitoring1">
+		<table class="" style="margin: 10px">
+
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Ngày bắt đầu --> <?php echo $this->_translate(5)?>
+				</th>
+				<td><?php echo $this->views->Report->Datepicker('start','01-'.date('m').'-'.date('Y'));?>
+					<span class="red bold">(*)</span></td>
+			</tr>
+
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Ngày kết thúc --> <?php echo $this->_translate(6)?>
+				</th>
+				<td><?php echo $this->views->Report->Datepicker('end',date('d-m-Y'));?>
+					<span class="red bold">(*)</span></td>
+			</tr>
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Nhóm mặt hàng --> <?php echo $this->_translate(7)?></th>
+				<td><select id="group" onchange="changeSelectItem()" name="group">
+						<option value="0">
+							<!-- Tất cả -->
+							---
+							<?php echo $this->_translate(8)?>
+							----
+						</option>
+						<?php foreach ($this->groups as $gr):?>
+						<option value="<?php echo $gr->IOID;?>">
+						<?php echo $gr->TenNhom?>
+						</option>
+						<?php endforeach;?>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(9)?>
+				</th>
+				<td><input type="checkbox" name="itemtype[Purchase]" value="0"
+					onclick="changeSelectItem()" id="purchase"> <!-- Mua vào --> <?php echo $this->_translate(10)?>
+					<input type="checkbox" name="itemtype[Sale]" value="0"
+					onclick="changeSelectItem()" id="sale"> <!-- Bán ra--> <?php echo $this->_translate(11)?>
+					<input type="checkbox" name="itemtype[Production]" value="0"
+					onclick="changeSelectItem()" id="production"> <!-- Sản xuất--> <?php echo $this->_translate(12)?>
+					<input type="checkbox" name="itemtype[Material]" value="0"
+					onclick="changeSelectItem()" id="material"> <!-- Vật tư--> <?php echo $this->_translate(13)?>
+				</td>
+			</tr>
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Mặt hàng --> <?php echo $this->_translate(14)?></th>
+				<td>
+					<div id="item_dial_box">
+						<div id="select_item_box">
+							<select multiple="multiple" size="10">
+							<?php $selected = 0;?>
+							<?php foreach ($this->items as $group):?>
+								<optgroup label="<?php echo $group['TenNhom']?>"
+									groupmarker="<?php echo $group['RefNhom']?>">
+									<?php foreach ($group['SanPham'] as $item):?>
+									<option value="<?php echo $item['Ref'] ?>"
+										groupmarker="<?php echo $group['RefNhom']?>">
+										<?php echo $item['Code']?>
+										-
+										<?php echo $item['Name']?>
+									</option>
+									<?php endforeach;?>
+								</optgroup>
+								<?php endforeach;?>
+							</select>
+						</div>
+
+						<div id="button_box">
+							<div id="add_button">
+								<button type="button" class="btn-custom" onclick="addItem()">>>
+								</button>
+							</div>
+
+							<div id="remove_button">
+								<button type="button" class="btn-custom" onclick="removeItem()">
+									<<</button>
+							</div>
+						</div>
+
+
+						<div id="items_box">
+							<select size="10" multiple="multiple" name="items[]" class="">
+
+							</select>
+						</div>
+					</div> <!-- #item_dial_box -->
+				</td>
+			</tr>
+		</table>
+	</form>
+	<p>
+	
+	
+	<hr>
+	<?php echo $this->views->Report->PrintToolbar();?>
+	<div id="print-content">
+		<div id="print-area"></div>
+	</div>
+</div>

@@ -1,0 +1,61 @@
+<script>
+	var m026 = {
+		backup: function()
+		{
+			var file = $('#filename').val();
+			qssAjax.confirm(Language.translate('CONFIRM_DELETE'),function(){
+				var url = sz_BaseUrl + '/static/m026/backup';
+				var data = {
+						file : file
+				};
+				qssAjax.call(url, data, function(jreturn) {
+					windows.reload();
+				}, function(jreturn) {
+					qssAjax.alert(jreturn.message);
+				});
+			});
+		},
+		restore: function(file)
+		{
+			qssAjax.confirm(Language.translate('CONFIRM_DELETE'),function(){
+				var url = sz_BaseUrl + '/static/m026/restore';
+				var data = {
+						file : file
+				};
+				qssAjax.call(url, data, function(jreturn) {
+					windows.reload();
+				}, function(jreturn) {
+					qssAjax.alert(jreturn.message);
+				});
+			});
+		}
+	}
+
+</script>
+
+<form id="qss_form">
+	Input file name: 
+	<input name="filename" id="filename" type="text" value="" style="width:300px">
+	<button id="btnINSERT" type="button" class="btn btn_main_top"onClick="m026.backup()">
+		 Backup
+	</button>
+	<hr>
+	<table class="grid" style="width:50%">
+	<tr>
+		<th width="50%">File name</th>
+		<th>&nbsp;</th>
+	</tr>
+	
+	<?php foreach ($this->data as $item):?>
+		<tr>
+			<td class="bold"><?php echo $item?></td>
+			<td>
+				<button id="btnINSERT" type="button" class="btn btn_main_top" onClick="m026.restore('<?php echo $item?>')">
+					 Restore
+				</button>
+			</td>
+		</tr>
+	<?php endforeach;?>
+	
+	</table>
+</form>

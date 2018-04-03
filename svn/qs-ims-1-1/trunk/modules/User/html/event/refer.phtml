@@ -1,0 +1,131 @@
+<script type="text/javascript">
+<!--
+function rowEventImport(id) {
+	var url = sz_BaseUrl + '/user/event/object';
+	var data = {
+		id : id
+	};
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#qss_combo').html(jreturn);
+		$('#qss_combo').dialog();
+	});
+}
+function rowEventEdit() {
+	if (row == null || isDisabled('btnEDIT')) {
+		return;
+	}
+	var url = sz_BaseUrl + '/user/event/edit?id=' + row.id;
+	//window.location.href = url;
+        openModule('', url);
+}
+function rowEventRefer() {
+	if (row == null) {
+		qssAjax.alert('Hãy lựa chọn chọn bản ghi');
+		return;
+	}
+	var url = sz_BaseUrl + '/user/event/refer?id=' + row.id;
+	//window.location.href = url;
+        openModule('', url);
+}
+function rowReferDelete() {
+	if (row == null || isDisabled('btnDELETE')) {
+		return;
+	}
+	qssAjax.confirm(Language.translate('CONFIRM_DELETE'),function(){
+		var id = row.id;
+		var data = {
+			id : id
+		};
+		var url = sz_BaseUrl + '/user/event/delete';
+		qssAjax.call(url, data, function(jreturn) {
+			window.location.reload();
+		}, function(jreturn) {
+			qssAjax.alert(jreturn.message);
+		});
+	});
+}
+//-->
+</script>
+<?php
+$arrCount = array(1=>'meeting',2=>'call',3=>'email',4=>'task',5=>'other');
+$arrStatus = array(0=>'chưa bắt đầu',1=>'đang thực hiện',2=>'hoàn thành',3=>'hủy');
+?>
+<style>
+.event {
+	background: url("/images/event/event.png") no-repeat center 2px;
+}
+
+.meeting {
+	background: url("/images/event/meeting.png") no-repeat center 2px;
+}
+
+.task {
+	background: url("/images/event/task.png") no-repeat center 2px;
+}
+
+.call {
+	background: url("/images/event/call.png") no-repeat center 2px;
+}
+
+.email {
+	background: url("/images/event/email.png") no-repeat center 2px;
+}
+
+.other {
+	background: url("/images/event/other.png") no-repeat center 2px;
+}
+
+.bell {
+	background: url("/images/event/bell.png") no-repeat center 2px;
+}
+
+.no-bell {
+	background: url("/images/event/bell.png") no-repeat center -34px;
+}
+</style>
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+	<div id="btnIMPORT" onClick="rowEventImport(<?php echo $this->id?>)"
+		title="<?php echo $this->_translate(16,'Lấy dữ liệu từ mô đun khác')?>"
+		class="btn_main_top">
+		<a class="icon-32-import" href="#!"></a>
+	</div>
+	<div id="btnEDIT" title="<?php echo $this->_translate(32,'Trở lại')?>"
+		onClick="rowEventBack(<?php echo $this->id?>)" class="btn_main_top">
+		<a class="icon-32-back" href="#!"></a>
+	</div>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="item-actions">
+		<ul>
+			<li class="item-action"><a
+				href="/user/event?id=<?php echo $this->id?>"><span>Công việc & sự
+						kiện</span> </a></li>
+			<li class="item-action active"><a href="#!"><span>Thành phần tham
+						chiếu</span> </a></li>
+		</ul>
+	</div>
+	<div id="qss_form">
+	<?php if(!count((array)$this->refers)):?>
+		<br>
+		<h4>Không tồn tại thành phần tham chiếu.</h4>
+		<?php endif;?>
+		<?php foreach ($this->refers as $item):?>
+		<h4>
+		<?php echo $item->Name?>
+			->
+			<?php echo $item->ObjectName?>
+			<a href="#!"
+				onclick="gotoImport(<?php echo $this->id?>,<?php echo $item->FID?>,<?php echo $iteminitData?>)">Chọn
+				thêm</a>
+		</h4>
+		<div id="<?php echo $item->FID?>_<?php echo $iteminitData?>">
+		<?php echo $this->views->Instance->Object->GridEvent($this->id,$item->FID,$iteminitData)?>
+		</div>
+		<br />
+		<hr />
+		<?php endforeach;?>
+	</div>
+</div>
+<div
+	id="qss_combo" title="Lựa chọn đối tượng tham chiếu"></div>

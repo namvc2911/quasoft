@@ -1,0 +1,1132 @@
+<script type="text/javascript">
+    <!--
+    $(document).ready(function(){
+        $('.tooltip').tooltip();
+    });
+    //-->
+</script>
+
+<?php
+$excel_col            = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg                   = Qss_Lib_Extra_Const::REPORT_EXCEL_THEAD_COLOR;
+$row                  = 2;
+$totalColumn          = 10;
+$colWidths            = array(2, 10, 4, 6, 8, 2, 10, 4, 6, 8);
+$colSum               = array(1, 4, 2, 2, 2, 1, 8, 2);
+$excelColWidths       = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($colWidths);
+$autoFit              = Qss_Lib_Report::changeWidthToFitScreen($colWidths);
+$arrWith              = Qss_Lib_Report::changeWidthToFitScreen($colSum);
+$romeInMua            = 1;       // So thu tu la ma ben mua
+$nextRow              = 2;       // So thu tu cua hang
+$iMuaDLQL             = 1;       // So thu tu trong mua dien luc quang ninh
+$tongDienMua          = 0; // Tong dien mua
+$tongTienMua          = 0; // Tong tien mua
+$tongDienMuaDonViKhac = 0;       // Tong dien mua cac don vi khac quang ninh
+$tongTienMuaDonViKhac = 0;       // Tong tien mua cac don vi khac quang ninh
+$title                = array(); // Html title ve chi tiet su dung
+$tempTitleDiemLe      = "";      // Html title ve chi tiet su dung
+$indexTitleDiemLe     = 0;       // Số thự tự các điểm lẻ trong html title các điểm lẻ
+$reportTitle          = 'BÁO CÁO TIÊU THỤ ĐIÊN NĂNG '; // Tieu đề báo cáo
+$reportTitle         .= ($this->start == $this->end)?"THÁNG {$this->start} NĂM {$this->year}":"";
+$reportTitle         .= ($this->start != $this->end)?"TỪ THÁNG {$this->start} ĐẾN THÁNG {$this->end} NĂM {$this->year}":"";
+$report               = array(1=>array(1=>'I', 2=>'Điện lực Quảng Ninh')); // Khởi tạo mảng in dữ liệu
+$soDongBaoCao         = $this->report['SoDong']; // So dong bao cao
+$muaQuangNinh         = isset($this->report['Mua'][1])?$this->report['Mua'][1]:array(); // Mang mua cua dien dl quang ninh
+$otherWorkStation     = array(); // Cac tram khac
+$muaChung             = isset($this->report['Mua'])?$this->report['Mua']:array(); // Tat ca mua bao gom ca quang ninh
+$oldNhaCungCap        = ''; // Su dung cho loop ben mua
+$oldLoaiGia           = ''; // Su dung cho loop ben mua
+$banChung             = isset($this->report['Ban'])?$this->report['Ban']:array();
+$iBan                 = 1;
+$tongDienBan          = 0;
+$tongTienBan          = 0;
+$oldDonViMua          = ''; // Su dung cho loop ben ban
+$oldLoaiGia2          = ''; // Su dung cho loop ben ban
+
+//echo '<pre>'; print_r($muaQuangNinh); die;
+
+
+// ====== SAP XEP REPORT ======
+
+// Lay tram 35 trong mua cua Quang Ninh vao mang in, cong don cac tram khac cua quang ninh vao mua don vi khac
+// Cong to ba gia in ra bon dong <ten + ba loai thap diem,tb, cao diem>, cong to 1 gia in ra 1 dong
+foreach($muaQuangNinh As $item) // Dien mua tu dien luc quang ninh
+{
+    if($item->Tram35)
+    {
+        if($item->LoaiGia == 2) // 3 gia
+        {
+            $report[$nextRow][1] = $iMuaDLQL++;
+            $report[$nextRow][2] = $item->TenCongTo;
+            $report[$nextRow][3] = $item->TongBaSoDien;
+            $report[$nextRow][5] = $item->TongBaGia;
+            $nextRow++;
+
+            $report[$nextRow][2] = 'Trung bình';
+            $report[$nextRow][3] = $item->TongSoDienTrungBinh;
+            $report[$nextRow][4] = ($item->TongSoDienTrungBinh != 0)?$item->TongGiaDienTrungBinh/$item->TongSoDienTrungBinh:0;
+            $report[$nextRow][5] = $item->TongGiaDienTrungBinh;
+            $nextRow++;
+
+            $report[$nextRow][2] = 'Cao điểm';
+            $report[$nextRow][3] = $item->TongSoDienCaoDiem;
+            $report[$nextRow][4] = ($item->TongSoDienCaoDiem != 0)?$item->TongGiaDienCaoDiem/$item->TongSoDienCaoDiem:0;
+            $report[$nextRow][5] = $item->TongGiaDienCaoDiem;
+            $nextRow++;
+
+            $report[$nextRow][2] = 'Thấp điểm';
+            $report[$nextRow][3] = $item->TongSoDienThapDiem;
+            $report[$nextRow][4] = ($item->TongSoDienThapDiem != 0)?$item->TongGiaDienThapDiem/$item->TongSoDienThapDiem:0;
+            $report[$nextRow][5] = $item->TongGiaDienThapDiem;
+            $nextRow++;
+        }
+        else
+        {
+            $report[$nextRow][1] = $iMuaDLQL++;
+            $report[$nextRow][2] = $item->TenCongTo;
+            $report[$nextRow][3] = $item->TongSoDienChung;
+            $report[$nextRow][4] = ($item->TongSoDienChung != 0)?$item->TongGiaChung/$item->TongSoDienChung:0;
+            $report[$nextRow][5] = $item->TongGiaChung;
+            $nextRow++;
+        }
+    }
+    else
+    {
+        if($item->LoaiGia == 2) // 3 gia
+        {
+            $tongDienMuaDonViKhac += $item->TongBaSoDien;
+            $tongTienMuaDonViKhac += $item->TongBaGia;
+
+            $tempTitleDiemLe .= ++$indexTitleDiemLe."{$item->MaCongTo}: ";
+            $tempTitleDiemLe .= Qss_Lib_Util::formatInteger($item->TongBaSoDien)." \n";
+
+//            echo $tempTitleDiemLe; echo '<br/>';
+//            echo 'Tong: '.$tongDienMuaDonViKhac.'<br/>';
+        }
+        else
+        {
+            $tongDienMuaDonViKhac += $item->TongSoDienChung;
+            $tongTienMuaDonViKhac += $item->TongGiaChung;
+
+            $tempTitleDiemLe .= ++$indexTitleDiemLe.". {$item->MaCongTo}: ";
+            $tempTitleDiemLe .= Qss_Lib_Util::formatInteger($item->TongSoDienChung)." \n";
+
+//            echo $tempTitleDiemLe; echo '<br/>';
+//            echo 'Tong: '.$tongDienMuaDonViKhac.'<br/>';
+        }
+    }
+}
+
+// Cac diem le
+$title[$nextRow][2]  = $tempTitleDiemLe; // Tieu de cac diem le
+$report[$nextRow][1] = $iMuaDLQL++;
+$report[$nextRow][2] = 'Các điểm lẻ';
+$report[$nextRow][3] = $tongDienMuaDonViKhac;
+$report[$nextRow][4] = '';
+$report[$nextRow][5] = $tongTienMuaDonViKhac;
+$nextRow++;
+
+// Phat tien cospi
+$report[$nextRow][1] = $iMuaDLQL++;
+$report[$nextRow][2] = 'Phạt tiền cospi';
+$report[$nextRow][5] = $this->report['CospiBanDienLuc'];
+$nextRow++;
+
+// Ban cho dien luc quang ninh
+$report[$nextRow][1] = $iMuaDLQL++;
+$report[$nextRow][2] = '<b>Bán cho điện lực</b>';
+$report[$nextRow][3] = $this->report['TongDienBanDienLuc'];
+$report[$nextRow][5] = $this->report['TongTienBanDienLuc'];
+$nextRow++;
+
+// Tong mua dien luc quang ninh
+$report[$nextRow][2] = '<b>Tổng mua điện lực Quảng Ninh</b>';
+$report[$nextRow][3] = $this->report['TongDienMuaDienLuc'];
+$report[$nextRow][5] = $this->report['TongTienMuaDienLuc'];
+$rowMuaChoDienLuc    = $nextRow;
+$nextRow++;
+
+// Dien mua
+foreach($muaChung as $key=>$items)
+{
+    if($key != 1)
+    {
+        foreach($items as $item)
+        {
+            $item->RefDonViCungCap = (int)$item->RefDonViCungCap;
+
+            // Cong don dien cua cac don vi khac quang ninh
+            if(!isset($donvimua[$item->RefDonViCungCap]))
+            {
+                $donvimua[$item->RefDonViCungCap]                         = array();
+                $donvimua[$item->RefDonViCungCap]['DonVi']                = $item->DonViCungCap;
+                $donvimua[$item->RefDonViCungCap]['DonGiaTrungBinh']      = ($item->TongSoDienTrungBinh != 0)?$item->TongGiaDienTrungBinh/$item->TongSoDienTrungBinh:0;
+                $donvimua[$item->RefDonViCungCap]['DonGiaCaoDiem']        = ($item->TongSoDienCaoDiem != 0)?$item->TongGiaDienCaoDiem/$item->TongSoDienCaoDiem:0;
+                $donvimua[$item->RefDonViCungCap]['DonGiaThapDiem']       = ($item->TongSoDienThapDiem != 0)?$item->TongGiaDienThapDiem/$item->TongSoDienThapDiem:0;
+                $donvimua[$item->RefDonViCungCap]['DonGiaChung']          = ($item->TongSoDienChung != 0)?$item->TongGiaChung/$item->TongSoDienChung:0;
+                $donvimua[$item->RefDonViCungCap]['TongBaSoDien']         = $item->TongBaSoDien;
+                $donvimua[$item->RefDonViCungCap]['TongBaGia']            = $item->TongBaGia;
+                $donvimua[$item->RefDonViCungCap]['TongSoDienTrungBinh']  = $item->TongSoDienTrungBinh;
+                $donvimua[$item->RefDonViCungCap]['TongGiaDienTrungBinh'] = $item->TongGiaDienTrungBinh;
+                $donvimua[$item->RefDonViCungCap]['TongSoDienCaoDiem']    = $item->TongSoDienCaoDiem;
+                $donvimua[$item->RefDonViCungCap]['TongGiaDienCaoDiem']   = $item->TongGiaDienCaoDiem;
+                $donvimua[$item->RefDonViCungCap]['TongSoDienThapDiem']   = $item->TongSoDienThapDiem;
+                $donvimua[$item->RefDonViCungCap]['TongGiaDienThapDiem']  = $item->TongGiaDienThapDiem;
+                $donvimua[$item->RefDonViCungCap]['TongSoDienChung']      = $item->TongSoDienChung;
+                $donvimua[$item->RefDonViCungCap]['TongGiaChung']         = $item->TongGiaChung;
+            }
+            else
+            {
+                $donvimua[$item->RefDonViCungCap]['DonVi']                = $item->DonViCungCap;
+                $donvimua[$item->RefDonViCungCap]['DonGiaTrungBinh']      = ($item->TongSoDienTrungBinh != 0)?$item->TongGiaDienTrungBinh/$item->TongSoDienTrungBinh:0;
+                $donvimua[$item->RefDonViCungCap]['DonGiaCaoDiem']        = ($item->TongSoDienCaoDiem != 0)?$item->TongGiaDienCaoDiem/$item->TongSoDienCaoDiem:0;
+                $donvimua[$item->RefDonViCungCap]['DonGiaThapDiem']       = ($item->TongSoDienThapDiem != 0)?$item->TongGiaDienThapDiem/$item->TongSoDienThapDiem:0;
+                $donvimua[$item->RefDonViCungCap]['DonGiaChung']          = ($item->TongSoDienChung != 0)?$item->TongGiaChung/$item->TongSoDienChung:0;
+                $donvimua[$item->RefDonViCungCap]['TongBaSoDien']        += $item->TongBaSoDien;
+                $donvimua[$item->RefDonViCungCap]['TongBaGia']           += $item->TongBaGia;
+                $donvimua[$item->RefDonViCungCap]['TongSoDienTrungBinh'] += $item->TongSoDienTrungBinh;
+                $donvimua[$item->RefDonViCungCap]['TongGiaDienTrungBinh']+= $item->TongGiaDienTrungBinh;
+                $donvimua[$item->RefDonViCungCap]['TongSoDienCaoDiem']   += $item->TongSoDienCaoDiem;
+                $donvimua[$item->RefDonViCungCap]['TongGiaDienCaoDiem']  += $item->TongGiaDienCaoDiem;
+                $donvimua[$item->RefDonViCungCap]['TongSoDienThapDiem']  += $item->TongSoDienThapDiem;
+                $donvimua[$item->RefDonViCungCap]['TongGiaDienThapDiem'] += $item->TongGiaDienThapDiem;
+                $donvimua[$item->RefDonViCungCap]['TongSoDienChung']     += $item->TongSoDienChung;
+                $donvimua[$item->RefDonViCungCap]['TongGiaChung']        += $item->TongGiaChung;
+            }
+
+            if($oldNhaCungCap != '' && $oldNhaCungCap != $item->RefDonViCungCap)
+            {
+                if($oldLoaiGia == 2) // 3 gia
+                {
+                    $report[$nextRow][1] = $iMuaDLQL++;
+                    $report[$nextRow][2] = $donvimua[$oldNhaCungCap]['DonVi'];
+                    $report[$nextRow][3] = $donvimua[$oldNhaCungCap]['TongBaSoDien'];
+                    $report[$nextRow][5] = $donvimua[$oldNhaCungCap]['TongBaGia'];
+                    $nextRow++;
+
+                    $report[$nextRow][2] = 'Trung bình';
+                    $report[$nextRow][3] = $donvimua[$oldNhaCungCap]['TongSoDienTrungBinh'];
+                    $report[$nextRow][4] = $donvimua[$oldNhaCungCap]['DonGiaTrungBinh'];
+                    $report[$nextRow][5] = $donvimua[$oldNhaCungCap]['TongGiaDienTrungBinh'];
+                    $nextRow++;
+
+                    $report[$nextRow][2] = 'Cao điểm';
+                    $report[$nextRow][3] = $donvimua[$oldNhaCungCap]['TongSoDienCaoDiem'];
+                    $report[$nextRow][4] = $donvimua[$oldNhaCungCap]['DonGiaCaoDiem'];
+                    $report[$nextRow][5] = $donvimua[$oldNhaCungCap]['TongGiaDienCaoDiem'];
+                    $nextRow++;
+
+                    $report[$nextRow][2] = 'Thấp điểm';
+                    $report[$nextRow][3] = $donvimua[$oldNhaCungCap]['TongSoDienThapDiem'];
+                    $report[$nextRow][4] = $donvimua[$oldNhaCungCap]['DonGiaThapDiem'];
+                    $report[$nextRow][5] = $donvimua[$oldNhaCungCap]['TongGiaDienThapDiem'];
+                    $nextRow++;
+
+                    $tongDienMua += $donvimua[$oldNhaCungCap]['TongBaSoDien'];
+                    $tongTienMua += $donvimua[$oldNhaCungCap]['TongBaGia'];
+                }
+                else
+                {
+                    $report[$nextRow][1] = $iMuaDLQL++;
+                    $report[$nextRow][2] = $donvimua[$oldNhaCungCap]['DonVi'];
+                    $report[$nextRow][3] = $donvimua[$oldNhaCungCap]['TongSoDienChung'];
+                    $report[$nextRow][4] = $donvimua[$oldNhaCungCap]['DonGiaChung'];
+                    $report[$nextRow][5] = $donvimua[$oldNhaCungCap]['TongGiaChung'];
+                    $nextRow++;
+
+                    $tongDienMua += $donvimua[$oldNhaCungCap]['TongSoDienChung'];
+                    $tongTienMua += $donvimua[$oldNhaCungCap]['TongGiaChung'];
+                }
+            }
+            $oldNhaCungCap = $item->RefDonViCungCap;
+            $oldLoaiGia    = $item->LoaiGia;
+        }
+
+        if($oldNhaCungCap != '')
+        {
+            if($oldLoaiGia == 2) // 3 gia
+            {
+                $report[$nextRow][1] = $iMuaDLQL++;
+                $report[$nextRow][2] = $donvimua[$oldNhaCungCap]['DonVi'];
+                $report[$nextRow][3] = $donvimua[$oldNhaCungCap]['TongBaSoDien'];
+                $report[$nextRow][5] = $donvimua[$oldNhaCungCap]['TongBaGia'];
+                $nextRow++;
+
+                $report[$nextRow][2] = 'Trung bình';
+                $report[$nextRow][3] = $donvimua[$oldNhaCungCap]['TongSoDienTrungBinh'];
+                $report[$nextRow][4] = $donvimua[$oldNhaCungCap]['DonGiaTrungBinh'];
+                $report[$nextRow][5] = $donvimua[$oldNhaCungCap]['TongGiaDienTrungBinh'];
+                $nextRow++;
+
+                $report[$nextRow][2] = 'Cao điểm';
+                $report[$nextRow][3] = $donvimua[$oldNhaCungCap]['TongSoDienCaoDiem'];
+                $report[$nextRow][4] = $donvimua[$oldNhaCungCap]['DonGiaCaoDiem'];
+                $report[$nextRow][5] = $donvimua[$oldNhaCungCap]['TongGiaDienCaoDiem'];
+                $nextRow++;
+
+                $report[$nextRow][2] = 'Thấp điểm';
+                $report[$nextRow][3] = $donvimua[$oldNhaCungCap]['TongSoDienThapDiem'];
+                $report[$nextRow][4] = $donvimua[$oldNhaCungCap]['DonGiaThapDiem'];
+                $report[$nextRow][5] = $donvimua[$oldNhaCungCap]['TongGiaDienThapDiem'];
+                $nextRow++;
+
+                $tongDienMua += $donvimua[$oldNhaCungCap]['TongBaSoDien'];
+                $tongTienMua += $donvimua[$oldNhaCungCap]['TongBaGia'];
+            }
+            else
+            {
+                $report[$nextRow][1] = $iMuaDLQL++;
+                $report[$nextRow][2] = $donvimua[$oldNhaCungCap]['DonVi'];
+                $report[$nextRow][3] = $donvimua[$oldNhaCungCap]['TongSoDienChung'];
+                $report[$nextRow][4] = $donvimua[$oldNhaCungCap]['DonGiaChung'];
+                $report[$nextRow][5] = $donvimua[$oldNhaCungCap]['TongGiaChung'];
+                $nextRow++;
+
+                $tongDienMua += $report[$nextRow][3];
+                $tongTienMua += $report[$nextRow][5];
+            }
+        }
+    }
+}
+
+// Lấy dòng tiếp theo
+$nextRow = $this->report['SoDong']?$this->report['SoDong']:$nextRow;
+
+// Tổng cộng mua
+$report[$nextRow][2] = '<b>Tổng cộng mua</b>';
+$report[$nextRow][3] = $this->report['TongDienMua'];
+$report[$nextRow][5] = $this->report['TongTienMua'];
+$nextRow++;
+
+$muaLastRow   = $nextRow; // Lấy row cuoi cung cua mua de lam can cu in so row cua ban
+$nextRow      = 1;        // Reset row ve 1
+
+// Loop ban lay ban cho cac don vi
+foreach($banChung as $item)
+{
+    if($item->DoiTuong == 1) continue; // Bo qua ban cho quang ninh
+    $item->RefDonViMuaChinh = (int)$item->RefDonViMuaChinh;
+
+    if(!isset($donviban[$item->RefDonViMuaChinh]))
+    {
+        $donviban[$item->RefDonViMuaChinh]                         = array();
+        $donviban[$item->RefDonViMuaChinh]['DonVi']                = $item->DonViMuaChinh;
+        $donviban[$item->RefDonViMuaChinh]['DonGiaTrungBinh']      = ($item->TongSoDienTrungBinh != 0)?($item->TongGiaDienTrungBinh/$item->TongSoDienTrungBinh):0;
+        $donviban[$item->RefDonViMuaChinh]['DonGiaCaoDiem']        = ($item->TongSoDienCaoDiem  != 0)?$item->TongGiaDienCaoDiem/$item->TongSoDienCaoDiem:0;
+        $donviban[$item->RefDonViMuaChinh]['DonGiaThapDiem']       = ($item->TongSoDienThapDiem  != 0)?$item->TongGiaDienThapDiem/$item->TongSoDienThapDiem:0;
+        $donviban[$item->RefDonViMuaChinh]['DonGiaChung']          = ($item->TongSoDienChung != 0)?$item->TongGiaChung/$item->TongSoDienChung:0;
+        $donviban[$item->RefDonViMuaChinh]['TongBaSoDien']         = $item->TongBaSoDien;
+        $donviban[$item->RefDonViMuaChinh]['TongBaGia']            = $item->TongBaGia;
+        $donviban[$item->RefDonViMuaChinh]['TongSoDienTrungBinh']  = $item->TongSoDienTrungBinh;
+        $donviban[$item->RefDonViMuaChinh]['TongGiaDienTrungBinh'] = $item->TongGiaDienTrungBinh;
+        $donviban[$item->RefDonViMuaChinh]['TongSoDienCaoDiem']    = $item->TongSoDienCaoDiem;
+        $donviban[$item->RefDonViMuaChinh]['TongGiaDienCaoDiem']   = $item->TongGiaDienCaoDiem;
+        $donviban[$item->RefDonViMuaChinh]['TongSoDienThapDiem']   = $item->TongSoDienThapDiem;
+        $donviban[$item->RefDonViMuaChinh]['TongGiaDienThapDiem']  = $item->TongGiaDienThapDiem;
+        $donviban[$item->RefDonViMuaChinh]['TongSoDienChung']      = $item->TongSoDienChung;
+        $donviban[$item->RefDonViMuaChinh]['TongGiaChung']         = $item->TongGiaChung;
+    }
+    else
+    {
+        $donviban[$item->RefDonViMuaChinh]['DonVi']                 = $item->DonViMuaChinh;
+        $donviban[$item->RefDonViMuaChinh]['DonGiaTrungBinh']       = ($item->TongSoDienTrungBinh != 0)?$item->TongGiaDienTrungBinh/$item->TongSoDienTrungBinh:0;
+        $donviban[$item->RefDonViMuaChinh]['DonGiaCaoDiem']         = ($item->TongSoDienCaoDiem != 0)?$item->TongGiaDienCaoDiem/$item->TongSoDienCaoDiem:0;
+        $donviban[$item->RefDonViMuaChinh]['DonGiaThapDiem']        = ($item->TongSoDienThapDiem != 0)?$item->TongGiaDienThapDiem/$item->TongSoDienThapDiem:0;
+        $donviban[$item->RefDonViMuaChinh]['DonGiaChung']           = ($item->TongSoDienChung != 0)?$item->TongGiaChung/$item->TongSoDienChung:0;
+        $donviban[$item->RefDonViMuaChinh]['TongBaSoDien']         += $item->TongBaSoDien;
+        $donviban[$item->RefDonViMuaChinh]['TongBaGia']            += $item->TongBaGia;
+        $donviban[$item->RefDonViMuaChinh]['TongSoDienTrungBinh']  += $item->TongSoDienTrungBinh;
+        $donviban[$item->RefDonViMuaChinh]['TongGiaDienTrungBinh'] += $item->TongGiaDienTrungBinh;
+        $donviban[$item->RefDonViMuaChinh]['TongSoDienCaoDiem']    += $item->TongSoDienCaoDiem;
+        $donviban[$item->RefDonViMuaChinh]['TongGiaDienCaoDiem']   += $item->TongGiaDienCaoDiem;
+        $donviban[$item->RefDonViMuaChinh]['TongSoDienThapDiem']   += $item->TongSoDienThapDiem;
+        $donviban[$item->RefDonViMuaChinh]['TongGiaDienThapDiem']  += $item->TongGiaDienThapDiem;
+        $donviban[$item->RefDonViMuaChinh]['TongSoDienChung']      += $item->TongSoDienChung;
+        $donviban[$item->RefDonViMuaChinh]['TongGiaChung']         += $item->TongGiaChung;
+    }
+
+
+    if($oldDonViMua != '' && $oldDonViMua != $item->RefDonViMuaChinh)
+    {
+        if($oldLoaiGia2 == 2) // 3 gia
+        {
+            $report[$nextRow][6]  = $iBan++;
+            $report[$nextRow][7]  = $donviban[$oldDonViMua]['DonVi'];
+            $report[$nextRow][8]  = $donviban[$oldDonViMua]['TongBaSoDien'];
+            $report[$nextRow][10] = $donviban[$oldDonViMua]['TongBaGia'];
+            $nextRow++;
+
+            $report[$nextRow][7]  = 'Trung bình';
+            $report[$nextRow][8]  = $donviban[$oldDonViMua]['TongSoDienTrungBinh'];
+            $report[$nextRow][9]  = $donviban[$oldDonViMua]['DonGiaTrungBinh'];
+            $report[$nextRow][10] = $donviban[$oldDonViMua]['TongGiaDienTrungBinh'];
+            $nextRow++;
+
+            $report[$nextRow][7]  = 'Cao điểm';
+            $report[$nextRow][8]  = $donviban[$oldDonViMua]['TongSoDienCaoDiem'];
+            $report[$nextRow][9]  = $donviban[$oldDonViMua]['DonGiaCaoDiem'];
+            $report[$nextRow][10] = $donviban[$oldDonViMua]['TongGiaDienCaoDiem'];
+            $nextRow++;
+
+            $report[$nextRow][7]  = 'Thấp điểm';
+            $report[$nextRow][8]  = $donviban[$oldDonViMua]['TongSoDienThapDiem'];
+            $report[$nextRow][9]  = $donviban[$oldDonViMua]['DonGiaThapDiem'];
+            $report[$nextRow][10] = $donviban[$oldDonViMua]['TongGiaDienThapDiem'];
+            $nextRow++;
+
+            $tongDienBan += $donviban[$oldDonViMua]['TongBaSoDien'];
+            $tongTienBan += $donviban[$oldDonViMua]['TongBaGia'];
+        }
+        else
+        {
+            $report[$nextRow][6]  = $iBan++;
+            $report[$nextRow][7]  = $donviban[$oldDonViMua]['DonVi'];
+            $report[$nextRow][8]  = $donviban[$oldDonViMua]['TongSoDienChung'];
+            $report[$nextRow][9]  = $donviban[$oldDonViMua]['DonGiaChung'];
+            $report[$nextRow][10] = $donviban[$oldDonViMua]['TongGiaChung'];
+            $nextRow++;
+
+            $tongDienBan += $donviban[$oldDonViMua]['TongSoDienChung'];
+            $tongTienBan += $donviban[$oldDonViMua]['TongGiaChung'];
+        }
+    }
+
+    $oldDonViMua = $item->RefDonViMuaChinh;
+    $oldLoaiGia2 = $item->LoaiGia;
+}
+
+if($oldDonViMua != '')
+{
+    if($oldLoaiGia2 == 2) // 3 gia
+    {
+        $report[$nextRow][6]  = $iBan++;
+        $report[$nextRow][7]  = $donviban[$oldDonViMua]['DonVi'];
+        $report[$nextRow][8]  = $donviban[$oldDonViMua]['TongBaSoDien'];
+        $report[$nextRow][10] = $donviban[$oldDonViMua]['TongBaGia'];
+        $nextRow++;
+
+        $report[$nextRow][7]  = 'Trung bình';
+        $report[$nextRow][8]  = $donviban[$oldDonViMua]['TongSoDienTrungBinh'];
+        $report[$nextRow][9]  = $donviban[$oldDonViMua]['DonGiaTrungBinh'];
+        $report[$nextRow][10] = $donviban[$oldDonViMua]['TongGiaDienTrungBinh'];
+        $nextRow++;
+
+        $report[$nextRow][7]  = 'Cao điểm';
+        $report[$nextRow][8]  = $donviban[$oldDonViMua]['TongSoDienCaoDiem'];
+        $report[$nextRow][9]  = $donviban[$oldDonViMua]['DonGiaCaoDiem'];
+        $report[$nextRow][10] = $donviban[$oldDonViMua]['TongGiaDienCaoDiem'];
+        $nextRow++;
+
+        $report[$nextRow][7]  = 'Thấp điểm';
+        $report[$nextRow][8]  = $donviban[$oldDonViMua]['TongSoDienThapDiem'];
+        $report[$nextRow][9]  = $donviban[$oldDonViMua]['DonGiaThapDiem'];
+        $report[$nextRow][10] = $donviban[$oldDonViMua]['TongGiaDienThapDiem'];
+        $nextRow++;
+
+        $tongDienBan += $donviban[$oldDonViMua]['TongBaSoDien'];
+        $tongTienBan += $donviban[$oldDonViMua]['TongBaGia'];
+    }
+    else
+    {
+        $report[$nextRow][6]  = $iBan++;
+        $report[$nextRow][7]  = $donviban[$oldDonViMua]['DonVi'];
+        $report[$nextRow][8]  = $donviban[$oldDonViMua]['TongSoDienChung'];
+        $report[$nextRow][9]  = $donviban[$oldDonViMua]['DonGiaChung'];
+        $report[$nextRow][10] = $donviban[$oldDonViMua]['TongGiaChung'];
+        $nextRow++;
+
+        $tongDienBan += $donviban[$oldDonViMua]['TongSoDienChung'];
+        $tongTienBan += $donviban[$oldDonViMua]['TongGiaChung'];
+    }
+}
+
+$nextRow = ($nextRow >= $rowMuaChoDienLuc)?$nextRow:$rowMuaChoDienLuc; // Tinh hang tiep theo
+
+// Tong ban ra
+$report[$nextRow][7]  = 'Tổng bán';
+$report[$nextRow][8]  = $this->report['TongDienBan'];
+$report[$nextRow][10] = $this->report['TongTienBan'];
+$nextRow++;
+
+// Chenh lech mua ban
+$report[$nextRow][7] = 'Chênh lệch mua và bán';
+$report[$nextRow][10] = $this->report['ChenhLechMuaBan'] ;
+$nextRow++;
+
+$nextRow = $this->report['SoDong']?$this->report['SoDong']:$nextRow;// Tinh hang tiep theo
+
+// Tong cong ban
+$report[$nextRow][7]  = '<b>Tổng cộng bán</b>';
+$report[$nextRow][8]  = $this->report['TongDienBan'];
+$report[$nextRow][10] = $this->report['TongTienBanCuoi'];
+$nextRow++;
+
+//die;
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+    <input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="landscape">
+    <excel
+        orientation="<?php echo Qss_Lib_Extra_Const::REPORT_ORIENTATION_LANDSCAPE;?>"
+        font-name="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_NAME;?>"
+        font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_SIZE;?>"
+        margin-left="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_LEFT;?>"
+        margin-right="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_RIGHT;?>"
+        margin-top="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_TOP;?>"
+        margin-bottom="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_BOTTOM;?>"  />
+
+    <!-- REPORT TITLE -->
+    <div id="head_print">
+        <?php echo $this->views->Common->Landscape() ?>
+        <center>
+            <h2>
+                <xls
+                    row="<?php echo $row ?>"
+                    column="A"
+                    column-merge="<?php echo $excel_col[$totalColumn] ?>"
+                    font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_TITLE_FONT_SIZE;?>"
+                    wrap-text="1"
+                    bold="1"
+                    h-align="center"
+                    v-align="center" ><?php echo $reportTitle;?>  </xls>
+            </h2>
+            <?php $row++?>
+            <h4>
+                <xls
+                    row="<?php echo $row ?>"
+                    column="A"
+                    column-merge="<?php echo $excel_col[$totalColumn] ?>"
+                    font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_TITLE_FONT_SIZE;?>"
+                    wrap-text="1"
+                    h-align="center"
+                    v-align="center" >Ngày <?php echo date('d-m-Y')?></xls>
+            </h4>
+        </center>
+    </div><!-- end div#head_print -->
+    <?php $row++ ?>
+
+    <!-- REPORT DATA -->
+    <div id="container">
+        <table class="border" cellspacing="0" cellpadding="0" style="width: 100%; table-layout:inherit !important;" >
+            <?php /*
+            <tr >
+                <?php $begin = 0;?>
+                <td style="width:<?php echo $autoFit[$begin++];?>px; visibility: hidden; border: none">
+                    1
+                </td>
+                <td style="width:<?php echo $autoFit[$begin++];?>px; visibility: hidden; border: none">
+                    1
+                </td>
+
+                <td style="width:<?php echo $autoFit[$begin++];?>px; visibility: hidden; border: none">
+                    1
+                </td>
+                <td style="width:<?php echo $autoFit[$begin++];?>px; visibility: hidden; border: none">
+                    1
+                </td>
+                <td style="width:<?php echo $autoFit[$begin++];?>px; visibility: hidden; border: none">
+                    1
+                </td>
+                <td style="width:<?php echo $autoFit[$begin++];?>px; visibility: hidden; border: none">
+                    1
+                </td>
+
+                <td style="width:<?php echo $autoFit[$begin++];?>px; visibility: hidden; border: none">
+                    1
+                </td>
+                <td style="width:<?php echo $autoFit[$begin++];?>px; visibility: hidden; border: none">
+                    1
+                </td>
+                <td style="width:<?php echo $autoFit[$begin++];?>px; visibility: hidden; border: none">
+                    1
+                </td>
+                <td style="width:<?php echo $autoFit[$begin++];?>px; visibility: hidden; border: none">
+                    1
+                </td>
+
+            </tr>
+            */?>
+            <!-- COLUMN TITLE -->
+
+            <tr class="bggrey" >
+                <?php $begin = 0;?>
+                <th  colspan="5" >
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        column-merge="<?php echo $excel_col[($begin + 4)]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>">ĐIỆN NĂNG MUA VÀO</xls>
+                </th>
+                <?php $begin = $begin + 4;?>
+
+                <th  colspan="5">
+                    <xls
+                        row="<?php echo $row?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        column-merge="<?php echo $excel_col[($begin + 4)]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>">ĐIỆN NĂNG BÁN RA</xls>
+                </th>
+            </tr>
+            <?php $row++;?>
+
+
+
+            <tr class="bggrey">
+                <?php $begin = 0;?>
+                <!-- TT -->
+                <th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>">TT</xls>
+                </th>
+
+                <!-- TÊN ĐƠN VỊ, CƠ QUAN -->
+                <th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>">TÊN ĐƠN VỊ, CƠ QUAN</xls>
+                </th>
+
+                <!-- S.LƯỢNG <br/> (kwh) -->
+                <th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>">S.LƯỢNG <br/> (kwh)</xls>
+                </th>
+
+
+                <!-- ĐƠN GIÁ -->
+                <th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>">ĐƠN GIÁ</xls>
+                </th>
+
+                <!-- THÀNH TIỀN <br/> (đ) -->
+                <th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>">THÀNH TIỀN <br/> (đ)</xls>
+                </th>
+                <!-- TT -->
+                <th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>">TT</xls>
+                </th>
+
+                <!-- TÊN ĐƠN VỊ, CƠ QUAN -->
+                <th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>">TÊN ĐƠN VỊ, CƠ QUAN</xls>
+                </th>
+
+                <!-- S.LƯỢNG <br/> (kwh) -->
+                <th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>">S.LƯỢNG <br/> (kwh)</xls>
+                </th>
+
+
+                <!-- ĐƠN GIÁ -->
+                <th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>">ĐƠN GIÁ</xls>
+                </th>
+
+                <!-- THÀNH TIỀN <br/> (đ) -->
+                <th class="center" style="width:<?php echo $autoFit[$begin];?>px">
+                    <xls
+                        row="<?php echo $row?>"
+                        width="<?php echo $excelColWidths[$begin];?>"
+                        column="<?php echo $excel_col[++$begin]?>"
+                        wrap-text="1"
+                        v-align="center"
+                        h-align="center"
+                        border="1"
+                        repeat="1"
+                        bold="1"
+                        bgcolor="<?php echo $bg;?>">THÀNH TIỀN <br/> (đ)</xls>
+                </th>
+            </tr>
+
+            <?php $row++;?>
+
+
+            <?php for($m = 1; $m <= $soDongBaoCao; $m++):?>
+                <?php $begin = 0;?>
+                <tr>
+                    <?php for($n = 1; $n <= 10; $n++):?>
+
+                        <?php
+                        $class = '';
+                        switch($n)
+                        {
+                            case 1:
+                            case 6:
+                                $class = 'center';
+                                break;
+                            case 2:
+                            case 7:
+                                $class = 'left';
+                                break;
+                            default:
+                                $class = 'right';
+                                break;
+                        }
+                        ?>
+
+                        <?php
+                        $tempTitle       = '';
+                        $addClassTooltip = '';
+                        if(isset($title[$m][$n]))
+                        {
+                            $tempTitle       = "title=\"{$title[$m][$n]}\"";
+                            $addClassTooltip = 'tooltip';
+                        }
+
+                        ?>
+
+                        <?php if(isset($report[$m][$n])):?>
+
+                            <?php
+
+                            switch($n)
+                            {
+                                case 4:
+                                case 5:
+                                case 9:
+                                case 10:
+                                    $report[$m][$n] = Qss_Lib_Util::formatMoney($report[$m][$n]);
+                                    break;
+
+                                case 3:
+                                case 8:
+                                    $report[$m][$n] = Qss_Lib_Util::formatInteger($report[$m][$n]);
+                                    break;
+                            }
+
+                            ?>
+
+                            <td class="<?php echo $class;?> <?php echo $addClassTooltip;?>" <?php echo $tempTitle;?> >
+                                <xls
+                                    row="<?php echo $row?>"
+                                    column="<?php echo $excel_col[++$begin]?>"
+                                    wrap-text="1"
+                                    v-align="top"
+                                    h-align="<?php echo $class;?>"
+                                    border="1"><?php echo $report[$m][$n]?></xls>
+                            </td>
+                        <?php else:?>
+                            <td class="<?php echo $class;?>" >
+                                <xls
+                                    row="<?php echo $row?>"
+                                    column="<?php echo $excel_col[++$begin]?>"
+                                    wrap-text="1"
+                                    v-align="top"
+                                    h-align="<?php echo $class;?>"
+                                    border="1">&nbsp;</xls>
+                            </td>
+                        <?php endif;?>
+
+                    <?php endfor;?>
+                </tr>
+                <?php $row++;?>
+            <?php endfor;?>
+        </table><!-- end table.border -->
+
+    </div><!-- end div#container -->
+    <?php $row++;?>
+    <br/>
+
+    <table border="0">
+        <?php $begin = 0;?>
+        <tr>
+            <td style="width:<?php echo $arrWith[$begin];?>px">&nbsp;
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="left"
+                    border="0"></xls>
+            </td>
+
+            <td style="width:<?php echo $arrWith[$begin];?>px">
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="left"
+                    border="0"
+                    bold="1"><b>Tổng điện năng mua vào</b> </xls>
+            </td>
+
+            <td style="width:<?php echo $arrWith[$begin];?>px" class="right">
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="right"
+                    border="0"
+                    bold="0"><?php echo Qss_Lib_Util::formatInteger($this->report['TongDienMua']);?> </xls>
+            </td>
+
+            <td style="width:<?php echo $arrWith[$begin];?>px">&nbsp;
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="left"
+                    border="0"
+                    bold="0">Kwh </xls>
+            </td>
+
+            <td style="width:<?php echo $arrWith[$begin];?>px">
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="left"
+                    border="0"
+                    bold="1"><b>Thành tiền(đ)</b> </xls>
+            </td>
+
+            <td style="width:<?php echo $arrWith[$begin];?>px" class="right">
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="right"
+                    border="0"
+                    bold="0"><?php echo Qss_Lib_Util::formatMoney($this->report['TongTienMua']);?> </xls>
+            </td>
+
+
+
+            <td style="width:<?php echo $arrWith[$begin];?>px">&nbsp;
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="left"
+                    border="0"
+                    bold="0"> </xls>
+            </td>
+
+            <td style="width:<?php echo $arrWith[$begin];?>px">&nbsp;
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="left"
+                    border="0"
+                    bold="0"> </xls>
+            </td>
+        </tr>
+        <?php $row++;?>
+
+        <?php $begin = 0;?>
+        <tr>
+            <td>&nbsp;
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="left"
+                    border="0"></xls>
+            </td>
+            <td>
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="left"
+                    border="0"
+                    bold="1"><b>Tổng điện năng bán ra</b></xls>
+            </td>
+            <td class="right">
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="right"
+                    border="0"><?php echo Qss_Lib_Util::formatInteger($this->report['TongDienBan']);?></xls>
+
+            </td>
+            <td>&nbsp;
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="left"
+                    border="0">Kwh</xls>
+            </td>
+            <td>
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="left"
+                    border="0"
+                    bold="1"><b>Thành tiền(đ)</b></xls>
+            </td>
+            <td class="right">
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="right"
+                    border="0"><?php echo Qss_Lib_Util::formatMoney($this->report['TongTienBanCuoi']);?></xls>
+            </td>
+            <td>&nbsp;
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="left"
+                    border="0"></xls>
+            </td>
+            <td>&nbsp;
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="left"
+                    border="0"></xls>
+            </td>
+        </tr>
+        <?php $row++;?>
+
+        <?php $begin = 0;?>
+        <tr>
+            <td>&nbsp;
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="left"
+                    border="0"></xls>
+            </td>
+            <td>
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="left"
+                    border="0"
+                    bold="1"><b>Điện năng còn lại cho sản xuất</b></xls>
+            </td>
+            <td class="right">
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="right"
+                    border="0"><?php echo Qss_Lib_Util::formatInteger($this->report['DienConLaiSuDungCuoi']);?></xls>
+            </td>
+            <td>&nbsp;
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="left"
+                    border="0">Kwh</xls>
+            </td>
+            <td>
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="left"
+                    border="0"
+                    bold="1"><b>Thành tiền(đ)</b></xls>
+            </td>
+            <td class="right">
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="right"
+                    border="0"><?php echo Qss_Lib_Util::formatMoney($this->report['TienConLaiSuDungCuoi']);?></xls>
+            </td>
+            <td class="right">&nbsp;&nbsp;
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    column-merge="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="left"
+                    border="0"
+                    bold="1"><b>Chênh lệch bán</b></xls>
+            </td>
+
+            <td class="right">
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[++$begin]?>"
+                    column-merge="<?php echo $excel_col[++$begin]?>"
+                    wrap-text="1"
+                    v-align="top"
+                    h-align="right"
+                    border="0"
+                    ><?php echo Qss_Lib_Util::formatMoney($this->report['ChenhLechMuaBan']);?></xls>
+            </td>
+        </tr>
+        <?php $row++;?>
+
+    </table>
+
+    <br/>
+    <br/>
+
+
+    <table>
+        <tr class="center">
+            <th  class="center" style="width: 45%;">
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[2]?>"
+                    wrap-text="1"
+                    v-align="center"
+                    h-align="center"
+                    bold="1">LẬP BIỂU</xls>
+
+            </th>
+
+            <th class="center">
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[5]?>"
+                    wrap-text="1"
+                    v-align="center"
+                    h-align="center"
+                    bold="1">QUẢN ĐỐC</xls>
+            </th>
+
+            <th class="center">
+                <xls
+                    row="<?php echo $row?>"
+                    column="<?php echo $excel_col[8]?>"
+                    wrap-text="1"
+                    v-align="center"
+                    h-align="center"
+                    bold="1">PHÒNG CƠ ĐIỆN VI TÍNH</xls>
+            </th>
+        </tr>
+    </table>
+
+</div><!-- END REPORT -->
+

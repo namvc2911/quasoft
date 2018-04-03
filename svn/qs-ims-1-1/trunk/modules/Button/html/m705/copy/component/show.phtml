@@ -1,0 +1,50 @@
+<table cellpadding="0" cellspacing="0" border="1" class="border_table">
+    <tr>
+        <th class="center">
+            <input type="checkbox" onclick="common_check_all_table_line(this, '.cwpo_line_checkbok', '.cwpo_line_checkbok_val', m705_copy_component.count)"/>
+        </th>
+
+        <th class="left">
+            Bộ phận
+        </th>
+
+    </tr>
+
+    <?php foreach($this->components as $item):?>
+        <tr class="component_line">
+            <td class="center">
+                <input type="checkbox" class="cwpo_line_checkbok " onclick="common_check_table_line(this, '.cwpo_line_checkbok_val'); m705_copy_component.checkCom(this);"/>
+                <input type="hidden" class="table_line_disabled cwpo_line_checkbok_val" name="CheckBox[]"  value="0"/>
+            </td>
+            <td class="left tree_level_<?php echo $item->LEVEL - 1;?>">
+                <?php echo $item->ViTri;?> - <?php echo $item->BoPhan;?>
+
+                <!-- Check data -->
+                <input type="hidden" class="com_lft" value="<?php echo $item->lft;?>" />
+                <input type="hidden" class="com_rgt" value="<?php echo $item->rgt;?>" />
+                <input type="hidden" class="com_parent" value="<?php echo $item->Ref_TrucThuoc;?>" />
+                <input type="hidden" class="com_ioid" value="<?php echo $item->IOID;?>" />
+
+                <!-- Insert data -->
+                <input class="table_line_disabled" type="hidden" value="<?php echo $item->ViTri;?>" name="ViTri[]" disabled>
+                <input class="table_line_disabled" type="hidden" value="<?php echo $item->BoPhan;?>" name="BoPhan[]" disabled>
+                <input class="table_line_disabled" type="hidden" value="<?php echo (int)$item->PhuTung;?>" name="PhuTung[]" disabled>
+                <input class="table_line_disabled" type="hidden" value="<?php echo $item->TrucThuoc;?>" name="TrucThuoc[]" disabled>
+                <input class="table_line_disabled" type="hidden" value="<?php echo (int)$item->Ref_TrucThuoc;?>" name="Ref_TrucThuoc[]" disabled>
+                <input class="table_line_disabled" type="hidden" value="<?php echo $item->Serial;?>" name="Serial[]" disabled>
+                <input class="table_line_disabled" type="hidden" value="<?php echo (int)$item->Ref_Serial;?>" name="Ref_Serial[]" disabled>
+                <input class="table_line_disabled" type="hidden" value="<?php echo (int)$item->Ref_ClassHuHong;?>" name="Ref_ClassHuHong[]" disabled>
+                <input class="table_line_disabled" type="hidden" value="<?php echo $item->MoTa;?>" name="MoTa[]" disabled>
+                <input class="table_line_disabled" type="hidden" value="<?php echo $item->Anh?$item->Anh:'';?>" name="Anh[]" disabled>
+                <input class="table_line_disabled" type="hidden" value="<?php echo (int)$item->IOID;?>" name="IOID[]" disabled>
+                <input class="table_line_disabled" type="hidden" value="<?php echo (int)$item->Ref_MaSP;?>" name="Ref_MaSP[]" disabled>
+                <input class="table_line_disabled" type="hidden" value="<?php echo (int)$item->Ref_DonViTinh;?>" name="Ref_DonViTinh[]" disabled>
+                <input class="table_line_disabled" type="hidden" value="<?php echo $item->SoLuongChuan?$item->SoLuongChuan:0;?>" name="SoLuongChuan[]" disabled>
+                <input class="table_line_disabled" type="hidden" value="<?php echo $item->SoLuongHC?$item->SoLuongHC:0;?>" name="SoLuongHC[]" disabled>
+                <input class="table_line_disabled" type="hidden" value="<?php echo $item->SoNgayCanhBao?$item->SoNgayCanhBao:0;?>" name="SoNgayCanhBao[]" disabled>
+                <input class="table_line_disabled" type="hidden" value="<?php echo @$item->DacTinhKyThuat?$item->DacTinhKyThuat:'';?>" name="DacTinhKyThuat[]" disabled>
+
+            </td>
+        </tr>
+    <?php endforeach;?>
+</table>

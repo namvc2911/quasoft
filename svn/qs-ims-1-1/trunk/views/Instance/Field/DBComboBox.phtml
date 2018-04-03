@@ -1,0 +1,5 @@
+<select name = "<?php echo $this->sz_Name?>" size = "<?php echo $this->i_Size?>" <?php echo $this->sz_Extra?>>
+<?php foreach ($this->a_Data as $key=>$value){?>
+<option value="<?php echo $key?>" <?php if($this->sz_Select == $key) echo 'selected'?>><?php echo $value?>
+<?php }?>
+</select>

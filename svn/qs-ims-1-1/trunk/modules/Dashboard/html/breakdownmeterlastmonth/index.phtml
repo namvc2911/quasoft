@@ -1,0 +1,127 @@
+<?php
+$max = $this->totalEquip * 1 * 30; // Mac dinh mot thiet bi hoat dong 30 ngay, moi ngay nghi 1h
+
+$startNormal = 0;
+$endNormal   = (int)$max/10;
+
+$startWarning = (int)$endNormal;
+$endWarning   = (int)$max/3;
+
+
+$startError = (int)$endWarning;
+$endError   = (int)$max;
+?>
+
+
+<script>
+    $(function () {
+
+        $('#container_breakdownlastmonth').highcharts({
+
+            chart: {
+                type: 'gauge',
+                plotBackgroundColor: null,
+                plotBackgroundImage: null,
+                plotBorderWidth: 0,
+                plotShadow: false
+            },
+
+            title: {
+                text: '<?php echo $this->_translate(3)?> <?php echo date('m-Y', strtotime('- 1 month'));?>'
+            },
+
+            plotOptions: {
+                gauge: {
+                    wrap: false
+                }
+            },
+
+            pane: {
+                startAngle: -150,
+                endAngle: 150,
+                background: [{
+                    backgroundColor: {
+                        linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                        stops: [
+                            [0, '#FFF'],
+                            [1, '#333']
+                        ]
+                    },
+                    borderWidth: 0,
+                    outerRadius: '109%'
+                }, {
+                    backgroundColor: {
+                        linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                        stops: [
+                            [0, '#333'],
+                            [1, '#FFF']
+                        ]
+                    },
+                    borderWidth: 1,
+                    outerRadius: '107%'
+                }, {
+                    // default background
+                }, {
+                    backgroundColor: '#DDD',
+                    borderWidth: 0,
+                    outerRadius: '105%',
+                    innerRadius: '103%'
+                }]
+            },
+
+            // the value axis
+            yAxis: {
+                min: 0,
+                max: <?php echo $max;?>,
+
+                minorTickInterval: 'auto',
+                minorTickWidth: 1,
+                minorTickLength: 10,
+                minorTickPosition: 'inside',
+                minorTickColor: '#666',
+
+                tickPixelInterval: 30,
+                tickWidth: 2,
+                tickPosition: 'inside',
+                tickLength: 10,
+                tickColor: '#666',
+                labels: {
+                    step: 2,
+                    rotation: 'auto'
+                },
+                title: {
+                    text: '<?php echo $this->_translate(1)?>'
+                },
+                plotBands: [{
+                    from: <?php echo $startNormal;?>,
+                    to: <?php echo $endNormal;?>,
+                    color: '#55BF3B' // green
+                }, {
+                    from: <?php echo $startWarning;?>,
+                    to: <?php echo $endWarning;?>,
+                    color: '#DDDF0D' // yellow
+                }, {
+                    from: <?php echo $startError;?>,
+                    to: <?php echo $endError;?>,
+                    color: '#DF5353' // red
+                }]
+            },
+
+            series: [{
+                name: '<?php echo $this->_translate(2)?>',
+                data: [<?php echo $this->totalDowntime;?>],
+                tooltip: {
+                    valueSuffix: ' h'
+                }
+            }]
+
+        });
+    });
+</script>
+
+
+
+
+<div id="container_breakdownlastmonth" style="width: 390px; height: 250px;">
+
+</div>

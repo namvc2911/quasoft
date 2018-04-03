@@ -1,0 +1,80 @@
+<?php
+// init
+$i = 0; // index dong phieu bao tri
+?>
+
+<table cellpadding="0" cellspacing="0" class="border_table" border="1"
+	style="width: 100%;" id=''>
+	<tr class=" center">
+		<th style="width: 5%"><?php echo $this->_translate(12);?> <!-- STT -->
+		</th>
+		<th style="width: 10%"><?php echo $this->_translate(1);?> <!-- Số phiếu -->
+		</th>
+		<th style="width: 10%"><?php echo $this->_translate(2);?> <!-- Ngày yêu cầu -->
+		</th>
+		<th style="width: 10%"><?php echo $this->_translate(3);?> <!-- Ngày thực hiện -->
+		</th>
+		<th style="width: 10%"><?php echo $this->_translate(11);?> <!-- Ngày thực hiện -->
+		</th>
+		<th style="width: 15%"><?php echo $this->_translate(5);?> <!-- Thiết bị -->
+		</th>
+		<th style="width: 20%"><?php echo $this->_translate(6);?> <!-- Loại bảo trì -->
+		</th>
+		<th style="width: 10%"><?php echo $this->_translate(10);?> <!-- Chi tiết -->
+		</th>
+		<th style="width: 10%">Comment</th>
+	</tr>
+
+
+	<?php foreach($this->history as $h):?>
+	<tr
+		class="pointer woinfo-wo-line"
+		alt="<?php echo $h->Name;?>" title="<?php echo $h->Name;?>">
+		<td class="center <?php echo $h->Color;?>"><?php echo ++$i;?></td>
+		<td class="left"><?php echo $h->SoPhieu;?></td>
+		<td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($h->NgayYeuCau);?>
+		</td>
+		<td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($h->NgayBatDau);?>
+		</td>
+		<td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($h->Ngay);?>
+		</td>
+		<td class="left"><?php echo $h->MaThietBi;?></td>
+		<td class="left"><?php echo $h->LoaiBaoTri;?></td>
+		<td class="center">
+			<button type="button" class="btn-custom"
+				onclick="woinfo_detail(<?php echo $h->IFID_M759;?>, <?php echo $this->deptid;?>)"
+				ifid="<?php echo $h->IFID_M759;?>">
+				<?php echo $this->_translate(13);?>
+				<!-- Xem -->
+			</button>
+		</td>
+		<td class="center">
+			<button type="button" class="btn-custom"
+				onclick="woinfo_comment(<?php echo $h->IFID_M759;?>, <?php echo $this->deptid;?>, <?php echo $this->uid;?>)"
+				ifid="<?php echo $h->IFID_M759;?>">
+				<?php echo (isset($this->comments[$h->IFID_M759]))?$this->comments[$h->IFID_M759]:0?>
+				<!-- trans -->
+			</button>
+		</td>
+	</tr>
+	<?php endforeach;?>
+</table>
+<script>
+        // Dien lai so trang 
+        var html = '';
+        var select; 
+        
+        for(var i =1; i <= <?php echo $this->total;?>; i++)
+        {
+              if(<?php echo $this->page;?> == i) select = 'selected'; else select = '';
+              html += '<option value="'+i+'" '+select+'>'+i+'</option>';  
+        }
+        
+        if(html == '')
+        {
+                html = '<option value="1" >1</option>';
+        }
+        $('#woinfo-page').attr('total',<?php echo $this->total;?>);
+        $('#woinfo-page').html(html);
+</script>
+

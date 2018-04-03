@@ -1,0 +1,167 @@
+<script>
+$(document).ready(function(){
+	$('#settingquickreports').hover(function() {
+		mouse_is_inside = true;
+	}, function() {
+		mouse_is_inside = false;
+	});
+	
+	$('.notify4').hover(function() {
+		mouse_is_click = true;
+	}, function() {
+		mouse_is_click = false;
+	});
+	<?php foreach($this->reports as $report): //'/user/statistic/detailuserquickreports?urid=php echo $report->URID'?>
+	loadbyid('report_<?php echo $report->URID?>','<?php echo $report->Params?>');
+	<?php endforeach;?>
+});
+function showReportSetting() {
+	var isvisible = $("#settingquickreports").is(":visible");
+	if (isvisible) {
+		$("#settingquickreports").hide();
+	} else {
+		var url = sz_BaseUrl + '/user/statistic/settingquickreports';
+		var data = {};
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#settingquickreports').addClass('qss_notify4');
+			$('#settingquickreports').removeClass('qss_notify4');
+			$('#settingquickreports').html(jreturn);
+			$("#settingquickreports").show('blind', {
+				to : {
+					width : 280,
+					height : 185
+				}
+			}, 500);
+		});
+	}
+}
+function openReportSetting(urid,checked,path){
+	/*var url = sz_BaseUrl + '/user/report?fid=' + fid;
+	qssAjax.getHtml(url, {dashboad:1}, function(jreturn) {
+		if(jreturn!=''){
+			$('#qss_trace').html(jreturn);
+			$('#qss_trace').dialog({ maxHeight: 400 });	
+		}
+	});*/
+	var url = sz_BaseUrl + '/user/statistic/savequickreport';
+	var data = {urid:urid,checked:checked};
+	qssAjax.call(url, data, function(jreturn) {
+		//loadbyid('detail_user_quickacess','/user/statistic/detailuserquickaccess');
+		if(checked == 0){
+			$('#report_'+urid).remove();
+		}
+		else{
+			$('#detail_user_quickreports').append('<div id="report_'+urid+'">');
+			loadbyid('report_'+urid,path);
+		}
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});	
+}
+function filterQuickReports(ele){
+	var search = $(ele).val();
+	$('.dashboad_tr').each(function(){
+		if($(this).find('label').text().toString().search(new RegExp(search, 'i')) >= 0 || search == ''){
+			//$(this).attr('checked', true);
+			$(this).show();
+		}
+		else{
+			$(this).hide();
+		}
+	});
+}
+</script>
+
+<?php foreach($this->reports as $report):?>
+	<div id="report_<?php echo $report->URID?>" class="box_das2"></div>
+<?php endforeach;?>
+
+
+<?php if(!count($this->reports)):?>
+
+
+
+
+	<style>
+		#logo {
+			padding-top: 20px;
+			padding-left: 20px;
+			z-index: 100;
+		}
+
+		#logo h1 {
+			margin: 0;
+			padding: 0;
+		}
+
+		#logo h1 a, #logo .site-name a {
+			background: transparent url("/images/quasoftlogo.png") no-repeat scroll; /*0 100%;*/
+			height: 50px;
+			width: 200px;
+		}
+		#logo h1 a, #logo .site-name a {
+			display: block;
+			outline: 0 none;
+			overflow: hidden;
+			text-indent: -5000px;
+		}
+		#slogan {
+			color: #999;
+			padding-left: 20px;
+			font-size: 12px;
+		}
+
+		.textwidget {
+			display: inline-block;
+			padding: 7px 0 0 20px;
+			/*width: 100%;*/
+			color: #333;
+			line-height: 24px;
+		}
+
+		#qss_form
+		{
+			height: 100%;
+		}
+
+		#dashboad_2
+		{
+			height: 100%;
+		}
+	</style>
+
+	<div class="clear"></div>
+		<div style="background: url('/images/qsims-erp-system.png?9bf660') bottom right no-repeat;  height: 100%; /*width: 100%;position: relative; */ ">
+			<div id="logo_slogan">
+				<div class="grid_14" id="logo">
+					<h1>
+						<a href="http://www.quasoft.vn" class="pngfix" title="Quasoft Company">Quasoft Company</a>
+					</h1>
+				</div>
+
+				<div class="grid_17" id="slogan">Chất Lượng Để Phát Triển Bền Vững</div>
+			</div>
+
+
+
+			<div>
+				<div class="textwidget">
+					<strong>CÔNG TY TNHH PHẦN MỀM CHẤT LƯỢNG - QUASOFT</strong><br/>
+
+					<strong>Trụ sở tại Hà Nội:</strong><br>
+					121 Nguyễn Ngọc Nại - Thanh Xuân<br>
+					<strong>Văn phòng tại TP HCM:</strong><br>
+					603 GT Building - 403, Nguyễn Thái Bình - Tân Bình<br>
+					Điện thoại: (04)66554719<br>
+					Fax: (04)35667708<br>
+					E-Mail: contact@quasoft.vn<br>
+					<strong>Hotline: 0913597846</strong>
+					<br/>
+					<strong><a href="#" onclick="openModule('M012')">Click vào đây để thay đổi hiển thị trang chủ</a></strong>
+				</div>
+			</div>
+	</div>
+
+
+
+<?php endif;?>

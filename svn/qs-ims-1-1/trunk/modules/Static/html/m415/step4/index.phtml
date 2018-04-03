@@ -1,0 +1,635 @@
+<?php
+    $oldRequest      = '';
+    $requestWidthArr = array(3,3,4,2,2,2,2,2,6);
+    $totalCols       = 6;
+    $width           = 1200;
+    $widthBaoGia     = 800;
+    $padding         = 2;
+    $oldSupplier     = '';
+    $stt             = 0;
+    
+    $fit = Qss_Lib_Report::changeWidthToFitScreen2($requestWidthArr, $width, $padding);
+      
+//     if(!count($this->plans))
+//     {
+//         echo 'Tất cả mặt hàng đã được lập kế hoạch hoặc đặt hàng!';
+//         die;
+//     }
+
+if(!$this->info)
+{
+    $this->info                           = new stdClass();
+    $this->info->Status                   = 1;
+    $this->info->Color                    = '';
+    $this->info->Name                     = '';
+    $this->info->SoPhieu                  = '';
+    $this->info->NgayYeuCau               = '';
+    $this->info->NoiDung                  = '';
+    $this->info->HinhThuc                 = 0;
+    $this->info->ThoiHanCungCap           = '';
+    $this->info->GhiChu                   = '';
+    $this->info->NgayGuiThuMoi            = '';
+    $this->info->NgayKetThuc              = '';
+    $this->info->ThoiGianKetThuc          = '';
+    $this->info->NgayMo                   = '';
+    $this->info->ThoiGianMo               = '';
+    $this->info->NgayTrinhDuyetKetQua     = '';
+    $this->info->ThoiGianTrinhDuyetKetQua = '';
+}
+?>
+
+<div id="M415_plan_wrap">
+
+<!--    <h1> --><?php ////echo $this->_translate(14);?><!-- </h1>-->
+<!--    <hr/>-->
+<!--    <br/>-->
+    <form id="M415_step4_plan_form">
+    
+        <input type="hidden" id="M415_plan_step" name="plan_status" value="<?php echo $this->info?$this->info->Status:1;?>" />
+
+
+    
+        <?php if(!$this->info):?>
+        <div>
+            <span class="red bold " id="M415_step4_save_status">(*) Kế hoạch chưa được lưu! </span>
+        </div>
+        <?php endif;?>
+    
+        <div>
+            <div class="ui_box">
+                <div class="ui_box_s50_left">
+                    <fieldset>
+                        <legend>Thông tin chung <b><?php if($this->info->Name):?><span class="<?php echo $this->info->Color;?>">(<?php echo $this->info->Name;?>)</span><?php endif;?></b></legend>
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Số kế hoạch mua sắm</label>
+                            </div>
+
+
+
+                            <div class="element">
+
+
+                                <?php if($this->info->Status == 2):?>
+                                    <input id="OKeHoachMuaSam_SoPhieu" class="readonly" readonly value="<?php echo $this->info->SoPhieu;?>" />
+                                <?php else:?>
+                                    <input type="text" value="<?php echo $this->info->SoPhieu?$this->info->SoPhieu:$this->docno;?>"
+                                           style="width: 200px;" name="OKeHoachMuaSam_SoPhieu">
+                                <?php endif;?>
+                            </div>
+                        </div>
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Ngày yêu cầu</label>
+                            </div>
+
+                            <div class="element">
+                                <div class="required">
+                                    <?php if($this->info->Status == 2):?>
+                                        <input id="OKeHoachMuaSam_NgayYeuCau" class="readonly" readonly value="<?php echo Qss_Lib_Date::mysqltodisplay($this->info->NgayYeuCau);?>" />
+                                    <?php else:?>
+                                        <?php echo $this->views->Report->Datepicker('OKeHoachMuaSam_NgayYeuCau', Qss_Lib_Date::mysqltodisplay($this->info->NgayYeuCau));?>
+                                    <?php endif;?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Nội dung</label>
+                            </div>
+
+                            <div class="element">
+                                <?php if($this->info->Status == 2):?>
+                                    <textarea class="readonly" readonly id="OKeHoachMuaSam_NoiDung"><?php echo $this->info->NoiDung;?></textarea>
+                                <?php else:?>
+                                    <textarea name="OKeHoachMuaSam_NoiDung" id="OKeHoachMuaSam_NoiDung"><?php echo $this->info->NoiDung;?></textarea>
+                                <?php endif;?>
+                            </div>
+                        </div>
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Hình thức</label>
+                            </div>
+
+                            <div class="element">
+                                <div class="radio <?php echo ($this->info->Status == 2)?'readonly':'';?>">
+                                    <?php if($this->info->Status == 2):?>
+                                        <?php foreach(Qss_Lib_System::getFieldRegx('OKeHoachMuaSam', 'HinhThuc') AS $key=>$value): ?>
+                                            <input type="radio" value="<?php echo $key;?>"
+                                                   disabled  id="OKeHoachMuaSam_HinhThuc_<?php echo $key;?>" <?php echo ($this->info->HinhThuc == $key)?'checked':'';?>>
+                                            <label for="OKeHoachMuaSam_HinhThuc_<?php echo $key;?>"><?php echo $value;?></label><br>
+                                        <?php endforeach;?>
+
+
+                                    <?php else:?>
+                                        <?php foreach(Qss_Lib_System::getFieldRegx('OKeHoachMuaSam', 'HinhThuc') AS $key=>$value): ?>
+                                            <input type="radio" value="<?php echo $key;?>"
+                                                     class="OKeHoachMuaSam_HinhThuc" id="OKeHoachMuaSam_HinhThuc_<?php echo $key;?>"
+                                                   name="OKeHoachMuaSam_HinhThuc"
+                                                <?php echo ($this->info->HinhThuc == $key)?'checked':'';?>>
+                                            <label for="OKeHoachMuaSam_HinhThuc_<?php echo $key;?>"><?php echo $value;?></label><br>
+                                        <?php endforeach;?>
+
+                                        <input type="hidden" class="OKeHoachMuaSam_HinhThuc_Val" name="OKeHoachMuaSam_HinhThuc" value="<?php echo (int)$this->info->HinhThuc;?>" />
+
+                                        <script>
+                                            $('.OKeHoachMuaSam_HinhThuc').click(function(){
+                                               var val = $(this).val();
+
+                                                $(this).parent().find('.OKeHoachMuaSam_HinhThuc_Val').val(val);
+                                            });
+                                        </script>
+
+                                    <?php endif;?>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Thời hạn cung cấp (Ngày)</label>
+                            </div>
+
+                            <div class="element">
+
+                                <?php if($this->info->Status == 2):?>
+                                    <input type="text" value="<?php echo $this->info->ThoiHanCungCap;?>" class="integer readonly" readonly style="width: 100px; text-align:right;"
+                                           class="readonly" id="OKeHoachMuaSam_ThoiHanCungCap">
+                                <?php else:?>
+                                    <input type="text" value="<?php echo $this->info->ThoiHanCungCap;?>" class="integer" style="width: 100px; text-align:right;"
+                                           name="OKeHoachMuaSam_ThoiHanCungCap" id="OKeHoachMuaSam_ThoiHanCungCap">
+                                <?php endif;?>
+                            </div>
+                        </div>
+
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Người nhận</label>
+                            </div>
+
+                            <div class="element">
+
+                                <?php if($this->info->Status == 2):?>
+                                    <input type="text" value="<?php echo @$this->info->NguoiNhan;?>"
+                                           class="readonly" readonly style="width: 200px; text-align:left;"
+                                           class="readonly" id="OKeHoachMuaSam_NguoiNhan">
+                                <?php else:?>
+                                    <?php
+                                    $id            = array('id'=>'OKeHoachMuaSam_NguoiNhan');
+                                    $getDataObject = array('ODanhSachNhanVien'=>array('MaNhanVien', 'TenNhanVien'));
+                                    //,'OKhuVuc'=>array('MaKhuVuc','Ten')
+                                    $getFields     = array('num'=>2,
+                                        'objects'=>array('ODanhSachNhanVien'=>array(
+                                            'id'=>'IOID'
+                                        ,'display1'=>'TenNhanVien'
+                                        ,'display2'=>'ChucDanh')) );
+                                    ?>
+                                    <?php
+                                    echo $this->views->Report->ListBox(
+                                        $id
+                                        , $getDataObject
+                                        , $getFields
+                                        , array()
+                                        , array()
+                                        , ''
+                                        , @$this->info->NguoiNhan
+                                        , @$this->info->Ref_NguoiNhan
+                                    );?>
+                                <?php endif;?>
+                            </div>
+                        </div>
+
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Ghi chú</label>
+                            </div>
+
+                            <div class="element">
+                                <?php if($this->info->Status == 2):?>
+                                    <textarea class="readonly" readonly id="OKeHoachMuaSam_GhiChu"><?php echo $this->info->GhiChu;?></textarea>
+                                <?php else:?>
+                                    <textarea name="OKeHoachMuaSam_GhiChu" id="OKeHoachMuaSam_GhiChu"><?php echo $this->info->GhiChu;?></textarea>
+                                <?php endif;?>
+
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </div>
+
+                <div class="ui_box_s50_right"><fieldset><legend>Chào giá</legend>
+
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Địa điểm giao hàng</label>
+                            </div>
+
+                            <div class="element">
+
+                                <?php if($this->info->Status == 2):?>
+                                    <input type="text" value="<?php echo @$this->info->DiaDiemGiaoHang;?>"
+                                           class="readonly" readonly style="width: 200px; text-align:left;"
+                                           class="readonly" id="OKeHoachMuaSam_DiaDiemGiaoHang">
+                                <?php else:?>
+                                    <?php
+                                    $id = 'OKeHoachMuaSam_DiaDiemGiaoHang';
+                                    $getFields = array('num' => 1,
+                                        'objects' => array('ODiaDiemGiaoHang' => array(
+                                            'id' => 'IOID'
+                                        , 'display1' => 'DiaDiem')));
+                                    ?> <?php echo $this->views->Report->ComboBox($id, $getFields); ?>
+                                <?php endif;?>
+
+
+                            </div>
+                        </div>
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Ngày gửi thư mời</label>
+                            </div>
+                            <div class="element">
+
+                                <?php if($this->info->Status == 2):?>
+                                    <input id="OKeHoachMuaSam_NgayGuiThuMoi" class="readonly" readonly value="<?php echo Qss_Lib_Date::mysqltodisplay($this->info->NgayGuiThuMoi);?>" />
+                                <?php else:?>
+                                    <?php echo $this->views->Report->Datepicker('OKeHoachMuaSam_NgayGuiThuMoi', Qss_Lib_Date::mysqltodisplay($this->info->NgayGuiThuMoi));?>
+                                <?php endif;?>
+
+
+                            </div>
+                        </div>
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Ngày kết thúc</label>
+                            </div>
+                            <div class="element">
+
+                                <?php if($this->info->Status == 2):?>
+                                    <input id="OKeHoachMuaSam_NgayKetThuc" class="readonly" readonly value="<?php echo Qss_Lib_Date::mysqltodisplay($this->info->NgayKetThuc);?>" />
+                                <?php else:?>
+                                    <?php echo $this->views->Report->Datepicker('OKeHoachMuaSam_NgayKetThuc', Qss_Lib_Date::mysqltodisplay($this->info->NgayKetThuc));?>
+                                <?php endif;?>
+                            </div>
+                        </div>
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Thời gian kết thúc</label>
+                            </div>
+                            <div class="element">
+
+                                <?php if($this->info->Status == 2):?>
+                                    <input type="text" placeholder="hh:mm" value="<?php echo $this->info->ThoiGianKetThuc;?>" style="width: 100px;"
+                                           class="readonly" readonly id="OKeHoachMuaSam_ThoiGianKetThuc">
+                                <?php else:?>
+                                    <input type="text" placeholder="hh:mm" value="<?php echo $this->info->ThoiGianKetThuc;?>" style="width: 100px;"
+                                           name="OKeHoachMuaSam_ThoiGianKetThuc" id="OKeHoachMuaSam_ThoiGianKetThuc">
+                                <?php endif;?>
+                            </div>
+                        </div>
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Ngày mở</label>
+                            </div>
+
+                            <div class="element">
+
+                                <?php if($this->info->Status == 2):?>
+                                    <input id="OKeHoachMuaSam_NgayMo" class="readonly" readonly value="<?php echo Qss_Lib_Date::mysqltodisplay($this->info->NgayMo);?>" />
+                                <?php else:?>
+                                    <?php echo $this->views->Report->Datepicker('OKeHoachMuaSam_NgayMo', Qss_Lib_Date::mysqltodisplay($this->info->NgayMo));?>
+                                <?php endif;?>
+                            </div>
+                        </div>
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Thời gian mở</label>
+                            </div>
+                            <div class="element">
+
+
+                                <?php if($this->info->Status == 2):?>
+                                    <input type="text" placeholder="hh:mm" value="<?php echo $this->info->ThoiGianMo;?>" style="width: 100px;"
+                                           class="readonly" readonly id="OKeHoachMuaSam_ThoiGianMo">
+                                <?php else:?>
+                                    <input type="text" placeholder="hh:mm" value="<?php echo $this->info->ThoiGianMo;?>" style="width: 100px;"
+                                           name="OKeHoachMuaSam_ThoiGianMo" id="OKeHoachMuaSam_ThoiGianMo">
+                                <?php endif;?>
+                            </div>
+                        </div>
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Ngày trình duyệt kết quả</label>
+                            </div>
+                            <div class="element">
+
+                                <?php if($this->info->Status == 2):?>
+                                    <input id="OKeHoachMuaSam_NgayTrinhDuyetKetQua" class="readonly" readonly value="<?php echo Qss_Lib_Date::mysqltodisplay($this->info->NgayTrinhDuyetKetQua);?>" />
+                                <?php else:?>
+                                    <?php echo $this->views->Report->Datepicker('OKeHoachMuaSam_NgayTrinhDuyetKetQua', Qss_Lib_Date::mysqltodisplay($this->info->NgayTrinhDuyetKetQua));?>
+                                <?php endif;?>
+                            </div>
+                        </div>
+
+                        <div class="ui_box_line">
+                            <div class="label">
+                                <label>Thời gian trình duyệt kết quả</label>
+                            </div>
+                            <div class="element">
+                                <?php if($this->info->Status == 2):?>
+                                    <input type="text" placeholder="hh:mm" value="<?php echo $this->info->ThoiGianTrinhDuyetKetQua;?>" style="width: 100px;"
+                                           class="readonly" readonly id="OKeHoachMuaSam_ThoiGianTrinhDuyetKetQua">
+                                <?php else:?>
+                                    <input type="text" placeholder="hh:mm" value="<?php echo $this->info->ThoiGianTrinhDuyetKetQua;?>" style="width: 100px;"
+                                           name="OKeHoachMuaSam_ThoiGianTrinhDuyetKetQua" id="OKeHoachMuaSam_ThoiGianTrinhDuyetKetQua">
+                                <?php endif;?>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+
+
+            <?php /*
+
+            <table>
+                <tr>
+                    <th class="left">Số phiếu:</th>
+                    <td class="required">
+                        <?php if($this->info):?>
+                            <?php echo $this->info->SoPhieu;?> <span class="<?php echo $this->info->Color;?>">(<?php echo $this->info->Name;?>)</span>
+                        <?php endif;?>                        
+                    </td>
+                </tr>            
+            
+                <tr>
+                    <th class="left">Ngày:</th>
+                    <td class="required">
+                        <?php if(!$this->info):?>
+                            <?php echo $this->views->Report->Datepicker('date', date('d-m-Y'));?>
+                        <?php else:?>
+                            <?php if($this->info->Status == 1):?>
+                                <?php echo $this->views->Report->Datepicker('date', Qss_Lib_Date::mysqltodisplay($this->info->NgayYeuCau));?>
+                            <?php else:?>
+                                <input type="text" value="<?php echo Qss_Lib_Date::mysqltodisplay($this->info->NgayYeuCau);?>" disabled/> 
+                            <?php endif;?>
+                        <?php endif;?>                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th class="left">Nội dung:</th>
+                    <td class="left">
+                        
+                        <?php if(!$this->info):?>
+                            <input type="text" name="content" style="width: 500px;" value="Tạo tự động từ M415"/>
+                        <?php else:?>
+                            <?php if($this->info->Status == 1):?>
+                                <input type="text" name="content" style="width: 500px;" value="<?php echo $this->info->NoiDung;?>"/>
+                            <?php else:?>
+                                <input type="text" name="content" disabled style="width: 500px;" value="<?php echo $this->info->NoiDung;?>"/>
+                            <?php endif;?>
+                        <?php endif;?>
+                    </td>
+                </tr>                
+            </table>
+
+            */?>
+        </div>
+        
+        <div class="clear"></div>
+
+
+        <div>
+            <p><b>Danh sách đơn vị chào giá</b></p>
+            <br/>
+
+            <div id="M415_step5_control">
+
+                <input type="hidden" name="planioid" value="<?php echo $this->planioid;?>"/>
+
+                <?php if( (!isset($_SESSION['M415Step']) || $_SESSION['M415Step'] == 4)) :?>
+                    <?php echo $this->views->Report->SimpleComboBox('partnerioid', $this->suppliers, ' style="width:300px"');?>
+                    <button type="button" class="btn btn-custom" onclick="M415.step4.createQuotation();"> Thêm đơn vị chào giá </button>
+                <?php else:?>
+                    <?php echo $this->views->Report->SimpleComboBox('partnerioid', $this->suppliers, 'disabled style="width:300px"');?>
+                    <button type="button" class="btn btn-custom btn-disabled" disabled> Thêm đơn vị chào giá </button>
+                <?php endif;?>
+
+
+                <!-- <button type="button" class="btn btn-custom" onclick="M415.step5.showAddQuotationScreen();"> Thêm chào giá </button> -->
+                &nbsp;<span id="M415_step5_quotation_notify" class="bold red"></span>
+            </div><!-- end #M415_step5_control -->
+            <br/>
+
+            <div id="m415_quotation_storage">
+                <table class="border_table" cellpadding="0" cellspacing="0" border="0" style="width:<?php echo $widthBaoGia;?>px">
+                    <tr>
+                        <th style="width: 50%;"> Nhà cung cấp </th>
+                        <th style="width: 25%;"> &nbsp; </th>
+                        <th style="width: 25%;"> &nbsp; </th>
+                    </tr>
+
+                    <?php foreach($this->quotations as $item):?>
+                        <?php //echo '<Pre>'; print_r($item); die;?>
+                        <!-- IN NHA CUNG CAP  -->
+                        <?php if($oldSupplier != $item->Ref_MaNCC):?>
+                            <tr class="M415_step5_supplier" supplier="<?php echo $item->Ref_MaNCC?>"  saved="1">
+                                <td class="bold left" >
+                                    <?php echo ++$stt;?>. <?php echo $item->TenNCC?> - <?php echo $item->SoChungTu;?>
+
+                                    <input type="hidden" name="supplier[]" value="<?php echo $item->Ref_MaNCC?>" />
+                                    <input type="hidden" name="supplier_saved[]" value="1" />
+                                </td>
+
+                                <td class="center little_padding">
+                                    <button type="button" onclick="M415.excelThuMoiChaoGia(<?php echo $item->Ref_MaNCC;?>)"
+                                            class="btn btn-custom"> Thư mời chào giá </button>
+                                </td>
+
+
+                                <td class="center little_padding">
+
+
+                                    <?php if( (!isset($_SESSION['M415Step']) || $_SESSION['M415Step'] == 4)) :?>
+                                        <script>
+                                            var ifid = [];
+                                            var deptid = [];
+
+                                            ifid.push(<?php echo $item->IFID_M406;?>);
+                                            deptid.push(<?php echo $this->deptid;?>);
+                                        </script>
+
+                                        <button type="button" onclick="deleteForm(ifid,deptid, function(){ M415.step4.removeQuote(<?php echo $item->Ref_MaNCC?>); })"
+                                                class="btn btn-custom"> Xóa chào giá </button>
+                                    <?php else:?>
+                                        <button type="button" class="btn btn-custom btn-disabled" disabled> Xóa chào giá </button>
+                                    <?php endif;?>
+                                </td>
+                            </tr>
+                        <?php endif;?>
+
+                        <?php $oldSupplier = $item->Ref_MaNCC; ?>
+                        <?php $oldQuote = $item->IFID_M406; ?>
+                    <?php endforeach;?>
+                </table>
+            </div>
+        </div>
+
+        <br/>
+        <p><b>Danh sách mặt hàng</b></p>
+        <br/>
+
+        <table class="border_table" cellpadding="0" cellspacing="0" border="0" style="width:<?php echo $width;?>px">
+            <!-- Title -->
+            <?php $begin = 0; ?>
+            <tr class="bggrey">
+                <!-- Số yêu cầu -->
+                <th style="width:<?php echo $fit[$begin++];?>px;">
+                    <?php echo $this->_translate(1);?>
+                </th>
+    
+                <!-- Mã mặt hàng -->
+                <th style="width:<?php echo $fit[$begin++];?>px;">
+                    <?php echo $this->_translate(2);?>
+                </th>
+    
+                <!-- Tên mặt hàng -->
+                <th style="width:<?php echo $fit[$begin++];?>px;">
+                    <?php echo $this->_translate(3);?>
+                </th>
+    
+                <!-- ĐVT -->
+                <th style="width:<?php echo $fit[$begin++];?>px;">
+                    <?php echo $this->_translate(4);?>
+                </th>
+                
+                
+                
+                <!-- Số lượng YC  -->
+                <th style="width:<?php echo $fit[$begin++];?>px;">
+                    <?php echo $this->_translate(9);?>
+                </th>         
+
+                <?php /*
+                <!-- Số lượng YC  -->
+                <th style="width:<?php echo $fit[$begin++];?>px;">
+                    <?php echo $this->_translate(5);?>
+                </th>                         
+
+                
+                <!-- Đặt hàng  -->
+                <th style="width:<?php echo $fit[$begin++];?>px;">
+                    <?php echo $this->_translate(10);?>
+                </th>      
+                
+                <!-- Còn lại  -->
+                <th style="width:<?php echo $fit[$begin++];?>px;">
+                    <?php echo $this->_translate(11);?>
+                </th>
+                */?>
+    
+                <!-- Mục đich -->
+                <th style="width:<?php echo $fit[$begin++];?>px;">
+                    <?php echo $this->_translate(6);?>
+                </th>    
+            </tr>
+    
+            <!-- Data -->
+            <?php foreach($this->plans as $item):?>
+
+                <?php if($item->Requested > 0 && ($item->Ordered == 0 || $item->Planed > 0)):?>
+
+
+                <?php if($oldRequest != $item->RequestIOID):?>
+                    <tr class="bggrey center bold">
+                        <td colspan="<?php echo $totalCols;?>" class="left">
+                            <?php echo $item->SoPhieu;?>
+                        </td>
+                    </tr>
+                <?php endif;?>
+                <?php $oldRequest = $item->RequestIOID;?>
+
+                <tr>
+                    <!-- Số yêu cầu -->
+                    <td class="left">
+                        <?php echo $item->SoPhieu;?>
+                        
+                        <input  type="hidden" name="requestioid[]" value="<?php echo $item->RequestIOID;?>" />
+                        <input  type="hidden" name="itemioid[]" value="<?php echo $item->ItemIOID;?>" />
+                        <input  type="hidden" name="uomioid[]" value="<?php echo $item->UomIOID;?>" />
+                        <input  type="hidden" name="reason[]" value="<?php echo $item->MucDich;?>" />
+                        <input type="hidden" class="right" name="qty[]" value="<?php echo $item->Requested;?>"  />
+                    </td>
+    
+                    <!-- Mã mặt hàng -->
+                    <td class="left">
+                        <?php echo $item->MaSP;?>
+                    </td>
+    
+                    <!-- Tên mặt hàng -->
+                    <td class="left">
+                        <?php echo $item->TenSP;?>
+                    </td>
+    
+                    <!-- ĐVT -->
+                    <td class="left">
+                        <?php echo $item->DonViTinh;?>
+                    </td>
+    
+                    <!-- Yêu cầu -->
+                    <td class="right">
+                        <?php echo $item->Requested;?>
+                    </td>
+        
+
+                    <?php /*
+                    <!-- Kế hoạch -->
+                    <td class="right">
+                        <?php echo $item->Planed;?>
+                    </td> 
+                    
+                    <!-- Đặt hàng -->
+                    <td class="right">
+                        <?php echo $item->Ordered;?>
+                    </td> 
+                    
+                    <!-- Còn lại -->
+                    <td class="right">
+                        <?php echo $item->ConLai;?>
+                    </td>
+                    */?>
+    
+                    <!-- Mục đich  -->
+                    <td class="left">
+                        <?php echo $item->MucDich;?>                       
+                    </td>
+                </tr>
+                <?php endif;?>
+            <?php endforeach;?>
+
+        </table>
+    </form>
+    
+</div><!-- END #M415_request_wrap -->
+
+<div class="clear"></div>
+<br/>
+<br/>
+
+
+

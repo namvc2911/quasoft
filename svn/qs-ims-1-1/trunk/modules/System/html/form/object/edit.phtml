@@ -1,0 +1,147 @@
+<?php
+if($this->type == 1)
+$id=116;
+elseif($this->type == 2)
+$id=117;
+elseif($this->type == 3)
+$id=118;
+else
+$id = 119;
+?>
+<form method="post" id="qss_form">
+	<input type="hidden" value="<?php echo $this->fobject->ObjectCode?>" name="objid" />
+	<div id="horizontal-toolbar" class="horizontal-toolbar">
+		<button id="btnSAVE" type="button" class="btn btn_main_top" onclick="formObjectSave('<?php echo $this->fobject->FormCode?>')">
+			<?php echo $this->_translate(34)?>
+		</button>
+		<button type="button" class="btn btn_main_top" onclick="formObjectBack('<?php echo $this->fobject->FormCode?>')">
+			<?php echo $this->_translate(32)?>
+		</button>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<div id="item-actions">
+			<span class="item-action"><?php echo $this->_translate($id)?> - <?php echo $this->_translate(102)?>
+			</span>
+		</div>
+		<table border="0" cellspacing="0" cellpadding="0" class="border_table">
+			<tr>
+				<td class="right bold" style="padding-right:20px;">Order No.</td>
+				<td><input type="text" value="<?php echo $this->fobject->ObjNo?>"
+					name="objno"></td>
+			</tr>
+			<tr>
+				<td class="right bold" style="padding-right:20px;"><?php echo $this->_translate(102)?></td>
+				<td>
+                    <?php
+                    $id = 'objectTemp1';
+                    $getDataObject = array('qsobjects'=>array('ObjectName', 'ObjectCode'));
+                    $getFields = array('num' => 2,
+                        'objects' => array('qsobjects' => array(
+                            'id' => 'ObjectCode'
+                        , 'order' => 'ObjectCode'
+                        , 'display1' => 'ObjectName'
+                        , 'display2' => 'ObjectCode')));
+
+                    echo $this->views->Report->ListBox(
+                        $id
+                        , $getDataObject
+                        , $getFields
+                        , array()
+                        , array()
+                        , ''
+                        , $this->fobject->ObjectCode
+                        , $this->fobject->ObjectCode
+                    );
+                    ?>
+
+                    <input type="hidden" name="object" id="object" value="<?php echo $this->fobject->ObjectCode;?>" />
+
+                    <script>
+                        $('#objectTemp1').change(function () {
+                            $('input[name="object"]').val($(this).val());
+                        });
+                    </script>
+                </td>
+			</tr>
+			<tr>
+				<td class="right bold" style="padding-right:20px;"><?php echo $this->_translate(135)?></td>
+				<td>
+
+                    <?php
+                    $id = 'parent';
+                    $getDataObject = array('qsobjects'=>array('ObjectName', 'ObjectCode'));
+                    $getFields = array('num' => 2,
+                        'objects' => array('qsobjects' => array(
+                            'id' => 'ObjectCode'
+                        , 'order' => 'ObjectCode'
+                        , 'display1' => 'ObjectName'
+                        , 'display2' => 'ObjectCode')));
+
+                    echo $this->views->Report->ListBox(
+                        $id
+                        , $getDataObject
+                        , $getFields
+                        , array()
+                        , array()
+                        , ''
+                        , $this->fobject->ParentObjectCode
+                        , $this->fobject->ParentObjectCode
+                    );
+                    ?>
+                </td>
+			</tr>
+			<tr>
+				<td class="right bold" style="padding-right:20px;">Hiện thị dữ liệu của module</td>
+				<td>
+					<select name="reffid">
+					<option value=""> --- Chọn mô đun --- </option>
+                    <?php foreach($this->refforms as $ref):?>
+                    	<option <?php if($ref->FormCode == $this->fobject->RefFormCode):?>selected<?php endif;?> value="<?php echo $ref->FormCode?>"><?php echo $ref->FormCode?> - <?php echo $ref->Name?></option>
+                    <?php endforeach;?>
+                    </select>
+                </td>
+			</tr>
+			<tr>
+				<td class="right bold" style="padding-right:20px;"><?php echo $this->_translate(133)?></td>
+				<td><input type="checkbox" value="1" name="main"
+				<?php if($this->fobject->Main) echo 'checked';?> /></td>
+			</tr>
+			<tr>
+				<td class="right bold" style="padding-right:20px;"><?php echo $this->_translate(134)?></td>
+				<td><input type="checkbox" value="1" name="public"
+				<?php if($this->fobject->Public & 1) echo 'checked';?> /></td>
+			</tr>
+			<tr>
+				<td class="right bold" style="padding-right:20px;">Ẩn trên mobile</td>
+				<td><input type="checkbox" value="1" name="mobile"
+				<?php if($this->fobject->Public & 2) echo 'checked';?> /></td>
+			</tr>
+			<tr>
+				<td class="right bold" style="padding-right:20px;">Hiện custom trên mobile</td>
+				<td><input type="checkbox" value="1" name="custom_mobile"
+				<?php if($this->fobject->Public & 4) echo 'checked';?> /></td>
+			</tr>
+			<tr>
+				<td class="right bold" style="padding-right:20px;"><?php echo $this->_translate(13)?></td>
+				<td><input type="checkbox" value="1" name="editing"
+				<?php if($this->fobject->Editing) echo 'checked';?> /></td>
+			</tr>
+			<tr>
+				<td class="right bold" style="padding-right:20px;">Được thêm mới</td>
+				<td><input type="checkbox" value="1" name="insert"
+				<?php if($this->fobject->Insert) echo 'checked';?> /></td>
+			</tr>
+			<tr>
+				<td class="right bold" style="padding-right:20px;">Được xóa</td>
+				<td><input type="checkbox" value="1" name="deleting"
+				<?php if($this->fobject->Deleting) echo 'checked';?> /></td>
+			</tr>
+			<tr>
+				<td class="right bold" style="padding-right:20px;"><?php echo $this->_translate(50)?></td>
+				<td><input type="checkbox" value="1" name="track"
+				<?php if($this->fobject->Track) echo 'checked';?> /></td>
+			</tr>
+		</table>
+	</div>
+</form>

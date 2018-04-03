@@ -1,0 +1,182 @@
+<script>
+	var drag = false;
+	$(document).ready(function(){
+		$(function () {
+			$('.workorder').draggable({
+				appendTo: "body",
+				revert:true,
+				start: function( event, ui ) {
+					drag = true;
+				},
+				stop: function(event, ui) {
+					setTimeout(function(){ui.helper.unbind("click.prevent");}, 300);
+					drag = false;
+				}
+			});
+			$('.cols').droppable({
+				greedy: true,
+				accept: '.workorder',
+				hoverClass: "cal_droppable",
+				tolerance: 'pointer',
+				drop: function(event,ui){
+					var ifid = ui.draggable.attr("id");
+					var chukyid = ui.draggable.attr("chukyid");
+					var sdate = ui.draggable.attr("sdate");
+					var edate = ui.draggable.attr("edate");
+					var dvbt = ui.draggable.attr("dvbt");
+					var date = $(this).attr("date");
+					var dvbtid = $(this).attr("dvbtid");
+					if(date != sdate || dvbtid != dvbt){
+						//adjust workorder
+						var url = sz_BaseUrl + '/static/m188/adjust';
+						var data = {ifid:ifid,chukyid:chukyid,date:date,sdate:sdate,edate:edate,dvbtid:dvbtid};
+						qssAjax.call(url, data, function(jreturn) {
+							showToDay();
+						}, function(jreturn) {
+							qssAjax.alert(jreturn.message);
+						});
+					}
+				}
+
+			});
+		});
+
+	});
+</script>
+<div style="text-align: center;">
+	<div class="cal_content_title">
+		<p class="cal_content_title_arrow"><a href="#1" onclick="showWeek('<?php echo $this->prev[0]?>',<?php echo $this->prev[1]?>,<?php echo $this->prev[2]?>);"><img src="/images/calendar/left_arrow_32.png"/></a></p>
+		<p class="cal_content_title_info"><?php echo $this->startdate1->format('d-m-Y')?> - <?php echo Qss_Lib_Date::add_date($this->startdate1,6)->format('d-m-Y')?></p>
+		<p class="cal_content_title_arrow"><a href="#1" onclick="showWeek('<?php echo $this->next[0]?>',<?php echo $this->next[1]?>,<?php echo $this->next[2]?>);"><img src="/images/calendar/right_arrow_32.png"/></a></p>
+	</div><!-- end .cal_title -->
+</div>
+<div class="cal_content_grid cal_content_week">
+	<div class="rows ">
+		<?php for($i=0;$i<7;$i++):?>
+			<?php $date = Qss_Lib_Date::add_date($this->startdate1,$i);?>
+			<div class="cols cols_7 <?php if($i==5 || $i==6):?>cal_cols_holiday<?php endif;?>">
+				<?php echo Qss_Lib_Const::$TUAN[$i].' '.$date->format('d-m-Y');?>
+			</div><!-- end .cols -->
+		<?php endfor;?>
+	</div><!-- end .rows -->
+
+	<?php $row = 1;?>
+	<?php foreach ($this->data as $keyDonVi=>$value):?>
+
+
+		<?php if($keyDonVi):?>
+			<?php $row++;?>
+			<div class="rows_group">
+				<?php //if(isset($this->donvibaotri[$keyDonVi])):?>
+					<?php echo $this->donvibaotri[$keyDonVi]?>
+					<a href="#" onclick="showResource('<?php echo Qss_Lib_Date::mysqltodisplay($this->startdate)?>','<?php echo Qss_Lib_Date::mysqltodisplay($this->enddate)?>',<?php echo $keyDonVi?>)">
+						Xem nhân sự bảo trì
+					</a>
+				<?php //endif;?>
+				&nbsp;
+			</div>
+		<?php endif;?>
+
+		<?php // echo '<pre>'; print_r($value); die;?>
+		<?php foreach($value as $keyRow=>$v):?>
+			<?php $row += $keyRow?>
+
+			<div class="rows">
+				<?php foreach ($v as $keyCol=>$item):?>
+
+					<div class="event_parent">
+
+
+                        <?php if($item->colstart):?>
+                        	<?php
+                            $styleOfStep = 'bgskype';
+
+                            if($item->NgungHoatDong || $item->khuvuchoatdong)
+                            {
+                                $styleOfStep = 'bginactive';
+                            }
+                            if($item->PBT)
+                            {
+                            	$styleOfStep .= ' blue';
+                            }
+                            ?>
+                            <?php
+                            $title      = 'Thiết bị: '.htmlspecialchars($item->TenThietBi).' &#013;';
+
+                            if($item->BoPhan)
+                            {
+                                $title .= 'Bộ phận: '.htmlspecialchars($item->BoPhan).' &#013;';
+                            }
+
+                            $title     .= 'Khu vực: '.htmlspecialchars($item->MaKhuVuc).' &#013;';
+                            // $title     .= 'Chu kỳ: '.htmlspecialchars($item->ChuKy).' &#013;';
+                            // $title     .= htmlspecialchars($item->CongViec);
+                            $tieuDeThe  = "<span>";
+                            $tieuDeThe .= $item->MaThietBi?$item->TenThietBi:($item->MaKhuVuc?$item->MaKhuVuc:'');
+                            $tieuDeThe .= ($item->MaThietBi && $item->BoPhan)?' - '.$item->BoPhan:'';
+                            $tieuDeThe .= "</span>";
+                            $tieuDeThe .= "<span>";
+                            $tieuDeThe.= "{$item->MoTa}";
+                            $tieuDeThe .= "</span>";
+                            ?>
+
+                            <div style="margin-left:<?php echo (100/7)*($keyCol-1);?>%;
+                                width:<?php echo floor((100/7)*($item->colspan?$item->colspan:1));?>%;
+                                position: relative;"
+                                 title="<?php echo $title?>">
+                                <div class="event <?php echo $styleOfStep?> workorder"
+                                     sdate="<?php echo $item->StartDate?>"
+                                     edate="<?php echo $item->EndDate?>"
+                                     dvbt="<?php echo $item->Ref_DVBT?>"
+                                     id="<?php echo $item->IFID_M724?>"
+                                     chukyid="<?php echo $item->ChuKyIOID?>">
+                                     <div style="position: absolute; top:1px; left:0px;">
+                                     	<?php if($styleOfStep == 'bgskype'):?>
+                                            <input type="checkbox" class="cwpo_line_checkbok " onclick="common_check_table_line(this, '.cwpo_line_checkbok_val')" name="workorder[]" value="<?php echo $item->IFID_M724?>">
+                                            <input type="hidden" class="table_line_disabled cwpo_line_checkbok_val" name="CheckBox[]"  value="0">
+
+
+                                            <input class="table_line_disabled" type="hidden" value="<?php echo Qss_Lib_Date::mysqltodisplay($item->StartDate);?>" name="start[]" disabled>
+                                            <input class="table_line_disabled" type="hidden" value="<?php echo Qss_Lib_Date::mysqltodisplay($item->EndDate);?>" name="end[]" disabled>
+                                            <input class="table_line_disabled" type="hidden" value="<?php echo $item->IFID_M724;?>" name="ifid[]" disabled>
+                                            <input class="table_line_disabled" type="hidden" value="<?php echo $item->ChuKyIOID;?>" name="ref_chuky[]" disabled>
+                                            <input class="table_line_disabled" type="hidden" value="<?php echo $item->IFID_M724;?>_<?php echo $item->ChuKyIOID;?>" name="key[]" disabled>
+                                        <?php endif;?>
+                                    </div>
+                                    <div onclick="if(!drag){ popupWindowFormEdit('<?php echo $item->IFID_M724?>','<?php echo $item->DeptID?>',{},reloadCalendar);}" style="padding-left:18px;">
+                                        <?php echo $tieuDeThe;?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endif;?>
+					</div>
+					<!-- ket thuc su kien -->
+				<?php endforeach;?>
+
+				<?php for($i=0;$i<7;$i++):?>
+					<?php $date = Qss_Lib_Date::add_date($this->startdate1,$i);?>
+					<div class="cols cols_7 <?php if($i==5 || $i==6):?>cal_cols_holiday<?php endif;?>"
+						 date="<?php echo $date->format('Y-m-d');?>"
+					responseid="<?php echo @$key2?>"
+					dvbtid="<?php echo $keyDonVi?>">
+					&nbsp;
+					</div><!-- end .cols -->
+				<?php endfor;?>
+			</div>
+		<?php endforeach;?>
+	<?php endforeach;?>
+
+	<?php while($row < 30):?>
+		<div class="rows">
+			<?php for($i=0;$i<7;$i++):?>
+				<?php $date = Qss_Lib_Date::add_date($this->startdate1,$i);?>
+				<div class="cols cols_7 <?php if($i==5 || $i==6):?>cal_cols_holiday<?php endif;?>" date="<?php echo $date->format('Y-m-d');?>"
+					 responseid="<?php echo @$key2?>"
+					 dvbtid="<?php echo $keyDonVi?>">
+					&nbsp;
+				</div><!-- end .cols -->
+			<?php endfor;?>
+		</div>
+		<?php $row++;?>
+	<?php endwhile;?>
+</div><!-- end .cal_content_grid -->

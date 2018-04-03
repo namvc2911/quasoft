@@ -1,0 +1,94 @@
+<script>
+    $(document).ready(function(){
+        $('#start').change(function(){
+            m838.failure(<?php echo $this->ifid;?>, <?php echo $this->ioid;?>, $('#start').val(), $('#end').val());
+        });
+
+        $('#end').change(function(){
+            m838.failure(<?php echo $this->ifid;?>, <?php echo $this->ioid;?>, $('#start').val(), $('#end').val());
+        });
+    });
+</script>
+
+<form id="m838_failure_param">
+    <input type="hidden" name="GeneralPlanIOID" value="<?php echo $this->ioid;?>" />
+
+    <div>
+        Ngày bắt đầu: <?php echo $this->views->Report->Datepicker('start', $this->start);?>
+        Ngày kết thúc: <?php echo $this->views->Report->Datepicker('end', $this->end);?>
+    </div>
+    <br/>
+
+    <?php $i = 0;?>
+    <table class=" border_table" cellspacing="0" cellpadding="0" border="0">
+        <tr>
+            <th style="text-align: center;">
+                <input type="checkbox" onclick="common_check_all_table_line(this, '.cwpo_line_checkbok', '.cwpo_line_checkbok_val')"/>
+            </th>
+            <th style="width: 43%; text-align: center;">Thiết bị</th>
+            <th style="width: 10%; text-align: center;">Ngày</th>
+            <th style="width: 30%; text-align: center;">Số hoạt động</th>
+            <th style="width: 11%; text-align: center;">Tình trạng</th>
+        </tr>
+
+        <?php foreach($this->failure as $item):?>
+            <tr class="" <?php echo ($item->TinhTrang == 1 || $item->TinhTrang == 2)?'common_no_check="1"':'';?>>
+                <!-- Select line Checkbox -->
+                <td class="center">
+                    <input type="hidden" value="<?php echo (int)$item->Ref_MaThietBi;?>" name="Equip[]" class="table_line_disabled"  disabled>
+                    <input type="hidden" value="<?php echo (int)$item->Ref_BoPhan;?>" name="Component[]" class="table_line_disabled" disabled>
+                    <input type="hidden" value="<?php echo (int)$item->NhatTrinhIFID;?>" name="DailyIFID[]" class="table_line_disabled" disabled>
+                    <input type="hidden" value="<?php echo (int)$item->NhatTrinhIOID;?>" name="DailyIOID[]" class="table_line_disabled" disabled>
+                    <input type="checkbox" onclick="common_check_table_line(this, '.cwpo_line_checkbok_val')" class="cwpo_line_checkbok" >
+                    <input type="hidden" value="0" name="CheckBox[]" class="table_line_disabled cwpo_line_checkbok_val" disabled>
+                </td>
+
+                <!-- Thiet bi + Diem do -->
+                <td class="">
+                    <label>
+                        <?php echo $item->TenThietBi.' - '.$item->MaThietBi;?>
+                        <?php if($item->BoPhan):?> - <?php echo $item->BoPhan?><?php endif;?>
+                        (<?php echo $item->Ma?>)
+                    </label>
+                    <input type="hidden" name="diemdo[]" value="<?php echo $item->Ma;?>">
+                </td>
+
+                <!-- Ngay do -->
+                <td class="center">
+                    <?php echo Qss_Lib_Date::mysqltodisplay($item->Ngay);?>
+                </td>
+
+                <!-- Gia tri do duoc -->
+                <td>
+                    <input type="hidden" name="dinhluong[]" value="<?php echo @(int)$item->DinhLuong;?>" />
+                    <input type="hidden" value="<?php echo (double)$item->GioiHanDuoi;?>" class="min"  />
+                    <input type="hidden" value="<?php echo (double)$item->GioiHanTren;?>" class="max"  />
+
+                    <?php if($item->DinhLuong):?>
+                        <input type="text" name="val[]" value="<?php echo $item->SoGio;?>" class="m816_value m816_value_text" disabled size="12" />
+                        MIN: <?php echo (double)$item->GioiHanDuoi;?> - MAX: <?php echo (double)$item->GioiHanTren;?>
+                    <?php else:?>
+                        <input type="checkbox" value="1" id="radio_<?php echo $i;?>_true" class="radio_<?php echo $i;?>" disabled <?php echo ($item->Dat == 1)?'checked':'';?>/>
+                        <label for="">TRUE</label>
+
+                        <input type="checkbox" value="2" id="radio_<?php echo $i;?>_false" class="radio_<?php echo $i;?>" disabled <?php echo ($item->Dat == 2)?'checked':'';?>/>
+                        <label for="">FALSE</label>
+
+                        <input type="hidden" name="val[]" value="<?php echo (int)$item->Dat;?>" id="m816_checkbox_<?php echo $i++;?>" class="m816_value"   />
+                    <?php endif;?>
+                    (<?php echo $item->DonViTinh?>)
+                </td>
+
+                <!-- Tinh trang xu ly -->
+                <td class="center">
+                    <?php echo $this->rStatus[$item->TinhTrang];?>
+                </td>
+            </tr>
+        <?php endforeach;?>
+    </table>
+    <br/>
+
+    <div class="fr">
+        <button type="button" onclick="m838.createDetailFromFailure(<?php echo $this->ifid;?>)" class="btn btn-custom" > Tạo phiếu </button>
+    </div>
+</form>

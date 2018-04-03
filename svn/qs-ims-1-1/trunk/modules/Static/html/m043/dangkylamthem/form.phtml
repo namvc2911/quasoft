@@ -1,0 +1,198 @@
+<?php if($this->disabled):?>
+    <span class="red bold">Chưa gắn user vào danh sách nhân viên!</span>
+<?php else:?>
+    <script>
+        $(document).ready(function() {
+            $('.datepicker').each(function(){
+                $(this).datepicker({
+                    dateFormat: "dd-mm-yy" ,
+                    onClose: function(dateText, inst) {
+                        $(this).attr("readonly", false);
+                    },
+                    beforeShow: function(input, inst) {
+                        $(this).attr("readonly", true);
+                    }
+                });
+            });
+        });
+        var dialog_ODangKyLamThem = {
+        	rowObjectEditRefresh: function(){
+            	return;
+        	}
+        };
+    </script>
+
+    <form id="form_dangkylamthem" method="post" autocomplete="off">
+        <input type="hidden" name="fid" id="fid" value="M078">
+        <input type="hidden" name="ifid" id="ifid" value="0">
+        <input type="hidden" name="deptid" id="deptid" value="<?php echo $this->deptID?>">
+        <input type="hidden" name="uid" id="uid" value="<?php echo $this->user->user_id?>">
+
+        <div id="qss_form" style="">
+
+            <?php if($this->mobile):?>
+                <table cellpadding="0" cellspacing="0" border="0" class="">
+                    <?php foreach($this->fields as $field): ?>
+                        <?php if(
+                            $field->FieldCode == 'MaNhanVien'
+                            || $field->FieldCode == 'TenNhanVien'
+                            || $field->FieldCode == 'PhuongThucThanhToan'
+                            || $field->FieldCode == 'PhongBanHienTai'): // Các trường không in ra?>
+                            <?php continue;?>
+                        <?php endif;?>
+
+                        <?php if(
+                            $field->FieldCode == 'LoaiTangCa' ||
+                            $field->FieldCode == 'CaLamViec' ||
+                            $field->FieldCode == 'MaNhanVien' || 
+                            $field->FieldCode == 'TenNhanVien'): // Đoàn này là muốn lấy các trường hiển thị khác?>
+
+
+                            <?php if($field->FieldCode == 'LoaiTangCa'): // Đoạn này dành cho các field muốn hiển thị khác, không phải viết thừa ?>
+                                <tr class="m043_register_form_title">
+                                    <td  class="bold left" style="width: 180px;"><?php echo $field->szFieldName;?></td>
+                                </tr>
+
+                                <tr class="<?php echo $field->bRequired?'required':'';?>">
+                                    <td>
+                                        <?php
+                                        $id            = 'ODangKyLamThem_LoaiTangCa';
+                                        $getDataObject = array('OLoaiTangCa'=>array('MaLoaiTangCa', 'TenLoaiTangCa'));
+                                        //,'OKhuVuc'=>array('MaKhuVuc','Ten')
+                                        $getFields     = array('num'=>2,
+                                            'objects'=>array('OLoaiTangCa'=>array(
+                                                'id'=>'IOID'
+                                            ,'display1'=>'MaLoaiTangCa'
+                                            ,'display2'=>'TenLoaiTangCa'
+                                            )) );
+                                        ?> <?php echo $this->views->Report->ListBox($id, $getDataObject,$getFields);?>
+                                    </td>
+                                </tr>
+                            <?php endif;?>
+
+
+                            <?php if($field->FieldCode == 'CaLamViec'): // Đoạn này dành cho các field muốn hiển thị khác, không phải viết thừa ?>
+                                <tr class="m043_register_form_title">
+                                    <td  class="bold left" style="width: 180px;"><?php echo $field->szFieldName;?></td>
+                                </tr>
+
+                                <tr class="<?php echo $field->bRequired?'required':'';?>">
+                                    <td>
+                                        <?php
+                                        $id            = 'ODangKyLamThem_CaLamViec';
+                                        $getDataObject = array('OCa'=>array('MaCa', 'TenCa'));
+                                        //,'OKhuVuc'=>array('MaKhuVuc','Ten')
+                                        $getFields     = array('num'=>2,
+                                            'objects'=>array('OCa'=>array(
+                                                'id'=>'IOID'
+                                            ,'display1'=>'MaCa'
+                                            ,'display2'=>'TenCa'
+                                            )) );
+                                        ?> <?php echo $this->views->Report->ListBox($id, $getDataObject,$getFields);?>
+                                    </td>
+                                </tr>
+                            <?php endif;?>
+
+
+                            <?php if($field->FieldCode == 'MaNhanVien'): // Đoạn này dành cho các field muốn hiển thị khác, không phải viết thừa ?>
+                                <input type="hidden" name="ODangKyLamThem_MaNhanVien"
+                                       id="ODangKyLamThem_MaNhanVien" value="<?php echo @$this->empl->MaNhanVien;?>"/>
+                            <?php endif;?>
+
+                            <?php if($field->FieldCode == 'TenNhanVien'): // Đoạn này dành cho các field muốn hiển thị khác, không phải viết thừa ?>
+                                <input type="hidden" name="ODangKyLamThem_TenNhanVien"
+                                       id="ODangKyLamThem_TenNhanVien" value="<?php echo @$this->empl->TenNhanVien;?>"/>
+                            <?php endif;?>
+                        <?php else: ?>
+                            <tr class="m043_register_form_title">
+                                <td class="bold left"><?php echo $field->szFieldName;?></td>
+                            </tr>
+                            <tr class="<?php echo $field->bRequired?'required':'';?>">
+                                <td><?php echo $this->object->sz_fGetFormFieldElement($field->FieldCode,$this->user,true);?></td>
+                            </tr>
+                        <?php endif;?>
+                    <?php endforeach;?>
+                </table>
+            <?php else:?>
+                <table cellpadding="0" cellspacing="0" border="0" class="">
+                    <?php foreach($this->fields as $field): ?>
+                        <?php if($field->FieldCode == 'PhuongThucThanhToan'
+                            || $field->FieldCode == 'PhongBanHienTai'): // Các trường không in ra?>
+                            <?php continue;?>
+                        <?php endif;?>
+
+                        <?php if(
+                            $field->FieldCode == 'LoaiTangCa' ||
+                            $field->FieldCode == 'CaLamViec' ||
+                            $field->FieldCode == 'MaNhanVien' || 
+                            $field->FieldCode == 'TenNhanVien'): // Đoàn này là muốn lấy các trường hiển thị khác?>
+
+
+                            <?php if($field->FieldCode == 'LoaiTangCa'): // Đoạn này dành cho các field muốn hiển thị khác, không phải viết thừa ?>
+                                <tr class="<?php echo $field->bRequired?'required':'';?>">
+                                    <td  class="bold left" style="width: 180px;"><?php echo $field->szFieldName;?></td>
+                                    <td>
+                                        <?php
+                                        $id            = 'ODangKyLamThem_LoaiTangCa';
+                                        $getDataObject = array('OLoaiTangCa'=>array('MaLoaiTangCa', 'TenLoaiTangCa'));
+                                        //,'OKhuVuc'=>array('MaKhuVuc','Ten')
+                                        $getFields     = array('num'=>2,
+                                            'objects'=>array('OLoaiTangCa'=>array(
+                                                'id'=>'IOID'
+                                            ,'display1'=>'MaLoaiTangCa'
+                                            ,'display2'=>'TenLoaiTangCa'
+                                            )) );
+                                        ?> <?php echo $this->views->Report->ListBox($id, $getDataObject,$getFields);?>
+                                    </td>
+                                </tr>
+                            <?php endif;?>
+
+
+                            <?php if($field->FieldCode == 'CaLamViec'): // Đoạn này dành cho các field muốn hiển thị khác, không phải viết thừa ?>
+                                <tr class="<?php echo $field->bRequired?'required':'';?>">
+                                    <td  class="bold left" style="width: 180px;"><?php echo $field->szFieldName;?></td>
+                                    <td>
+                                        <?php
+                                        $id            = 'ODangKyLamThem_CaLamViec';
+                                        $getDataObject = array('OCa'=>array('MaCa', 'TenCa'));
+                                        //,'OKhuVuc'=>array('MaKhuVuc','Ten')
+                                        $getFields     = array('num'=>2,
+                                            'objects'=>array('OCa'=>array(
+                                                'id'=>'IOID'
+                                            ,'display1'=>'MaCa'
+                                            ,'display2'=>'TenCa'
+                                            )) );
+                                        ?> <?php echo $this->views->Report->ListBox($id, $getDataObject,$getFields);?>
+                                    </td>
+                                </tr>
+                            <?php endif;?>
+
+
+                            <?php if($field->FieldCode == 'MaNhanVien'): // Đoạn này dành cho các field muốn hiển thị khác, không phải viết thừa ?>
+                                <input type="hidden" name="ODangKyLamThem_MaNhanVien"
+                                       id="ODangKyLamThem_MaNhanVien" value="<?php echo @$this->empl->MaNhanVien;?>"/>
+                            <?php endif;?>
+
+                            <?php if($field->FieldCode == 'TenNhanVien'): // Đoạn này dành cho các field muốn hiển thị khác, không phải viết thừa ?>
+                                <input type="hidden" name="ODangKyLamThem_TenNhanVien"
+                                       id="ODangKyLamThem_TenNhanVien" value="<?php echo @$this->empl->TenNhanVien;?>"/>
+                            <?php endif;?>
+                        <?php else: ?>
+                            <tr class="<?php echo $field->bRequired?'required':'';?>">
+                                <td class="bold left"><?php echo $field->szFieldName;?></td>
+                                <td><?php echo $this->object->sz_fGetFormFieldElement($field->FieldCode,$this->user,true);?></td>
+                            </tr>
+                        <?php endif;?>
+                    <?php endforeach;?>
+                </table>
+            <?php endif;?>
+
+        </div>
+
+        <div class="clear">&nbsp;</div>
+
+        <div class="left">
+            <button type="button" class="btn btn-custom" onclick="Static_M043.registerOT()"> <?php echo $this->_translate(4);?> </button>
+        </div>
+    </form>
+<?php endif;?>

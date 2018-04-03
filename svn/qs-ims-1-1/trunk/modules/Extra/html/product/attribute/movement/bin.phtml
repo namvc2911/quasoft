@@ -1,0 +1,24 @@
+<?php if(count($this->zoneAndBin)):?>
+<?php if($this->zone == $this->fromZone):// Chuyển cùng zone loại bin chuyển đến?>
+<?php foreach ($this->zoneAndBin as $k=>$v):?>
+<?php if($this->fromBin != $k):// Loại bin chuyển đến?>
+<option value="<?php echo $k;?>">
+<?php echo $k?>
+</option>
+<?php endif;?>
+<?php endforeach;?>
+<?php else:// Chuyển khác zone in ra các bin?>
+<?php foreach ($this->zoneAndBin as $k=>$v):?>
+<option value="<?php echo $k;?>">
+<?php echo $k?>
+</option>
+<?php endforeach;?>
+<?php endif;?>
+
+<?php else:?>
+<?php if($this->zone):?>
+<option value="">Không có bin</option>
+<?php else:?>
+<option value="">Chọn</option>
+<?php endif;?>
+<?php endif;?>

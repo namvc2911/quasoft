@@ -1,0 +1,125 @@
+<script>
+$(function () {
+	var url = sz_BaseUrl + '/user/statistic/tag/form';
+    $('#form').tagSuggest({
+        url: url,
+        delay: 200,
+        separator : '*',
+        tagContainer: 'div',
+        callback: selecting
+    });
+});
+function selecting(workingTags,id)
+{
+	$('#form').val(workingTags);
+	$('#fid').val(id);
+	var url = sz_BaseUrl + '/user/event/object/load';
+	var data = {fid:id};
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#object').html(jreturn);
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+}
+</script>
+<style>
+.tag-select {
+	float: left;
+	padding: 2px 15px 2px 5px;
+	border: 1pt solid #fff;
+	position: relative
+}
+
+.tag-select:hover {
+	border: 1pt solid #ccc;
+	background: #f1f1f1
+}
+
+.tag-close {
+	display: none
+}
+
+.tag-select:hover .tag-close {
+	display: block;
+	background: url(/images/event/close.png) no-repeat 50% 50%;
+	width: 10px;
+	height: 10px;
+	cursor: pointer;
+	position: absolute;
+	top: 4px;
+	right: 0px
+}
+
+.members input {
+	border: none;
+	outline: none;
+	background-color: #FFF;
+	float: left
+}
+
+.members .member_outline {
+	border: 1pt solid #ccc;
+	width: 717px
+}
+
+.member_inside {
+	float: left;
+	display: inline;
+	position: relative
+}
+
+.tag-container {
+	position: absolute;
+	left: 0px;
+	top: 100%;
+	background: #fff;
+	border: 1pt solid #ccc;
+	max-height: 180px;
+	width: 300px;
+	z-index: 10000;
+	overflow: auto;
+}
+
+.tag-container li {
+	cursor: pointer;
+	white-space: nowrap;
+	padding: 1px 5px
+}
+
+.tag-container li:hover {
+	background: #ccc
+}
+
+.tag-selected {
+	background: #ccc !important
+}
+</style>
+<input type="hidden"
+	name="fid" id="fid" value="0">
+<table class="detail">
+	<tr>
+		<th width="100">Tên</th>
+		<td colspan="2"><?php echo $this->event->Title?>
+		</td>
+	</tr>
+	<tr>
+		<th>Chọn mô đun</th>
+		<td colspan="2">
+			<div class="member_inside">
+				<div>
+					<input type="text" name="form" id="form" style="width: 200px" />
+				</div>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<th>Chọn đối tượng</th>
+		<td><select name="object" id="object" style="width: 300px">
+		</select>
+		</td>
+		<td>
+			<button class="btn-custom" type="button"
+				onclick="importEvent(<?php echo $this->event->EventID?>)">Đồng ý</button>
+		</td>
+
+</table>

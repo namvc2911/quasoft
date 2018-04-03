@@ -1,0 +1,164 @@
+<?php
+    if(is_array($this->id))
+    {
+        $id   = $this->id['id'];
+        $size = (isset($this->id['size']) && $this->id['size'])?$this->id['size'].'px':'180px';
+        $size = (isset($this->id['sizePercent']) && $this->id['sizePercent'])?$this->id['sizePercent'].'%':$size;
+        $require = (isset($this->id['require']))?@(int)$this->id['require']:0;
+        $inline  = (isset($this->id['inline']) && $this->id['inline'])?'float:left;':'';
+        
+    }
+    else
+    {
+        $id   = $this->id;
+        $size = '180px;'; // free size
+        $require = 0;// not require
+        $inline = '';
+    }
+?>
+<div style="position: relative !important; <?php echo $inline;?>">
+<input type="text" name="<?php echo $id;?>_tag" 
+	   id="<?php echo $id;?>_tag" <?php if($size):?>style="width:<?php echo $size;?>"<?php endif;?> <?php if($this->selectedText) echo "value=\"{$this->selectedText}\""?> <?php echo $this->extend?$this->extend:'';?>>
+
+<?php if($require): ?><span class="red bold">(*)</span> <?php endif;?>
+<input type="hidden" name="<?php echo $id;?>" 
+        id="<?php echo $id;?>" <?php if($this->selectedValue) echo "value=\"{$this->selectedValue}\""?> <?php echo $this->extend?$this->extend:'';?>>
+</div>
+<script>
+$(function () {
+    reportListboxSelect_<?php echo $id;?>();
+    <?php foreach($this->getLookupFilter as $conf):?>
+
+    //var $hello= $('[#<?php //echo $conf['id']?>$=myValue_<?php //echo $conf['id']?>]');
+
+    $('#<?php echo $conf['id']?>').on("change", function(){ //bind() for older jquery version
+        $('.tag-container').css('display','none')
+        $('.tag-container').html('');
+        $('#<?php echo $id?>_tag').val('');
+        $('#<?php echo $id?>').val('');
+        reportListboxSelect_<?php echo $id;?>();
+    }).triggerHandler('change'); //could be change() or trigger('change')
+
+//    $('#<?php //echo $conf['id']?>//').change(function(){
+//		$('.tag-container').css('display','none')
+//        $('.tag-container').html('');
+//        $('#<?php //echo $id?>//_tag').val('');
+//        $('#<?php //echo $id?>//').val('');
+//        reportListboxSelect_<?php //echo $id;?>//();
+//     } );
+    <?php endforeach;?>
+});
+function reportListboxSelect_<?php echo $id;?>()
+{
+    var filterVal  =  $('#<?php echo $id;?>_tag').val(); // Gia tri nhap vao tu listbox
+
+
+
+    var data = {};
+    var listboxVal =  {};
+    var filterByLookupArr = {};
+    var getFields = {};
+    var excludeObj = {};
+    
+
+    // listboxVal['val'] set = tag
+    listboxVal['objects'] = {};
+    <?php foreach($this->getDataObject as $objKey=>$fields):?>
+    <?php $j = 0;?>
+    listboxVal['objects']['<?php echo $objKey?>'] = {};
+    <?php foreach($fields as $field):?>
+    listboxVal['objects']['<?php echo $objKey?>'][<?php echo $j;?>] = '<?php echo $field;?>';
+    <?php $j++;?>
+    <?php endforeach;?>
+    <?php endforeach;?>
+        
+        
+        
+        
+    <?php  $i = 0;?>
+ 
+    <?php foreach($this->getLookupFilter as $conf):?>
+    var filterLookupVal = $('#<?php echo $conf['id']?>').val();
+
+    filterLookupVal     = (!filterLookupVal || filterLookupVal == undefined)?'':filterLookupVal;
+    
+    filterByLookupArr[<?php echo $i;?>] = {};
+    filterByLookupArr[<?php echo $i;?>]['required'] = <?php echo $conf['required']?>;
+    filterByLookupArr[<?php echo $i;?>]['val']      = filterLookupVal;
+    
+    <?php foreach($conf['refField'] as $objKey=>$refField):?>
+    filterByLookupArr[<?php echo $i;?>]['objects'] = {};
+    filterByLookupArr[<?php echo $i;?>]['objects']['<?php echo $objKey;?>'] = '<?php echo $refField;?>';
+    <?php endforeach;?>
+    
+    <?php $i++;?>
+    <?php endforeach;?>
+        
+         
+        
+     
+     
+    getFields['num']     = <?php echo @(int)$this->getFields['num'];?>;
+    getFields['objects'] = {};
+    <?php  foreach($this->getFields['objects'] as $objectKey=>$field):?>
+    getFields['objects']['<?php echo $objectKey;?>'] = {};
+    getFields['objects']['<?php echo $objectKey;?>']['id'] = '<?php echo $field['id']?>';
+    
+    <?php if(isset($field['where'])):?>
+    getFields['objects']['<?php echo $objectKey;?>']['where'] = '<?php if(!is_array($field['where'])) {$field['where']= trim($field['where']);} echo serialize($field['where'])?>';
+    <?php endif;?>
+    
+    <?php if(isset($field['order'])):?>
+    getFields['objects']['<?php echo $objectKey;?>']['order'] = '<?php if(!is_array($field['order'])) {$field['order']= trim($field['order']);}echo serialize($field['order'])?>';
+    <?php endif;?>
+        
+    <?php if(isset($field['group'])):?>
+    getFields['objects']['<?php echo $objectKey;?>']['group'] = '<?php if(!is_array($field['group'])) {$field['group']= trim($field['group']);}echo serialize($field['group'])?>';
+    <?php endif;?>
+    
+    <?php if(isset($field['limit'])):?>
+    getFields['objects']['<?php echo $objectKey;?>']['limit'] = '<?php echo $field['limit']?>';
+    <?php endif;?>
+    
+    <?php for($i = 1;$i <= $this->getFields['num']; $i++):?>
+    <?php if(isset($field["display{$i}"]) && $field["display{$i}"]):?>
+    getFields['objects']['<?php echo $objectKey;?>']['display<?php echo $i;?>'] = '<?php echo $field["display{$i}"]?>';
+    <?php endif;?>
+    <?php endfor;?>    
+    <?php endforeach;?>
+        
+        
+        
+        
+    <?php foreach($this->excludeObject as $exclude):?>
+    excludeObj[] = '<?php echo $exclude?>';
+    <?php endforeach;?>
+    
+    
+    var data = {
+        listboxVal:listboxVal,
+        filterByLookupArr:filterByLookupArr,
+        getFields:getFields,
+        excludeObj:excludeObj
+    };
+
+    var url = sz_BaseUrl + '/user/report/listbox?'+decodeURIComponent($.param(data));
+    $('#<?php echo $id?>_tag').tagSuggest({
+        url: url,
+        delay: 300,
+        separator : '*',
+        tagContainer: 'div',
+        placeHolder: '<?php echo $this->placeHolder?>',
+        callback: function(workingTags,id){
+        	workingTags = workingTags.toString().replace(/&nbsp;/g,'');
+            $('#<?php echo $id?>_tag').val(workingTags);
+        	if(id)
+        		$('#<?php echo $id?>').val(id).triggerHandler('change');
+        	else
+        		$('#<?php echo $id?>').val('').triggerHandler('change');
+        }
+    });
+ }
+ 
+
+</script>

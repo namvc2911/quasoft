@@ -1,0 +1,89 @@
+<?php
+$width    = '800';
+$widths   = array(5, 2, 4);
+$fit      = Qss_Lib_Report::changeWidthToFitScreen2($widths, $width);
+$i        = 0;
+?>
+
+<script>
+    $(document).ready(function(){
+        $('#year').keypress(function(e){
+            if(e.keyCode == 13) {
+                m838.filter(parseInt($(this).val()));
+            }
+        });
+    });
+</script>
+
+<div class="clear"></div>
+
+<div id="horizontal-toolbar" class="clearfix">
+    <div class="full-width-line-wrap" id="filter">
+        <div class="bold">
+            <button type="button" class="btn btn-custom" onclick="popupFormInsert('M838', {}, function(){ m838_year = parseInt($('#year').val()); m838.filter(); })"> Tạo mới </button>
+        </div>
+    </div>
+</div>
+
+<div class="clear"></div>
+
+<div id="view">
+    <div id="qss_form">
+        <div class="tablescroll">
+            <div class="full-width-line-wrap">
+                <?php foreach($this->plans as $item):?>
+                    <div class="full-width-line <?php if($i%2==0):?>bgwhite<?php else:?>bglightblue<?php endif;?>">
+                        <?php $i++;?>
+                        <table cellspacing="0" cellpadding="0" border="0" style="width:<?php echo $width;?>px">
+                            <?php $begin = 0;?>
+                            <tr>
+                                <td class="left" style="width: <?php echo $fit[$begin++];?>px">
+                                    <div>
+                                    <span class="full-width-line-title">
+                                        <?php echo $i;?>. <?php echo $item->Ma;?> - <?php echo $item->Ten;?>
+                                    </span>
+
+                                    <span class="bold ">  (<?php echo $item->TongSoChiTiet?$item->TongSoChiTiet:0;?>)</span>
+
+
+
+                                    </div>
+
+                                    <div>
+                                        Từ <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayBatDau);?>
+                                        đến <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayKetThuc);?>
+                                    </div>
+
+                                    <div>
+                                        Người tạo: <?php echo $item->NguoiTao;?> -
+                                        Ngày tạo: <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayTao);?>
+                                    </div>
+
+                                    <div>
+                                        Người phê duyệt: <?php echo $item->NguoiPheDuyet;?> -
+                                        Ngày phê duyệt: <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayPheDuyet);?>
+                                    </div>
+                                </td>
+
+                                <td class="left" valign="middle" style="width: <?php echo $fit[$begin++];?>px">
+                                    <div>
+                                        <?php echo @$this->calType[$item->LoaiLich];?>
+                                    </div>
+                                </td>
+
+                                <td class="left" valign="middle" style="width: <?php echo $fit[$begin++];?>px">
+                                    <div>
+                                        <button type="button" class="btn btn-custom" onclick="m838.edit(<?php echo $item->IFID_M838;?>)"> Sửa </button>
+                                        <button type="button" class="btn btn-custom" onclick="m838.delete(<?php echo $item->IFID_M838;?>)"> Xoá toàn bộ </button>
+                                        <button type="button" class="btn btn-custom" onclick="m838.duplicate(<?php echo $item->IFID_M838;?>)"> Nhân đôi </button>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                <?php endforeach;?>
+            </div>
+        </div>
+    </div>
+</div>

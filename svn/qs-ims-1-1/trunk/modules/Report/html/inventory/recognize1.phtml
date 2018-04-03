@@ -1,0 +1,314 @@
+<?php
+$excel_col   = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg          = "#EEEEEE";
+$row         = 2;
+$totalColumn = 12;
+?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="landscape">
+	<excel orientation="landscape" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+
+	<div id="head_print">
+	<?php echo $this->views->Common->Landscape() ?>
+
+		<center>
+			<h2>
+				<xls row="<?php echo $row?>" column="A"
+					column-merge="<?php echo $excel_col[$totalColumn]?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(20)?>
+				</xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++ ?>
+
+
+	<div id="container">
+		<table cellspacing="0" cellpadding="0" border="1" id="" class="border">
+
+		<?php $begin = 0; ?>
+			<tr class="bggrey" row="<?php echo $row?>">
+				<th style="width: 10.2%;" rowspan="2"
+					class="report_title_marker remove_col <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>" id="<?php echo 'col'.$begin;?>"
+					markerid="<?php echo 'col'.$begin;?>">
+					<!-- Thiet Bi --> <xls row="<?php echo $row?>" row-merge="1"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1"> <?php echo $this->_translate(1);?></xls>
+				</th>
+
+				<th style="width: 10.2%;" rowspan="2"
+					class="report_title_marker remove_col <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>" id="<?php echo 'col'.$begin;?>"
+					markerid="<?php echo 'col'.$begin;?>">
+					<!-- Bo Phan--> <xls row="<?php echo $row?>" row-merge="1"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1"> <?php echo $this->_translate(2);?></xls>
+				</th>
+
+				<th style="width: 10.2%;" rowspan="2"
+					class="report_title_marker remove_col <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>" id="<?php echo 'col'.$begin;?>"
+					markerid="<?php echo 'col'.$begin;?>">
+					<!-- Ma --> <xls row="<?php echo $row?>" row-merge="1"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1"> <?php echo $this->_translate(10);?></xls>
+				</th>
+
+				<th style="width: 10.2%;" rowspan="2"
+					class="report_title_marker remove_col <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>" id="<?php echo 'col'.$begin;?>"
+					markerid="<?php echo 'col'.$begin;?>">
+					<!-- Ten --> <xls row="<?php echo $row?>" row-merge="1"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1"> <?php echo $this->_translate(11);?></xls>
+				</th>
+
+				<th style="width: 10.2%;" rowspan="2"
+					class="report_title_marker remove_col  <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>" id="<?php echo 'col'.$begin;?>"
+					markerid="<?php echo 'col'.$begin;?>">
+					<!-- DVT --> <xls row="<?php echo $row?>" row-merge="1"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1"> <?php echo $this->_translate(12);?></xls>
+				</th>
+
+				<?php $startRow2 = $begin;?>
+				<th style="width: 21%;" colspan="3"
+					class="report_title_marker remove_col <?php echo 'col'.$begin;?>"
+					colmerge="<?php echo ($begin + 2);?>" col="<?php echo $begin;?>"
+					id="<?php echo 'col'.$begin.($begin + 2);?>"
+					markerid="<?php echo 'col'.$begin.($begin + 2);?>">
+					<!-- Block Kho  --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>"
+						column-merge="<?php echo $excel_col[($begin + 2)]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1"> <?php echo $this->_translate(13);?></xls>
+				</th>
+				<?php $begin = $begin + 2;?>
+
+				<th style="width: 21%;" colspan="3"
+					class="report_title_marker remove_col <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>"
+					id="<?php echo 'col'.$begin.($begin + 2);?>"
+					markerid="<?php echo 'col'.$begin.($begin + 2);?>"
+					colmerge="<?php echo ($begin + 2);?>">
+					<!-- Block Phieu Bao Tri  --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>"
+						column-merge="<?php echo $excel_col[($begin + 2)]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1"> <?php echo $this->_translate(14);?></xls>
+				</th>
+				<?php $begin = $begin + 2;?>
+
+
+				<th style="width: 7%;" rowspan="2"
+					class="report_title_marker remove_col <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>" id="<?php echo 'col'.$begin;?>"
+					markerid="<?php echo 'col'.$begin;?>">
+					<!-- Chenh lech --> <xls row="<?php echo $row?>" row-merge="1"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1"> <?php echo $this->_translate(8);?></xls>
+				</th>
+
+			</tr>
+			<?php $row++?>
+
+
+			<?php $begin = $startRow2;?>
+			<tr class="bggrey" row="<?php echo $row?>">
+				<!-- Block Kho -->
+				<th style="width: 7%;"
+					class="report_title_marker remove_col <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>" id="<?php echo 'col'.$begin;?>"
+					markerid="<?php echo 'col'.$begin;?>">
+					<!-- Xuat Kho --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1"> <?php echo $this->_translate(3);?></xls>
+				</th>
+
+				<th style="width: 7%;"
+					class="report_title_marker remove_col <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>" id="<?php echo 'col'.$begin;?>"
+					markerid="<?php echo 'col'.$begin;?>">
+					<!-- Mat --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1"> <?php echo $this->_translate(9);?></xls>
+				</th>
+
+				<th style="width: 7%;"
+					class="report_title_marker remove_col <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>" id="<?php echo 'col'.$begin;?>"
+					markerid="<?php echo 'col'.$begin;?>">
+					<!-- Tra Lai --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1"> <?php echo $this->_translate(4);?></xls>
+				</th>
+
+				<!-- Block Phieu bao tri -->
+				<th style="width: 7%;"
+					class="report_title_marker remove_col <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>" id="<?php echo 'col'.$begin;?>"
+					markerid="<?php echo 'col'.$begin;?>">
+					<!-- Su Dung --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1"> <?php echo $this->_translate(5);?></xls>
+				</th>
+
+				<th style="width: 7%;"
+					class="report_title_marker remove_col <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>" id="<?php echo 'col'.$begin;?>"
+					markerid="<?php echo 'col'.$begin;?>">
+					<!-- Mat --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1"> <?php echo $this->_translate(6);?></xls>
+				</th>
+
+				<th style="width: 7%;"
+					class="report_title_marker remove_col <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>" id="<?php echo 'col'.$begin;?>"
+					markerid="<?php echo 'col'.$begin;?>">
+					<!-- Tra Lai --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" width="10"
+						wrap-text="1" h-align="center" v-align="center" border="1"
+						bold="1" repeat="1"> <?php echo $this->_translate(7);?></xls>
+				</th>
+			</tr>
+			<?php $row++?>
+
+
+			<?php $stt = 0;?>
+			<?php foreach (@(array)$this->report as $items): // in report?>
+
+			<tr>
+				<td colspan="<?php echo $totalColumn;?>"
+					class="report_title_marker_all">
+					<!-- Group Thiet Bi - Bo Phan --> <b> <xls row="<?php echo $row?>"
+							column="A" column-merge="<?php echo $excel_col[$totalColumn]?>"
+							wrap-text="1" h-align="center" v-align="center" bold="1"
+							repeat="1"> <?php echo $items['ECode']?> - <?php echo $items['Component']?>
+						</xls> </b>
+				</td>
+			</tr>
+			<?php $row++?>
+
+			<?php foreach($items['Item'] as $dat):?>
+			<?php $begin = 0; ?>
+			<tr>
+				<td class="center <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>">
+					<!-- Thiet Bi --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $items['ECode'];?></xls>
+				</td>
+
+
+				<td class="left <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>">
+					<!-- Bo Phan --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $items['Component']?></xls>
+				</td>
+
+				<td class="left <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>">
+					<!-- Ma --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $dat['Code']?></xls>
+				</td>
+
+				<td class="left <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>">
+					<!-- Ten --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $dat['Name']?></xls>
+				</td>
+
+
+				<td class="left <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>">
+					<!-- DVT --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $dat['UOM']?></xls>
+				</td>
+
+				<td class="right <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>">
+					<!-- Xuat kho --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo @(double)$dat['Out']?></xls>
+				</td>
+
+				<td class="right <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>">
+					<!-- Mat --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo @(double)$dat['InLost']?></xls>
+				</td>
+
+				<td class="right <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>">
+					<!-- Tra lai --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo @(double)$dat['In']?></xls>
+				</td>
+
+				<td class="right <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>">
+					<!-- Su dung --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo @(double)$dat['Use']?></xls>
+				</td>
+
+				<td class="right <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>">
+					<!-- Mat --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo @(double)$dat['Lost']?></xls>
+				</td>
+
+				<td class="right <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>">
+					<!-- Tra lai --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo @(double)$dat['Return']?></xls>
+				</td>
+
+
+				<?php
+				// @todo: Doan nay cong thuc co ve khong on can xem xet lai
+				$tempInLost = (@(double)$dat['InLost'] > 0)?$dat['InLost']:0;
+				$tempLost   = (@(double)$dat['Lost'] > 0)?@(double)$dat['Lost']:0;
+					
+				$difference = (@(double)$dat['Out'] - (@(double)$dat['In'] + @(double)$tempInLost))
+				- (@(double)$dat['Use'] - (@(double)$dat['Return'] + $tempLost));
+				?>
+				<td class="right <?php echo 'col'.$begin;?>"
+					col="<?php echo $begin;?>">
+					<!-- Chenh lech --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$begin]?>" wrap-text="1"
+						h-align="right" v-align="center" border="1"> <?php echo $difference?></xls>
+				</td>
+
+			</tr>
+			<?php $row++ ?>
+			<?php endforeach;// in vat tu phu tung?>
+			<?php endforeach;// in report?>
+		</table>
+	</div>
+</div>

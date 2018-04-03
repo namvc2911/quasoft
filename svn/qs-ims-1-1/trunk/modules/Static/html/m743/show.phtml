@@ -1,0 +1,499 @@
+<?php //$this->cause = Qss_Lib_Extra::returnObject($this->cause);?>
+<style>
+<!--
+.qss_block {
+	border: 1pt solid #c8c8c8;
+	margin-bottom: 10px;
+	line-height: 20px
+}
+
+.qss_block .topbox {
+	background: url("/images/bg_th.gif") repeat-x scroll 0 0;
+	font-weight: bold;
+	height: 24px;
+	padding-left: 20px;
+}
+
+table.datagrid {
+	border-color: #eee
+}
+
+table.datagrid tr td,table.datagrid tr th {
+	border-color: #ccc;
+	padding: 0 5px
+}
+
+.slidingDiv {
+	position: absolute;
+	background: #fff;
+	right: 0;
+	width: 250px;
+	border: 1pt solid #ccc;
+	z-index: 1000
+}
+
+.q_setting {
+	background: #f1f1f1;
+	font-weight: normal;
+}
+
+.q_setting .datagrid tr:hover {
+	background: #fff
+}
+
+.box_das2 {
+	float: left;
+	padding: 2px;
+}
+
+.box_das2 .inside_das2 {
+	width: 590px;
+	height: 300px;
+	border: 1pt solid #ccc; /*background:#fff*/
+}
+
+.box_das2 .name_box_das2 {
+	background: #fff;
+	padding: 2px 10px;
+	text-align: center;
+	font-weight: bold;
+	border: 1pt solid #ccc;
+	border-top: none;
+	position: relative
+}
+
+a.hide_box_das2 {
+	background: url('/images/event/close.png') no-repeat 0px 0px;
+	border: medium none;
+	display: block;
+	float: right;
+	height: 15px;
+	position: absolute;
+	right: 3px;
+	text-indent: 5000em;
+	top: 4px;
+	width: 15px;
+}
+-->
+</style>
+<script>
+$(document).ready(function() {
+	$('#chart7').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: 'Thời gian dừng máy theo nguyên nhân'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.y} h',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            name: 'Brands',
+            colorByPoint: true,
+            data: [
+                   <?php $begin = true;?>
+                   <?php foreach ($this->cause as $item):?>
+                    	<?php if(!$begin):?>,<?php endif;?>
+                    	{
+                       name:'<?php echo $item->Ten;?> <br/> (<?php echo (int)$item->total;?>)',
+                       y: <?php echo (float)$item->ThoiGianDungMay;?>
+                    	}
+                       <?php $begin = false;?>
+					<?php endforeach;?>
+                  ]
+        }]
+    });
+	$('#chart8').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: 'Thời gian sửa chữa theo nguyên nhân'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.y} h',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            name: 'Brands',
+            colorByPoint: true,
+            data: [
+                   <?php $begin = true;?>
+                   <?php foreach ($this->cause as $item):?>
+                    	<?php if(!$begin):?>,<?php endif;?>
+                    	{
+                       name:'<?php echo $item->Ten;?> <br/> (<?php echo (int)$item->total;?>)',
+                       y: <?php echo (float)$item->ThoiGianXuLy;?>
+                    	}
+                       <?php $begin = false;?>
+					<?php endforeach;?>
+                  ]
+        }]
+    });
+   <?php if(!$this->eqIOID)://in day chuyền?>
+	   $('#chart1').highcharts({
+	        chart: {
+	            plotBackgroundColor: null,
+	            plotBorderWidth: null,
+	            plotShadow: false,
+	            type: 'pie'
+	        },
+	        title: {
+	            text: 'Thời gian dừng máy theo dây chuyền'
+	        },
+	        tooltip: {
+	            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+	        },
+	        plotOptions: {
+	            pie: {
+	                allowPointSelect: true,
+	                cursor: 'pointer',
+	                dataLabels: {
+	                    enabled: true,
+	                    format: '<b>{point.name}</b>: {point.y} h',
+	                    style: {
+	                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+	                    }
+	                }
+	            }
+	        },
+	        series: [{
+	            name: 'Brands',
+	            colorByPoint: true,
+	            data: [
+	                   <?php $begin = true;?>
+	                   <?php foreach ($this->line as $item):?>
+	                    	<?php if(!$begin):?>,<?php endif;?>
+	                    	{
+	                       name:'<?php echo $item->TenDayChuyen;?> <br/> (<?php echo (int)$item->total;?>)',
+	                       y: <?php echo (float)$item->ThoiGianDungMay;?>
+	                    	}
+	                       <?php $begin = false;?>
+						<?php endforeach;?>
+	                  ]
+	        }]
+	    });
+		$('#chart2').highcharts({
+	        chart: {
+	            plotBackgroundColor: null,
+	            plotBorderWidth: null,
+	            plotShadow: false,
+	            type: 'pie'
+	        },
+	        title: {
+	            text: 'Thời gian sửa chữa theo dây chuyền'
+	        },
+	        tooltip: {
+	            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+	        },
+	        plotOptions: {
+	            pie: {
+	                allowPointSelect: true,
+	                cursor: 'pointer',
+	                dataLabels: {
+	                    enabled: true,
+	                    format: '<b>{point.name}</b>: {point.y} h',
+	                    style: {
+	                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+	                    }
+	                }
+	            }
+	        },
+	        series: [{
+	            name: 'Brands',
+	            colorByPoint: true,
+	            data: [
+	                   <?php $begin = true;?>
+	                   <?php foreach ($this->line as $item):?>
+	                    	<?php if(!$begin):?>,<?php endif;?>
+	                    	{
+	                       name:'<?php echo $item->TenDayChuyen;?> (<?php echo (int)$item->total;?>)',
+	                       y: <?php echo (float)$item->ThoiGianXuLy;?>
+	                    	}
+	                       <?php $begin = false;?>
+						<?php endforeach;?>
+	                  ]
+	        }]
+	    });
+   <?php endif;?>
+   <?php if(!$this->eqTypeIOID)://in loại thiết bị?>
+	   $('#chart3').highcharts({
+	        chart: {
+	            plotBackgroundColor: null,
+	            plotBorderWidth: null,
+	            plotShadow: false,
+	            type: 'pie'
+	        },
+	        title: {
+	            text: 'Thời gian dừng máy theo loại thiết bị'
+	        },
+	        tooltip: {
+	            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+	        },
+	        plotOptions: {
+	            pie: {
+	                allowPointSelect: true,
+	                cursor: 'pointer',
+	                dataLabels: {
+	                    enabled: true,
+	                    format: '<b>{point.name}</b>: {point.y} h',
+	                    style: {
+	                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+	                    }
+	                }
+	            }
+	        },
+	        series: [{
+	            name: 'Brands',
+	            colorByPoint: true,
+	            data: [
+	                   <?php $begin = true;?>
+	                   <?php foreach ($this->type as $item):?>
+	                    	<?php if(!$begin):?>,<?php endif;?>
+	                    	{
+	                       name:'<?php echo $item->TenLoai;?> <br/> (<?php echo (int)$item->total;?>)',
+	                       y: <?php echo (float)$item->ThoiGianDungMay;?>
+	                    	}
+	                       <?php $begin = false;?>
+						<?php endforeach;?>
+	                  ]
+	        }]
+	    });
+		$('#chart4').highcharts({
+	        chart: {
+	            plotBackgroundColor: null,
+	            plotBorderWidth: null,
+	            plotShadow: false,
+	            type: 'pie'
+	        },
+	        title: {
+	            text: 'Thời gian sửa chữa theo loại thiết bị'
+	        },
+	        tooltip: {
+	            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+	        },
+	        plotOptions: {
+	            pie: {
+	                allowPointSelect: true,
+	                cursor: 'pointer',
+	                dataLabels: {
+	                    enabled: true,
+	                    format: '<b>{point.name}</b>: {point.y} h',
+	                    style: {
+	                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+	                    }
+	                }
+	            }
+	        },
+	        series: [{
+	            name: 'Brands',
+	            colorByPoint: true,
+	            data: [
+	                   <?php $begin = true;?>
+	                   <?php foreach ($this->type as $item):?>
+	                    	<?php if(!$begin):?>,<?php endif;?>
+	                    	{
+	                       name:'<?php echo $item->TenLoai;?> (<?php echo (int)$item->total;?>)',
+	                       y: <?php echo (float)$item->ThoiGianXuLy;?>
+	                    	}
+	                       <?php $begin = false;?>
+						<?php endforeach;?>
+	                  ]
+	        }]
+	    });
+   <?php endif;?>
+   <?php if(!$this->eqIOID && $this->eqTypeIOID)://in thiết bị?>
+	   $('#chart5').highcharts({
+	        chart: {
+	            plotBackgroundColor: null,
+	            plotBorderWidth: null,
+	            plotShadow: false,
+	            type: 'pie'
+	        },
+	        title: {
+	            text: 'Thời gian dừng máy theo thiết bị'
+	        },
+	        tooltip: {
+	            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+	        },
+	        plotOptions: {
+	            pie: {
+	                allowPointSelect: true,
+	                cursor: 'pointer',
+	                dataLabels: {
+	                    enabled: true,
+	                    format: '<b>{point.name}</b>: {point.y} h',
+	                    style: {
+	                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+	                    }
+	                }
+	            }
+	        },
+	        series: [{
+	            name: 'Brands',
+	            colorByPoint: true,
+	            data: [
+	                   <?php $begin = true;?>
+	                   <?php foreach ($this->equipment as $item):?>
+	                    	<?php if(!$begin):?>,<?php endif;?>
+	                    	{
+	                       name:'<?php echo $item->MaThietBi;?>-<?php echo $item->TenThietBi;?> <br/> (<?php echo (int)$item->total;?>)',
+	                       y: <?php echo (float)$item->ThoiGianDungMay;?>
+	                    	}
+	                       <?php $begin = false;?>
+						<?php endforeach;?>
+	                  ]
+	        }]
+	    });
+		$('#chart6').highcharts({
+	        chart: {
+	            plotBackgroundColor: null,
+	            plotBorderWidth: null,
+	            plotShadow: false,
+	            type: 'pie'
+	        },
+	        title: {
+	            text: 'Thời gian sửa chữa theo thiết bị'
+	        },
+	        tooltip: {
+	            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+	        },
+	        plotOptions: {
+	            pie: {
+	                allowPointSelect: true,
+	                cursor: 'pointer',
+	                dataLabels: {
+	                    enabled: true,
+	                    format: '<b>{point.name}</b>: {point.y} h',
+	                    style: {
+	                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+	                    }
+	                }
+	            }
+	        },
+	        series: [{
+	            name: 'Brands',
+	            colorByPoint: true,
+	            data: [
+	                   <?php $begin = true;?>
+	                   <?php foreach ($this->equipment as $item):?>
+	                    	<?php if(!$begin):?>,<?php endif;?>
+	                    	{
+	                       name:'<?php echo $item->MaThietBi;?>-<?php echo $item->TenThietBi;?> <br/> (<?php echo (int)$item->total;?>)',
+	                       y: <?php echo (float)$item->ThoiGianXuLy;?>
+	                    	}
+	                       <?php $begin = false;?>
+						<?php endforeach;?>
+	                  ]
+	        }]
+	    });
+   <?php endif;?>
+});
+</script>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div id="report_2">
+	<div class="box_das2">
+		<div class="inside_das2" id="chart7">
+		
+	
+		</div>
+	</div>
+</div>
+<div id="report_2">
+	<div class="box_das2">
+		<div class="inside_das2" id="chart8">
+		
+	
+		</div>
+	</div>
+</div>
+
+<?php if(!$this->eqIOID)://in day chuyền?>
+<div id="report_2">
+	<div class="box_das2">
+		<div class="inside_das2" id="chart1">
+		
+	
+		</div>
+	</div>
+</div>
+<div id="report_2">
+	<div class="box_das2">
+		<div class="inside_das2" id="chart2">
+		
+	
+		</div>
+	</div>
+</div>
+<?php endif;?>
+<?php if(!$this->eqTypeIOID)://in loại thiết bị?>
+<div id="report_2">
+	<div class="box_das2">
+		<div class="inside_das2" id="chart3">
+		
+	
+		</div>
+	</div>
+</div>
+<div id="report_2">
+	<div class="box_das2">
+		<div class="inside_das2" id="chart4">
+		
+	
+		</div>
+	</div>
+</div>
+<?php endif;?>
+
+<?php if(!$this->eqIOID && $this->eqTypeIOID)://in thiết bị?>
+<div id="report_2">
+	<div class="box_das2">
+		<div class="inside_das2" id="chart5">
+		
+	
+		</div>
+	</div>
+</div>
+<div id="report_2">
+	<div class="box_das2">
+		<div class="inside_das2" id="chart6">
+		
+	
+		</div>
+	</div>
+</div>
+<?php endif;?>

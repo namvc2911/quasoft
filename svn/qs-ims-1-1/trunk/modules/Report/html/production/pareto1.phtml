@@ -1,0 +1,164 @@
+<?php
+$xAxisOfType  = '';
+$columnOfType = '';
+$totalOfType  = 0;
+$increase     = 0;
+$typeArr      = array();
+$lineOfType   = '';
+
+$xAxisOfReason  = '';
+$columnOfReason = '';
+$totalOfReason  = 0;
+$increaseReason = 0;
+$reasonArr      = array();
+$lineOfReason   = '';
+
+foreach ($this->type as $type)
+{
+	$totalOfType              += $type->SoLuong;
+	$typeArr[$type->Ref_MaLoi] = $type->SoLuong;
+}
+
+foreach ($this->typeLabel as $label)
+{
+	$xAxisOfType .= ($xAxisOfType != '')?',':'';
+	$xAxisOfType .= "'{$label->MaLoi}'";
+	$value        = isset($typeArr[$label->IOID])? ($typeArr[$label->IOID]/$totalOfType) * 100:0;
+	$increase    += $value;
+	$columnOfType.= ($columnOfType != '')?',':'';
+	$columnOfType.= $value;
+	$lineOfType  .= ($lineOfType != '')?',':'';
+	$lineOfType  .= $increase;
+}
+
+foreach ($this->reason as $reason)
+{
+	$totalOfReason += $reason->SoLuong;
+	$reasonArr[$reason->Ref_NguyenNhan] = $reason->SoLuong;
+}
+
+foreach ($this->reasonLabel as $label)
+{
+	$xAxisOfReason  .= ($xAxisOfReason != '')?',':'';
+	$xAxisOfReason  .= "'{$label->MaNguyenNhan}'";
+	$value           = isset($reasonArr[$label->IOID])? ($reasonArr[$label->IOID]/$totalOfReason) * 100:0;
+	$increaseReason += $value;
+	$columnOfReason .= ($columnOfReason != '')?',':'';
+	$columnOfReason .= $value;
+	$lineOfReason     .= ($lineOfReason != '')?',':'';
+	$lineOfReason   .= $increaseReason;
+}
+
+?>
+<script>
+$(document).ready(function() {
+	var chart;
+	chart = new Highcharts.Chart({
+        chart: {
+        	renderTo: 'container1',
+	         plotBackgroundColor: null,
+	         plotBorderWidth: null,
+	         plotShadow: false
+        },
+        title: {
+            text: '<?php echo "{$this->_translate(1)} ({$this->_translate(2)} {$this->start} {$this->_translate(3)} {$this->end})"?>'
+        },
+        yAxis: {
+            title: {
+                text: '<?php echo $this->_translate(4);?>' // Tran man-day
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        xAxis: {
+            categories: [<?php echo $xAxisOfType;?>]
+        },
+        tooltip: {
+            formatter: function() {
+                var s;
+                    s = ''+this.x  +': '+ this.y;
+                return s;
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        series: [{
+            type: 'column',
+            name: '',
+            data: [<?php echo $columnOfType;?>]
+        }, {
+            type: 'spline',
+            name: 'Average',
+            data: [<?php echo $lineOfType?>],
+            marker: {
+            	lineWidth: 2,
+            	lineColor: Highcharts.getOptions().colors[3],
+            	fillColor: 'white'
+            }
+        }]
+    });
+    
+	var chart2;
+	chart2 = new Highcharts.Chart({
+        chart: {
+        	renderTo: 'container2',
+	         plotBackgroundColor: null,
+	         plotBorderWidth: null,
+	         plotShadow: false
+        },
+        title: {
+            text: '<?php echo "{$this->_translate(5)} ({$this->_translate(6)} {$this->start} {$this->_translate(7)} {$this->end})"?>'
+        },
+        xAxis: {
+            categories: [<?php echo $xAxisOfReason;?>]
+        },
+        yAxis: {
+            title: {
+                text: '<?php echo $this->_translate(8);?>' // Tran man-day
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        legend: {
+            enabled: false
+        },
+        tooltip: {
+            formatter: function() {
+                var s;
+                    s = ''+ this.x  +': '+ this.y;
+                return s;
+            }
+        },
+        series: [{
+            type: 'column',
+            name: '',
+            data: [<?php echo $columnOfReason;?>]
+        }, {
+            type: 'spline',
+            name: 'Average',
+            data: [<?php echo $lineOfReason?>],
+            marker: {
+            	lineWidth: 2,
+            	lineColor: Highcharts.getOptions().colors[3],
+            	fillColor: 'white'
+            }
+        }]
+    });
+});
+</script>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<br />
+<div
+	id="container1" style="width: 95%; height: 400px; margin: 0 auto"></div>
+<br />
+<div
+	id="container2" style="width: 95%; height: 400px; margin: 0 auto"></div>

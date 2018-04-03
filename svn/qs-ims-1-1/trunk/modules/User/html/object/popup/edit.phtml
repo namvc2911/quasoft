@@ -1,0 +1,267 @@
+<script type="text/javascript">
+var dialog_<?php echo $this->object->ObjectCode?> = {
+	objectSave: function objectSave(ifid, deptid, ioid, objid, back) {
+		var ele = $('.popup-edit').find('#object_' + objid + '_edit').closest('.popup-edit');
+		ioid = ioid ? ioid : $('.popup-edit').find('#ioid').val();
+		var url = sz_BaseUrl + '/user/object/save?ifid=' + ifid + '&deptid='
+				+ deptid + '&ioid=' + ioid + '&objid=' + objid;
+		var data = $('.popup-edit').find('#object_' + objid + '_edit').serialize();
+		$('.popup-edit').find('#object_' + objid + '_edit').find('input[type=checkbox]').each(function(){
+			if(!$(this).is(':checked')){
+				data += '&' + $(this).attr('name') +'=';
+			}
+		});
+		qssAjax.call(url, data, function(jreturn) {
+			$(ele).data('saved',true);
+			$(ele).data('ioid',jreturn.status);
+			if(jreturn.message != ''){
+				qssAjax.alert(jreturn.message,function(){
+					oedit = false;
+					$('#btnCUSTOMSAVE').prop('disabled',true);
+					$('#btnCUSTOMSAVEBACK').prop('disabled',true);
+					if(back){
+						$(ele).dialog('close'); // close dialog insert
+					}
+					
+					if(!ioid || ioid == 0){
+						$('.popup-edit').find('#object_' + objid + '_edit').find('#ioid').val(jreturn.status);
+						$('.extra-button-record').removeClass('extra-disabled');
+						$('.custom-button-field').prop('disabled',false);
+					}
+					if(bLS){
+						var lastActiveModule = $.cookie('lastActiveModule');
+						localStorage.removeItem(lastActiveModule);
+					}
+				});
+			}
+			else{
+				oedit = false;
+				$('#btnCUSTOMSAVE').prop('disabled',true);
+				$('#btnCUSTOMSAVEBACK').prop('disabled',true);
+				if(back){
+					 $(ele).dialog('close'); // close dialog insert
+				}
+				if(!ioid || ioid == 0){
+					$('.popup-edit').find('#object_' + objid + '_edit').find('#ioid').val(jreturn.status);
+					$('.extra-button-record').removeClass('extra-disabled');
+					$('.custom-button-field').prop('disabled',false);
+				}
+				if(bLS){
+					var lastActiveModule = $.cookie('lastActiveModule');
+					localStorage.removeItem(lastActiveModule);
+				}
+			}
+		}, function(jreturn) {
+			qssAjax.alert(jreturn.message);
+		});
+	},
+
+	rowObjectEditRefresh: function(input,refresh) {
+		if($(input).val()=='null'){
+			var selected = $(input).find(':selected');
+			org_fieldid = $(selected).attr('org_fieldid');
+			org_objid = $(selected).attr('org_objid');
+			fid = $(selected).attr('fid');
+			objid = $(selected).attr('objid');
+			fielid = $(selected).attr('fielid');
+			ifid = $(selected).attr('ifid');
+			json = $(selected).attr('json');
+			createNew(org_objid,org_fieldid,fid,objid,fielid,ifid,json);
+			$(input).val('');
+			return false;
+		}
+		if(refresh == 1){
+			var ifid = $('.popup-edit').find('#ifid').val();
+			var deptid = $('.popup-edit').find('#deptid').val();
+			var ioid = $('.popup-edit').find('#ioid').val();
+			var objid = $('.popup-edit').find('#objid').val();
+			var url = sz_BaseUrl + '/user/object/refresh?ifid=' + ifid + '&deptid='
+					+ deptid + '&ioid=' + ioid + '&objid=' + objid;
+			var data = $('.popup-edit').find('#object_' + objid + '_edit').serialize();
+			$('.popup-edit').find('#object_' + objid + '_edit').find('input[type=checkbox]').each(function(){
+				if(!$(this).is(':checked')){
+					data += '&' + $(this).attr('name') +'=';
+				}
+			});
+			qssAjax.getHtml(url, data, function(jreturn) {
+				if(jreturn != ''){
+					$('.popup-edit').find('#qss_object_popup').html(jreturn);
+					$(input).focus();
+					var val = $(input).val();
+					$(input).val('');
+					$(input).val(val);
+				}
+			}, function(jreturn) {
+				qssAjax.alert(jreturn.message);
+			});
+		}
+	},
+	
+	onObjectKeyupRefresh: function() {
+		clearInterval(timer);
+		timer = setTimeout(function() { //then give it a second to see if the user is finished
+			var ifid = $('.popup-edit').find('#ifid').val();
+			var deptid = $('.popup-edit').find('#deptid').val();
+			var ioid = $('.popup-edit').find('#ioid').val();
+			var objid = $('.popup-edit').find('#objid').val();
+			var url = sz_BaseUrl + '/user/object/refresh?ifid=' + ifid + '&deptid='
+					+ deptid + '&ioid=' + ioid + '&objid=' + objid;
+			var data = $('.popup-edit').find('#object_' + objid + '_edit').serialize();
+			$('.popup-edit').find('#object_' + objid + '_edit').find('input[type=checkbox]').each(function(){
+				if(!$(this).is(':checked')){
+					data += '&' + $(this).attr('name') +'=';
+				}
+			});
+			qssAjax.getHtml(url, data, function(jreturn) {
+				if(jreturn != ''){
+					$('.popup-edit').find('#qss_object_popup').html(jreturn);
+				}
+			}, function(jreturn) {
+				qssAjax.alert(jreturn.message);
+			});
+	    }, 2000);
+	},
+	uploadPicture: function(field) {
+		/* Upload file by ajax */
+		disabledLayout();
+		$.ajaxFileUpload({
+			url : sz_BaseUrl + '/user/field/uploadpicture',
+			secureuri : false,
+			fileElementId : $('#' + field + '_picture'),
+			dataType : 'json',
+			success : function(data, status) {
+				/* Upload file successfully */
+				if (data.error) {
+					qssAjax.alert(data.message);
+					disabledLayout();
+				} else {
+					$('#' + field).val(data.image);
+					$('#' + field).parent().find('img').attr('src','/user/field/picture?file='+data.image);
+					enabledLayout();
+				}
+			},
+			error : function(data, status, e) {
+				/* If upload error */
+				qssAjax.alert(e);
+			}
+		});
+	},
+	objectDelete: function(ifid,deptid,objid){
+		var ele = $('.popup-edit').find('#object_' + objid + '_edit').closest('.popup-edit');
+		qssAjax.confirm(Language.translate('CONFIRM_DELETE'),function(){
+			var ioid = [];
+			ioid[0] = $('.popup-edit').find('#object_' + objid + '_edit').find('#ioid').val();
+			var url = sz_BaseUrl + '/user/object/delete';
+			var data = {
+				ifid : ifid,
+				deptid : deptid,
+				ioid : ioid,
+				objid : objid
+			};
+			qssAjax.call(url, data, function(jreturn) {
+				oedit = false;
+				$(ele).data('saved',true);
+				$(ele).dialog('close');
+			}, function(jreturn) {
+				qssAjax.alert(jreturn.message);
+			});
+		});
+	}
+};	 
+$(document).ready(function() {
+	$('.datepicker').each(function() {
+		$(this).datepicker({dateFormat: "dd-mm-yy"});
+		$(this).attr('placeholder', 'dd-mm-yyyy');
+	});/* Datepicker*/
+	if (<?php echo $this->object->i_IOID ?> == 0) {
+	   	if (bLS) {
+	    	var data = localStorage.getItem('<?php echo $this->object->FormCode ?>');
+	    	if (data != null) {
+	     		data = JSON.parse(data);
+	     		$.each(data, function() {
+	      			$('#' + this.name).val(this.value);
+	      		});
+	    	}
+		}
+	}
+	if('<?php echo $this->mobile?>' == ''){
+		$('input.integer').number( true, 0 );
+		$('input.decimal').each(function(){
+			var decimals		= (typeof $(this).attr('precision') !== 'undefined' ) ? $(this).attr('precision') : 2;
+			$(this).number( true, decimals);
+		});
+		$('input.money').each(function(){
+			var thousands_sep	= (typeof $(this).attr('thousandssep') !== 'undefined') ? $(this).attr('thousandssep') : thousands_sep;
+			var dec_point		= (typeof $(this).attr('decpoint') !== 'undefined') ? $(this).attr('decpoint') : dec_point;
+			var decimals		= (typeof $(this).attr('precision') !== 'undefined' ) ? $(this).attr('precision') : decimals;
+			$(this).number( true, decimals,dec_point,thousands_sep);
+		});
+	}
+	<?php $fields = $this->object->loadFields()?>
+	<?php foreach ($fields as $field):?>
+		<?php if( (($field->bGrid & 4) && !$this->mobile) || (($field->bGrid & 8) && $this->mobile)) :?>
+			$('.<?php echo $field->ObjectCode?>_<?php echo $field->FieldCode?>').hide();
+		<?php endif;?>
+	<?php endforeach;?>
+	$('fieldset').each(function(){
+		if($(this).find('.ui_box_line:visible').length == 0){
+			$(this).hide();
+		}
+	});
+	//onchange set fedit = true;
+	$('#object_<?php echo $this->object->ObjectCode?>_edit').on('keyup change',function(){
+		oedit = true;
+		$('#btnCUSTOMSAVE').prop('disabled',false);
+		$('#btnCUSTOMSAVEBACK').prop('disabled',false);		
+	});
+});
+</script>
+<div class="clear"></div>
+<div id="view">
+	<form id="object_<?php echo $this->object->ObjectCode ?>_edit" method="post" autocomplete="off">
+		<input type="hidden" name="ifid" id="ifid" value="<?php echo $this->object->i_IFID ?>"> 
+		<input type="hidden" name="deptid" id="deptid" value="<?php echo $this->object->intDepartmentID ?>"> 
+		<input type="hidden" name="ioid" id="ioid" value="<?php echo $this->object->i_IOID ?>"> 
+		<input type="hidden" name="objid" id="objid" value="<?php echo $this->object->ObjectCode ?>">
+		<div>
+			<button
+				onclick="dialog_<?php echo $this->object->ObjectCode?>.objectSave('<?php
+						echo $this->object->i_IFID?>','<?php
+						echo $this->object->intDepartmentID?>',<?php
+						echo $this->object->i_IOID?>,'<?php
+						echo $this->object->ObjectCode?>');"
+				type="button" class="btn-custom" id="btnCUSTOMSAVE">
+				<?php echo $this->_translate(1);//Lưu lại?>
+			</button>
+
+			<button
+				onclick="dialog_<?php echo $this->object->ObjectCode?>.objectSave('<?php
+						echo $this->object->i_IFID?>','<?php
+						echo $this->object->intDepartmentID?>',<?php
+						echo $this->object->i_IOID?>,'<?php
+						echo $this->object->ObjectCode?>',1);"
+				type="button" class="btn-custom" id="btnCUSTOMSAVEBACK">
+				<?php echo $this->_translate(2);// Lưu lại & Đóng?>
+			</button>
+			
+			<button <?php if(!$this->object->i_IOID || !($this->object->intRights & 8)):?>disabled<?php endif;?>
+				onclick="dialog_<?php echo $this->object->ObjectCode?>.objectDelete('<?php
+						echo $this->object->i_IFID?>','<?php
+						echo $this->object->intDepartmentID?>','<?php
+						echo $this->object->ObjectCode?>',1);"
+				type="button" class="btn-custom custom-button-field">
+				<?php echo $this->_translate(4);// Lưu lại & Đóng?>
+			</button>
+
+			<button
+				onclick="$('.popup-edit').find('#object_<?php echo $this->object->ObjectCode?>_edit').closest('.popup-edit').dialog('close');"
+				type="button" class="btn-custom">
+				<?php echo $this->_translate(3); // Đóng?>
+			</button>
+		</div>
+		<div id="qss_object_popup">
+		<?php echo $this->objectedit; ?>
+		</div>
+	</form>
+	<div style="float:left;" id="mobile-fix-object">&nbsp;</div>
+</div>

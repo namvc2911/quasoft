@@ -1,0 +1,284 @@
+<?php if(count($this->report)):?>
+<?php 
+	$val = $this->report[0];
+	$sanLuongLyThuyet = ($val->SanLuongLyThuyet != 0)?($val->SanLuongThucTe/$val->SanLuongLyThuyet):0;
+	$availability = number_format(($val->SoHoatDongKeHoach?($val->SoHoatDongThucTe/$val->SoHoatDongKeHoach):0)*100,2);
+	$performance  = number_format($sanLuongLyThuyet*100,2);
+	$tongsanluong = $val->SanLuongThucTe+$val->SoLuongLoi;
+	$quality      = number_format(($tongsanluong?($val->SanLuongThucTe/$tongsanluong):0)*100,2);
+	$oeef         = number_format(($availability/100 * $performance/100 * $quality/100)*100,2);
+?>
+<script type="text/javascript">
+<!--
+$(document).ready(function() {
+
+	// chart 1
+	var column = new Highcharts.Chart({
+        chart: {
+        	renderTo: 'column',
+            type: 'column',
+            height:'300'
+        },
+        title: {
+            text: '<?php echo $this->_translate(20)?>'
+        },
+        xAxis: {
+            categories: [
+             	'<?php echo $this->_translate(7)?>',
+             	'<?php echo $this->_translate(16)?>',
+             	'<?php echo $this->_translate(17)?>',
+             	'<?php echo $this->_translate(18)?>'
+            ]
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: '<?php echo $this->_translate(22)?>'
+            }
+        },
+        tooltip: {
+	         formatter: function() {
+		            return '<b>'+ this.x +'</b>: '+ this.y+'%';
+		         }
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        legend: {
+        	enabled: false
+        },
+        series: [{
+            name: '',
+            data: [
+					{y:<?php echo $availability;?>, color:'yellow'},
+					{y:<?php echo $performance;?>, color:'blue'},
+					{y:<?php echo $quality;?>, color:'red'},
+					{y:<?php echo $oeef;?>, color:'green'}
+                  ]
+        }]
+    });
+
+	// chart 2
+	var pie = new Highcharts.Chart({
+        chart: {
+        	renderTo: 'pie',
+        	height:'300',
+	         plotBackgroundColor: null,
+	         plotBorderWidth: null,
+	         plotShadow: false
+        },
+        title: {
+            text: '<?php echo $this->_translate(21)?>'
+        },
+        tooltip: {
+	         formatter: function() {
+		            return '<b>'+ this.point.name +'</b>: '+ this.y+' <?php echo $this->_translate(2)?>';
+		         }
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    color: '#000000',
+                    connectorColor: '#000000',
+		               formatter: function() {
+			                  return '<b>'+ this.point.name +'</b> ';
+			               }
+                }
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: '',
+            data: [
+                {
+                    name:'<?php echo $this->_translate(14)?>' ,  
+                    y:<?php echo number_format($val->SoHoatDongChoSanPhamLoi,2,".","");?>,
+                    color:'red'
+                },
+                {
+                    name: '<?php echo $this->_translate(25)?>',
+                    color:'grey',
+                    y: <?php echo number_format($val->SoHoatDongThucTe - $val->SoHoatDongYeuCauChoSanLuongThucTe,2,".","");?>
+                    /*,
+                    sliced: true,
+                    selected: true*/
+                },
+                {
+                    name: '<?php echo $this->_translate(4)?>',
+                    color:'yellow',
+                    y: <?php echo number_format($val->ThoiGianDungMay,2,".","");?>,
+                    sliced: true,
+                    selected: true
+                },
+                {
+                    name: '<?php echo $this->_translate(19)?>',  
+                    y: <?php echo number_format($val->SoHoatDongYeuCauChoSanLuongThucTe - $val->SoHoatDongChoSanPhamLoi,2,".","");?>,
+                    color:'green'
+        		}
+            ]
+        }]
+    });
+});    
+//-->
+</script>
+<br />
+<div id="oee_analysis">
+	<div style="float: left; width: 40%;">
+		<table class="" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<th width="50%" class="bggrey left">
+					<!-- Tổng thời gian làm việc --> <?php echo $this->_translate(1)?>
+					=</th>
+				<td width="40%" class="left"><?php echo number_format($val->SoHoatDongThucTe, 2,".","");?>
+					<!-- Giờ --> <?php echo $this->_translate(2)?></td>
+				<td width="10%" class="left"></td>
+			</tr>
+
+			<?php /*
+			<tr>
+			<th width="50%" class="bggrey left"> <!-- Kế hoạch dừng máy --> <?php echo $this->_translate(23)?> =</th>
+			<td width="40%" class="left"><?php echo number_format($retval['KeHoachDungMay'], 2);?> <!-- Giờ --> <?php echo $this->_translate(2)?></td>
+			<td width="10%" class="left"></td>
+			</tr>
+			*
+			*/?>
+
+			<tr>
+				<td colspan="3">&nbsp;</td>
+			</tr>
+
+			<tr>
+				<th class="bggrey left">
+					<!-- Thời gian sản xuất kế hoạch--> <?php echo $this->_translate(3)?>
+					=</th>
+				<td class="left"><?php echo number_format($val->SoHoatDongKeHoach,2);?>
+					<!-- Giờ --> <?php echo $this->_translate(2)?></td>
+			</tr>
+
+			<tr>
+				<th class="bggrey left red">
+					<!-- Thời gian dừng máy--> <?php echo $this->_translate(4)?> =</th>
+				<td class="left red"><?php echo number_format($val->ThoiGianDungMay,2);?>
+					<!-- Giờ --> <?php echo $this->_translate(2)?></td>
+			</tr>
+
+			<tr>
+				<th class="bggrey left red">
+					<!-- Số lần dừng máy--> <?php echo $this->_translate(5)?> =</th>
+				<td class="left red"><?php echo $val->SoLanDungMay;?></td>
+			</tr>
+
+			<tr>
+				<th class="bggrey left">
+					<!-- Thời gian hoạt động--> <?php echo $this->_translate(6)?> =</th>
+				<td class="left"><?php echo number_format($val->SoHoatDongThucTe,2);?>
+					<!-- Giờ --> <?php echo $this->_translate(2)?></td>
+			</tr>
+
+			<tr>
+				<th class="bggrey left blue">
+					<!--Khả năng đáp ứng--> <?php echo $this->_translate(7)?> =</th>
+				<td class="left blue"><?php echo $availability;?>
+				<?php echo $this->_translate(8)?> <!-- % --></td>
+			</tr>
+
+			<tr>
+				<td colspan="3">&nbsp;</td>
+			</tr>
+
+			<tr>
+				<th class="bggrey left">
+					<!--Sản lượng lý thuyết--> <?php echo $this->_translate(9)?> =</th>
+				<td class="left"><?php echo number_format($val->SanLuongLyThuyet,2);?>
+					<!-- Đơn vị --> <?php echo $this->_translate(10)?></td>
+			</tr>
+
+			<tr>
+				<th class="bggrey left">
+					<!--Sản lượng kế hoạch--> <?php echo $this->_translate(11)?> =</th>
+				<td class="left"><?php echo number_format($val->SanLuongKeHoach,2);?>
+					<!-- Đơn vị --> <?php echo $this->_translate(10)?></td>
+			</tr>
+
+			<tr>
+				<th class="bggrey left">
+					<!--Sản lượng thực tế--> <?php echo $this->_translate(12)?> =</th>
+				<td class="left"><?php echo number_format($val->SanLuongThucTe,2);?>
+					<!-- Đơn vị --> <?php echo $this->_translate(10)?></td>
+			</tr>
+
+			<tr>
+				<th class="bggrey left blue">
+					<!-- Hiệu suất sản lượng--> <?php echo $this->_translate(16)?> =</th>
+				<td class="left blue"><?php echo $performance;?>
+				<?php echo $this->_translate(8)?> <!-- % --></td>
+			</tr>
+
+			<tr>
+				<td colspan="3">&nbsp;</td>
+			</tr>
+
+			<tr>
+				<th class="bggrey left red">
+					<!--Sản phẩm lỗi--> <?php echo $this->_translate(13)?> =</th>
+				<td class="left red"><?php echo number_format($val->SoLuongLoi,2);?>
+					<!-- Đơn vị --> <?php echo $this->_translate(10)?></td>
+			</tr>
+
+			<tr>
+				<th class="bggrey left red">
+					<!-- Thời gian mất cho sản phẩm lỗi--> <?php echo $this->_translate(14)?>
+					=</th>
+				<td class="left red"><?php echo number_format($val->SoHoatDongChoSanPhamLoi,2);?>
+					<!-- Giờ --> <?php echo $this->_translate(2)?></td>
+			</tr>
+
+			<tr>
+				<th class="bggrey left">
+					<!-- Số giờ yêu cầu--> <?php echo $this->_translate(15)?> =</th>
+				<td class="left"><?php echo number_format($val->SoHoatDongYeuCauChoSanLuongThucTe,2);?>
+					<!-- Giờ --> <?php echo $this->_translate(2)?></td>
+			</tr>
+
+			<tr>
+				<th class="bggrey left blue">
+					<!-- Chất lượng--> <?php echo $this->_translate(17)?> =</th>
+				<td class="left blue"><?php echo $quality;?>
+				<?php echo $this->_translate(8)?> <!-- % --></td>
+			</tr>
+
+			<tr>
+				<td colspan="3">&nbsp;</td>
+			</tr>
+			<tr>
+				<th class="bggrey left">
+					<!-- Effective productive time--> <?php echo $this->_translate(24)?>
+					=</th>
+				<td class="left"><?php echo number_format($val->SoHoatDongYeuCauChoSanLuongThucTe - $val->SoHoatDongChoSanPhamLoi,2);?>
+					<!-- Giờ --> <?php echo $this->_translate(2)?></td>
+			</tr>
+			<tr>
+				<th class="bggrey left blue">
+					<!-- HieuSuatDayChuyen--> <?php echo $this->_translate(18)?> =</th>
+				<td class="left blue"><?php echo $oeef;?>
+				<?php echo $this->_translate(8)?> <!-- % --></td>
+			</tr>
+
+		</table>
+	</div>
+	<div style="float: left; width: 58%;">
+		<div id="column"></div>
+		<br />
+		<div id="pie"></div>
+	</div>
+</div>
+<!-- #oee_analysis -->
+<?php else:?>
+	DATA NOT FOUND!
+<?php endif;?>

@@ -1,0 +1,150 @@
+<form id="qss_form" method="post">
+	<div id="horizontal-toolbar" class="horizontal-toolbar">
+		<button id="btnSAVE" type="button" class="btn btn_main_top"
+			onclick="groupSave(<?php echo $this->group->intGroupID?>)">
+			<?php echo $this->_translate(34)?>
+		</button>
+		<button type="button" class="btn btn_main_top"
+			onclick="groupBack()">
+			<?php echo $this->_translate(32)?>
+		</button>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<table class="detail">
+			<tr>
+				<th width="200"><?php echo $this->_translate(44,'Tên')?>
+				</th>
+				<td><input value="<?php echo $this->group->szGroupName?>"
+					style="width: 400px;" name="szName" />
+				</td>
+			</tr>
+			<tr>
+				<th width="200"><?php echo $this->_translate(64,'Mô tả')?>
+				</th>
+				<td><textarea name="szDesc" cols="74" rows="3" id="szDesc">
+				<?php echo $this->group->szDescription?>
+					</textarea>
+				</td>
+			</tr>
+			<tr>
+				<th width="200" valign="top"><?php echo $this->_translate(55)?>
+				</th>
+				<td>
+				<div style="height:500px; width:600px; overflow: scroll; border: 1px solid #ccc;">
+					<table>
+						<tr>
+							<td width="60%"><?php echo $this->_translate(65,'Tên mô đun')?>
+							</td>
+							<td width="10%" align="center"><?php echo $this->_translate(12,'Thêm')?>
+							</td>
+							<td width="10%" align="center"><?php echo $this->_translate(13,'Sửa')?>
+							</td>
+							<td width="10%" align="center"><?php echo $this->_translate(17,'Đọc')?>
+							</td>
+							<td width="10%" align="center"><?php echo $this->_translate(14,'Xóa')?>
+							</td>
+						</tr>
+						<?php $menu=''?>
+						<?php foreach($this->module as $data):?>
+						<?php if($menu !== $data->MenuName):?>
+						<tr><td colspan="6" class="bold"><?php echo $data->MenuName?> (<?php echo $data->Parent?>)</td></tr>
+						<?php endif;?>
+						<tr onDblClick="groupCheckAll('<?php echo $data->FormCode?>');" style="color: <?php echo ($data->actived?($data->Type==3?'green':($data->Type==4?'orange':'black')):($data->Type==4?'orange':'red'));?>">
+							<td>&nbsp;&nbsp;&nbsp;<?php echo $data->FormCode?>: <?php echo $data->name?>
+							</td>
+							<td align="center"><input type="checkbox"
+							<?php if(1&$data->rights) echo 'checked';?>
+								name="C_<?php echo $data->FormCode?>" id="C_<?php echo $data->FormCode?>">
+							</td>
+							<td align="center"><input type="checkbox"
+							<?php if(2&$data->rights) echo 'checked';?>
+								name="R_<?php echo $data->FormCode?>" id="R_<?php echo $data->FormCode?>">
+							</td>
+							<td align="center"><input type="checkbox"
+							<?php if(4&$data->rights) echo 'checked';?>
+								name="U_<?php echo $data->FormCode?>" id="U_<?php echo $data->FormCode?>">
+							</td>
+							<td align="center"><input type="checkbox"
+							<?php if(8&$data->rights) echo 'checked';?>
+								name="D_<?php echo $data->FormCode?>" id="D_<?php echo $data->FormCode?>">
+							</td>
+						</tr>
+						<?php $menu = $data->MenuName?>
+						<?php endforeach;?>
+					</table>
+				</div>
+				</td>
+			</tr>
+			
+			<tr>
+				<th width="200" valign="top"><?php echo $this->_translate(1)?>
+				</th>
+				<td>
+				<div style="height:500px; width:800px; overflow: scroll; border: 1px solid #ccc;">
+					<table>
+						<tr>
+							<td width="40%"><?php echo $this->_translate(65,'Tên mô đun')?>
+							</td>
+							<td width="10%" align="center"><?php echo $this->_translate(12,'Thêm')?>
+							</td>
+							<td width="10%" align="center"><?php echo $this->_translate(13,'Sửa')?>
+							</td>
+							<td width="10%" align="center"><?php echo $this->_translate(17,'Đọc')?>
+							</td>
+							<td width="10%" align="center"><?php echo $this->_translate(14,'Xóa')?>
+							</td>
+							<td width="10%" align="center">Chuyển tới bước này
+							</td>
+							<td width="10%" align="center">Chuyển về bước này
+							</td>
+						</tr>
+						<?php $name = ''?>
+						<?php foreach($this->moduleStep as $data):?>
+						<?php if($name !== $data->FormCode):?>
+						<tr><td colspan="6" class="bold"><?php echo $data->FormCode?> - <?php echo $data->Name?></td></tr>
+						<?php endif;?>
+						<tr onDblClick="stepCheckAll(<?php echo $data->SID?>);">
+							<td>&nbsp;&nbsp;&nbsp;<?php echo $data->StepName?>
+							</td>
+							<td align="center"><input type="checkbox" <?php if($data->StepNo != 1):?>disabled<?php endif;?>
+							<?php if(1&$data->Rights) echo 'checked';?>
+								name="C_Step_<?php echo $data->SID?>" id="C_Step_<?php echo $data->SID?>">
+							</td>
+							<td align="center"><input type="checkbox"
+							<?php if(2&$data->Rights) echo 'checked';?>
+								name="R_Step_<?php echo $data->SID?>" id="R_Step_<?php echo $data->SID?>">
+							</td>
+							<td align="center"><input type="checkbox"
+							<?php if(4&$data->Rights) echo 'checked';?>
+								name="U_Step_<?php echo $data->SID?>" id="U_Step_<?php echo $data->SID?>">
+							</td>
+							<td align="center"><input type="checkbox"
+							<?php if(8&$data->Rights) echo 'checked';?>
+								name="D_Step_<?php echo $data->SID?>" id="D_Step_<?php echo $data->SID?>">
+							</td>
+							<td align="center"><input type="checkbox"
+							<?php if(16&$data->Rights) echo 'checked';?>
+								name="S_Step_<?php echo $data->SID?>" id="S_Step_<?php echo $data->SID?>">
+							</td>
+							<td align="center"><input type="checkbox"
+							<?php if(32&$data->Rights) echo 'checked';?>
+								name="B_Step_<?php echo $data->SID?>" id="B_Step_<?php echo $data->SID?>">
+							</td>
+						</tr>
+						<?php $name = $data->FormCode?>
+						<?php endforeach;?>
+					</table>
+				</div>
+				</td>
+			</tr>
+			
+			<?php foreach ($this->users as $item):?>
+			<tr>
+				<td colspan="2"><?php echo $item->UserName?> (<?php echo $item->UserID?>)
+				</td>
+			</tr>
+			<?php endforeach;?>
+		</table>
+	</div>
+</form>

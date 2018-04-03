@@ -1,0 +1,18 @@
+<?php echo $this->views->Report->DialBox(array('ID'=>'create_requisition_search_dialbox', 'Size'=>7),$this->data);?>
+
+<div class="clearfix">
+	<div class="fl">
+		<button type="button" class="btn-custom"
+			onclick="create_requisition_result()">
+			<?php echo $this->_translate(1);//Tìm?>
+		</button>
+	</div>
+
+
+	<div class="fr">
+		<button type="button" class="btn-custom" id="create_requisition_savex"
+			onclick="create_requisition_save()">
+			<?php echo $this->_translate(2);//Lưu lại?>
+		</button>
+	</div>
+</div>

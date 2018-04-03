@@ -1,0 +1,232 @@
+<style>
+
+.grid .editor
+{
+border-color: blue;
+width: auto;
+margin:0px !important;
+}
+.grid .lookup
+{
+border-color: blue;
+width: auto;
+margin:0px !important;
+}
+.grid .combo
+{
+border-color: blue;
+width: auto;
+margin:0px !important;
+}
+.grid .date
+{
+border-color: blue;
+position: absolute;
+width: auto;
+margin:0px !important;
+}
+.grid div
+{
+border-color: blue;
+}
+.select-grid
+{
+position:absolute;
+left:0px;
+height:20px;
+width: 20px;
+background-color: green;
+}
+.select-grid span
+{
+float: right;
+height:20px;
+width: 20px;
+cursor: pointer;
+}
+</style>
+<script type="text/javascript">
+$(document).ready(function() {
+	rowCLK(document.getElementById($.cookie('object_selected')));
+	var height = $(window).height() - 180 - $('#grid thead').height();//-8
+	$('#grid').tableScroll({height:height,width:'100%'});
+	$('#grid').click(function(event){
+		//grid_editing = true;
+	    //event.stopPropagation();
+	});
+});
+edit = false;
+var combo = {};
+</script>
+<?php $cfield = new Qss_Model_CField();?>
+<?php $i = ($this->currentpage - 1) * $this->limit + 1;?>
+<?php $j=1;?>
+<?php foreach ($this->objects as $object):?>
+	<div class="mobile-box-data-line <?php echo $i%2==0?'bglightblue':'';?>"
+		onclick="rowEdit(<?php echo $object->IOID?>, <?php echo $this->form->i_IFID;?>, <?php echo $this->form->i_DepartmentID;?>, '<?php echo $this->object->ObjectCode?>');">
+	<?php
+		$rowclass = '';
+		$rowstyleclass = "Qss_Bin_Style_{$this->o_Object->ObjectCode}";
+		if(class_exists($rowstyleclass))
+		{
+			$rowstyle = new $rowstyleclass($object);
+			$rowclass = $rowstyle->__doExecute();
+		}
+	?>
+	<?php
+		$fields = $this->o_Object->loadFields();
+		$this->o_Object->i_IOID = $object->IOID;
+		$this->o_Object->i_IFID = $object->IFID;
+		?>
+	<?php $rowno = $i?>
+	<?php if($this->o_Object->b_Tree && $object->level > 1):?>
+		<?php $rowno = ''?>
+	<?php endif;?>
+
+		<?php $first = true;?>
+		<?php foreach ($fields as $field):?>
+		<?php if ( $field->bGrid & 2):?>
+		<?php $jsonData = $field->getJsonRegx();?>
+			<?php $jsonCellData = $field->getJsonCell();?>
+			<?php
+				$rowclass = '';
+				if($this->orderField == $field->FieldCode && is_array($jsonRowData))
+				{
+					$rowclass = isset($jsonRowData[$object->{$field->FieldCode}])?$jsonRowData[$object->{$field->FieldCode}]:'';
+				}
+			?>
+		<?php
+		$display = '';
+		switch ( $field->intFieldType )
+		{
+            case 4:
+                if($object->{$field->FieldCode}) {
+                    $display = date('H:i', strtotime($object->{$field->FieldCode}));
+                }
+                break;
+
+			case 17:
+				$custom = "Qss_Bin_Display_{$field->ObjectCode}_{$field->FieldCode}";
+				if(class_exists($custom))
+				{
+					$customobject = new $custom($object);
+					$display = $customobject->__doExecute();
+				}
+				else
+				{
+					$custom = 'Qss_Bin_Calculate_'.$field->ObjectCode.'_'.$field->FieldCode;
+					if(class_exists($custom))
+					{
+						$customobject = new $custom($this->o_Object);
+						$display = $customobject->__doExecute();
+					}
+				}
+				$object->{$field->FieldCode} = $display;
+				break;
+			case 9:
+				$display = Qss_Lib_Template::Image($object->{$field->FieldCode},$field->intFieldWidth);
+				break;
+			case 8:
+				$display = Qss_Lib_Template::FileDown($object->{$field->FieldCode},$field);
+				break;
+
+			case 7:
+				$display = Qss_Lib_Template::CheckBox($object->{$field->FieldCode}, $object->{$field->FieldCode}, "", true);
+			break;
+
+			case 10:
+				$display = Qss_Lib_Date::mysqltodisplay($object->{$field->FieldCode});
+				break;
+			case 11:
+				$cfield = new Qss_Model_CField();
+				$cur = $object->{"Ref_".$field->FieldCode};
+				if(!$cur)
+				{
+					$cur = $cfield->getPrimary()->Code;
+				}
+				$currency = $cfield->getDataByCode($cur);
+				if ( $currency)
+				{
+					$display = is_numeric($object->{$field->FieldCode})?number_format($object->{$field->FieldCode} / 1000, (int)$currency->Precision, $currency->DecPoint, $currency->ThousandsSep):$object->{$field->FieldCode};
+					$display .= $currency->Symbol;
+				}
+				break;
+			case 13:
+				$display = Qss_Lib_Template::getBarCode($object->{$field->FieldCode},$field->szTValue,$field->szFValue);
+				break;
+			default:
+				if($field->intFieldType != 7 || $field->intInputType == 5 || $field->intInputType == 3 )
+				{
+					if($jsonData)
+					{
+						$display = isset($jsonData[$object->{$field->FieldCode}])?$jsonData[$object->{$field->FieldCode}]:'';
+					}
+					else
+					{
+						$display = Qss_Lib_Util::textToHtml($object->{$field->FieldCode});
+					}
+				}
+				break;
+		}
+
+		$currency = $cfield->getDataByCode($this->szValue);
+		if ( $currency)
+		{
+			$ret = is_numeric($this->dMoney)?number_format($this->dMoney/1000, (int)$currency->Precision, $currency->DecPoint, $currency->ThousandsSep):$this->dMoney;
+		}
+		$colclass = '';
+		$colstyleclass = "Qss_Bin_Style_{$field->ObjectCode}_{$field->FieldCode}";
+		if(class_exists($colstyleclass))
+		{
+			$colstyle = new $colstyleclass($object);
+			$colclass = $colstyle->__doExecute();
+		}
+		elseif(is_array($jsonCellData) && count($jsonCellData) && isset($jsonCellData[$object->{$field->FieldCode}]))
+		{
+			$colclass = $jsonCellData[$object->{$field->FieldCode}];
+		}
+		?>
+		<?php if($first):?>
+			<div style="width:65%">
+				<?php if($this->o_Object->b_Tree):?><span class="tree_level_<?php echo $object->level?> <?php if($object->close):?>tree_close<?php elseif($object->rgt-$object->lft > 1):?>tree_open<?php else:?>tree_last<?php endif;?>"></span><?php endif;?>
+				<span class="title"><?php echo $field->szFieldName?>: <?php echo $display?></span>
+			</div>
+		<?php else:?>
+			<div>
+                <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
+                    <tr>
+                        <td style="width: 100px;">
+                            <?php echo $field->szFieldName?>:
+                        </td>
+                        <td>
+                            <?php echo $display?>
+                        </td>
+                    </tr>
+				</table>
+			</div>
+		<?php endif;?>
+		
+		<?php endif;?>
+		<?php $first = false;?>
+		<?php endforeach;?>
+		<div style="position: absolute; top:2px; right: 2px;">
+                <span class="bold">#<?php echo $i;?></span>
+        	</div>
+	<?php //if(!$this->o_Object->b_Tree || $object->level == 1):?>
+		<?php $i++;?>
+	<?php //endif;?>
+	<?php $j++;?>
+	</div>
+<?php endforeach;?>
+<?php if(!count($this->objects)):?>
+	<div class="mobile-box-data-line">
+		No records found!
+	</div>
+<?php endif;?>
+<script>
+function rowEdit(ioid, ifid, deptid, objid){
+	popupObjectEdit(ifid, deptid, objid,ioid, {}, function(){
+		rowObject(objid);
+	});
+}
+</script>

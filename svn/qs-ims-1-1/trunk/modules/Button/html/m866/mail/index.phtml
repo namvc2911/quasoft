@@ -1,0 +1,135 @@
+<script src="/js/common.js"></script>
+<script>
+
+
+    var m866_mail = {
+        filterCustomer : function () {
+            var url  = '/button/m866/mail/customer';
+            var data = $('#m866_mail_form').serialize();
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#KhachHang_Table').html(jreturn);
+            });
+        },
+
+        save : function () {
+            var url  = '/button/m866/mail/send';
+            var data = $('#m866_mail_form').serialize();
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != '') {
+                    qssAjax.alert(jreturn.message);
+                }
+
+                rowObjectSearch('<?php echo $this->ifid;?>','1','OLogMailQuanLyThayDoi');
+                $('#qss_trace').dialog('close');
+
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+        }
+    };
+
+    $(document).ready(function () {
+        m866_mail.filterCustomer();
+    });
+</script>
+
+<div class="popup_wrap">
+    <div class="popup_header">
+        <form id="m866_mail_form" action="" method="post">
+            <input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" />
+
+            <div class="">
+                <div class="ui_box_s50_left">
+                    <input type="checkbox" name="ChuaPhanLoai" id="ChuaPhanLoai1" value="1" onclick="m866_mail.filterCustomer()">
+                    <label for="ChuaPhanLoai1">Chưa phân loại</label>
+                    <input type="checkbox" name="KhachHang" id="KhachHang1" value="1" onclick="m866_mail.filterCustomer()" checked>
+                    <label for="KhachHang1">Khách hàng</label>
+                    <input type="checkbox" name="NhaCungCap" id="NhaCungCap1" value="1" onclick="m866_mail.filterCustomer()">
+                    <label for="NhaCungCap1">Nhà cung cấp</label>
+                    <input type="checkbox" name="Lead" id="Lead1" value="1" onclick="m866_mail.filterCustomer()">
+                    <label for="Lead1">Lead</label>
+                </div>
+
+                <div class="ui_box_s50_right">
+                    <input type="text" name="extendEmail" placeholder="Email gửi thêm cách nhau bằng dấu phẩy." style="width: 375px;">
+                </div>
+            </div>
+
+            <div class="ui_box">
+                <div class="ui_box_s50_left">
+                    <fieldset>
+                        <legend>
+                            Khách hàng
+                        </legend>
+
+                        <div style="height: 200px; overflow: auto;" id="KhachHang_Table">
+                            <table class="border_table">
+                                <tr class="bggrey">
+                                    <th class="center" style="width: 10%">
+                                        <input type="checkbox" onclick="common_check_all_table_line(this, '.cwpo_line_checkbok', '.cwpo_line_checkbok_val')"/>
+                                    </th>
+                                    <th  style="width: 55%" class="">  </th>
+                                    <th  style="width: 10%" class="center"> Khách hàng </th>
+                                    <th  style="width: 10%" class="center"> Nhà cung cấp </th>
+                                    <th  style="width: 10%" class="center"> Lead </th>
+                                </tr>
+                            </table>
+                        </div>
+                    </fieldset>
+
+                    <div class="">
+                        <input type="checkbox" id="reSendForCustomer" name="reSendForCustomer" value="1"> <label class="" for="reSendForCustomer">Gửi lại cho khách hàng</label>
+                    </div>
+                </div>
+
+                <div class="ui_box_s50_right" >
+                    <fieldset>
+                        <legend>
+                            Nhân viên
+                        </legend>
+
+                        <div style="height: 200px; overflow: auto;">
+                            <table class="border_table" >
+                                <tr class="bggrey">
+                                    <th class="center" style="width: 10%">
+                                        <input type="checkbox" onclick="common_check_all_table_line(this, '.cwpo_line_checkbok1', '.cwpo_line_checkbok_val1')" checked/>
+                                    </th>
+                                    <th  style="width: 85%" class="">  </th>
+                                </tr>
+
+                                <?php foreach($this->employee as $emp):?>
+                                    <?php if($emp->EMail):?>
+                                        <tr>
+                                            <td class="center marker_check">
+                                                <input type="checkbox" class="cwpo_line_checkbok1 " onclick="common_check_table_line(this, '.cwpo_line_checkbok_val1')" checked>
+                                                <input type="hidden" class="table_line_disabled cwpo_line_checkbok_val1" name="CheckBox[]"  value="1">
+                                                <input type="hidden" class="table_line_disabled" name="Employee[]" value="<?php echo $emp->IOID;?>" />
+                                            </td>
+                                            <td  style="width: 85%" class="marker_check"> <?php echo $emp->TenNhanVien;?> (<?php echo $emp->EMail;?>) </td>
+
+
+                                        </tr>
+                                    <?php endif;?>
+                                <?php endforeach;?>
+                            </table>
+                        </div>
+
+                    </fieldset>
+
+                    <div class="">
+                        <input type="checkbox" id="reSendForEmployee" name="reSendForEmployee" value="1"> <label class="" for="reSendForEmployee">Gửi lại cho nhân viên</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clear">&nbsp;</div>
+            <br/>
+
+            <div class="fr">
+                <button type="button" class="btn" onclick="m866_mail.save()"> Gửi mail </button>
+            </div>
+        </form>
+    </div>
+</div>

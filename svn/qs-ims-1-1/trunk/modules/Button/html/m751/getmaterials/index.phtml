@@ -1,0 +1,320 @@
+<style>
+    .clicked
+    {
+        background: yellow;
+    }
+    #m412_material_dial_box
+    {
+        overflow:hidden;
+    }
+    #select_m412_material_box
+    {
+        float:left;
+        width:95%;
+    }
+    #select_m412_material_box .select
+    {
+        width:98%;
+        overflow: auto;
+    }
+    #m412_material_button_box
+    {
+
+        float:left;
+    }
+
+    #m412_material_box
+    {
+        width: 98%;
+    }
+</style>
+
+<script type="text/javascript" src="/js/common.js"></script>
+
+<script>
+    var m412_material_button = {
+        show : function()
+        {
+            var url  = sz_BaseUrl + '/button/m751/getmaterials/show';
+            var data = $('#m412_material_form').serialize();
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#m412_material_show').html(jreturn);
+            });
+        },
+
+        select : function()
+        {
+            var url  = sz_BaseUrl + '/button/m751/getmaterials/select';
+            var data = $('#m412_material_form').serialize();
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#m412_material_select').html(jreturn);
+            });
+        },
+
+        search : function()
+        {
+            // Gia tri tim kiem
+            var xval = $('#m412_material_filter_dialbox').val();
+            var text = '';
+            var re;
+
+            // Xoa nhung option trắng
+            $('.m412_material_empty_option').each(function () {
+                $(this).remove();
+            });
+
+            // An hien option theo gia tri tim kiem
+            if(xval == '')
+            {
+                $('#select_m412_material_box select option').each(function(){
+                    $(this).show();
+                });
+            }
+            else
+            {
+                $('#select_m412_material_box select option').each(function(){
+                    text = $(this).text();
+                    re   = new RegExp(xval, "i");
+
+                    if(text.search(re) !== -1){
+                        $(this).show();
+                    }
+                    else
+                    {
+                        $(this).hide();
+                    }
+                });
+            }
+
+            // Them the trang vao trong truong hop so luog the bi hide bang dung so luong the dang co
+            if($('#select_m412_material_box select option:hidden').length == $('#select_m412_material_box select option').length)
+            {
+                $('#select_m412_material_box select').append('<option class=\"m412_material_empty_option\" value=\"0\" disabled>&nbsp;</option>');
+            }
+        },
+
+        add : function(all){
+            var add;
+            var addHtml = '';
+            var groupmarker = 0;
+            var inv  = 0;
+            var filter = parseInt($('input[type="radio"][name="m412_material_filter"]:checked').val());
+
+            if(all != undefined && all)
+            {
+                add = $('#select_m412_material_box select  option[value!="0"]').filter(":not(:hidden)");
+            }
+            else
+            {
+                add = $('#select_m412_material_box select option[value!="0"]').filter(":selected").filter(":not(:hidden)");
+            }
+
+            $('.m412_material_empty_option').each(function () {
+                $(this).remove();
+            });
+
+
+            add.each(function(){
+                groupmarker = $(this).attr('groupmarker');
+                inv         = parseFloat($(this).attr('inv'));
+                min         = parseFloat($(this).attr('min'));
+
+                addHtml  = '';
+                addHtml += '<tr class="selected_line" >';
+                addHtml += '<td class="center"><input type="checkbox" class="remov_line" onclick="m412_material_button.checkItem(this)"></td>';
+                addHtml += '<td class="left">'+$(this).attr('itemcode');
+                addHtml += '<input type="hidden" value="'+$(this).attr('itemioid')+'" class="RefItem" name="RefItem[]" >';
+                addHtml += '<input type="hidden" value="'+$(this).attr('uomioid')+'" class="RefUOM" name="RefUOM[]" >';
+                addHtml += '<input type="hidden" value="'+$(this).attr('itemcode')+'" class="itemcode"  >';
+                addHtml += '<input type="hidden" value="'+$(this).attr('itemname')+'" class="itemname"  >';
+                addHtml += '<input type="hidden" value="'+$(this).attr('uom')+'" class="uom"  name="uom[]" >';
+
+
+                addHtml += '</td>';
+                addHtml += '<td class="left">'+$(this).attr('itemname')+'</td>';
+                addHtml += '<td class="left">'+$(this).attr('uom')+'</td>';
+                addHtml += '<td class="center"><input type="text" size="3" class="right qty" value="1" name="Qty[]" /></td>';
+
+                addHtml += '</tr>';
+                $('#m412_material_box').append(addHtml);
+
+                $(this).remove();
+            });
+
+            if($('#select_m412_material_box select option:hidden').length == $('#select_m412_material_box select option').length)
+            {
+                $('#select_m412_material_box select').append('<option class=\"m412_material_empty_option\" value=\"0\" disabled>&nbsp;</option>');
+            }
+        },
+
+        remove : function(all){
+            var remove;
+            var html   = '';
+            var filter = parseInt($('input[type="radio"][name="m412_material_filter"]:checked').val());
+
+            if(all != undefined && all)
+            {
+                remove = $('.selected_line:not(.inserted_line)')
+            }
+            else
+            {
+                remove = $('.selected_line').filter(".marker");
+            }
+
+            $('.m412_material_empty_option').each(function () {
+                $(this).remove();
+            });
+
+            remove.each(function(){
+                html  = '<option ';
+                html += 'itemioid="'+$(this).find('.RefItem').val()+'" ';
+                html += 'uomioid="'+$(this).find('.RefUOM').val()+'" ';
+                html += 'itemcode="'+$(this).find('.itemcode').val()+'" ';
+                html += 'itemname="'+$(this).find('.itemname').val()+'" ';
+                html += 'uom="'+$(this).find('.uom').val()+'" ';
+                html += '> ';
+
+                html += $(this).find('.itemcode').val();
+                html += ' - ' + $(this).find('.itemname').val();
+                html += '</option>';
+
+                $('#select_m412_material_box select').prepend(html);
+
+                $(this).remove();
+            });
+
+            if($('#m412_material_box select option').length == 0)
+            {
+                $('#m412_material_box select').append('<option class=\"m412_material_empty_option\" value=\"0\" disabled>&nbsp;</option>');
+            }
+        },
+
+        checkItem : function(ele)
+        {
+            if($(ele).is(':checked'))
+            {
+                $(ele).parent().parent().addClass('marker');
+                $(ele).attr('checked', true);
+            }
+            else
+            {
+                $(ele).parent().parent().removeClass('marker');
+                $(ele).removeAttr('checked');
+            }
+        },
+
+        checkAllItems : function(ele)
+        {
+            if($(ele).is(':checked'))
+            {
+                $('.remov_line').each(function(){
+                    $(this).attr('checked', true);
+                    $(this).parent().parent().addClass('marker');
+                });
+            }
+            else
+            {
+                $('.remov_line').each(function(){
+                    $(this).removeAttr('checked', true);
+                    $(this).parent().parent().removeClass('marker');
+                });
+            }
+        },
+
+        save : function()
+        {
+            var url  = sz_BaseUrl + '/button/M751/getmaterials/save';
+            var data = $('#m412_material_form').serialize();
+
+            qssAjax.confirm('Bạn có thực sự muốn lưu lại?',function(){
+                qssAjax.call(url, data, function(jreturn) {
+                    if(jreturn.message != '')
+                    {
+                        qssAjax.notice(jreturn.message);
+                    }
+
+                }, function(jreturn) {
+                    qssAjax.alert(jreturn.message);
+                });
+            });
+        },
+    };
+
+    $(document).ready(function(){
+        m412_material_button.show();
+        m412_material_button.select();
+
+        $('input[type="radio"][name="m412_material_filter"]').change(function(){
+            m412_material_button.select();
+        });
+    });
+</script>
+
+<div class="clear"></div>
+<div class="view" id="view">
+    <div id="wrapper">
+        <form id="m412_material_form">
+            <input type="hidden" name="ifid" value="<?php echo $this->ifid;?>">
+
+            <p>
+                <input type="radio" id="Checkbox_PhieuBaoTri_DonHang" name="m412_material_filter" value="1" checked />
+                <label for="Checkbox_PhieuBaoTri_DonHang"> Vật tư </label>
+
+                <input type="radio" id="Checkbox_MatHang" name="m412_material_filter" value="2" />
+                <label for="Checkbox_MatHang"> Công cụ dụng cụ </label>
+            </p>
+
+            <br/>
+
+            <div id="">
+                <div style="width: 40%;" class="fl" id="m412_material_select">
+                    &nbsp;
+                </div>
+
+                <div id="m412_material_button_box" class="fl" style="width:9%;">
+
+                    <div id="m412_material_add_button">
+                        <button onclick="m412_material_button.add()"
+                                class="btn-custom"
+                                type="button"> &gt;&gt; </button>
+                    </div>
+
+                    <div id="">
+                        <button onclick="m412_material_button.remove()"
+                                class="btn-custom"
+                                type="button"> &lt;&lt; </button>
+                    </div>
+
+                    <div id="">
+                        <button onclick="m412_material_button.add(1)"
+                                class="btn-custom"
+                                type="button"> &gt;&gt;&gt;&gt; </button>
+                    </div>
+
+                    <div id="m412_material_remove_button">
+                        <button onclick="m412_material_button.remove(1)"
+                                class="btn-custom"
+                                type="button"> &lt;&lt;&lt;&lt; </button>
+                    </div>
+                </div>
+
+
+                <div style="width: 50%;" class="fl" id="m412_material_show">
+
+                </div>
+            </div>
+        </form>
+
+        <br/>
+        <div class="clear"></div>
+        <br/>
+
+        <div class="fr">
+            <button type="button" class="btn btn-custom" onclick="m412_material_button.save()"> Cập nhật </button>
+        </div>
+    </div>
+</div>
+
+<div id="qss_m412_material_detail" title="Chi tiết theo kho"></div>

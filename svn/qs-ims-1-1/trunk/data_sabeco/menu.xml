@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu>
+	<block title="Cá nhân">
+		<item title="Công việc">
+			<item title="Đang thực hiện" href="{baseURL}/user/form/doing" />
+			<item title="Liên quan" href="{baseURL}/user/form/reference" />
+			<item title="Hoàn thành" href="{baseURL}/user/form/done" />
+			<item title="Chia sẻ" href="{baseURL}/user/form/share" />
+			<item title="Đã xóa" href="{baseURL}/user/form/deleted" />
+			<item title="Import từ excel" href="{baseURL}/user/import/excel" />
+		</item>
+		<item title="Thay đổi" href="{baseURL}/admin/user/change"></item>
+		<item title="Cấu hình tham số hệ thống" href="{baseURL}/admin/param"></item>
+		<item title="Quản lý người sử dụng">
+			<item title="Trạm làm việc" href="{baseURL}/admin/department" />
+			<item title="Người sử dụng" href="{baseURL}/admin/user" />
+			<item title="Nhóm sử dụng" href="{baseURL}/admin/group" />
+		</item>
+		<item title="Thiết kế mẫu">
+			<item title="Thiết kế module cho web" href="{baseURL}/admin/template/form/web" />
+			<item title="Thiết kế đối tượng cho web" href="{baseURL}/admin/template/object/web" />
+			<item title="Thiết kế module để in" href="{baseURL}/admin/template/form/print" />
+			<item title="Thiết kế đối tượng để in" href="{baseURL}/admin/template/object/print" />
+		</item>
+		<item title="Thiết kế cổng thông tin">
+			<item title="Trang chủ" href="{baseURL}/admin/template/web" />
+			<item title="JS, CSS" href="{baseURL}/admin/template//web/jscss" />
+		</item>
+	</block>
+</menu>

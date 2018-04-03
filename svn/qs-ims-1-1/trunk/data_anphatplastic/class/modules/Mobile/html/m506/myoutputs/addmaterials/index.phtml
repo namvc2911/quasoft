@@ -1,0 +1,206 @@
+<script>
+    var mobile_m506_approval = {
+        save : function (back) {
+            var url  = sz_BaseUrl + '/mobile/m506/myoutputs/addmaterials/save';
+            url += (back && back != undefined)?'?back=1':'?back=0';
+            var data = $('#form_M506_edit').serialize();
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != '')
+                {
+                    qssAjax.notice(jreturn.message);
+                }
+                
+                if(back)
+                {
+                    location.href = '/mobile/m506/myoutputs/edit?fid=M506&ifid=<?php echo $this->ifid;?>';
+                }
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+        },
+
+        back : function () {
+            location.href = '/mobile/m506/myoutputs/edit?fid=M506&ifid=<?php echo $this->ifid;?>';
+        },
+        
+        edit : function (ifid, ioid, deptid) {
+            location.href = '/mobile/m506/myoutputs/addmaterials/index?fid=M506&ifid='+ifid+'&deptid='+deptid+'&ioid='+ioid;
+        },
+
+        delete : function (ifid, ioid, deptid) {
+            var url = '/user/object/delete/';
+            var ioids = new Array();
+            ioids.push(ioid);
+            var data = {ifid:ifid, deptid:deptid, ioid:ioids, objid:'ODanhSachXuatKho'};
+
+            qssAjax.confirm(
+                'Bạn muốn xóa vật tư hay không?',
+                function() {
+                    qssAjax.call(url, data, function(jreturn) {
+                        if(jreturn.message != '')
+                        {
+                            qssAjax.notice(jreturn.message);
+                        }
+
+                        location.href = '/mobile/m506/myoutputs/edit?fid=M506&ifid='+ifid+'&deptid='+deptid;
+                    }, function(jreturn) {
+                        qssAjax.alert(jreturn.message);
+                    })
+                }
+            );
+        }
+    };
+</script>
+
+<form id="form_M506_edit" method="post">
+    <input type="hidden" name="fid" id="fid" value="M506">
+    <input type="hidden" name="ifid" id="ifid" value="<?php echo $this->ifid?>">
+    <input type="hidden" name="ioid" id="ioid" value="<?php echo $this->ioid?>">
+    <input type="hidden" name="deptid" id="deptid" value="<?php echo $this->deptid;?>">
+
+    <div id="qss_form">
+        <div>
+            <div class="control-box right control-box-wo">
+                <div class="btn-in-control-box">
+
+                    <?php if($this->status <= 2):?>
+                        <div>
+                            <button id="btnSAVE" type="button" class="btn btn_main_top"
+                                    onclick="mobile_m506_approval.save();">
+                                Lưu lại
+                            </button>
+                            <button id="btnSAVEBACK" type="button" class="btn btn_main_top"
+                                    onclick="mobile_m506_approval.save(1);">
+                                Lưu lại & Đóng
+                            </button>
+                            <button id="btnSAVE" type="button" class="btn btn_main_top" <?php echo $this->ioid?'':'disabled';?>
+                                    <?php echo $this->ioid?('onclick="mobile_m506_approval.delete('.$this->ifid.', '.$this->ioid.', '.$this->deptid.');"'):'';?>>
+                                Xóa
+                            </button>
+                            <button id="btnDETAIL" type="button" class="btn btn_main_top"
+                                <?php /*if(!$this->form->i_IFID):?>disabled<?php endif;*/?>
+                                    onclick="mobile_m506_approval.back();">
+                                Đóng
+                            </button>
+                        </div>
+                    <?php else:?>
+                        <div>
+                            <button id="btnSAVE" type="button" class="btn btn_main_top btn-disabled"
+                                    disabled>
+                                Lưu lại
+                            </button>
+                            <button id="btnSAVE" type="button" class="btn btn_main_top btn-disabled"
+                                    disabled>
+                                Lưu lại & Đóng
+                            </button>
+                            <button id="btnSAVE" type="button" class="btn btn_main_top btn-disabled"
+                                    disabled>
+                                Xóa
+                            </button>
+                            <button id="btnDETAIL" type="button" class="btn btn_main_top"
+                                <?php /*if(!$this->form->i_IFID):?>disabled<?php endif;*/?>
+                                    onclick="mobile_m506_approval.back();">
+                                Đóng
+                            </button>
+                        </div>
+                    <?php endif;?>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="mobile-box-wrap">
+                <div class="mobile-box-head-line bold">
+                    <div class="fl">
+                        Thêm vật tư
+                    </div>
+                </div>
+
+
+                <div class="mobile-box-normal-line">
+                    <div class="edit-line-label">
+                        <label>Mã vật tư</label>
+                    </div>
+
+                    <div class="edit-line-data">
+                        <div class="required">
+                            <?php echo $this->views->Report->SimpleListBox('ODanhSachXuatKho_MaSP', '/mobile/m506/materials?ifid='.$this->ifid);?>
+
+                            <?php if($this->ioid):?>
+                                <script>
+                                    $(document).ready(function () {
+                                        $('#ODanhSachXuatKho_MaSP').val('<?php echo $this->material->IFID_M113;?>');
+                                        $('#ODanhSachXuatKho_MaSP_tag').val('<?php echo $this->material->MaSP;?> - <?php echo $this->material->TenSP;?>');
+                                    });
+                                </script>
+                            <?php endif;?>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mobile-box-normal-line">
+                    <div class="edit-line-label">
+                        <label>Đơn vị tính</label>
+                    </div>
+
+                    <div class="edit-line-data">
+                        <div class="required">
+                            <?php
+                            $id            = 'ODanhSachXuatKho_DonViTinh';
+                            $getFields     = array('num'=>2,
+                                'objects'=>array('ODonViTinhSP'=>array(
+                                    'id'=>'IOID'
+                                ,'display1'=>'DonViTinh')) );
+                            $filter         = array(
+                                0 => array(
+                                    'id' => 'ODanhSachXuatKho_MaSP'
+                                    , 'refField' => array(
+                                            'ODonViTinhSP' => 'IFID_M113'
+                                        )
+                                    , 'required' => 1
+                                )
+                            );
+                            ?>
+
+                            <?php echo $this->views->Report->ComboBox($id, $getFields, $filter);?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mobile-box-normal-line">
+                    <div class="edit-line-label">
+                        <label>Số lượng</label>
+                    </div>
+
+                    <div class="edit-line-data">
+                        <div class="required">
+                            <input id="ODanhSachXuatKho_SoLuong" name="ODanhSachXuatKho_SoLuong" style="width: 100px;"
+                                   value="1" type="text">
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</form>
+<div class="margin-bottom-36">&nbsp;</div>
+
+<?php if($this->ioid):?>
+    <script>
+        $('#ODanhSachXuatKho_DonViTinh').val('<?php echo $this->material->Ref_DonViTinh;?>');
+        $('#ODanhSachXuatKho_SoLuong').val('<?php echo $this->material->SoLuong;?>');
+    </script>
+<?php endif;?>
+
+<?php if($this->status != 1):?>
+    <script>
+        $('#ODanhSachXuatKho_MaSP_tag').attr('disabled', true);
+        $('#ODanhSachXuatKho_MaSP').attr('disabled', true);
+        $('#ODanhSachXuatKho_DonViTinh').attr('disabled', true);
+        $('#ODanhSachXuatKho_SoLuong').attr('disabled', true);
+    </script>
+<?php endif;?>

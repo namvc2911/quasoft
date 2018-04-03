@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu>
+	<block title="Cấu hình dữ liệu" text="104">
+		<item title="Danh sách đối tượng" text="102" href="{baseURL}/system/object" code="object"/>
+		<item title="Danh sách module" text="101" href="{baseURL}/system/form" code="module"/>
+		<item title="Nút bấm tùy chỉnh" text="" href="{baseURL}/system/bash" code="bash"/>
+		<item title="Nhóm module trên menu" text="119" href="{baseURL}/system/menu" code="menu"/>
+		<item title="Cấu hình lịch" text="0" href="{baseURL}/system/calendar" code="calendar"/>
+	</block>
+	<block title="Nâng cao" text="7">
+		<item title="Copy database" text="1" href="{baseURL}/system/database" code="database"/>
+		<item title="Quản lý ngôn ngữ" text="2" href="{baseURL}/system/language" code="language"/>
+	</block>
+</menu>

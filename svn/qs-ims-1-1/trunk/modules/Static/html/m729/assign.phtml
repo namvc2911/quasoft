@@ -1,0 +1,22 @@
+<form id="m729_assign_form">
+    <?php foreach($this->ifids as $ifid):?>
+        <input type="hidden" name="ifid_assign[]" value="<?php echo $ifid;?>" />
+    <?php endforeach;?>
+
+    <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td>Chịu trách nhiệm: </td>
+            <td>
+                <?php echo $this->views->Report->SimpleListBox('phutrach', '/static/m729/employees');?>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Người nghiệm thu: </td>
+            <td>
+                <?php echo $this->views->Report->SimpleListBox('nghiemthu', '/static/m729/employees');?>
+            </td>
+        </tr>
+    </table>
+    <button type="button" class="btn btn_main_top" onclick="calendar_index_file.save_assign();"> Cập nhật </button>
+</form>

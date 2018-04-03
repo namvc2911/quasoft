@@ -1,0 +1,277 @@
+<style>
+	.page_a4
+	{
+		width: <?php echo $this->a4width;?>px;
+		height: <?php echo $this->a4height;?>px;
+		margin: auto;
+		font-family: Arial;
+		font-size: 12px;
+		line-height: 18px;
+		position: relative;
+
+	}
+
+	.page_a4_row
+	{
+		float: left;
+		position: relative;
+	}
+	.page_a4_cell
+	{
+		width: <?php echo $this->cellWidth;?>px;
+		height: <?php echo $this->cellHeight;?>px;
+		float: left;
+		word-break: break-all;
+		position: relative;
+		overflow: hidden;
+		cursor: pointer;
+
+		<?php if($this->border):?>
+			border: <?php echo $this->border;?>px #000 solid;
+		<?php endif;?>
+
+		<?php if($this->margin):?>
+			margin: <?php echo $this->margin;?>px;
+		<?php endif;?>
+
+		<?php if($this->padding):?>
+			padding: <?php echo $this->padding;?>px;
+		<?php endif;?>
+
+
+	}
+
+	.page_a4_cell .inner
+	{
+		height: 100%;
+	}
+
+	.page_a4_cell .remove
+	{
+		position: absolute;
+		right: 5px;
+		top: 23px;
+		font-weight: bold;
+		font-size: 18px;
+		color: red;
+		cursor: pointer;
+		display: none;
+	}
+
+	.page_a4_cell .move_right
+	{
+		position: absolute;
+		right: 5px;
+		top: 5px;
+		font-weight: bold;
+		font-size: 18px;
+		color: green;
+		cursor: pointer;
+		display: none;
+	}
+
+	.pagebreak {
+		page-break-before: always;
+		page-break-after: always;
+		page-break-inside: avoid;
+		-webkit-region-break-inside: avoid;
+	}
+	@page { margin:0px; }
+
+	@media print{@page {size: <?php if($this->direction):?>landscape<?php else:?>portrait<?php endif;?>}}
+</style>
+
+<script>
+	var drag = false;
+
+
+	function insertBreakHtmlPrint() {
+		var countCell  = 0;
+		var cellInPage = <?php echo $this->numOfRow;?> * <?php echo $this->numOfColumn;?>;
+		var html       = '<p style="page-break-after:always;" class="pageBreakHtml"></p>';
+		html          += '<p class="pageBreakHtml"><!-- pagebreak --></p>';
+		html          += '<div class="pagebreak pageBreakHtml" > </div>';
+
+		$('.pageBreakHtml').remove();
+		$('.page_a4_cell').each(function () {
+			++countCell;
+
+			if(countCell%cellInPage==0)
+			{
+				$( html ).insertAfter( this );
+			}
+		});
+	}
+
+	function removeCell(ele) {
+		var find = $(ele).parent();
+		$(find).remove();
+	}
+	
+	function moveRight(ele) {
+		var find = $(ele).parent();
+		var html = '';
+		html    += '<div class="page_a4_cell"';
+		html    += 'style="<?php echo $this->border?'border:solid #fff '.$this->border.'px;':'';?>"> ';
+		html    += '<div class="inner" >&nbsp;</div>';
+		html    += '<div class="remove" onclick="removeCell(this)"> x </div>';
+		html    += '<div class="move_right" onclick="moveRight(this)"> &gt;&gt; </div>';
+		html    += '</div>';
+
+		$( html).insertBefore( find );
+		showHideControl();
+		insertBreakHtmlPrint();
+	}
+
+	function showHideControl() {
+		$('.page_a4_cell').mouseover(function () {
+			if($(this).find('.move_right').is(':hidden'))
+			{
+				$(this).find('.move_right').show();
+			}
+
+			if($(this).find('.remove').is(':hidden'))
+			{
+				$(this).find('.remove').show();
+			}
+		});
+
+		$('.page_a4_cell').mouseout(function () {
+			$(this).find('.move_right, .remove').hide();
+		});
+	}
+
+	$(document).ready(function(){
+		$( ".page_a4" ).sortable({
+
+			helper: 'clone',
+
+			update: function( event, ui ) {
+				insertBreakHtmlPrint();
+			}
+		});
+		$( ".page_a4" ).disableSelection();
+
+		insertBreakHtmlPrint();
+
+		showHideControl();
+	});
+</script>
+
+
+
+
+<div class="">
+	<div id="container">
+		<div class="page_a4">
+			<?php $row = 1;?>
+			<?php $oldRow = '';?>
+			<?php $stt = 0;?>
+			<?php foreach ($this->equipments as $equip):?>
+				<div class="page_a4_cell">
+					<div class="inner">
+						<div>
+							<span  style="width: 28%;; display: inline-block">
+								Số hiệu TS:
+							</span>
+							<span style="font-weight: bold"> <?php echo $equip->MaTaiSan;?></span>
+						</div>
+
+						<div class="clear"></div>
+
+						<div>
+							<span  style="width: 28%;; display: inline-block">
+								Tên TS:
+							</span>
+							<span style="font-weight: bold"><?php echo $equip->TenThietBi;?></span>
+						</div>
+
+						<div class="clear"></div>
+
+						<div>
+							<span  style="width: 28%;; display: inline-block">
+								Nước SX:
+							</span>
+
+							<span style="font-weight: bold; width: 30%; display: inline-block;">
+								<?php echo $equip->XuatXu;?>&nbsp;
+							</span>
+
+							<span  style="width: 18%; display: inline-block;">
+								Năm SX:
+							</span>
+
+							<span style="font-weight: bold; display: inline-block;">
+								<?php echo $equip->NamSanXuat;?>
+							</span>
+						</div>
+
+						<div class="clear"></div>
+
+						<div>
+							<span  style="width: 28%; display: inline-block">
+								Thế chấp tại NH:
+							</span>
+
+							<span style="font-weight: bold"><?php echo @$equip->TheChapTaiNganHang;?></span>
+						</div>
+
+						<div class="clear"></div>
+
+						<div>
+							<span  style="width: 28%; display: inline-block">
+								Bộ phận quản lý:
+							</span>
+
+							<span style="font-weight: bold"><?php echo $equip->MaKhuVuc;?></span>
+						</div>
+
+						<div class="clear"></div>
+
+						<div>
+							<span  style="width: 28%; display: inline-block;">
+								Đặc trưng tài sản:
+							</span>
+
+							<span style="font-weight: bold; width: 30%; display: inline-block;">
+								<?php echo @$equip->DacTrungTaiSan;?>&nbsp;
+							</span>
+
+							<span  style="width: 18%; display: inline-block;">
+								Ngày SD:
+							</span>
+
+							<span style="font-weight: bold; display: inline-block;">
+								<?php echo Qss_Lib_Date::mysqltodisplay($equip->NgayDuaVaoSuDung);?>
+							</span>
+						</div>
+
+						<div class="clear"></div>
+
+						<div>
+							<span  style="width: 28%;; display: inline-block">
+								Hồ sơ số:
+							</span>
+
+
+							<span style="font-weight: bold"><?php echo @$equip->HoSoSo;?></span>
+						</div>
+					</div>
+
+					<div class='remove' onclick="removeCell(this)"> x </div>
+					<div class='move_right' onclick="moveRight(this)"> &gt;&gt; </div>
+				</div>
+
+				<?php $oldRow = $row;?>
+
+				<?php ++$stt;?>
+				<?php
+					if($stt%$this->numOfColumn==0)
+					{
+						$row++;
+					}
+				?>
+			<?php endforeach;?>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,166 @@
+<script>
+    function printPreview()
+    {
+        var msg   = '';
+        msg += common_checkEmpty($('#start').val(), 'Ngày bắt đầu');
+        msg += common_checkEmpty($('#end').val(), 'Ngày kết thúc');
+
+        if(msg != '')
+        {
+            qssAjax.alert(msg);
+            return;
+        }
+        else
+        {
+            var url  = sz_BaseUrl + '/static/m846/show';
+            var data = $('#report').serialize();
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#print-area').html(jreturn);
+                removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+            });
+        }
+    }
+
+    function excelRender()
+    {
+        var msg   = '';
+        msg += common_checkEmpty($('#start').val(), 'Ngày bắt đầu');
+        msg += common_checkEmpty($('#end').val(), 'Ngày kết thúc');
+
+        if(msg != '')
+        {
+            qssAjax.alert(msg);
+            return;
+        }
+        else
+        {
+            $('#report').submit();
+        }
+    }
+</script>
+
+<div class="clear"></div>
+<div id="view">
+    <div class="line-hr">
+        <span>
+            <?php echo Qss_Lib_System::getReportTitle('M846');?>
+        </span>
+    </div>
+
+    <form id="report" method="get" action="/static/m846/excel">
+        <table class="detail">
+
+            <!-- Thời gian -->
+            <tr>
+
+                <th width="20%" class="report-param-label">
+                    Thời gian
+                </th>
+
+                <td>
+                    <?php echo $this->views->Report->Datepicker('start', date('01-m-Y'));?>
+                    <span class="bold red">(*)</span>
+                    đến
+                    <?php echo $this->views->Report->Datepicker('end', date('t-m-Y'));?>
+                    <span class="bold red">(*)</span>
+                </td>
+            </tr>
+
+            <!-- Khu vực -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Khu vực
+                </th>
+
+                <td>
+                    <?php
+                    $getFields = array('num' => 3,
+                        'objects' => array('OKhuVuc' => array(
+                            'id' => 'IOID'
+                        , 'display1' => 'MaKhuVuc'
+                        , 'display2' => 'Ten')));
+                    ?>
+
+                    <?php echo $this->views->Report->ComboBox('location', $getFields); ?>
+                </td>
+            </tr>
+
+            <!-- Nhóm thiết bị -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Nhóm thiết bị
+                </th>
+
+                <td>
+                    <?php
+                    $getFields = array('num' => 2,
+                        'objects' => array('ONhomThietBi' => array(
+                            'id' => 'IOID'
+                        , 'display1' => 'LoaiThietBi'
+                        , 'order' => 'lft'
+                        )));
+                    ?>
+
+                    <?php echo $this->views->Report->ComboBox('group', $getFields); ?>
+                </td>
+            </tr>
+
+            <!-- Loại thiết bị -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Loại thiết bị
+                </th>
+
+                <td>
+                    <?php
+                    $getFields = array('num' => 2,
+                        'objects' => array('OLoaiThietBi' => array(
+                            'id' => 'IOID'
+                        , 'display1' => 'TenLoai'
+                        )));
+                    ?>
+
+                    <?php echo $this->views->Report->ComboBox('type', $getFields); ?>
+                </td>
+            </tr>
+
+            <!-- Thiết bị -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Thiết bị
+                </th>
+
+                <td>
+                    <?php
+                    $getDataObject = array('ODanhSachThietBi' => array('MaThietBi', 'TenThietBi'));
+                    //,'OKhuVuc'=>array('MaKhuVuc','Ten')
+                    $getFields = array('num' => 2,
+                        'objects' => array('ODanhSachThietBi' => array(
+                            'id' => 'IOID'
+                        , 'display1' => 'MaThietBi'
+                        , 'display2' => 'TenThietBi')));
+                    $getLookupFilter = array(array('id' => 'group'
+                    , 'refField' => array('ODanhSachThietBi' => 'Ref_NhomThietBi') // Nhom TB
+                    , 'required' => 0)
+                    , array('id' => 'type'
+                        , 'refField' => array('ODanhSachThietBi' => 'Ref_LoaiThietBi') // Loai TB
+                        , 'required' => 0)
+                    , array('id' => 'costcenter'
+                        , 'refField' => array('ODanhSachThietBi' => 'Ref_TrungTamChiPhi') // TT Chi phi
+                        , 'required' => 0)
+                    );
+                    ?> <?php echo $this->views->Report->ListBox('equip', $getDataObject, $getFields, $getLookupFilter); ?>
+                </td>
+            </tr>
+
+        </table>
+    </form>
+    <p>
+
+    <hr>
+    <?php echo $this->views->Report->PrintToolbar();?>
+    <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>

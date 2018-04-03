@@ -1,0 +1,94 @@
+<script>
+    function printPreview(){
+
+        var ngaybd = $('#start').val();
+        var ngaykt = $('#end').val();
+        var thietbi= $('#equipment').val();
+        var msg    = '';
+
+
+        msg += common_checkEmpty(ngaybd, '<?php echo $this->_translate(2) ?>');
+        msg += common_checkEmpty(ngaykt, '<?php echo $this->_translate(3) ?>');
+        msg += common_checkEmpty(thietbi, '<?php echo $this->_translate(5) ?>');
+        msg += common_compareStartAndEnd(ngaybd, ngaykt, '<?php echo $this->_translate(2) ?>', '<?php echo $this->_translate(3) ?>');
+
+
+        if(msg)
+        {
+            qssAjax.alert(msg);
+            return;
+        }
+        else
+        {
+            var warning = common_dateWarning('D', '<?php echo json_encode(Qss_Lib_Extra_Const::$DATE_LIMIT); ?>', ngaybd, ngaykt);
+            if(warning){
+                qssAjax.confirm(warning,function(){
+                    var url = sz_BaseUrl + '/stockreport/inout/cost/byequip1';
+                    var data = $('#report').serialize();
+                    qssAjax.getHtml(url, data, function(jreturn) {
+                        $('#print-area').html(jreturn);
+                        removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+                    });
+                });
+            }
+            else{
+                var url = sz_BaseUrl + '/stockreport/inout/cost/byequip1';
+                var data = $('#report').serialize();
+                qssAjax.getHtml(url, data, function(jreturn) {
+                    $('#print-area').html(jreturn);
+                    removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+                });
+            }
+        }
+
+
+    }
+</script>
+<div class="clear"></div>
+<div id="view">
+    <div class="line-hr">
+        <span><?php echo $this->_translate(1)?> </span>
+    </div>
+    <form id="report" method="get"
+          action="/stockreport/inout/cost/byequip1">
+        <table class="detail">
+            <tr>
+                <th width="20%" class="report-param-label"><?php echo $this->_translate(2)?><span
+                        class="bold red">(*)</span>
+                </th>
+                <td><?php echo $this->views->Report->Datepicker('start', '01-'.date('m').'-'.date('Y'));?></td>
+            </tr>
+            <tr>
+                <th width="20%" class="report-param-label"><?php echo $this->_translate(3)?><span
+                        class="bold red">(*)</span>
+                </th>
+                <td><?php echo $this->views->Report->Datepicker('end', date('d-m-Y'));?></td>
+            </tr>
+
+            <tr>
+                <th width="20%" class="report-param-label"><?php echo $this->_translate(5)?>: <span
+                        class="bold red">(*)</span></th>
+                <td><?php
+                    $id            = 'equipment';
+                    $getDataObject = array('ODanhSachThietBi'=>array('MaThietBi', 'TenThietBi'));
+                    //,'OKhuVuc'=>array('MaKhuVuc','Ten')
+                    $getFields     = array('num'=>2,
+                        'objects'=>array('ODanhSachThietBi'=>array(
+                            'id'=>'IOID'
+                        ,'display1'=>'MaThietBi'
+                        ,'display2'=>'TenThietBi')) );
+                    $getLookupFilter = array();
+                    ?> <?php echo $this->views->Report->ListBox($id, $getDataObject,$getFields, $getLookupFilter);?>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <p>
+
+
+    <hr>
+    <?php echo $this->views->Report->PrintToolbar();?>
+    <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>

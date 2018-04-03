@@ -1,0 +1,77 @@
+<?php $excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);?>
+<?php
+$widthArr = array(1.5,5.5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 5);//, 2, 3, 2, 2,2, 2, 2
+$totalCol = count($widthArr);
+$widthArr = Qss_Lib_Report::changeWidthToFitScreen3($widthArr);
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+    <input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="landscape">
+    <excel orientation="landscape" font-name="Arial" font-size="9"
+           margin-left="0.5" margin-right="0.5" margin-top="0.75"
+           margin-bottom="0.75" />
+
+    <div id="head_print">
+        <table>
+            <tr>
+                <td style="width: 40%;" class="center">Công ty…………</td>
+                <td  class="center">Cộng hòa xã hội chủ nghĩa Việt nam</td>
+            </tr>
+            <tr>
+                <td  class="center">Xí nghiệp:………………...……..</td>
+                <td  class="center">Độc lập - Tự do - Hạnh phúc</td>
+            </tr>
+            <tr>
+                <td  class="center">Số:………./BC - KT</td>
+                <td  class="right">…………, ngày……tháng……năm 20….</td>
+            </tr>
+        </table>
+
+        <div class="">
+            <div class="fl" style="width: 90%">
+                <h2 class="center">KẾ HOẠCH KIỂM ĐỊNH THIẾT BỊ ĐIỆN</h2>
+            </div>
+            <div class="fr" style="font-weight: normal !important; font-size: 12px !important;">Mẫu số: KH - KT 05</div>
+        </div>
+        <div class="clear"></div>
+        <p class="center"> Năm 20…… </p>
+    </div>
+
+    <div id="container">
+
+        <table width="" cellpadding="0" cellspacing="0" class="border" border="0">
+            <?php $begin = 0;?>
+            <tr class="bggrey">
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">TT</th>
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">Tên thiết bị</th>
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">Đơn vị tính	</th>
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">Số lượng</th>
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">Ghi chú</th>
+            </tr>
+
+
+            <tr class="bggrey">
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">1</th>
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">2</th>
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">3</th>
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">4</th>
+                <th  style="width: <?php echo $widthArr[$begin++];;?>%">5</th>
+            </tr>
+
+            <?php $sttThietBi = 0; ?>
+            <?php foreach ($this->equips as $item):?>
+                <tr>
+                    <td class="center"> <?php echo ++$sttThietBi;?></td>
+                    <td class="left"> <?php echo $item->TenThietBi;?></td>
+                    <td class="left"> <?php echo @$item->DonViTinh;?> </td>
+                    <td class="right"> <?php echo Qss_Lib_Util::formatNumber($item->SoLuong);?></td>
+                    <td class="left"> <?php echo @$item->GhiChu;?></td>
+
+                </tr>
+            <?php endforeach;?>
+        </table>
+    </div>
+</div>

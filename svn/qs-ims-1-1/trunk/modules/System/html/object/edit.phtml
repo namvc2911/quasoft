@@ -1,0 +1,122 @@
+<form method="post" id="qss_form">
+	<input type="hidden" value="<?php echo $this->object->ObjectCode?>"
+		name="ID" />
+	<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+
+		<button id="btnSAVEBACK" type="button" class="btn btn_main_top" onclick="objectSave()">
+			<?php echo $this->_translate(35)?>
+		</button>
+
+		<button id="btnSAVE" type="button" class="btn btn_main_top" onclick="objectSave(1)">
+			<?php echo $this->_translate(34)?>
+		</button>
+
+		<button type="button" onclick="history.back(-1);" class="btn btn_main_top">
+			<?php echo $this->_translate(32)?>
+		</button>
+	</div>
+
+
+	<div class="clear"></div>
+	<div id="view">
+		<div id="item-actions">
+			<ul>
+				<li class="item-action active"><a href="#1"><span><?php echo $this->_translate(102)?>
+					</span>
+				</a>
+				</li>
+			</ul>
+		</div>
+		<table border="0" width="450" class="border_table" cellspacing="0" cellpadding="0">
+			<tr>
+				<td width="110"><?php echo $this->_translate(68)?>
+				</td>
+				<td width="338"><input type="text"
+					value="<?php echo $this->object->ObjectCode?>"
+					style="width: 200px;" name="szObjID" />
+				</td>
+			</tr>
+			<?php foreach ($this->languages as $language):?>
+			<tr>
+				<td><?php echo $this->_translate(44)?> - <?php echo $language->Name?>
+				</td>
+				<?php if($language->Code == 'vn'):?>
+				<td><input type="text" value="<?php echo @$this->data->ObjectName?>"
+					style="width: 200px;" name="szName" />
+				</td>
+				<?php else:?>
+				<td><input type="text"
+					value="<?php echo @$this->data->{"ObjectName_$language->Code"}?>"
+					style="width: 200px;" name="szName_<?php echo $language->Code?>" />
+				</td>
+				<?php endif;?>
+			</tr>
+
+			<?php endforeach;?>
+			<tr>
+				<td>Mặc định sắp xếp</td>
+				<td>
+					<input type="text" name="intOrderField" style="width: 250px;" value="<?php echo @$this->data->OrderField?>">
+				</td>
+			</tr>
+			<tr>
+				<td>Kiểu sắp xếp</td>
+				<td>
+					<?php $tempOrderType = @$this->data->OrderType;?>
+					<select name="intOrderType" style="width: 250px;">
+						<option value=""> ----- <?php echo $this->_translate(103)?> ------ </option>
+						<option value="ASC" <?php echo ($tempOrderType == 'ASC')?'selected':'';?>> <?php echo $this->_translate(104)?> </option>
+						<option value="DESC" <?php echo ($tempOrderType == 'DESC')?'selected':'';?>> <?php echo $this->_translate(105)?> </option>
+					</select>
+				</td>
+			</tr>
+		</table>
+		<div class="line-hr">
+			<span>Sự kiện</span>
+		</div>
+		<?php
+		$className = 'Qss_Bin_Trigger_'.$this->object->ObjectCode;
+		?>
+		<?php if(class_exists($className)):?>
+		<?php $ref = new ReflectionClass($className); ?>
+
+		<?php $method = $ref->getMethod('onInsert');?>
+		<?php if($method->class == $className):?>
+		<h4>Trước khi tạo mới</h4>
+		<?php echo $method->getDocComment()?>
+		<?php endif;?>
+		<?php $method = $ref->getMethod('onUpdate');?>
+		<?php if($method->class == $className):?>
+		<h4>Trước khi cập nhật</h4>
+		<?php echo $method->getDocComment()?>
+		<?php //$fileName = $method->getFileName();?>
+		<?php //$startLine = $method->getStartLine();?>
+		<?php //$endLine = $method->getEndLine();?>
+		<?php //$length = $endLine - $startLine;?>
+		<?php //$source  = file($fileName);?>
+		<?php //$body = implode('<br>', array_slice($source, $startLine, $length));?>
+		<?php //echo $body?>
+		<?php endif;?>
+		<?php $method = $ref->getMethod('onDelete');?>
+		<?php if($method->class == $className):?>
+		<h4>Trước khi xóa</h4>
+		<?php echo $method->getDocComment()?>
+		<?php endif;?>
+		<?php $method = $ref->getMethod('onInserted');?>
+		<?php if($method->class == $className):?>
+		<h4>Sau khi tạo mới</h4>
+		<?php echo $method->getDocComment()?>
+		<?php endif;?>
+		<?php $method = $ref->getMethod('onUpdated');?>
+		<?php if($method->class == $className):?>
+		<h4>Sau khi cập nhật</h4>
+		<?php echo $method->getDocComment()?>
+		<?php endif;?>
+		<?php $method = $ref->getMethod('onDeleted');?>
+		<?php if($method->class == $className):?>
+		<h4>Sau khi xóa</h4>
+		<?php echo $method->getDocComment()?>
+		<?php endif;?>
+		<?php endif;?>
+	</div>
+</form>

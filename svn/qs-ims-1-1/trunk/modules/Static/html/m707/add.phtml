@@ -1,0 +1,426 @@
+<style>
+
+    /* Phần hiển thị lấy từ đâu */
+    #m707_from
+    {
+        float:left;
+        width:44.5%;
+    }
+
+    #m707_from #m707_from_filter
+    {
+
+    }
+
+    #m707_from_filter #m707_from_filter_select_box
+    {
+        width:100%;
+        margin-bottom: 5px;
+    }
+
+    #m707_from #m707_from_select
+    {
+
+    }
+
+    #m707_from_select #m707_from_select_dial_box
+    {
+        width:100%;
+        height: 250px;
+    }
+
+    /* Phần hiển thị nút di chuyển */
+    #m707_move
+    {
+        margin-top:2%;
+        width:11%;
+        float:left;
+    }
+
+    #m707_move .m707_move_button
+    {
+        margin: 3% 0 2% 26%;
+    }
+
+    /* Phần hiển thị chuyển đến */
+    #m707_to
+    {
+        float:left;
+        width:44.5%;
+    }
+
+    #m707_to #m707_to_filter
+    {
+
+    }
+
+    #m707_to_filter #m707_to_filter_select_box
+    {
+        width:100%;
+        margin-bottom: 5px;
+    }
+
+    #m707_to #m707_to_select
+    {
+
+    }
+
+    #m707_to_select #m707_to_select_dial_box
+    {
+        width:100%;
+        height: 280px;
+    }
+</style>
+<script>
+    var m707 = {
+        loadEquip : function(ele)
+        {
+            var loc  = $(ele).val();
+            var data = {loc:loc};
+            var url  = sz_BaseUrl + '/static/m707/equips2';
+            var html = '';
+
+            qssAjax.call(url, data, function(jreturn) {
+                for(i in jreturn.data)
+                {
+                    html += '<option value="'+jreturn.data[i].id+'"  side="FROM" parent="'+jreturn.data[i].parent+'" ifid="'+jreturn.data[i].ifid+'">'+jreturn.data[i].display+'</option>';
+                }
+
+                $('#m707_from_select_dial_box').html('');
+                $('#m707_from_select_dial_box').html(html);
+            });
+        },
+
+        /**
+         * Chuyển dữ liệu từ bên lấy sang bên cập nhật
+         * @param all
+         */
+        add : function(all)
+        {
+            if($('#m707_from_select_dial_box').is(':enabled'))
+            {
+                var add;
+                var val;
+                var html   = '';
+                var to     = $('#m707_to_filter_select_box').val();
+
+                if(all != undefined && all)
+                {
+                    add = $('#m707_from_select_dial_box option[value!="0"]').filter(":not(:hidden)");
+                }
+                else
+                {
+                    add = $('#m707_from_select_dial_box option[value!="0"]').filter(":selected").filter(":not(:hidden)");
+                }
+
+                add.each(function(){
+
+                    if($(this).hasClass('move') || $(this).attr('parent') != to) // Khong cho chuyen cung vi tri
+                    {
+                        val   = $(this).val();
+                        html  = '<option value="'+$(this).val()+'" side="'+$(this).attr('side')+'" parent="'+$(this).attr('parent')+'" ifid="'+$(this).attr('ifid')+'"> ';
+                        html += $(this).text();
+                        html += '</option>';
+
+                        // An neu ton tai tu hai the, lam truoc khi them the
+                        $('#m707_to_select_dial_box option[value="'+val+'"]').hide();
+                        $('#m707_from_select_dial_box option[value="'+val+'"]').show();
+
+                        // Chen the moi
+                        $('#m707_to_select_dial_box').prepend(html);
+                        $(this).remove();
+                    }
+                });
+
+                m707.highlightMove();
+            }
+
+        },
+
+        /**
+         * Chuyển dữ liệu ngược từ bên cập nhật về lại bên lấy
+         * @param all
+         */
+        remove : function(all)
+        {
+            if($('#m707_to_select_dial_box').is(':enabled'))
+            {
+                var remove;
+                var html = '';
+                var val;
+                var from = $('#m707_from_filter_select_box').val();
+
+                if (all != undefined && all) {
+                    remove = $('#m707_to_select_dial_box option[value!="0"]').filter(":not(:hidden)");
+                }
+                else {
+                    remove = $('#m707_to_select_dial_box option[value!="0"]').filter(":selected").filter(":not(:hidden)");
+                }
+
+                remove.each(function () {
+                    if($(this).hasClass('move') || $(this).attr('parent') != from) // ko cho chuyen cung vi tri
+                    {
+                        val  = $(this).val();
+                        html = '<option value="' + $(this).val() + '" side="'+$(this).attr('side')+'" parent="'+$(this).attr('parent')+'" ifid="'+$(this).attr('ifid')+'"> ';
+                        html += $(this).text();
+                        html += '</option>';
+
+                        // An neu ton tai tu hai the, lam truoc khi them the
+                        $('#m707_to_select_dial_box option[value="'+val+'"]').show();
+                        $('#m707_from_select_dial_box option[value="'+val+'"]').hide();
+
+                        // Them the moi
+                        $('#m707_from_select_dial_box').prepend(html);
+                        $(this).remove();
+                    }
+                });
+
+                m707.highlightMove();
+            }
+        },
+
+        highlightMove : function()
+        {
+            var side;
+
+            $('#m707_from_select_dial_box option').each(function(){
+                side = $(this).attr('side');
+                if(side == 'TO')
+                {
+                    $(this).addClass('move');
+                }
+                else
+                {
+                    $(this).removeClass('move');
+                }
+            });
+
+            $('#m707_to_select_dial_box option').each(function(){
+                side = $(this).attr('side');
+                if(side == 'FROM')
+                {
+                    $(this).addClass('move');
+                }
+                else
+                {
+                    $(this).removeClass('move');
+                }
+            });
+        },
+        
+        save : function(not_confirm)
+        {
+            var data;
+            var url      = sz_BaseUrl + '/static/m707/save';
+            var fromifid = '';
+            var toifid   = '';
+
+            // Chon tat ca dong thay doi
+            $('.move').each(function(){
+                $(this).attr('selected', true);
+
+                // neu la from thi cho vao phan toifid va nguoc lai
+                if($(this).attr('side') == 'FROM')
+                {
+                    toifid += '&toifid%5B%5D='+$(this).attr('ifid');
+                }
+                else
+                {
+                    fromifid += '&fromifid%5B%5D='+$(this).attr('ifid');
+                }
+            });
+
+            // Loai bo cac dong chon ma khong duoc chuyen sang
+            $('#m707_from_select_dial_box option').not('.move').each(function(){
+                $(this).removeAttr('selected');
+            });
+
+            $('#m707_to_select_dial_box option').not('.move').each(function(){
+                $(this).removeAttr('selected');
+            });
+
+
+            data  = $('#m707_add_form').serialize();
+            data += toifid;
+            data += fromifid;
+
+            if(not_confirm)
+            {
+                qssAjax.call(url, data, function(jreturn) {
+                    if(jreturn.message != '')
+                    {
+                        qssAjax.alert(jreturn.message);
+                    }
+
+                    $('#qss_trace').dialog('close');
+                    rowSearch('M707');
+                    //M173.get2();
+                }, function(jreturn) {
+                    qssAjax.alert(jreturn.message);
+                });
+            }
+            else
+            {
+                qssAjax.confirm('Bạn muốn lưu dừng máy hay không?', function(){
+                    qssAjax.call(url, data, function(jreturn) {
+                        if(jreturn.message != '')
+                        {
+                            qssAjax.alert(jreturn.message);
+                        }
+
+                        $('#qss_trace').dialog('close');
+                        rowSearch('M707');
+                        //M173.get();
+                        //M173.get2();
+                    }, function(jreturn) {
+                        qssAjax.alert(jreturn.message);
+                    });
+                });
+            }
+        }
+    };
+
+$(document).ready(function(){
+$('.datepicker').each(function(){
+$(this).datepicker();
+});
+})
+</script>
+
+<form id="m707_add_form">
+    <div id="">
+        <div>
+
+            <div id="">
+
+                <div class="m707_filter">
+
+                    <div class="m707_filter">
+
+                        <div class="m707_filter_box">
+                            <div class="m707_filter_box_title">
+                                Bắt đầu:
+                            </div>
+
+                            <div class="m707_filter_box_dat">
+                                <?php echo $this->views->Report->Datepicker('startDate', date('d-m-Y')); ?>
+                                <input type="text" class="" value="" placeholder="hh:mm" name="startTime"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="clear"></div>
+
+
+                    <div class="m707_filter">
+
+                        <div class="m707_filter_box">
+                            <div class="m707_filter_box_title">
+                                Kết thúc:
+                            </div>
+
+                            <div class="m707_filter_box_dat">
+                                <?php echo $this->views->Report->Datepicker('endDate', date('d-m-Y')); ?>
+                                <input type="text" class="" value="" placeholder="hh:mm" name="endTime"/>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="m707_filter_box">
+                        <div class="m707_filter_box_title">
+                        </div>
+
+                        <div class="m707_filter_box_dat">
+                            <button onclick="m707.save()" class="btn btn-custom" type="button"> Cập nhật </button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="clear"></div>
+
+                <div class="m707_filter">
+
+
+                    <!--  Nguyên nhân  -->
+                    <div class="m707_filter_box">
+                        <div class="m707_filter_box_title">
+                            Nguyên nhân:
+                        </div>
+
+                        <div class="m707_filter_box_dat required">
+                            <?php echo $this->views->Report->SimpleComboBox('reason1', $this->reasons);?>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+                <div class="clear"></div>
+                <div class="clear"></div>
+            </div>
+        </div>
+
+        <br/>
+        <hr/>
+        <br/>
+
+
+        <!-- Thiết bị lấy từ -->
+        <div id="m707_from">
+            <div id="m707_from_filter">
+                <select id="m707_from_filter_select_box" style="" name="location" onchange="m707.loadEquip(this);" name="fromid">
+                    <option value="0">--- Chọn khu vực --- </option>
+                    <?php foreach($this->locations as $key=>$display):?>
+                        <option value="<?php echo $key;?>"><?php echo $display;?></option>
+                    <?php endforeach;?>
+                </select>
+            </div>
+
+            <div id="m707_from_select">
+                <select id="m707_from_select_dial_box" size="12" multiple="multiple" name="fromvalue[]">
+                    <option value="0"></option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Các nút di chuyển thiết bị -->
+        <div id="m707_move">
+            <div class="m707_move_button">
+                <button onclick="m707.add()" class="btn-custom" type="button"> &gt;&gt; </button>
+            </div>
+
+            <div class="m707_move_button">
+                <button onclick="m707.remove()" class="btn-custom"type="button"> &lt;&lt; </button>
+            </div>
+
+            <div class="m707_move_button">
+                <button onclick="m707.add(1)" class="btn-custom"type="button"> &gt;&gt;&gt;&gt; </button>
+            </div>
+
+            <div class="m707_move_button">
+                <button onclick="m707.remove(1)" class="btn-custom" type="button"> &lt;&lt;&lt;&lt; </button>
+            </div>
+        </div>
+
+        <!-- Thiết bị chuyển đến -->
+        <div id="m707_to">
+            <div id="m707_to_filter">
+
+            </div>
+
+            <div id="m707_to_select">
+                <select id="m707_to_select_dial_box" size="12" multiple="multiple" name="tovalue[]">
+                    <option value="0"></option>
+                </select>
+            </div>
+        </div>
+
+
+
+    </div>
+</form>

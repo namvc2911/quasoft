@@ -1,0 +1,92 @@
+<script>
+    var m402_button_getbyrequest = {
+        // Hiển thị bản ghi theo yêu cầu cung cấp
+        show : function () {
+            var data = {ifid: parseInt($('#M402_Get_By_Request_IFID').val()) };
+            var url = sz_BaseUrl + '/button/m402/getbyrequest/show';
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#M402_Get_By_Request_ShowTable').html(jreturn);
+            });
+        },
+
+        // Lưu lại những bản ghi được chọn
+        save : function () {
+            var data = $('#M402_Get_By_Request_Form').serialize();
+            var url  = sz_BaseUrl + '/button/m402/getbyrequest/save';
+
+            qssAjax.call(url, data, function(jreturn){
+                if(jreturn.message != '') {
+                    qssAjax.notice(jreturn.message);
+                }
+                $('#qss_trace').dialog('close');
+                rowObjectSearch('<?php echo $this->ifid; ?>','<?php echo $this->deptid; ?>','ODanhSachNhapKho');
+            }, function(jreturn){
+
+                qssAjax.alert(jreturn.message);
+            });
+        }
+    };
+
+    $(document).ready(function () {
+        m402_button_getbyrequest.show();
+    });
+</script>
+
+<form id="M402_Get_By_Request_Form">
+    <input type="hidden" name="M402_Get_By_Request_IFID" id="M402_Get_By_Request_IFID" value="<?php echo $this->ifid;?>"/>
+
+    <div class="popup_wrap">
+        <div class="popup_header">
+
+            <?php /*
+            <table class="detail" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td class="left">
+                        <div class="overflow">
+                            <div class="fl">
+                                &nbsp;
+                            </div>
+
+                            <div class="fr">
+                                Trang:
+                                <a title="Trang trước" class="bold" href="#"
+                                   onclick="$('#M402_Get_By_Request_PageNo').val('1'); m402_button_getbyrequest.show();"
+                                   id="M402_Get_By_Request_Prev">&lt;&lt;</a>
+                                <input id="M402_Get_By_Request_PageNo" name="M402_Get_By_Request_PageNo"
+                                       onchange="M402_Get_By_Request.show();"
+                                       style="width: 20px !important; text-align: center;" value="1">/
+                                <span id="M402_Get_By_Request_TotalPage">1</span>
+                                <a title="Trang sau" class="bold" href="#"
+                                   onclick="$('#M402_Get_By_Request_PageNo').val('1'); m402_button_getbyrequest.show();"
+                                   id="M402_Get_By_Request_Next">&gt;&gt;</a>
+                                Hiển thị: <select id="M402_Get_By_Request_Display"
+                                                  name="M402_Get_By_Request_Display" style="width: 100;"
+                                                  onchange="m402_button_getbyrequest.show();;">
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option selected="" value="20">20</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                                Tổng số: <span id="M402_Get_By_Request_Total">1</span>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            */?>
+        </div>
+
+        <div class="popup_content">
+            <div id="M402_Get_By_Request_ShowTable">
+
+            </div>
+
+            <div class="overflow" style="padding-top: 10px;">
+                <div class="fr">
+                    <button type="button" class="btn" onclick="m402_button_getbyrequest.save()"> Cập nhật </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

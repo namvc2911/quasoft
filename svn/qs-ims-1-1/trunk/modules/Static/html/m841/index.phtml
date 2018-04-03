@@ -1,0 +1,66 @@
+<script>
+    function printPreview()
+    {
+        var url  = sz_BaseUrl + '/static/m841/show';
+        var data = $('#report').serialize();
+
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#print-area').html(jreturn);
+            removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+        });
+    }
+
+    function removePrintToolbarDisabled()
+    {
+        $('.pt-button').each(function(){
+            $(this).prop('disabled',false);
+        });
+    }
+
+    function excelReport()
+    {
+        $('#report').submit();
+    }
+</script>
+
+
+
+<div class="clear"></div>
+<div id="view">
+    <div class="line-hr">
+        <span>
+            <?php echo Qss_Lib_System::getReportTitle('M841');?>
+        </span>
+    </div>
+
+    <form id="report" method="get" action="/static/m841/excel">
+        <input type="hidden" name="popup" value="1" />
+        <table class="detail">
+            <!-- Đơn vị -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                    Đơn vị
+                </th>
+
+                <td>
+                    <?php echo $this->views->Report->SimpleComboBox('department', $this->depts); ?>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <p>
+
+    <hr>
+    <div id="print-toolbar">
+
+        <button id="pt-showreport" class="btn-custom" onclick="printPreview()" type="button">Xem báo cáo</button>
+
+        <button onclick="excelReport()" class="btn-custom pt-button" type="button"> Kiết xuất excel </button>
+
+
+    </div>
+
+    <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>

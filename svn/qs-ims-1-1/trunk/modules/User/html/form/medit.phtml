@@ -1,0 +1,314 @@
+<?php $objects = $this->form->a_fGetSubObjects();?>
+<script>
+var dialog_<?php echo $this->form->FormCode?> = {
+		fedit: false,
+		uploadPicture: function (field) {
+			/* Upload file by ajax */
+			disabledLayout();
+			$.ajaxFileUpload({
+				url : sz_BaseUrl + '/user/field/uploadpicture',
+				secureuri : false,
+				fileElementId : $('#' + field + '_picture'),
+				dataType : 'json',
+				success : function(data, status) {
+					/* Upload file successfully */
+					if (data.error) {
+						qssAjax.alert(data.message);
+						enabledLayout();
+					} else {
+						$('#' + field).val(data.image);
+						$('#' + field).parent().find('img').attr('src','/user/field/picture?file='+data.image);
+						enabledLayout();
+					}
+				},
+				error : function(data, status, e) {
+					/* If upload error */
+					qssAjax.alert(e);
+				}
+			});
+		},
+		rowEditRefresh: function(input,refresh) {
+	        	if($(input).val()=='null'){
+	            	var selected = $(input).find(':selected');
+	            	org_objid = $(selected).attr('org_objid');
+	        		org_fieldid = $(selected).attr('org_fieldid');
+	        		fid = $(selected).attr('fid');
+	        		objid = $(selected).attr('objid');
+	        		fielid = $(selected).attr('fielid');
+	        		ifid = $(selected).attr('ifid');
+	        		json = $(selected).attr('json');
+	        		createNew(org_objid,org_fieldid,fid,objid,fielid,ifid,json);
+	        		$(input).val('');
+	        		return false;
+	        	}
+	        	if(refresh == 1){
+	        		var fid = '<?php echo $this->form->FormCode ?>';
+	                var ifids = '<?php echo $this->ifids?>';
+	                var deptids = '<?php echo $this->deptids?>';
+	                var form = $('#qss_trace').find('#form_' + fid + '_edit');
+	                var data = $(form).serialize();
+	            	$(form).find('input[type=checkbox]').each(function(){
+	            		if(!$(this).is(':checked')){
+	            			data += '&' + $(this).attr('name') +'=';
+	            		}
+	            	});
+	                var url = sz_BaseUrl + '/user/form/medit?fid=' + fid + '&ifids=' + ifids
+	                                + '&deptids=' + deptids;
+	                qssAjax.getHtml(url, data, function(jreturn) {
+	                	$('#qss_trace').html(jreturn);
+	        			$('#qss_trace').dialog({ width: 800,height:400 });
+	                }, function(jreturn) {
+	                        qssAjax.alert(jreturn.message);
+	                });
+			    }
+		}
+	};	
+function multiFormSave(fid, ifids, deptids) {
+	var form = $('#qss_trace').find('#form_' + fid + '_edit');
+	var data = $(form).serialize();
+	$(form).find('input[type=checkbox]').each(function(){
+		if(!$(this).is(':checked')){
+			data += '&' + $(this).attr('name') +'=';
+		}
+	});
+	<?php foreach ($objects as $object):?>
+	 	form = $('#qss_trace').find('#object_<?php echo $object->ObjectCode?>_edit');
+	 	data = data + '&' + $(form).serialize();
+		$(form).find('input[type=checkbox]').each(function(){
+			if(!$(this).is(':checked')){
+				data += '&' + $(this).attr('name') +'=';
+			}
+		});
+	<?php endforeach;?>
+	var url = sz_BaseUrl + '/user/form/msave?fid=' + fid + '&ifids=' + ifids	+ '&deptids=' + deptids;
+	
+	qssAjax.call(url, data, function(jreturn) {
+		if(jreturn.message != ''){
+			qssAjax.alert(jreturn.message,function(){
+				dialog_<?php echo $this->form->FormCode?>.fedit = false;
+				$('#qss_trace').dialog('close'); // close dialog insert
+				rowSearch(fid);
+			});
+		}
+		else{
+			dialog_<?php echo $this->form->FormCode?>.fedit = false;
+			$('#qss_trace').dialog('close'); // close dialog insert
+			rowSearch(fid);
+		}
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+}
+function multi_select_field(el){
+	$(el).closest('.ui_box_line').find('.element').find('input, textarea, select').prop('disabled',!$(el).is(':checked'));
+}
+$(document).ready(function() {
+	$('.datepicker').each(function() {
+		$(this).datepicker({dateFormat: "dd-mm-yy"});
+		$(this).attr('placeholder', 'dd-mm-yyyy');
+	});/* Datepicker*/
+
+	if('<?php echo $this->mobile?>' == ''){
+		$('input.integer').number( true, 0 );
+		$('input.decimal').each(function(){
+			var decimals		= (typeof $(this).attr('precision') !== 'undefined' ) ? $(this).attr('precision') : 2;
+			$(this).number( true, decimals);
+		});
+		$('input.money').each(function(){
+			var thousands_sep	= (typeof $(this).attr('thousandssep') !== 'undefined') ? $(this).attr('thousandssep') : thousands_sep;
+			var dec_point		= (typeof $(this).attr('decpoint') !== 'undefined') ? $(this).attr('decpoint') : dec_point;
+			var decimals		= (typeof $(this).attr('precision') !== 'undefined' ) ? $(this).attr('precision') : decimals;
+			$(this).number( true, decimals,dec_point,thousands_sep);
+		});
+	}
+	//$('.element').find('input, textarea, select').prop('disabled',true);
+	$('.element').find('input, textarea, select').each(function(){
+		multi_select_field($(this).closest('.ui_box_line').find('.label').find('input'));
+	});
+});
+</script>
+<div id="qss_form">
+	<div>
+		<button
+			onclick="multiFormSave('<?php echo $this->form->FormCode ?>','<?php echo $this->ifids?>','<?php echo $this->deptids?>')"
+			type="button" class="btn-custom"><?php echo $this->_translate(35)?></button>
+		<button
+			onclick="$('#qss_trace').dialog( 'close' );"
+			type="button" class="btn-custom"><?php echo $this->_translate(32)?></button>
+	</div>
+	<div class="navmenutab tabs-menu">
+		<ul>
+			<li class="splash"></li>
+			<li class="active normal"><a href="#form_tab_1"><span>Sửa nhiều bản ghi</span>
+			</a>
+			</li>
+		</ul>
+	</div>
+	<div style="border-top: 1px solid #999; clear: both;"></div>
+	<div class="ui_box" id="form_tab_1">
+		<?php $data = $this->params;?>
+		<?php $hasField =false;?>
+		<?php $object = $this->form->o_fGetMainObject();?>
+		<?php $fields = $object->getMultiEditableFields();?>
+		<?php if(count($fields)):?>
+			<?php $classname = 'Qss_Bin_Onload_'.$object->ObjectCode;
+					if(!class_exists($classname))
+					{
+						$classname = 'Qss_Lib_Onload';
+					}
+					$onload = new $classname($this->form,$object);
+					$onload->__doExecute();
+			?>
+			<form id="form_<?php echo $this->form->FormCode ?>_edit" method="post">
+			<input type="hidden" name="fid" id="fid" value="<?php echo $this->form->FormCode?>"> 
+			<input type="hidden" name="ifid" id="ifid" value="<?php echo $this->form->i_IFID?>"> 
+			<input type="hidden" name="deptid" id="deptid" value="<?php echo $this->form->i_DepartmentID?>">
+			<div class="ui_box_s100">
+				<fieldset>
+					<legend>
+						<?php echo $object->sz_Name?>
+					</legend>
+					<?php foreach ($fields as $f):?>
+						<?php
+							$name = $f->ObjectCode . '_' . $f->FieldCode;
+							if(isset($data[$name])  && (!$f->bReadOnly || $f->szDefaultVal == 'AUTO'))//nếu readonly mà auto
+							{
+								if (is_array($data[$name]))
+								{
+									$val = 0;
+									foreach ($data[$name] as $bit)
+									{
+										$val = $val | $bit;
+									}
+									$f->setValue($val);
+								}
+								elseif ( ($f->intFieldType == 8 || $f->intFieldType == 9))
+								{
+									$f->setValue($data[$name]);
+								}
+								elseif($f->intFieldType == 7 )
+								{
+									$f->setValue(($data[$name]?true:false));
+								}
+								else
+								{
+									if(is_int($data[$name]) 
+									&&($f->RefFieldCode 
+									|| $f->intFieldType == 14 
+									|| $f->intFieldType == 16))
+									{
+										$f->setRefIOID($data[$name]);
+										$f->setValue('');
+									}
+									else 
+									{
+										$f->setValue($data[$name]);
+									}
+								}
+							}
+						?>
+						<?php $onload->{$f->FieldCode}();?>
+						<?php $hasField = true;?>
+						<div class="ui_box_line">
+							<div class="label">
+								<input type="checkbox" id="multi_<?php echo $f->ObjectCode?>_<?php echo $f->FieldCode?>" name="multi_<?php echo $f->ObjectCode?>_<?php echo $f->FieldCode?>" onchange="multi_select_field(this)" value="1"
+										<?php if(@$data['multi_'.$f->ObjectCode.'_'.$f->FieldCode] == 1):?>checked<?php endif;?>>
+								<label for="multi_<?php echo $f->ObjectCode?>_<?php echo $f->FieldCode?>"><?php echo $f->szFieldName;?>
+								</label>
+							</div>
+							<div class="element">
+							<?php echo $object->sz_fGetFormFieldElement($f->FieldCode,$this->user,true);?>
+							</div>
+						</div>
+					<?php endforeach;?>
+				</fieldset>
+			</div>
+			</form>
+		<?php endif;?>
+		
+		<?php foreach ($objects as $object):?>
+			<?php $fields = $object->getMultiEditableFields();?>
+			<?php if(count($fields)):?>
+				<?php $classname = 'Qss_Bin_Onload_'.$object->ObjectCode;
+					if(!class_exists($classname))
+					{
+						$classname = 'Qss_Lib_Onload';
+					}
+					$onload = new $classname($this->form,$object);
+					$onload->__doExecute();
+				?>
+				<?php if(!($object->bPublic & 1) && count($fields)):?>
+				<form id="object_<?php echo $object->ObjectCode ?>_edit" method="post">
+				<input type="hidden" name="ifid" id="ifid" value="<?php echo $object->i_IFID ?>"> 
+				<input type="hidden" name="deptid" id="deptid" value="<?php echo $object->intDepartmentID ?>"> 
+				<input type="hidden" name="ioid" id="ioid" value="<?php echo $object->i_IOID ?>"> 
+				<input type="hidden" name="objid" id="objid" value="<?php echo $object->ObjectCode ?>">
+				<div class="ui_box_s100">
+					<fieldset>
+						<legend>
+							<?php echo $object->sz_Name?>
+						</legend>
+						<?php foreach ($fields as $f):?>
+							<?php
+								$data = $this->params;
+								$name = $f->ObjectCode . '_' . $f->FieldCode;
+								if(isset($data[$name])  && (!$f->bReadOnly || $f->szDefaultVal == 'AUTO'))//nếu readonly mà auto
+								{
+									if (is_array($data[$name]))
+									{
+										$val = 0;
+										foreach ($data[$name] as $bit)
+										{
+											$val = $val | $bit;
+										}
+										$f->setValue($val);
+									}
+									elseif ( ($f->intFieldType == 8 || $f->intFieldType == 9))
+									{
+										$f->setValue($data[$name]);
+									}
+									elseif($f->intFieldType == 7 )
+									{
+										$f->setValue(($data[$name]?true:false));
+									}
+									else
+									{
+										if(is_int($data[$name]) 
+										&&($f->RefFieldCode 
+										|| $f->intFieldType == 14 
+										|| $f->intFieldType == 16))
+										{
+											$f->setRefIOID($data[$name]);
+											$f->setValue('');
+										}
+										else 
+										{
+											$f->setValue($data[$name]);
+										}
+									}
+								}
+							?>
+							<?php $hasField = true;?>
+							<div class="ui_box_line">
+								<div class="label">
+									<input type="checkbox" id="multi_<?php echo $f->ObjectCode?>_<?php echo $f->FieldCode?>" name="multi_<?php echo $f->ObjectCode?>_<?php echo $f->FieldCode?>" onchange="multi_select_field(this)" value="1"
+										<?php if(@$data['multi_'.$f->ObjectCode.'_'.$f->FieldCode] == 1):?>checked<?php endif;?>>
+									<label for="multi_<?php echo $f->ObjectCode?>_<?php echo $f->FieldCode?>""><?php echo $f->szFieldName;?>
+									</label>
+								</div>
+								<div class="element">
+								<?php echo $object->sz_fGetFormFieldElement($f->FieldCode,$this->user,true);?>
+								</div>
+							</div>
+						<?php endforeach;?>
+					</fieldset>
+				</div>
+				</form>
+				<?php endif;?>
+			<?php endif;?>
+		<?php endforeach;?>
+		<?php if(!$hasField):?>
+			<h3><?php echo $this->_translate(1)?></h3>
+		<?php endif;?>
+	</div>
+</div>

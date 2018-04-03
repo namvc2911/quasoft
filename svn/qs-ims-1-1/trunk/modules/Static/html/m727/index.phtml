@@ -1,0 +1,182 @@
+<script type="text/javascript">
+	function printPreview() {
+		var start = $('#start').val();
+		var end   = $('#end').val();
+		var err   = '';
+		
+		err += common_checkEmpty(start, '<?php echo $this->_translate(2)?>');
+		err += common_checkEmpty(end , '<?php echo $this->_translate(8)?>');
+		err += common_compareStartAndEnd(start, end);
+		
+		if(err)
+		{
+			qssAjax.alert(err);
+			return;
+		}
+		else
+		{
+			var url = sz_BaseUrl + '/static/m727/show';
+			var data = $('#report').serialize();
+			
+			// LAY GIA TRI DANG CHUOI CUA DIEU KIEN LOC
+			data += "&locationStr="  + encodeURIComponent($('#location option:selected').text());
+			data += "&groupStr="     + encodeURIComponent($('#group option:selected'   ).text());
+			data += "&typeStr="      + encodeURIComponent($('#type option:selected'    ).text());
+			data += "&equipmentStr=" + encodeURIComponent($('#equipment_tag'           ).val());
+			
+			qssAjax.getHtml(url, data, function(jreturn) {
+				$('#print-area').html(jreturn);
+				removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+			});
+		}
+	}
+</script>
+
+<div class="clear">&nbsp;</div>
+<div id="view">
+	<div class="line-hr">
+		<span><?php echo $this->_translate(1)?> </span>
+	</div>
+
+	<form id="report" method="get"
+		action="/report/maintenance/equipment/location1">
+		<table class="detail">
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(2)?>
+				</th>
+				<td><?php echo $this->views->Report->Datepicker('start',date('d-m-Y'));?><span
+					class="bold red">(*)</span></td>
+			</tr>
+
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(8)?>
+				</th>
+				<td><?php echo $this->views->Report->Datepicker('end',date('d-m-Y'));?><span
+					class="bold red">(*)</span></td>
+			</tr>
+
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(3) ?>
+				</th>
+				<td><?php
+				$id = 'location';
+				$getFields = array('num' => 3,
+						'objects' => array('OKhuVuc' => array(
+								'id' => 'IOID'
+								, 'display1' => 'MaKhuVuc'
+								, 'display2' => 'Ten')));
+								?> <?php echo $this->views->Report->ComboBox($id, $getFields); ?>
+				</td>
+			</tr>
+
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(22) ?>
+				</th>
+				<td><?php
+				$id = 'group';
+				$getFields = array('num' => 3,
+						'objects' => array('ONhomThietBi' => array(
+								'id' => 'IOID'
+								, 'display1' => 'LoaiThietBi'
+								)));
+								?> <?php echo $this->views->Report->ComboBox($id, $getFields); ?>
+				</td>
+			</tr>
+
+
+			<?php if (Qss_Lib_Extra::checkFieldExists('ODanhSachThietBi', 'Ref_LoaiThietBi')): ?>
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(21) ?>
+				</th>
+				<td><?php
+				$id = 'type';
+				$getFields = array('num' => 2,
+						'objects' => array('OLoaiThietBi' => array(
+								'id' => 'IOID'
+								, 'display1' => 'TenLoai'
+								)));
+								?> <?php echo $this->views->Report->ComboBox($id, $getFields); ?>
+				</td>
+			</tr>
+			<?php endif; ?>
+
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(7) ?>
+				</th>
+				<td><?php
+				$id = 'equipment';
+				$getDataObject = array('ODanhSachThietBi' => array('MaThietBi', 'LoaiThietBi'));
+				$getFields = array('num' => 2,
+						'objects' => array('ODanhSachThietBi' => array(
+								'id' => 'IOID'
+								, 'display1' => 'MaThietBi'
+								, 'display2' => 'LoaiThietBi')));
+								$getLookupFilter = array(array('id' => 'group'
+								, 'refField' => array('ODanhSachThietBi' => 'Ref_NhomThietBi')
+								, 'required' => 0)
+								, array('id' => 'type'
+								, 'refField' => array('ODanhSachThietBi' => 'Ref_LoaiThietBi')
+								, 'required' => 0));
+								?> <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields, $getLookupFilter); ?>
+				</td>
+			</tr>
+
+			<!-- Du an -->
+			<tr>
+				<th class="report-param-label"><?php echo $this->_translate(29)?></th>
+				<td><?php
+				$id            = 'project';
+				$getDataObject = array('ODuAn'=>array('MaDuAn', 'TenDuAn'));
+				//,'OKhuVuc'=>array('MaKhuVuc','Ten')
+				$getFields     = array('num'=>2,
+                                               'objects'=>array('ODuAn'=>array(
+                                                                        'id'=>'IOID'
+                                                                        ,'display1'=>'MaDuAn'
+                                                                        ,'display2'=>'TenDuAn')) );
+                                                                        ?>
+                                                                        <?php
+                                                                        echo $this->views->Report->ListBox(
+                                                                        $id
+                                                                        , $getDataObject
+                                                                        , $getFields  );
+                                                                        ?>
+				</td>
+			</tr>
+
+			<!-- Tho van hanh -->
+			<tr>
+				<th class="report-param-label"><?php echo $this->_translate(30)?></th>
+				<td><?php
+				$id            = 'employee';
+				$getDataObject = array('ODanhSachNhanVien'=>array('MaNhanVien', 'TenNhanVien'));
+				//,'OKhuVuc'=>array('MaKhuVuc','Ten')
+				$getFields     = array('num'=>2,
+                                               'objects'=>array('ODanhSachNhanVien'=>array(
+                                                                        'id'=>'IOID'
+                                                                        ,'display1'=>'MaNhanVien'
+                                                                        ,'display2'=>'TenNhanVien')) );
+                                                                        ?>
+                                                                        <?php
+                                                                        echo $this->views->Report->ListBox(
+                                                                        $id
+                                                                        , $getDataObject
+                                                                        , $getFields  );
+                                                                        ?>
+				</td>
+			</tr>
+
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(23) ?>
+				</th>
+				<td><input type="checkbox" name="all" id="all" value="1" />
+				</td>
+			</tr>
+		</table>
+	</form>
+	<hr />
+
+	<?php echo $this->views->Report->PrintToolbar();?>
+	<div id="print-content">
+		<div id="print-area"></div>
+	</div>
+</div>

@@ -1,0 +1,258 @@
+<?php
+$width  = 1200;
+$widths = array(6, 4, 2, 3, 2, 2, 4, 2, 4, 4, 2);
+$totalCols = count($widths);
+$widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+$oldNhaMay = false;
+$oldBoPhan = false;
+$oldNhanVien = '';
+$oldTaiSan   = '';
+$stt         = 0;
+?>
+
+<style>
+    .wrapper
+    {
+        position:relative;
+        width: 100%;
+    }
+
+    .parent
+    {
+        position:absolute;
+        height: 24px;
+        top:0px;
+        left: 0px;
+    }
+
+    .child
+    {
+        position:fixed;
+        background: #f9f9f9;
+        width: 88.5%;
+        margin-top: -2px;
+
+    }
+
+    .empty_block
+    {
+        height: 24px;
+    }
+</style>
+
+<div class="wrapper">
+    <div class="parent">
+        <div class="child">
+
+            <div class="fl">
+
+
+                <div class="fl" style="padding-left: 2px; ">
+                    Thời gian:<?php echo $this->views->Report->Datepicker('start', $this->start);?>
+                </div>
+
+                <div class="fl" style="padding-left: 10px; ">
+                    <?php echo $this->views->Report->Datepicker('end', $this->end);?>
+                </div>
+            </div>
+
+            <div class="fr">
+                Trang:
+                <a class="bold" title="Trang trước" href="#" onclick="$('#qss_form_pageno').val('<?php echo $this->prev;?>'); m184.show();"><<</a>
+                <input id="qss_form_pageno" name="page" onchange="m184.show();" style="width: 20px !important; text-align: center;" value="<?php echo $this->page;?>">
+                / <?php echo $this->cpage;?>
+                <a class="bold" title="Trang sau" href="#" onclick="$('#qss_form_pageno').val('<?php echo $this->next;?>');m184.show();">>></a>
+                Hiển thị:
+                <select id="qss_form_perpage" name="display"  onchange="m184.show();">
+                    <option <?php echo ($this->display == 10)?'selected':'';?>>10</option>
+                    <option <?php echo ($this->display == 20)?'selected':'';?>>20</option>
+                    <option <?php echo ($this->display == 50)?'selected':'';?>>50</option>
+                    <option <?php echo ($this->display == 100)?'selected':'';?>>100</option>
+                </select>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="empty_block">
+        &nbsp;
+    </div>
+
+    <div>
+        <table id="grid" cellspacing="0" cellpadding="0" border="0" class="grid" >
+            <thead>
+                <?php $begin = 0;?>
+                <?php $lineClass = 0;?>
+                <tr>
+                    <th width="<?php echo $widths[$begin++];?>%">Phiếu bàn giao</th>
+                    <th width="<?php echo $widths[$begin++];?>%"></th>
+                    <th width="<?php echo $widths[$begin++];?>%">Nhà máy</th>
+                    <th width="<?php echo $widths[$begin++];?>%">Ngày bàn giao</th>
+                    <th width="<?php echo $widths[$begin++];?>%">Đơn vị tính</th>
+                    <th width="<?php echo $widths[$begin++];?>%">Số lượng</th>
+                    <th width="<?php echo $widths[$begin++];?>%">Đơn giá</th>
+                    <th width="<?php echo $widths[$begin++];?>%">TG đã sử dụng (tháng)</th>
+                    <th width="<?php echo $widths[$begin++];?>%">Thành tiền</th>
+                    <th width="<?php echo $widths[$begin++];?>%">Còn lại</th>
+                    <th width="<?php echo $widths[$begin++];?>%">Lịch sử</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <?php $begin = 0;?>
+                <tr style="height: 0px !important;">
+                    <td width="<?php echo $widths[$begin++];?>%" style="height: 0px !important;"></td>
+                    <td width="<?php echo $widths[$begin++];?>%" style="height: 0px !important;"></td>
+                    <td width="<?php echo $widths[$begin++];?>%" style="height: 0px !important;"></td>
+                    <td width="<?php echo $widths[$begin++];?>%" style="height: 0px !important;"></td>
+                    <td width="<?php echo $widths[$begin++];?>%" style="height: 0px !important;"></td>
+                    <td width="<?php echo $widths[$begin++];?>%" style="height: 0px !important;"></td>
+                    <td width="<?php echo $widths[$begin++];?>%" style="height: 0px !important;"></td>
+                    <td width="<?php echo $widths[$begin++];?>%" style="height: 0px !important;"></td>
+                    <td width="<?php echo $widths[$begin++];?>%" style="height: 0px !important;"></td>
+                    <td width="<?php echo $widths[$begin++];?>%" style="height: 0px !important;"></td>
+                    <td width="<?php echo $widths[$begin++];?>%" style="height: 0px !important;"></td>
+                </tr>
+
+
+                <?php $begin=0;?>
+                <?php foreach($this->report as $item):?>
+                    <?php $item->BoPhan = trim($item->BoPhan);?>
+                    <?php $item->NhaMay = trim($item->NhaMay);?>
+
+                    <?php if($item->NhaMay !== $oldNhaMay):?>
+                        <?php if($item->NhaMay):?>
+                            <tr>
+                                <td class="left bold tree_level_1 " colspan="<?php echo $totalCols;?>">
+                                    Nhà máy: <?php echo $item->NhaMay;?>
+
+
+                                </td>
+                            </tr>
+                        <?php else:?>
+                            <tr>
+                                <td class="left bold tree_level_1 " colspan="<?php echo $totalCols;?>">
+                                    Nhà máy: Chưa phân nhà máy
+                                </td>
+                            </tr>
+                        <?php endif;?>
+                    <?php endif;?>
+
+                    <?php if($item->BoPhan !== $oldBoPhan
+                        || $item->NhaMay !== $oldNhaMay):?>
+                        <?php if($item->NhaMay):?>
+                            <tr>
+                                <td class="left bold tree_level_2 " colspan="<?php echo $totalCols;?>">
+                                    Bộ phận: <?php echo $item->BoPhan;?>
+                                </td>
+                            </tr>
+                        <?php else:?>
+                            <tr>
+                                <td class="left bold tree_level_2 " colspan="<?php echo $totalCols;?>">
+                                    Bộ phận: Chưa phân bộ phận
+                                </td>
+                            </tr>
+                        <?php endif;?>
+                    <?php endif;?>
+
+                    <?php if($item->MaNhanVien != $oldNhanVien
+                        || $item->BoPhan !== $oldBoPhan
+                        || $item->NhaMay !== $oldNhaMay):?>
+                        <?php $stt = 0;?>
+                        <tr class="nv<?php echo ++$lineClass;?>">
+                            <td class="left bold tree_level_3 " colspan="<?php echo $totalCols;?>">
+                                Nhân viên: <?php echo $item->MaNhanVien;?> - <?php echo $item->TenNhanVien;?>
+                                <?php echo ($item->NhaMay != $item->NhaMayHienTai)?"<span class='red'>&nbsp; &nbsp;(Nhà máy hiện tại: {$item->NhaMayHienTai})</span>":'';?>
+                            </td>
+                        </tr>
+                    <?php endif;?>
+
+                    <?php if($item->Ref_MaTaiSan != $oldTaiSan
+                        || $item->MaNhanVien != $oldNhanVien
+                        || $item->BoPhan !== $oldBoPhan
+                        || $item->NhaMay !== $oldNhaMay):?>
+
+                        <?php $begin = 0;?>
+
+                        <tr open_element="0"
+                            load_data="0"
+                            id="TS<?php echo (int)$item->Ref_MaNhanVien;?>_<?php echo (int)$item->Ref_MaTaiSan;?>"
+                            onclick="m184.detail(this, '<?php echo $item->Ref_MaNhanVien;?>', '<?php echo $item->Ref_MaTaiSan;?>', <?php echo $this->all;?>, '<?php echo $item->NhaMay;?>')"
+                            class="<?php echo ($item->NhaMay != $item->NhaMayHienTai)?"red":'';?>">
+
+                            <td class="left  tree_level_4 tree_close" >
+                                <?php echo ++$stt;?>. <?php echo $item->MaTaiSan;?>
+                            </td>
+
+                            <td class="left" >
+                                <?php echo $item->TenTaiSan;?>
+                            </td>
+
+                            <td >
+                                &nbsp;
+                            </td>
+
+                            <td >
+                                &nbsp;
+                            </td>
+
+                            <td class="left" >
+                                <?php echo $item->DonViTinh;?>
+                            </td>
+
+                            <td class="right" >
+                                <?php echo Qss_Lib_Util::formatNumber($item->SoLuongConLaiCuoi);?>
+                            </td>
+
+                            <td >
+                                &nbsp;
+                            </td>
+
+                            <td >
+                                &nbsp;
+                            </td>
+
+                            <td >
+                                &nbsp;
+                            </td>
+
+                            <td >
+                                &nbsp;
+                            </td>
+
+                            <td >
+                                &nbsp;
+                            </td>
+                        </tr>
+                    <?php endif;?>
+
+                    <?php $oldTaiSan = $item->Ref_MaTaiSan;?>
+                    <?php $oldNhaMay = $item->NhaMay;?>
+                    <?php $oldBoPhan = $item->BoPhan;?>
+                    <?php $oldNhanVien = $item->MaNhanVien;?>
+
+                    <?php /*
+                <tr>
+                    <td class="left tree_level_4"> <a href="/user/form/edit?ifid=<?php echo $item->IFID_M182;?>&deptid=<?php echo $this->deptid;?>" target="_blank"><?php echo $item->SoPhieu;?></a> </td>
+                    <td class="center"> <?php echo Qss_Lib_Date::mysqltodisplay($item->Ngay);?> </td>
+                    <td class="right"> <?php echo Qss_Lib_Util::formatNumber($item->SoLuongConLai);?> </td>
+                    <td class="right"><?php echo Qss_Lib_Util::formatMoney($item->DonGia);?></td>
+                    <td class="right"><?php echo Qss_Lib_Util::formatNumber($item->PhanTramKhauHao);?></td>
+                    <td class="right"><?php echo Qss_Lib_Util::formatMoney($item->ThanhTien);?></td>
+                    <td class="right"><?php echo Qss_Lib_Util::formatMoney( ($item->ThanhTien * $item->PhanTramKhauHao)/100 );?></td>
+                    <td class="center"><a href="#1" onclick="m184.history(<?php echo $item->RefBanGiao;?>, <?php echo $item->Ref_MaNhanVien;?>, <?php echo $item->Ref_MaTaiSan;?>)">Xem</a></td>
+                </tr>
+                */?>
+                <?php endforeach;?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        var height = $(window).height() - 230 - $('#grid thead').height();//-8
+        $('#grid').tableScroll({height:height,width:'100%'});
+    });
+</script>
+

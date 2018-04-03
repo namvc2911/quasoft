@@ -1,0 +1,64 @@
+<script>
+function printPreview(){
+	var ngaybd = $('#start').val();
+	var ngaykt = $('#end').val();
+	if(ngaybd == '' || ngaykt == '')	{
+		qssAjax.alert('<?php echo $this->_translate(5)?>');
+		return;
+	}
+	var firstValue = ngaybd.split('-');
+	var secondValue = ngaykt.split('-');
+	var firstDate=new Date();
+	firstDate.setFullYear(firstValue[2],(firstValue[1] - 1 ),firstValue[0]);
+	var secondDate=new Date();
+	secondDate.setFullYear(secondValue[2],(secondValue[1] - 1 ),secondValue[0]);     
+	if (firstDate > secondDate)
+	{
+		qssAjax.alert('<?php echo $this->_translate(6)?>');
+		return;
+	}
+	 var url = sz_BaseUrl + '/static/m822/show';
+     var data = $('#report').serialize();
+     qssAjax.getHtml(url, data, function(jreturn) {
+         $('#print-area').html(jreturn);
+         removePrintToolbarDisabled();
+     });		
+}
+</script>
+<div class='clear'></div>
+<div id='view'>
+	<div class='line-hr'>
+		<span><?php echo Qss_Lib_System::getReportTitle('M822');?></span>
+	</div>
+	<form id="report" action="/static/m822/show" method='get'>
+		<table class='detail' style='margin: 10p'>
+			<tr>
+				<th class="report-param-lable" width='20%'><?php echo $this->_translate(1);?>:</th>
+				<td><?php echo $this->views->Report->Datepicker('start',date('01').'-'.date('m').'-'.date('Y')) ?><span class="bold red">(*)</span></td>
+			</tr>
+			
+			<tr >
+				<th class="report-param-lable" width='20%'><?php echo $this->_translate(4);?>:</th>
+				<td><?php echo $this->views->Report->Datepicker('end',date('d').'-'.date('m').'-'.date('Y')) ?><span class="bold red">(*)</span></td>
+			</tr>
+			
+			<tr>
+				<th class="report-param-label" width="20%" ><?php echo $this->_translate(7);?></th>
+				<td><?php
+				$id            = 'IOID';
+				$getFields     = array('num'=>2,
+                                       'objects'=>array('ODanhSachThietBi'=>array(
+                                                            'id'=>'IOID'
+                                       						, 'display1' => 'MaThietBi'
+                                                            ,'display2'=>'TenThietBi'
+                                                            )) );
+                                                            ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+			
+			</tr>
+		</table>
+	</form>
+    <?php echo $this->views->Report->PrintToolbar();?>
+    <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>

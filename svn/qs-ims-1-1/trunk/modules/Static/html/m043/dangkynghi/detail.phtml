@@ -1,0 +1,89 @@
+<?php if($this->mobile):?>
+    <form id="filter_dangkynghi">
+        <div class="right">
+            <span class="bold">Năm: </span>
+            <input type="text" value="<?php echo $this->nam;?>" size="5" name="year" placeholder="yyyy" style="width: 100px !important;;"/>
+            <button type="button" class="btn" onclick="Static_M043.show('DANG_KY_NGHI');" > Xem </button>
+        </div>
+
+        <div class="clear"></div>
+        <br/>
+    </form>
+
+    <table class="border" cellpadding="0" cellspacing="0" border="0">
+        <tr class="bggrey">
+            <th class="bold">Loại ngày nghỉ</th>
+            <th class="bold">Thời gian bắt đầu</th>
+            <th class="bold">Thời gian kết thúc</th>
+            <th class="bold">Bắt đầu nghỉ</th>
+            <th class="bold">Số giờ nghỉ</th>
+            <th class="bold">Lý Do</th>
+            <th class="bold">Tình trạng</th>
+            <th class="">Yêu cầu hủy</th>
+        </tr>
+
+        <?php foreach ($this->data as $item):?>
+            <tr>
+                <td class="left"><?php echo $item->LoaiNgayNghi;?></td>
+                <td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item->NgayBatDau);?></td>
+                <td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item->NgayBatDau);?></td>
+                <td class="center"><?php echo $item->BatDauNghi;?></td>
+                <td class="right"><?php echo $item->SoGioNghi;?></td>
+                <td class="left"><?php echo $item->LyDo;?></td>
+                <td class="center <?php echo $item->color;?>"><?php echo $item->Name;?></td>
+                <td class="center">
+                    <?php if($item->StepNo != 3 && $item->StepNo != 4): // Bước hủy và yêu cầu hủy ?>
+                        <a href="#1" onclick="Static_M043.cancelLeaveRequest('<?php echo $item->IFID_M077;?>', '<?php echo $item->DeptID;?>')">
+                            Yêu cầu hủy
+                        </a>
+                    <?php endif;?>
+                </td>
+            </tr>
+        <?php endforeach;?>
+
+    </table>
+<?php else:?>
+    <form id="filter_dangkynghi">
+        <div class="fr">
+            <span class="bold">Năm: </span>
+            <input type="text" value="<?php echo $this->nam;?>" size="18" name="year" placeholder="yyyy"/>
+            <button type="button" class="btn" onclick="Static_M043.show('DANG_KY_NGHI');" > Xem </button>
+        </div>
+
+        <div class="clear"></div>
+        <br/>
+    </form>
+
+    <table class="border" cellpadding="0" cellspacing="0" border="0">
+        <tr class="bggrey">
+            <th class="bold">Loại ngày nghỉ</th>
+            <th class="bold">Thời gian bắt đầu</th>
+            <th class="bold">Thời gian kết thúc</th>
+            <th class="bold">Bắt đầu nghỉ</th>
+            <th class="bold">Số giờ nghỉ</th>
+            <th class="bold">Lý Do</th>
+            <th class="bold">Tình trạng</th>
+            <th class="">Yêu cầu hủy</th>
+        </tr>
+
+        <?php foreach ($this->data as $item):?>
+            <tr>
+                <td class="left"><?php echo $item->LoaiNgayNghi;?></td>
+                <td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item->NgayBatDau);?></td>
+                <td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item->NgayKetThuc);?></td>
+                <td class="center"><?php echo $item->BatDauNghi;?></td>
+                <td class="right"><?php echo $item->SoGioNghi;?></td>
+                <td class="left"><?php echo $item->LyDo;?></td>
+                <td class="center <?php echo $item->color;?>"><?php echo $item->Name;?></td>
+                <td class="center">
+                    <?php if($item->StepNo != 3 && $item->StepNo != 4): // Bước hủy và yêu cầu hủy ?>
+                        <a href="#1" onclick="Static_M043.cancelLeaveRequest('<?php echo $item->IFID_M077;?>', '<?php echo $item->DeptID;?>')">
+                            Yêu cầu hủy
+                        </a>
+                    <?php endif;?>
+                </td>
+            </tr>
+        <?php endforeach;?>
+
+    </table>
+<?php endif;?>

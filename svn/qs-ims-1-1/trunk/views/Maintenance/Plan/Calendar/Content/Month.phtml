@@ -1,0 +1,215 @@
+<script>
+	var drag = false;
+	$(document).ready(function(){
+		$(function () {
+			$('.workorder').draggable({
+				appendTo: "body",
+				revert:true,
+				start: function( event, ui ) {
+					drag = true;
+				},
+				stop: function(event, ui) {
+					setTimeout(function(){ui.helper.unbind("click.prevent");}, 300);
+					drag = false;
+				}
+			});
+			$('.cols').droppable({
+				greedy: true,
+				accept: '.workorder',
+				hoverClass: "cal_droppable",
+				tolerance: 'pointer',
+				drop: function(event,ui){
+					var ifid = ui.draggable.attr("id");
+					var chukyid = ui.draggable.attr("chukyid");
+					var sdate = ui.draggable.attr("sdate");
+					var edate = ui.draggable.attr("edate");
+					var dvbt = ui.draggable.attr("dvbt");
+					var date = $(this).attr("date");
+					var dvbtid = $(this).attr("dvbtid");
+					if(date != sdate || dvbtid != dvbt){
+						//adjust workorder
+						var url = sz_BaseUrl + '/static/m188/adjust';
+						var data = {ifid:ifid,chukyid:chukyid,date:date,sdate:sdate,edate:edate,dvbtid:dvbtid};
+						qssAjax.call(url, data, function(jreturn) {
+							showToDay();
+						}, function(jreturn) {
+							qssAjax.alert(jreturn.message);
+						});
+					}
+				}
+
+			});
+		});
+
+	});
+</script>
+<?php
+$starttime = strtotime($this->startdate);
+$startday  = date('w',$starttime);
+$startdate = date_create($this->startdate);
+?>
+<!-- Change month/Chuyển tiếp giữa các tháng -->
+
+<div style="text-align: center;">
+    <div class="cal_content_title">
+        <!-- Btn: Show prev month/Hiển thị tháng trước -->
+        <p class="cal_content_title_arrow">
+            <a href="#1" onclick="showMonth('<?php echo $this->prev[0]?>','<?php echo $this->prev[1]?>');">
+                <img src="/images/calendar/left_arrow_32.png"/>
+            </a>
+        </p>
+
+        <!-- Current month/Tháng hiện tại -->
+        <p class="cal_content_title_info">
+            Tháng <?php echo $this->m?>/<?php echo $this->y?>
+        </p>
+
+        <!-- Btn: Show next month/Hiển thị tháng tiếp theo -->
+        <p class="cal_content_title_arrow">
+            <a href="#1" onclick="showMonth('<?php echo $this->next[0]?>','<?php echo $this->next[1]?>');">
+                <img src="/images/calendar/right_arrow_32.png"/>
+            </a>
+        </p>
+    </div><!-- end .cal_content_title -->
+</div>
+
+
+
+<div class="cal_content_grid cal_content_month">
+	<div class="rows">
+		<?php for($i=1;$i<=$this->daysInMonth;$i++):?>
+			<?php $tempHoliday = (($i + $startday) % 7 == 0 || ($i + $startday) % 7 == 1)?'cal_cols_holiday':''; ?>
+
+			<div class="cols cols_<?php echo $this->daysInMonth?> <?php echo $tempHoliday;?>">
+				<?php echo $i?>
+			</div>
+		<?php endfor;?>
+	</div><!-- end .rows -->
+
+	<?php $row = 1;?>
+	<?php foreach ($this->data as $key=>$value):?>
+		<?php if($key):?>
+			<?php $row++;?>
+			<div class="rows_group"><?php echo $this->donvibaotri[$key]?> <a href="#" onclick="showResource('<?php echo Qss_Lib_Date::mysqltodisplay($this->startdate)?>','<?php echo Qss_Lib_Date::mysqltodisplay($this->enddate)?>',<?php echo $key?>)">Xem nhân sự bảo trì</a>
+			</div>
+		<?php endif;?>
+
+
+			<?php foreach($value as $k=>$v):?>
+				<?php $row += $k?>
+				<div class="rows">
+					<?php foreach ($v as $k2=>$item):?>
+
+						<?php
+						$boxStyle  = '';
+						$boxStyle .= 'margin-left:'. ((100/$this->daysInMonth)*($k2-1)) .'%;';
+						$boxStyle .= 'width:'. floor((100/$this->daysInMonth)*$item->colspan) .'%;';
+						//$boxStyle .= 'border:1px #ccc solid;';
+						$boxStyle .= 'position:relative;';
+						?>
+						<div class="event_parent">
+
+
+                            <?php if($item->colstart):?>
+                                <?php if(0):?>
+                                    <div  class = "leftArrow"></div>
+                                <?php endif;?>
+								<?php
+	                            $styleOfStep = 'bgskype';
+
+	                            if($item->NgungHoatDong  || $item->khuvuchoatdong)
+	                            {
+	                                $styleOfStep = 'bginactive';
+	                            }
+	                            if($item->PBT)
+	                            {
+	                            	$styleOfStep .= ' blue';
+	                            }
+	                            ?>
+                                <?php
+                                $title  = '';
+    //							$title = 'Số phiếu: ' . $item->SoPhieu.' &#013;';
+                                $title .= 'Thiết bị: '.htmlspecialchars($item->TenThietBi).' &#013;';
+                                if($item->BoPhan)
+                                {
+                                    $title .= 'Bộ phận: '.htmlspecialchars($item->BoPhan).' &#013;';
+                                }
+                                $title .= 'Khu vực: '.htmlspecialchars($item->MaKhuVuc).' &#013;';
+
+    //							$title .= 'Chu kỳ: '.htmlspecialchars($item->ChuKy).' &#013;';
+                                //$title .= htmlspecialchars($item->CongViec);
+
+
+                                $tieuDeThe = $item->MaThietBi?$item->TenThietBi:($item->MaKhuVuc?$item->MaKhuVuc:'');
+                                $tieuDeThe .= ($item->MaThietBi && $item->BoPhan)?' - '.$item->BoPhan:'';
+    //							$tieuDeThe.= "{$item->LoaiBaoTri} ({$item->KyHieuLoai})";
+                                ?>
+                                <div
+                                    style="<?php echo $boxStyle;?>"
+                                    title="<?php echo $title?>">
+                                    <div class="event <?php echo $styleOfStep?> workorder"
+                                         sdate="<?php echo $item->StartDate?>"
+                                         edate="<?php echo $item->EndDate?>"
+                                         dvbt="<?php echo $item->Ref_DVBT?>"
+                                         id="<?php echo $item->IFID_M724?>"
+                                         chukyid="<?php echo $item->ChuKyIOID?>">
+                                        <?php if(1):?>
+                                            <div style="position: absolute; top:1px; left:0px;">
+                                            	<?php if($styleOfStep == 'bgskype'):?>
+                                                    <input type="checkbox" class="cwpo_line_checkbok workorder_select" onclick="common_check_table_line(this, '.cwpo_line_checkbok_val')" name="workorder[]" value="<?php echo $item->IFID_M724?>">
+                                                    <input type="hidden" class="table_line_disabled cwpo_line_checkbok_val" name="CheckBox[]"  value="0">
+
+
+                                                    <input class="table_line_disabled" type="hidden" value="<?php echo Qss_Lib_Date::mysqltodisplay($item->StartDate);?>" name="start[]" disabled>
+                                                    <input class="table_line_disabled" type="hidden" value="<?php echo Qss_Lib_Date::mysqltodisplay($item->EndDate);?>" name="end[]" disabled>
+                                                    <input class="table_line_disabled" type="hidden" value="<?php echo $item->IFID_M724;?>" name="ifid[]" disabled>
+                                                    <input class="table_line_disabled" type="hidden" value="<?php echo $item->ChuKyIOID;?>" name="ref_chuky[]" disabled>
+                                                    <input class="table_line_disabled" type="hidden" value="<?php echo $item->IFID_M724;?>_<?php echo $item->ChuKyIOID;?>" name="key[]" disabled>
+                                                <?php endif;?>
+                                            </div>
+                                        <?php endif;?>
+
+                                        <div onclick="if(!drag){ popupWindowFormEdit('<?php echo $item->IFID_M724?>','<?php echo $item->DeptID?>',{},reloadCalendar);}"
+                                             style="padding-left:18px;">
+                                            <?php echo $tieuDeThe;?>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <?php if(0):?>
+                                    <div  class = "rightArrow"></div>
+                                <?php endif;?>
+                            <?php endif;?>
+						</div>
+					<?php endforeach;;?>
+					<?php for($i=1;$i<=$this->daysInMonth;$i++):?>
+						<?php $date = Qss_Lib_Date::add_date($startdate,$i-1);?>
+						<div class="cols cols_<?php echo $this->daysInMonth?>
+                        <?php if(($i + $startday) % 7 == 0 || ($i + $startday) % 7 == 1):?>cal_cols_holiday<?php endif;?>"
+							 date="<?php echo $date->format('Y-m-d');?>"
+							 responseid="<?php echo @$key2?>"
+							 dvbtid="<?php echo $key?>">
+							&nbsp;
+						</div><!-- end .cal_content_grid_cols -->
+					<?php endfor;?>
+				</div>
+			<?php endforeach;?>
+
+
+	<?php endforeach;?>
+
+	<?php while($row<30):?>
+		<div class="rows">
+			<?php for($i=1;$i<=$this->daysInMonth;$i++):?>
+				<?php $date = Qss_Lib_Date::add_date($startdate,$i-1);?>
+				<div class="cols cols_<?php echo $this->daysInMonth?>
+					<?php if(($i + $startday) % 7 == 0 || ($i + $startday) % 7 == 1):?>cal_cols_holiday<?php endif;?>" date="<?php echo $date->format('Y-m-d');?>"
+					 responseid="<?php echo @$key2?>"
+					 dvbtid="<?php echo $key?>">
+					&nbsp;
+				</div><!-- end .cal_content_grid_cols -->
+			<?php endfor;?>
+		</div>
+		<?php $row++;?>
+	<?php endwhile;?>
+</div><!-- end .cal_content_grid -->

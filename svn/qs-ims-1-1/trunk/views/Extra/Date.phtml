@@ -1,0 +1,13 @@
+<input type="text"
+    class="datepicker"
+    onchange="rowSearch('<?php echo $this->form->FormCode?>');"
+    value="<?php echo $this->selected?>"
+    name="filter_nameDate"
+    id="filter_idDate" />
+
+<script>
+    $(document).ready(function(){
+        $('#filter_idDate').datepicker({ dateFormat: "dd-mm-yy" });
+        $('#filter_idDate').val('<?php echo $this->selected?>');
+    });
+</script>

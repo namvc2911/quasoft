@@ -1,0 +1,11 @@
+<select onchange="rowSearch('<?php echo $this->form->FormCode?>');" style="width: 150px;" size="1"	name="filter_trangthaithietbi" id="filter_trangthaithietbi"
+<?php if($this->selected != -1):?>class="bglightgreen"<?php endif;?>>
+    <?php foreach ($this->equipStatus as $key=>$display):?>
+        <option <?php if($key === $this->selected):?>selected<?php endif;?>
+                value="<?php echo $key;?>">
+            <?php echo $display; ?>
+        </option>
+    <?php endforeach;?>
+
+    <option value="-1" <?php if($this->selected === -1):?>selected<?php endif;?>> Tất cả </option>
+</select>

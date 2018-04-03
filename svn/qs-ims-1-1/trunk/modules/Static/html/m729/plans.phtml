@@ -1,0 +1,58 @@
+<script src="/js/common.js"></script>
+<script src="/js/extra/static/m729.js"></script>
+<style>
+    .datepicker
+    {
+        width: 80px;
+    }
+</style>
+
+<script>
+    $(document).ready(function(){
+        $('.datepicker').each(function(){
+            $(this).datepicker({ dateFormat: "dd-mm-yy" });
+        });
+    });
+</script>
+
+<form id="M729_Plans_Form">
+    <div class="popup_wrap">
+        <div class="popup_header">
+            <table class="popup_detail">
+                <tr>
+                    <th  style="width: 20%">
+                        Khu vực:
+                    </th>
+
+                    <td class="required">
+                        <?php echo $this->views->Report->SimpleComboBox('location', $this->locations, 'style="width:200px;" onchange="calendar_index_file.plansLoadEquip();"', '', $this->location);?>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>
+                        Thiết bị:
+                    </th>
+
+                    <td class="" id="plansLoadEquip">
+                        <?php echo $this->views->Report->SimpleListBox('equip', '/static/m729/equipments?location='.$this->location, ' style="width:200px;" ', '', $this->equip, $this->equipStr);?>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                        <button type="button" onclick="calendar_index_file.plans1();" class="btn"> Xem </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="popup_content" id="m729_create_from_plan_show_table">
+
+        </div>
+    </div>
+</form>
+
+
+

@@ -1,0 +1,26 @@
+<script>
+    var m759_mytasks = {
+        list : function () {
+            openModule('', '/user/form?fid=M759');
+        },
+
+        addTask : function () {
+            location.href = '/mobile/m759/mytasks/edit?fid=M759';
+        }
+    };
+</script>
+
+<div id="m000_content">
+    <div class="mobile-box-wrap">
+
+        <?php if($this->rightM759):?>
+            <div class="mobile-box-sub-line" style="position: relative;">
+                <span href="#1" onclick="m759_mytasks.list();">Công việc của tôi (<span class="red bold"><?php echo $this->countWO;?></span>)</span>
+                <button type="button" style=" position: absolute; top:auto; right: 10px; font-weight: bold"
+                        class="btn btn_main_top" onclick="rowInsert('M759');">
+                    Thêm
+                </button>
+            </div>
+        <?php endif;?>
+    </div>
+</div>

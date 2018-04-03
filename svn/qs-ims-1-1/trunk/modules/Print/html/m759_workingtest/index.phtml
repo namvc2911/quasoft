@@ -1,0 +1,137 @@
+<?php $excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);?>
+<?php
+$widthArr = array(1, 5, 1, 1, 2, 2, 2);
+$totalCol = count($widthArr);
+$widthArr = Qss_Lib_Report::changeWidthToFitScreen3($widthArr);
+$excelWidth = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($widthArr);
+$row        = 1;
+$bg         = "#EEEEEE"; // Mau nen cua cot tieu de
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+    <input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="portrait" style="font-size: 13px !important;">
+    <excel orientation="portrait" font-name="Times New Roman" font-size="13"
+           margin-left="0.5" margin-right="0.5" margin-top="0.75"
+           margin-bottom="0.75" />
+
+    <div id="head_print">
+        <?php echo $this->views->Common->Portrait(); ?>
+
+        <p style="font-size: 16px; font-weight: bold; text-align: center;">
+            <xls row="<?php echo $row?>" column="A" column-merge="G" font-size="12" h-align="center" v-align="center" bold="1">
+                BIÊN BẢN SỐ ...
+            </xls>
+        </p>
+        <?php $row++;?>
+
+        <p style="font-size: 16px; font-weight: bold; text-align: center;">
+            <xls row="<?php echo $row?>" column="A" column-merge="G" font-size="12" h-align="center" v-align="center" bold="1">
+                NGHIỆM THU CHẠY THỬ THIẾT BỊ
+            </xls>
+        </p>
+        <?php $row++;?>
+    </div>
+
+    <div id="container">
+        <p align="left">
+            <strong>H&#7840;NG M&#7908;C:&nbsp; </strong>.....................................................................................................................<br />
+            <strong>&#272;&#7882;A &#272;I&#7874;M:</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .....................................................................................................................</p>
+        <p align="left"><strong>1. Thi&#7871;t b&#7883; &#273;&#432;&#7907;c nghi&#7879;m thu:</strong><br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - T&ecirc;n thi&#7871;t b&#7883;: .........................................................................................................<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - V&#7883; tr&iacute; l&#7855;p &#273;&#7863;t: .......................................................................................................<br />
+            <strong>2. Th&agrave;nh ph&#7847;n tr&#7921;c ti&#7871;p tham gia nghi&#7879;m thu:</strong><br />
+            a)  C&ocirc;ng ty CP N&#432;&#7899;c s&#7841;ch VINACONEX &ndash; B&ecirc;n A:<br />
+            - &Ocirc;ng:  (<em>Ng&#432;&#7901;i &#273;&#7841;i di&#7879;n theo ph&aacute;p lu&#7853;t</em>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ch&#7913;c v&#7909;:  .........................................................<br />
+            - &Ocirc;ng:  (<em>Ph&#7909; tr&aacute;ch b&#7897; ph&#7853;n Gi&aacute;m s&aacute;t A</em>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ch&#7913;c v&#7909;:  .........................................................<br />
+            b) &#272;&#417;n  v&#7883; T&#432; v&#7845;n gi&aacute;m s&aacute;t thi c&ocirc;ng x&acirc;y d&#7921;ng <strong>(N&#7871;u  c&oacute;)</strong>: (<em>T&ecirc;n &#273;&#417;n v&#7883;</em>)<br />
+            - &Ocirc;ng:  (<em>Ph&#7909; tr&aacute;ch T&#432; v&#7845;n Gi&aacute;m s&aacute;t</em>)&nbsp; Ch&#7913;c v&#7909;:  .........................................................<br />
+            c) &#272;&#417;n  v&#7883; thi c&ocirc;ng <strong>(N&#7871;u c&oacute;)</strong>: (<em>T&ecirc;n &#273;&#417;n v&#7883;</em>)<br />
+            - &Ocirc;ng:  (<em>Ng&#432;&#7901;i ph&#7909; tr&aacute;ch &#273;&#417;n v&#7883;</em>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ch&#7913;c v&#7909;:  .........................................................<br />
+            - &Ocirc;ng:  (<em>Ph&#7909; tr&aacute;ch thi c&ocirc;ng tr&#7921;c ti&#7871;p</em>)&nbsp; Ch&#7913;c v&#7909;:  .........................................................<br />
+            d) &#272;&#417;n  v&#7883; thi&#7871;t k&#7871; <strong>(N&#7871;u c&oacute;)</strong>: (<em>T&ecirc;n &#273;&#417;n v&#7883;</em>)<br />
+            - &Ocirc;ng:  (<em>Ng&#432;&#7901;i ph&#7909; tr&aacute;ch &#273;&#417;n v&#7883;</em>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ch&#7913;c v&#7909;:  .........................................................<br />
+            e) &#272;&#417;n  v&#7883; Qu&#7843;n l&yacute; s&#7917; d&#7909;ng: (<em>T&ecirc;n &#273;&#417;n v&#7883;</em>)<br />
+            - &Ocirc;ng:  (<em>Ng&#432;&#7901;i ph&#7909; tr&aacute;ch &#273;&#417;n v&#7883;</em>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ch&#7913;c v&#7909;:  .........................................................<br />
+            f) &#272;&#417;n  v&#7883; B&ecirc;n b&aacute;n h&agrave;ng <strong>(N&#7871;u c&oacute;)</strong>: (<em>T&ecirc;n &#273;&#417;n v&#7883;</em>)<br />
+            - &Ocirc;ng:  (<em>Ng&#432;&#7901;i ph&#7909; tr&aacute;ch &#273;&#417;n v&#7883;</em>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ch&#7913;c v&#7909;:  .........................................................<br />
+            <strong>3. Th&#7901;i gian v&agrave; &#273;&#7883;a &#273;i&#7875;m nghi&#7879;m thu:</strong><br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - B&#7855;t &#273;&#7847;u:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ........... ng&agrave;y ............ /........... /.......... <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - K&#7871;t th&uacute;c:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ........... ng&agrave;y ............ /........... /..........<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - T&#7841;i:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ..........................................................................................................<br />
+            <strong>4. C&#259;n c&#7913; nghi&#7879;m thu:</strong><br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Bi&ecirc;n b&#7843;n s&#7921; c&#7889; (n&#7871;u c&oacute;)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Thi&#7871;t k&#7871; b&#7843;n v&#7869; thi c&ocirc;ng v&agrave; nh&#7919;ng  thay &#273;&#7893;i thi&#7871;t k&#7871; &#273;&atilde; &#273;&#432;&#7907;c ch&#7845;p thu&#7853;n (ghi r&otilde; t&ecirc;n c&aacute;c b&#7843;n v&#7869; thi&#7871;t k&#7871; c&oacute; li&ecirc;n  quan) (n&#7871;u c&oacute;)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Ti&ecirc;u chu&#7849;n, quy ph&#7841;m x&acirc;y d&#7921;ng &#273;&#432;&#7907;c  &aacute;p d&#7909;ng: ghi r&otilde; t&ecirc;n ti&ecirc;u chu&#7849;n, t&agrave;i li&#7879;u ch&#7881; d&#7851;n k&#7929; thu&#7853;t (n&#7871;u c&oacute;)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - H&#7907;p &#273;&#7891;ng mua b&aacute;n, s&#7917;a ch&#7919;a (n&#7871;u  c&oacute;)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Bi&ecirc;n b&#7843;n nghi&#7879;m thu l&#7855;p &#273;&#7863;t t&#297;nh  thi&#7871;t b&#7883;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Catalog v&agrave; Phi&#7871;u b&#7843;o h&agrave;nh thi&#7871;t b&#7883;  (n&#7871;u c&oacute;)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - C&aacute;c t&agrave;i li&#7879;u th&iacute; nghi&#7879;m, quan tr&#7855;c  t&#7841;i hi&#7879;n tr&#432;&#7901;ng (n&#7871;u c&oacute;)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - B&#7843;n v&#7869; ho&agrave;n c&ocirc;ng (n&#7871;u c&oacute;)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Nh&#7853;t k&yacute; thi c&ocirc;ng (n&#7871;u c&oacute;)<br />
+            <strong>5. &#272;&aacute;nh gi&aacute; ch&#7845;t l&#432;&#7907;ng c&ocirc;ng t&aacute;c ch&#7841;y th&#7917;  thi&#7871;t b&#7883;:</strong><br />
+            a) V&#7873;  ti&#7871;n &#273;&#7897; l&#7855;p &#273;&#7863;t thi&#7871;t b&#7883;:<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Ng&agrave;y kh&#7903;i c&ocirc;ng:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ........... ng&agrave;y ............ /...........  /..........<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Ng&agrave;y ho&agrave;n th&agrave;nh:&nbsp;&nbsp;&nbsp;&nbsp; ........... ng&agrave;y ............ /...........  /..........<br />
+            b) V&#7873;  c&ocirc;ng su&#7845;t &#273;&#432;a v&agrave;o v&#7853;n h&agrave;nh:<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Theo thi&#7871;t k&#7871;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...............................................................................................<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Theo th&#7921;c t&#7871;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...............................................................................................<br />
+            c) V&#7873;  kh&#7889;i l&#432;&#7907;ng:<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Theo thi&#7871;t k&#7871;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...............................................................................................<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Theo th&#7921;c t&#7871;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...............................................................................................<br />
+            d) V&#7873; ch&#7845;t  l&#432;&#7907;ng thi&#7871;t b&#7883; ch&#7841;y th&#7917;:<br />
+            <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong>- &#272;&#432;a ra c&aacute;c n&#7897;i dung  k&#7929; thu&#7853;t c&#7847;n ki&#7875;m tra khi nghi&#7879;m thu &#273;&#7875; c&oacute; c&#417; s&#7903; &#273;&aacute;nh gi&aacute; ch&#7845;t l&#432;&#7907;ng c&#7847;n nghi&#7879;m  thu<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Ki&#7875;m tra c&aacute;c h&#7891; s&#417; ghi &#7903; tr&ecirc;n<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &shy;- Th&#7921;c hi&#7879;n c&ocirc;ng t&aacute;c nghi&#7879;m thu:<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; + Ki&#7875;m tra t&#7841;i ch&#7895; s&#7921; ph&ugrave; h&#7907;p c&#7911;a  thi&#7871;t b&#7883; v&#7899;i t&agrave;i li&#7879;u k&#7929; thu&#7853;t, h&#7907;p &#273;&#7891;ng<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; + Ki&#7875;m tra ch&#7841;y th&#7917; kh&ocirc;ng t&#7843;i (n&#7871;u  &#273;&#432;&#7907;c)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; + Ki&#7875;m tra ch&#7841;y th&#7917; c&oacute; t&#7843;i (n&#7871;u  &#273;&#432;&#7907;c)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; + Ki&#7875;m tra s&#7921; ph&ugrave; h&#7907;p c&ocirc;ng su&#7845;t th&#7921;c  t&#7871; v&#7899;i c&ocirc;ng su&#7845;t thi&#7871;t k&#7871; (n&#7871;u &#273;&#432;&#7907;c)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; + &#272;&#7889;i chi&#7871;u c&aacute;c k&#7871;t qu&#7843; ki&#7875;m tra v&#7899;i  t&agrave;i li&#7879;u thi&#7871;t k&#7871;, c&aacute;c ti&ecirc;u chu&#7849;n k&#7929; thu&#7853;t chuy&ecirc;n m&ocirc;n, c&aacute;c t&agrave;i li&#7879;u h&#432;&#7899;ng d&#7851;n  &#273;&#7875; &#273;&aacute;nh gi&aacute; (n&#7871;u c&oacute;)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; + Ki&#7875;m tra B&#7843;n v&#7869; ho&agrave;n c&ocirc;ng (n&#7871;u c&oacute;)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Tr&ecirc;n c&#417; s&#7903; &#273;&aacute;nh gi&aacute; ch&#7845;t l&#432;&#7907;ng,  Ban nghi&#7879;m thu &#273;&#432;a ra k&#7871;t lu&#7853;n: Ch&#7845;p nh&#7853;n nghi&#7879;m thu c&aacute;c &#273;&#7889;i t&#432;&#7907;ng &#273;&atilde; xem x&eacute;t<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - C&aacute;c &yacute; ki&#7871;n kh&aacute;c: ..................................................................................................<strong></strong><br />
+            <strong>6. K&#7871;t lu&#7853;n:</strong><br />
+            <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong>- Ch&#7845;p nh&#7853;n nghi&#7879;m  thu v&agrave; &#273;&#7891;ng &yacute; tri&#7875;n khai giai &#273;o&#7841;n thi c&ocirc;ng ti&#7871;p theo<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Y&ecirc;u c&#7847;u s&#7917;a ch&#7919;a, ho&agrave;n thi&#7879;n c&ocirc;ng  t&aacute;c l&#7855;p &#273;&#7863;t thi&#7871;t b&#7883; &#273;&atilde; ho&agrave;n th&agrave;nh:<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ................................................................................................................................<br />
+            <strong>7. C&aacute;c th&agrave;nh ph&#7847;n tham gia nghi&#7879;m thu k&yacute;:</strong></p>
+        <table border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td width="206" valign="top" class="center"><br />
+                    <strong>C&Ocirc;NG TY CP N&#431;&#7898;C S&#7840;CH <br/> VINACONEX</strong> </td>
+                <td width="206" valign="top"><p align="center"><strong>&#272;&#416;N V&#7882;</strong><br />
+                        <strong>T&#431; V&#7844;N GI&Aacute;M S&Aacute;T</strong></p></td>
+                <td width="206" valign="top"><p align="center"><strong>&#272;&#416;N V&#7882;</strong><br />
+                        <strong>THI C&Ocirc;NG</strong></p></td>
+            </tr>
+            <tr>
+                <td width="206" valign="top"><p align="center">(<em>K&yacute;, &#273;&oacute;ng d&#7845;u</em>)<strong></strong></p></td>
+                <td width="206" valign="top"><p align="center">(<em>K&yacute;, ghi r&otilde; h&#7885; t&ecirc;n</em>)<strong></strong></p></td>
+                <td width="206" valign="top"><p align="center">(<em>K&yacute;, ghi r&otilde; h&#7885; t&ecirc;n</em>)<strong></strong></p></td>
+            </tr>
+            <tr>
+                <td width="206" valign="top"><p align="center">&nbsp;</p></td>
+                <td width="206" valign="top"><p align="center">&nbsp;</p></td>
+                <td width="206" valign="top"><p align="center">&nbsp;</p>
+                    <p align="center">&nbsp;</p></td>
+            </tr>
+            <tr>
+                <td width="206" valign="top"><p align="center"><strong>&#272;&#416;N V&#7882;</strong><br />
+                        <strong>THI&#7870;T K&#7870;</strong></p></td>
+                <td width="206" valign="top"><p align="center"><strong>&#272;&#416;N V&#7882;</strong><br />
+                        <strong>QU&#7842;N L&Yacute; S&#7916; D&#7908;NG</strong></p></td>
+                <td width="206" valign="top"><p align="center"><strong>&#272;&#416;N V&#7882;</strong><br />
+                        <strong>B&Ecirc;N B&Aacute;N H&Agrave;NG </strong></p></td>
+            </tr>
+            <tr>
+                <td width="206" valign="top"><p align="center">(<em>K&yacute;, ghi r&otilde; h&#7885; t&ecirc;n</em>)<strong></strong></p></td>
+                <td width="206" valign="top"><p align="center">(<em>K&yacute;, ghi r&otilde; h&#7885; t&ecirc;n</em>)<strong></strong></p></td>
+                <td width="206" valign="top"><p align="center">(<em>K&yacute;, ghi r&otilde; h&#7885; t&ecirc;n</em>)<strong></strong></p></td>
+            </tr>
+        </table>
+        <p><strong>&nbsp;</strong></p>
+    </div>
+</div>

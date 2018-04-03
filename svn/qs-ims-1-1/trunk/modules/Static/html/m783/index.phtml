@@ -1,0 +1,271 @@
+<style>
+<!--
+.border_table {
+	background: #fff;
+	border: 1px #666 dotted;
+	border-bottom: none;
+}
+
+.border_table tr td,.border_table tr th {
+	border-left: 1px #666 dotted;
+	border-bottom: 1px #999 dotted;
+	word-wrap: break-word;
+}
+
+/* Hien thi thanh trang thai */
+.text_step_style {
+	font-family: arial;
+	font-size: 11px;
+	line-height: 24px;
+	color: #666;
+	cursor: pointer;
+}
+
+.arrow_step {
+	clear: both;
+	position: relative;
+}
+
+.arrow_step {
+	clear: both;
+	height: 24px;
+	overflow: hidden;
+}
+
+.arrow_step span {
+	padding-left: 26px;
+}
+
+.first_step {
+	background: url('/images/progress/first-step.png');
+	width: 121px;
+	height: 24px;
+	position: absolute;
+	z-index: 100;
+}
+
+.first_step_selected {
+	background: url('/images/progress/first-step-selected.png');
+	width: 120px;
+	height: 24px;
+	position: absolute;
+	color: white;
+	z-index: 120;
+}
+
+.middle_step {
+	background: url('/images/progress/middle-step.png');
+	width: 120px;
+	height: 24px;
+	position: absolute;
+	z-index: 100;
+}
+
+.middle_step_selected {
+	background: url('/images/progress/middle-step-selected.png');
+	width: 120px;
+	height: 24px;
+	position: absolute;
+	color: white;
+	z-index: 120;
+}
+
+.last_step {
+	background: url('/images/progress/last-step.png');
+	width: 120px;
+	height: 24px;
+	position: absolute;
+	z-index: 100;
+}
+
+.last_step_selected {
+	background: url('/images/progress/last-step-selected.png');
+	width: 118px;
+	height: 24px;
+	position: absolute;
+	color: white;
+	z-index: 120;
+}
+-->
+</style>
+
+<script
+	type="text/javascript" src="/js/form-list.js"></script>
+<script type="text/javascript">
+<!--
+/** --- Bien toan cuc --- */
+var _05092014_wip_timer; // Interval
+var _05092014_wip_type_delay = 2000; // Thoi gian tre sau khi nhap barcode
+var _05092014_wip_focus_delay = 3000; // Thoi gian de quay tro lai o barcode
+var _05092014_wip_old_barcode = '';// barcode luu lai
+
+
+/** --- Khoi tao --- */
+$(document).ready(function() {
+	// Warning Focus vao o barcode sau mot khoang thoi gian
+	setInterval(_05092014_wip_check_focus, _05092014_wip_focus_delay);
+	_05092014_wip_fill_by_barcode();
+	_05092014_wip_check_focus();
+});
+
+
+/** --- Cac ham xu ly --- */
+/**
+ * @description: Hien thi phieu giao viec + thong ke sl theo barcdoe
+ * Ham delay tam 1,2 giay roi moi goi den ham lay du lieu
+ */
+function _05092014_wip_search_by_barcode()
+{
+	
+	clearInterval(_05092014_wip_timer);
+	
+	_05092014_wip_timer = setTimeout(function(){
+		_05092014_wip_set_barcode_val();
+		_05092014_wip_fill_by_barcode();
+	}, _05092014_wip_type_delay);
+}
+
+function _05092014_wip_set_barcode_val()
+{
+	var barcode = $('#_05092014_wip_barcode').val(); // Lay du lieu barcode 
+	
+	if(barcode != _05092014_wip_old_barcode)
+	{
+		_05092014_wip_old_barcode = barcode;
+	}
+	$('#_05092014_wip_barcode').val('');
+}
+
+function _05092014_wip_fill_by_barcode()
+{
+	var barcode, barcode_temp, url, data;
+	barcode = _05092014_wip_old_barcode; // Lay du lieu barcode 
+	data    = {barcode:barcode};
+	url     = sz_BaseUrl + '/static/m783/search'; 
+	
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#_05092014_wip_row_2').html(jreturn);
+		$('#_05092014_wip_barcode').val('');
+	});
+}
+
+/**
+ * @description: Kiem tra xem o nhap barcode co duoc focus vao khong
+ * de focus lai vao o nay
+ */
+function _05092014_wip_check_focus()
+{	
+	var out = true;
+	$('input:focus').each(function(){
+		if($(this).attr('name') == '_05092014_wip_barcode'){
+			out = false;
+		}
+	});
+	if(out){
+		$('#_05092014_wip_warning').text('(*) Đặt con trỏ vào ô này để scan barocde!');
+	}
+	else
+	{
+		$('#_05092014_wip_warning').text('');
+	}
+}
+
+/**
+ * @description: luu lai phieu giao viec
+ */
+function _05092014_wip_save_order(ifid)
+{
+	var url  = sz_BaseUrl + '/static/m783/save'; 
+	var data = {wifid:ifid
+				, qty:parseInt($('#_05092014_wip_qty').val())
+				 };
+	qssAjax.call(url, data, function(jreturn) {
+		if (jreturn.message != '') {
+			qssAjax.alert(jreturn.message);
+		}
+		_05092014_wip_fill_by_barcode();
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+}
+
+/**
+ * @description: hien thi thong tin chi tiet cua phieu giao viec
+ */
+function _05092014_wip_detail(ifid, deptid)
+{
+        // xem chi tiet ban ghi
+        var url = sz_BaseUrl + '/user/form/detail';
+        var data = {ifid:ifid,deptid:deptid};
+        qssAjax.getHtml(url, data, function(jreturn) {
+               $('#qss_trace').html(jreturn);
+               $('#qss_trace').dialog({ width: 900,height:450 });
+        });
+}
+
+/**
+ * @description: Hien thi comment
+ */
+function _05092014_wip_comment(ifid, deptid, uid)
+{
+    var url = sz_BaseUrl + '/user/form/comments';
+    var data = {
+                    ifid : ifid,
+                    deptid : deptid,
+                    uid:uid
+            };
+    qssAjax.getHtml(url, data, function(jreturn) {
+            $('#qss_trace').html(jreturn);
+            $('#qss_trace').dialog({ width: 400,height:400 });
+    });
+}
+
+/**
+ * @description: Chuyen buoc
+ */
+
+ function _05092014_wip_send_request(deptid, userid, fid, ifid, stepno) {
+		if(!stepno){
+			qssAjax.alert(Language.translate('SELECT_ACTION'));
+			return;
+		}	
+		var url = sz_BaseUrl + '/user/form/request';
+		var data ={ifid:ifid,deptid:deptid,stepno:stepno,userid:userid,comment:''};
+		qssAjax.call(url, data, function(jreturn) {
+			_05092014_wip_fill_by_barcode();
+		}, function(jreturn) {
+			qssAjax.alert(jreturn.message);
+		});
+	}
+//-->
+</script>
+<!-- Module: WIP - WORK IN PROCESS -->
+<!-- Co ba khoi chinh: Khoi1 barcode, Khoi2 Phieu giao viec, Khoi3 Thong ke sl -->
+<!-- Khoi1: Barcode -->
+<!-- Khoi2: Hien thi phieu giao viec theo barcode -->
+<!-- Khoi3: Hien thi thong ke san luong -->
+
+<div class="clear"></div>
+<div id="view">
+	<div id="_05092014_wip_wrap">
+		<div id="_05092014_wip_row_1">
+			<label title="Barcode phiếu giao việc">Nhập barcode: </label> <input
+				type="text" name="_05092014_wip_barcode" id="_05092014_wip_barcode"
+				title="Barcode phiếu giao việc" value=""
+				onkeyup="_05092014_wip_search_by_barcode()" /> <span
+				id="_05092014_wip_warning" class="bold red"></span>
+		</div>
+		<!-- End #_05092014_wip_row_1 -->
+		<br />
+
+		<div id="_05092014_wip_row_2"></div>
+		<!-- End #_05092014_wip_row_2 -->
+
+		<div id="_05092014_wip_row_3"></div>
+		<!-- End #_05092014_wip_row_3 -->
+	</div>
+	<!-- End #_05092014_wip_row_1 -->
+</div>
+<div id="qss_trace"></div>
+
+<!-- End /modules/Extra/html/Production/wo/wip/index.phtml Module: WIP - WORK IN PROCESS -->

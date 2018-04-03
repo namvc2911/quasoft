@@ -1,0 +1,165 @@
+<style>
+    #m705_copy_component
+    {
+
+    }
+
+    #m705_copy_component #filter
+    {
+        line-height: 24px;
+        height: 24px;
+    }
+
+    #m705_copy_component fieldset
+    {
+        height: 250px;
+        overflow: auto;
+    }
+
+
+</style>
+
+<script type="text/javascript" src="/js/common.js"></script>
+
+<script>
+    var currentValue;
+    var checkEverySeconds =  1;
+
+    var m705_copy_component = {
+        show : function()
+        {
+            var url  = sz_BaseUrl + '/button/m705/copy/component/show';
+            var data = {equip_ifid: parseInt($('#m705_copy_component #from_equip').val()), ifid: <?php echo $this->ifid;?>};
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#m705_copy_component #components').html(jreturn);
+            });
+        },
+
+        checkCom : function(ele)
+        {
+            var lft = parseInt($(ele).parent().parent().find('.com_lft').val());
+            var rgt = parseInt($(ele).parent().parent().find('.com_rgt').val());
+            var tempLft, tempRgt, checkbox;
+
+            if($(ele).is(':checked'))
+            {
+                $('.component_line').each(function(){
+                    tempLft  = parseInt($(this).find('.com_lft').val());
+                    tempRgt  = parseInt($(this).find('.com_rgt').val());
+                    checkbox = $(this).find('.cwpo_line_checkbok');
+
+                    if((lft > tempLft && rgt < tempRgt) || (lft < tempLft && rgt > tempRgt))
+                    {
+                        common_check(checkbox, '.cwpo_line_checkbok_val');
+                    }
+                });
+            }
+            else
+            {
+                $('.component_line').each(function(){
+                    tempLft  = parseInt($(this).find('.com_lft').val());
+                    tempRgt  = parseInt($(this).find('.com_rgt').val());
+                    checkbox = $(this).find('.cwpo_line_checkbok');
+
+                    if(lft < tempLft && rgt > tempRgt)
+                    {
+                        common_uncheck(checkbox, '.cwpo_line_checkbok_val' );
+                    }
+                });
+            }
+            m705_copy_component.count();
+
+
+        },
+
+        count : function()
+        {
+            var count = 0;
+
+            $('.component_line').each(function(){
+                if($(this).find('.cwpo_line_checkbok').is(':checked'))
+                {
+                    count++;
+                }
+            });
+
+            $('#component_counter').html('<span class="red"> &nbsp; Đã chọn '+count+' dòng bộ phận! <span>');
+        },
+
+        save : function()
+        {
+            var url  = sz_BaseUrl + '/button/m705/copy/component/save';
+            var data = $('#m705_copy_component_form').serialize();
+
+            qssAjax.confirm('Bạn có muốn lưu lại không?',function(){
+                qssAjax.call(url, data, function(jreturn) {
+                    if(jreturn.message != '')
+                    {
+                        qssAjax.notice(jreturn.message);
+                    }
+
+                }, function(jreturn) {
+                    qssAjax.alert(jreturn.message);
+                });
+            });
+        }
+    };
+
+    $(document).ready(function(){
+        currentValue = $("#m705_copy_component #from_equip").val();
+
+        setInterval(function() {
+            if($("#m705_copy_component #from_equip").val() != currentValue)
+            {
+                m705_copy_component.show();
+                currentValue = $("#m705_copy_component #from_equip").val();
+            }
+        }, checkEverySeconds*1000);
+    });
+</script>
+
+<?php
+// Listbox thiet bi den
+$equipID      = 'from_equip';
+$equipFilter  = array('ODanhSachThietBi'=>array('MaThietBi', 'TenThietBi'));
+$equipDisplay = array(
+    'num'=>2,
+    'objects'=>array(
+        'ODanhSachThietBi'=>array(
+            'id'=>'IFID_M705'
+            ,'display1'=>'MaThietBi'
+            ,'display2'=>'TenThietBi'))
+);
+?>
+
+<div id="m705_copy_component">
+    <form id="m705_copy_component_form">
+
+        <input type="hidden" name="ifid" id="ifid" value="<?php echo $this->ifid;?>" />
+
+        <div id="filter">
+            <div class="fl"> Chọn thiết bị: </div>
+            <div class="fl"><?php echo $this->views->Report->ListBox('from_equip', $equipFilter, $equipDisplay);?></div>
+            <div class="fl" id="component_counter"></div>
+        </div>
+
+        <div class="clear"></div>
+
+        <div id="">
+            <fieldset>
+                <legend> Cấu trúc thiết bị </legend>
+                <div id="components">
+
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="clear"></div>
+
+        <div class="fr">
+            <input type="checkbox" id="checkbox_CapNhatPhuTung" name="update_sparepart" value="1"> <label for="checkbox_CapNhatPhuTung">Cập nhật phụ tùng thay thế</label>
+            <button type="button" class="btn-custom" onclick="m705_copy_component.save()">Cập nhật</button>
+        </div>
+    </form>
+</div>

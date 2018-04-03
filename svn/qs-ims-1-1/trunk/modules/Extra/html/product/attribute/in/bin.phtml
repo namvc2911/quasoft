@@ -1,0 +1,13 @@
+<?php if(count($this->zoneAndBin)):?>
+<?php foreach ($this->zoneAndBin as $k=>$v):?>
+<option value="<?php echo $k;?>">
+<?php echo $k?>
+</option>
+<?php endforeach;?>
+<?php else:?>
+<?php if($this->zone):?>
+<option value="">Không có bin</option>
+<?php else:?>
+<option value="">Chọn</option>
+<?php endif;?>
+<?php endif;?>

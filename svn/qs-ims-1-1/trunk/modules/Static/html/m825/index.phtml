@@ -1,0 +1,177 @@
+<style>
+    .m825_filter_box
+    {
+        float: left;
+        display: inline;
+        line-height: 24px;
+        height: 24px;
+        padding-bottom: 5px;
+        vertical-align: middle;
+    }
+    .m825_filter_box_title
+    {
+        min-width: 80px;
+        font-weight: bold;
+        float: left;
+    }
+    .m825_filter_box_dat
+    {
+        min-width: 200px;
+        margin-right: 10px;
+        float: left;
+    }
+    .m825_filter_box_dat input[type="text"], .m825_filter_box_dat select
+    {
+        width: 150px !important;
+    }
+
+    .m825_filter_box_dat #start, .m825_filter_box_dat #end
+    {
+        width: 80px !important;
+    }
+
+    .m825_data table
+    {
+        margin-top: 5px;;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+    }
+
+    .status_box
+    {
+        clear: both;
+        width: 100%;
+        margin: 1px;
+        font-size: 11px;
+    }
+
+    .status_color
+    {
+        float: left;
+        padding: 6px;
+        text-align: center;
+        border: 1px #ccc solid;
+    }
+
+    .status_text {
+        float: left;
+        padding: 6px;
+    }
+
+    .status_one_color {
+        background: yellow none repeat scroll 0 0;
+        font-weight: bold;
+    }
+
+
+    .status_two_color {
+        background: pink none repeat scroll 0 0;
+        font-weight: bold;
+    }
+
+
+    .filter_title
+    {
+        width: 100px;;
+    }
+</style>
+
+<script>
+    var m825 = {
+        show : function()
+        {
+            var url  = sz_BaseUrl + '/static/m825/show';
+            var data = $('#m825_form').serialize();
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('.m825_data').html(jreturn);
+            });
+        }
+    };
+
+
+    $(document).ready(function(){
+        $('.datepicker').each(function(){
+            $(this).datepicker();
+        });
+    })
+</script>
+
+<form id="m825_form">
+    <div id="m825_wrap">
+
+        <div class="m825_filter">
+
+            <div class="m825_filter_box fl">
+                <div class="m825_filter_box_title">
+                    Từ ngày:
+                </div>
+
+                <div class="m825_filter_box_dat">
+                    <?php echo $this->views->Report->Datepicker('start', date('d-m-Y')); ?>
+                </div>
+            </div>
+
+            <div class="m825_filter_box fl">
+                <div class="m825_filter_box_title">
+                    Đến ngày:
+                </div>
+
+                <div class="m825_filter_box_dat">
+                    <?php echo $this->views->Report->Datepicker('end', date('d-m-Y')); ?>
+                </div>
+            </div>
+
+            <div class="m825_filter_box fl">
+                <div class="m825_filter_box_title">
+                    Nhà cung cấp:
+                </div>
+
+                <div class="m825_filter_box_dat">
+                    <?php echo $this->views->Report->SimpleComboBox('supplier', $this->suppliers);?>
+                </div>
+            </div>
+
+            <div class="m825_filter_box">
+                <div class="m825_filter_box_title">
+                </div>
+
+                <div class="m825_filter_box_dat">
+                    <button type="button" class="btn btn-custom" onclick="m825.show()"> Xem</button>
+
+                </div>
+            </div>
+
+            <div class="clear"></div>
+
+        </div>
+
+        <div class="clear"></div>
+        <div class="clear"></div>
+
+        <div id="view">
+
+            <?php /*
+            <div class=" status_box">
+                <div class="fl">
+                    <div class="status_color status_one_color"> A </div>
+                    <div class="status_text"> Công việc </div>
+                    <div class="status_color status_two_color"> A </div>
+                    <div class="status_text"> Phiếu bảo trì </div>
+                </div>
+            </div>
+            */?>
+
+            <div class="clear"></div>
+
+            <div class="m825_data">
+
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    m825.show();
+</script>
+
+<div id="m825_add"></div>

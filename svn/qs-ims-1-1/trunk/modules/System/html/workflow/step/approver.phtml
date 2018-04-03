@@ -1,0 +1,128 @@
+<script>
+function saveApprover() {	
+	var data = $('#approver').serialize();
+	var url = sz_BaseUrl + '/system/workflow/step/save/approver';
+	qssAjax.call(url, data, function(jreturn) {
+		window.location.reload();
+	}, function(jreturn) {
+		alert(jreturn.message);
+	});
+}
+function deleteApprover() {
+	qssAjax.confirm(Language.translate('CONFIRM_DELETE'),function(){
+		var data = $('#approver').serialize();
+		var url = sz_BaseUrl + '/system/workflow/step/delete/approver';
+		qssAjax.call(url, data, function(jreturn) {
+			window.location.reload();
+		}, function(jreturn) {
+			alert(jreturn.message);
+		});
+	});
+}
+function toogle(objid){
+	$('#object_'+objid).toggle();
+}
+</script>
+<form id="approver" method="post" onsubmit="return false;">
+	<input type="hidden" name="wfid" value="<?php echo $this->wfid?>"> <input
+		type="hidden" name="said" value="<?php echo $this->said?>"> <input
+		type="hidden" name="sid" value="<?php echo $this->sid?>"> <input
+		type="hidden" name="fid" value="<?php echo $this->form->FormCode?>">
+	<table class="detail">
+		<tr>
+			<th width="20%">STT</th>
+			<td><input style="width: 50px" name="orderno"
+				value="<?php echo $this->orderno?$this->orderno:1?>">
+			</td>
+		</tr>
+		<tr>
+			<th>Tên cấp phê duyệt</th>
+			<td><input type="text" value="<?php echo $this->name?>" name="name">
+			</td>
+		</tr>
+	</table>
+
+	<?php foreach ($this->form->o_fGetMainObjects() as $object):?>
+	<div class="line-hr" style="cursor: pointer !important"
+		onclick="toogle('<?php echo $object->ObjectCode?>')">
+		<span><?php echo $object->sz_Name?> </span>
+	</div>
+	<table class="detail" id="object_<?php echo $object->ObjectCode?>">
+		<tr>
+			<th width="10%">Chọn</th>
+			<th width="30%">Tên trường</th>
+			<th width="50%">Giá trị</th>
+		</tr>
+		<?php foreach ($object->loadFields() as $item):?>
+		<?php if($item->intFieldType == 1
+		|| $item->intFieldType == 5
+		|| $item->intFieldType == 6
+		|| $item->intFieldType == 7
+		|| $item->intFieldType == 11):?>
+		<tr>
+			<td><input type="checkbox" name="field_<?php echo $item->FieldCode?>"
+				value="1" <?php if(isset($this->condition[$item->FieldCode])):?>
+				checked <?php endif;?>></td>
+			<td><?php echo $item->szFieldName?></td>
+			<td><?php if($item->intFieldType == 7):?> <input
+				name="value_<?php echo $item->FieldCode?>" type="checkbox"
+				<?php if(isset($this->condition[$item->FieldCode]) && $this->condition[$item->FieldCode]):?>
+				checked <?php endif;?>> <?php else:?> <input
+				name="value_<?php echo $item->FieldCode?>" type="text"
+				value="<?php echo @$this->condition[$item->FieldCode]?>"> <?php endif;?>
+			</td>
+		</tr>
+		<?php endif;?>
+		<?php endforeach;?>
+	</table>
+	<?php endforeach;?>
+
+	<?php foreach ($this->form->a_fGetSubObjects() as $object):?>
+	<div class="line-hr" style="cursor: pointer !important"
+		onclick="toogle('<?php echo $object->ObjectCode?>')">
+		<span><?php echo $object->sz_Name?> </span>
+	</div>
+	<table class="detail" style="display: none"
+		id="object_<?php echo $object->ObjectCode?>">
+		<tr>
+			<th width="10%">Chọn</th>
+			<th width="30%">Tên trường</th>
+			<th width="50%">Giá trị</th>
+		</tr>
+		<?php foreach ($object->loadFields() as $item):?>
+		<?php if($item->intFieldType == 1
+		|| $item->intFieldType == 5
+		|| $item->intFieldType == 6
+		|| $item->intFieldType == 7
+		|| $item->intFieldType == 11):?>
+		<tr>
+			<td><input type="checkbox" name="field_<?php echo $item->FieldCode?>"
+				value="1" <?php if(isset($this->condition[$item->FieldCode])):?>
+				checked <?php endif;?>></td>
+			<td><?php echo $item->szFieldName?></td>
+			<td><?php if($item->intFieldType == 7):?> <input
+				name="value_<?php echo $item->FieldCode?>" type="checkbox"
+				<?php if(isset($this->condition[$item->FieldCode]) && $this->condition[$item->FieldCode]):?>
+				checked <?php endif;?>> <?php else:?> <input
+				name="value_<?php echo $item->FieldCode?>" type="text"
+				value="<?php echo @$this->condition[$item->FieldCode]?>"> <?php endif;?>
+			</td>
+		</tr>
+		<?php endif;?>
+		<?php endforeach;?>
+	</table>
+	<?php endforeach;?>
+
+	<p align="center">
+		<button type="button" class="btn-custom" onclick="saveApprover()">Cập
+			nhật</button>
+			<?php if($this->said):?>
+		<button type="button" class="btn-custom" onclick="deleteApprover()">Xóa</button>
+		<?php endif;?>
+		<button type="button" class="btn-custom"
+			onclick="$('#qss_dialog').dialog('close')">Đóng</button>
+
+</form>
+<script>
+
+</script>

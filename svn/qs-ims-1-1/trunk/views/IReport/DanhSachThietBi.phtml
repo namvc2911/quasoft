@@ -1,0 +1,96 @@
+<table class="detail">
+
+
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(8) ?></th>
+				<td>
+
+					<?php
+					$id = 'location';
+					$getFields = array('num' => 3,
+						'objects' => array('OKhuVuc' => array(
+								'id' => 'IOID'
+								, 'display1' => 'MaKhuVuc'
+								, 'display2' => 'Ten')));
+					?>
+					<?php echo $this->views->Report->ComboBox($id, $getFields); ?>
+			</tr>    
+
+			<?php if (Qss_Lib_System::fieldActive('ODanhSachThietBi', 'TrungTamChiPhi')): ?>
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(2) ?></th>
+				<td>
+					<?php
+					$id = 'costcenter';
+					$getFields = array('num' => 3,
+						'objects' => array('OTrungTamChiPhi' => array(
+								'id' => 'IOID'
+								, 'display1' => 'Ten'
+								, 'display1' => 'Ma')));
+					?>
+					<?php echo $this->views->Report->ComboBox($id, $getFields); ?>
+				</td>
+			</tr>
+			<?php endif; ?>
+
+
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(5) ?></th>
+				<td>
+					<?php
+					$id = 'group';
+					$getFields = array('num' => 2,
+						'objects' => array('ONhomThietBi' => array(
+								'id' => 'IOID'
+								, 'display1' => 'LoaiThietBi'
+							)));
+					?>
+					<?php echo $this->views->Report->ComboBox($id, $getFields); ?>
+
+			</tr>
+
+
+			<?php if (Qss_Lib_Extra::checkFieldExists('ODanhSachThietBi', 'Ref_LoaiThietBi')): ?>
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(6) ?></th>
+				<td>
+					<?php
+					$id = 'type';
+					$getFields = array('num' => 2,
+						'objects' => array('OLoaiThietBi' => array(
+								'id' => 'IOID'
+								, 'display1' => 'TenLoai'
+							)));
+					?>
+					<?php echo $this->views->Report->ComboBox($id, $getFields); ?>
+
+			</tr>
+			<?php endif; ?>
+
+			<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(7) ?></th>
+				<td>
+					<?php
+					$id = 'equip';
+					$getDataObject = array('ODanhSachThietBi' => array('MaThietBi', 'LoaiThietBi'));
+					//,'OKhuVuc'=>array('MaKhuVuc','Ten')
+					$getFields = array('num' => 2,
+						'objects' => array('ODanhSachThietBi' => array(
+								'id' => 'IOID'
+								, 'display1' => 'MaThietBi'
+								, 'display2' => 'LoaiThietBi')));
+					$getLookupFilter = array(array('id' => 'group'
+							, 'refField' => array('ODanhSachThietBi' => 'Ref_NhomThietBi') // Nhom TB
+							, 'required' => 0)
+						, array('id' => 'type'
+							, 'refField' => array('ODanhSachThietBi' => 'Ref_LoaiThietBi') // Loai TB
+							, 'required' => 0)
+						, array('id' => 'costcenter'
+							, 'refField' => array('ODanhSachThietBi' => 'Ref_TrungTamChiPhi') // TT Chi phi
+							, 'required' => 0)
+					);
+					?>
+					<?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields, $getLookupFilter); ?>
+				</td>
+			</tr>
+		</table>

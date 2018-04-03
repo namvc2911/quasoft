@@ -1,0 +1,68 @@
+<div class="box_das2">
+	<div class="inside_das2">
+		<div class="bold" style="border-bottom: 1pt solid #ccc;">
+			<a
+				href="/user/form?fid=<?php echo Qss_Lib_Extra_Const::WORK_ORDER_FID;?>">
+				<?php echo $this->_translate(5);?> (<?php echo @(int)$this->numOfWorkOrdersByStatus['Pending'];?>)
+			</a>
+		</div>
+
+		<?php foreach($this->status as $status):?>
+		<?php if($status->StepNo > 2) break;?>
+		<div id="count_wo_by_step_<?php echo $status->StepNo;?>"
+			class="wo_statistic_line">
+			<?php echo $status->Name;?>
+			(
+			<?php
+			echo isset($this->numOfWorkOrdersByStatus[$status->StepNo])?
+			$this->numOfWorkOrdersByStatus[$status->StepNo]:0;
+			?>
+			)
+		</div>
+		<?php endforeach; ?>
+
+
+		<div id="count_wo_by_emp" class="wo_statistic_line">
+		<?php echo $this->_translate(1);?>
+			<!-- Phiếu bảo trì phụ trách bởi tôi -->
+			(
+			<?php
+			echo $this->numOfWorkOrdersByEmployee;
+			?>
+			)
+
+		</div>
+
+		<br />
+
+		<div class="bold" style="border-bottom: 1pt solid #ccc;">
+		<?php echo $this->_translate(6);?>
+		</div>
+
+		<div id="count_task_complete" class="wo_statistic_line green">
+		<?php echo $this->_translate(2);?>
+			<!-- Công việc đã thực hiện -->
+			(
+			<?php
+			echo (isset($this->numOfTasks) && $this->numOfTasks)?
+			@(int)$this->numOfTasks->Completed:0;
+			?>
+			)
+
+		</div>
+
+		<div id="count_task_pending" class="wo_statistic_line red">
+		<?php echo $this->_translate(3);?>
+			<!-- Công việc chưa thực hiện -->
+
+			(
+			<?php
+			echo (isset($this->numOfTasks) && $this->numOfTasks)?
+			@(int)$this->numOfTasks->Pending:0;
+			?>
+			)
+
+		</div>
+
+	</div>
+</div>

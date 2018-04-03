@@ -1,0 +1,108 @@
+<style>
+.note a,.start a,.finish a,.cancel a,.delete a {
+	background: url("/images/event/bg_action.png") no-repeat;
+	display: block;
+	width: 16px;
+	height: 16px;
+	text-indent: 5000em;
+	margin: 0 auto;
+	white-space: nowrap;
+}
+
+.note a {
+	background-position: -23px 1px
+}
+
+.start a {
+	background-position: -48px 0px
+}
+
+.finish a {
+	background-position: 0px 0px
+}
+
+.cancel a {
+	background-position: -73px 0px
+}
+
+.delete a {
+	background-position: -100px 0px
+}
+
+.note a.disabled {
+	background-position: -23px -23px
+}
+
+.start a.disabled {
+	background-position: -48px -24px
+}
+
+.finish a.disabled {
+	background-position: 0px -24px
+}
+
+.cancel a.disabled {
+	background-position: -73px -24px
+}
+
+.delete a.disabled {
+	background-position: -100px -23px
+}
+
+.note:hover,.start:hover,.finish:hover,.cancel:hover {
+	
+}
+</style>
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+	<div class="icon-32_separator"></div>
+	<div class="btn_main_top"
+		onclick="rowHistorySearch(<?php echo $this->bashid?>);"
+		title="<?php echo $this->_translate(23)?>" id="btnREFRESH">
+		<a href="#!" class="icon-32-refresh"></a>
+	</div>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div style="display: none" class="clearfix" id="div-search">
+		<form onsubmit="rowSearch(); return false;" method="post"
+			name="filter_form" id="form_bash_filter">
+			<div class="clearfix">
+				<div class="label">
+					<span>Tên</span> <span>Người tạo</span> <span>Ngày tạo</span> <span>Ngày
+						cập nhật</span> <span>Thư mục</span>
+				</div>
+				<div class="element">
+					<span><input type="text" value="<?php echo @$this->filters[1]?>"
+						name="filter_1" /> </span> <span> <select style="width: 150px;"
+						name="filter_2">
+							<option value=""></option>
+
+					</select> </span> <span><input type="text" value="" name="filter_3"
+						id="filter_3" /> </span> <span><input type="text" value=""
+						name="filter_4" id="filter_4" /> </span> <span> <select
+						style="width: 150px;" name="filter_5">
+
+					</select> </span>
+				</div>
+			</div>
+		</form>
+		<div class="fl">
+			<div onclick="rowSearch(50);" class="btn-custom">Tìm kiếm</div>
+			<div onclick="rowCleanSearch();" class="btn-custom">Xóa điều kiện</div>
+		</div>
+	</div>
+	<div id="item-actions">
+		<ul>
+			<li class="item-action"><a onclick="rowBack()" href="#1"><span>Kết
+						chuyển tự động</span> </a></li>
+			<li class="item-action"><a
+				onclick="rowBashFields(<?php echo $this->bashid?>)" href="#!"><span>Thuộc
+						tính kết chuyển</span> </a></li>
+			<li class="item-action active"><a href="#!"><span>Lịch sử</span> </a>
+			</li>
+		</ul>
+	</div>
+	<div id="qss_form">
+		<?php echo $this->listview?>
+	</div>
+</div>

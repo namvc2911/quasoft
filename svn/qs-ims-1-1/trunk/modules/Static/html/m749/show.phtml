@@ -1,0 +1,210 @@
+<?php
+$excel_col 			= array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$oee       			= $this->report;
+$xAxis              = '';
+$availabilitySeries = '';
+$performanceSeries  = '';
+$qualitySeries      = '';
+$oeeSeries          = '';
+$no                 = 1;
+?>
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="portrait">
+	<excel orientation="portrait" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+	<div id="head_print">
+	<?php echo $this->views->Common->Portrait()?>
+	<?php $row = 2;?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row?>" column="A"
+					column-merge="<?php echo $excel_col[9]?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(1)?>
+				(<?php echo $this->_translate(2)?> <?php echo $this->startDate?> <?php echo $this->_translate(3)?>
+				<?php echo $this->endDate?>) </xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++?>
+
+
+	<div id="container">
+		<table width="" cellpadding="0" cellspacing="0" class="border"
+			border="1">
+			<!--  Tiêu đề -->
+			<tr class="bggrey">
+				<th width="30px">
+					<!-- STT--> <xls row="<?php echo $row?>" width="4"
+						column="<?php echo $excel_col[1]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1" bold="1"> <?php echo $this->_translate(25)?></xls>
+				</th>
+				<th width="75px">
+					<!-- Dây chuyền--> <xls row="<?php echo $row?>" width="8"
+						column="<?php echo $excel_col[2]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1" bold="1"> <?php echo $this->_translate(20)?></xls>
+				</th>
+				<th width="110px">
+					<!-- Dây chuyền--> <xls row="<?php echo $row?>" width="12"
+						column="<?php echo $excel_col[3]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1" bold="1"> <?php echo $this->_translate(22)?></xls>
+				</th>
+				<th width="75px">
+					<!-- Sản phẩm --> <xls row="<?php echo $row?>" width="8"
+						column="<?php echo $excel_col[4]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1" bold="1"> <?php echo $this->_translate(21)?></xls>
+				</th>
+				<th width="110px">
+					<!-- Sản phẩm --> <xls row="<?php echo $row?>" width="12"
+						column="<?php echo $excel_col[5]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1" bold="1"> <?php echo $this->_translate(23)?></xls>
+				</th>
+				<th width="110px">
+					<!-- Khả năng đáp ứng --> <xls row="<?php echo $row?>" width="15"
+						column="<?php echo $excel_col[6]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1" bold="1"> <?php echo $this->_translate(9)?>
+						<?php echo $this->_translate(13)?></xls></th>
+				<th width="110px">
+					<!-- Hiệu suất sản lượng --> <xls row="<?php echo $row?>"
+						width="15" column="<?php echo $excel_col[7]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(15)?>
+						<?php echo $this->_translate(13)?></xls></th>
+				<th width="110px">
+					<!-- Chất lượng --> <xls row="<?php echo $row?>" width="15"
+						column="<?php echo $excel_col[8]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1" bold="1"> <?php echo $this->_translate(18)?>
+						<?php echo $this->_translate(13)?></xls></th>
+				<th width="110px">
+					<!-- Hiệu suất dây chuyền --> <xls row="<?php echo $row?>"
+						width="15" column="<?php echo $excel_col[9]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(19)?>
+						<?php echo $this->_translate(13)?></xls></th>
+			</tr>
+			<?php $row++;?>
+
+			<!-- Nội dung -->
+			<?php foreach ($oee as $val):?>
+			<?php
+			$availability = number_format((($val->SoHoatDongKeHoach!=0)?($val->SoHoatDongThucTe/$val->SoHoatDongKeHoach):0)*100,2);
+			$performance  = number_format((($val->SanLuongLyThuyet!=0)?($val->SanLuongThucTe/$val->SanLuongLyThuyet):0)*100,2);
+			$tongsanluong = $val->SanLuongThucTe+$val->SoLuongLoi;
+			$quality      = number_format(($tongsanluong?($val->SanLuongThucTe/$tongsanluong):0)*100,2);
+			$oeef         = number_format(($availability/100 * $performance/100 * $quality/100)*100,2);
+
+			?>
+
+			<!-- In nội dung -->
+			<tr>
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[1]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1"> <?php echo $no?></xls></td>
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[2]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1"> <?php echo $val->MaThietBi?></xls></td>
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[3]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1"> <?php echo $val->TenThietBi?></xls></td>
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[4]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1"> <?php echo $val->MaSanPham?></xls></td>
+				<td class="left"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[5]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1"> <?php echo $val->TenSanPham?></xls></td>
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[6]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1"> <?php echo $availability?></xls></td>
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[7]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1"> <?php echo $performance?></xls></td>
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[8]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1"> <?php echo $quality?></xls></td>
+				<td class="right"><xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[9]?>" wrap-text="1" h-align="center"
+						v-align="center" border="1"> <?php echo $oeef?></xls></td>
+			</tr>
+			<?php $row++;?>
+
+
+			<!-- Thông tin biểu đồ -->
+			<?php
+			// xAxis
+			$xAxis .= $xAxis?',':'';
+			$xAxis .= "'{$val->MaThietBi}-{$val->MaThietBi}'";
+
+			// series
+			$availabilitySeries .= $availabilitySeries?',':'';
+			$availabilitySeries .= $availability;
+			$performanceSeries  .= $performanceSeries?',':'';
+			$performanceSeries  .= $performance;
+			$qualitySeries      .= $qualitySeries?',':'';
+			$qualitySeries      .= $quality;
+			$oeeSeries          .= $oeeSeries?',':'';
+			$oeeSeries          .= $oeef;
+			$no++;
+			?>
+			<?php endforeach;?>
+
+		</table>
+	</div>
+
+
+	<script>
+	<!--
+	$(document).ready(function(){
+	var chart = new Highcharts.Chart({
+	    chart: {
+	    	renderTo: 'chart',
+			type: 'column'
+		},
+		title: {
+		    text: '<?php echo $this->_translate(1)?>'
+		},
+		xAxis: {
+		    categories: [<?php echo $xAxis?>]
+		},
+		yAxis: {
+		    min: 0,
+		    title: {
+		        text: '<?php echo $this->_translate(24) ?>'
+		    }
+		},
+		tooltip: {
+		    shared: true,
+		    useHTML: true
+		},
+		plotOptions: {
+		    column: {
+		        pointPadding: 0.2,
+		        borderWidth: 0
+		    }
+		},
+		series: [{
+		    name: '<?php echo $this->_translate(9)?>',
+		    data: [<?php echo $availabilitySeries?>],
+	    	color:'yellow'
+		
+		}, {
+		    name: '<?php echo $this->_translate(15)?>',
+		    data: [<?php echo $performanceSeries?>],
+			color:'blue'
+		}, {
+		    name: '<?php echo $this->_translate(18)?>',
+		    data: [<?php echo $qualitySeries?>],
+		    color:'red'
+		
+		}, {
+		    name: '<?php echo $this->_translate(19)?>',
+		    data: [<?php echo $oeeSeries?>],
+			color:'green'
+		}]
+		});
+	});
+	//-->
+	</script>
+	<br />
+	<div id="chart"></div>
+</div>
+

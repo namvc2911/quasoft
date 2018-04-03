@@ -1,0 +1,125 @@
+<script>
+function printPreview(){
+
+	var start = $('#start').val();
+	var end   = $('#end').val();
+	var msg   = '';
+	
+	if(!start)
+	{
+		msg += '<?php echo $this->_translate(1)?>';
+	}
+	if(!end)
+	{
+		msg += '<?php echo $this->_translate(2)?>';
+	}
+
+	var firstValue = start.split('-');
+	var secondValue = end.split('-');
+	 var firstDate=new Date();
+	 firstDate.setFullYear(firstValue[2],(firstValue[1] - 1 ),firstValue[0]);
+	 var secondDate=new Date();
+	 secondDate.setFullYear(secondValue[2],(secondValue[1] - 1 ),secondValue[0]);     
+
+	 if (firstDate > secondDate)
+	 {
+		msg += '<?php echo $this->_translate(3)?>';
+	 }
+
+
+	if(msg != '')
+	{
+		qssAjax.alert(msg);
+		return;
+	}
+	else
+	{
+//		$('#report').submit(function() {
+//	        window.open('', 'formpopup', 'statusbar=no,resizable=yes,scrollbars=yes, addressbar=no,maximize=yes');
+//	        this.target = 'formpopup';
+//	    });
+//		$('#report').submit();
+                    var url = sz_BaseUrl + '/report/maintenancehp/maintain/plan1';
+                    var data = $('#report').serialize();
+                    qssAjax.getHtml(url, data, function(jreturn) {
+                            $('#print-area').html(jreturn);
+                            removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+                    });
+	}
+}
+
+</script>
+
+
+<div class="clear"></div>
+<div id="view">
+<div class="line-hr"><span><?php echo $this->_translate(4)?></span></div>
+<form id="report" method="post" action="/report/maintenancehp/maintain/plan1">
+<table class="detail" style="margin: 10px">
+
+<tr>
+	<th width="20%" class="report-param-label"><!-- Ngày bắt đầu --><?php echo $this->_translate(5)?></th>
+	<td><?php echo $this->views->Report->Datepicker('start', date('d-m-Y'));?><span class="bold red">(*)</span></td>
+</tr>
+
+<tr>
+	<th width="20%" class="report-param-label"><!-- Ngày ket thuc --><?php echo $this->_translate(6)?></th>
+	<td><?php echo $this->views->Report->Datepicker('end', date('t-m-Y',strtotime('today')));?><span class="bold red">(*)</span></td>
+</tr>
+
+
+<tr>
+	<th width="20%" class="report-param-label"><!-- Nhom thiet bi --><?php echo $this->_translate(7)?></th>
+	<td>
+            <?php
+                $id            = 'group';
+                $getFields     = array('num'=>3, 
+                                       'objects'=>array('ONhomThietBi'=>array(
+                                                            'id'=>'IOID'
+                                                            ,'display1'=>'LoaiThietBi') ));
+            ?>
+            <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+        </td>
+</tr>
+
+<tr>
+	
+	<th width="20%" class="report-param-label"><!-- Loai bao tri --><?php echo $this->_translate(8)?></th>
+	<td>
+            <?php
+                $id            = 'type';
+                $getFields     = array('num'=>3, 
+                                       'objects'=>array('OPhanLoaiBaoTri'=>array(
+                                                            'id'=>'IOID'
+                                                            ,'display1'=>'Loai') ));
+            ?>
+            <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+        
+        </td>
+</tr>
+
+
+<tr>
+	<th class="report-param-label"><?php echo $this->_translate(10)?></th>
+	<td>
+            <?php
+                $id            = 'location';
+                $getFields     = array('num'=>3, 
+                                       'objects'=>array('OKhuVuc'=>array(
+                                                            'id'=>'IOID'
+                                                            ,'display1'=>'MaKhuVuc'
+                                                            , 'display2'=>'Ten') ));
+            ?>
+            <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+        </td>
+</tr>
+
+</table>
+</form>
+<p>
+<hr>
+    <?php echo $this->views->Report->PrintToolbar();?>
+    <div id="print-content">
+            <div id="print-area"></div>		
+    </div>
+</div>

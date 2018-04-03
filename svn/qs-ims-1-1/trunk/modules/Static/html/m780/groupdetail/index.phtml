@@ -1,0 +1,31 @@
+<div id="einfo-info-table" style="margin-top: 28px;">
+	<div class="ui_box_s50_left">
+		<fieldset>
+			<legend>
+			<?php echo $this->_translate(1);?>
+				<!-- Nhóm thiết bị -->
+			</legend>
+			<div class="ui_box_line">
+				<div class="label">
+					<label><?php echo $this->_translate(2);?>
+						<!-- Tên nhóm -->: </label>
+				</div>
+				<div class="element">
+				<?php echo $this->data->LoaiThietBi; ?>
+				</div>
+			</div>
+
+		</fieldset>
+	</div>
+
+	<div class="ui_box_s50_right">
+		<br />
+		<button class="btn-custom"
+			onclick="popupFormInsert('M705', {ODanhSachThietBi_NhomThietBi: '<?php echo $this->nodeioid ?>', ODanhSachThietBi_MaKhuVuc: '<?php echo $this->loccode ?>'}, function() {$('#einfo-search-eq-table').jstree('load_node', $('#EQ_GROUP<?php echo $this->nodeioid ?>'));});"
+			type="button" style="width: 100px;">
+			<?php echo $this->_translate(3);?>
+			<!-- Thêm TB -->
+		</button>
+		<br />
+	</div>
+</div>

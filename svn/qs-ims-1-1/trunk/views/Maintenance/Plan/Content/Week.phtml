@@ -1,0 +1,283 @@
+<script>
+var drag = false;
+$(document).ready(function(){
+	$(function () {
+		$('.plan_block').draggable({
+			appendTo: "body",
+			revert:true,
+            start: function( event, ui ) {
+            	drag = true;
+			},
+			stop: function(event, ui) {
+				setTimeout(function(){ui.helper.unbind("click.prevent");}, 300);
+				drag = false;
+	        }
+		});
+	});
+	
+});
+</script>
+<?php
+
+/**
+ * Selected all plans (Or not). Automatic config by module use it.
+ * Chọn tất cả kế hoạch (Hoặc không). Tự động điều chỉnh theo module sử dụng.
+ * @var boolean
+ * @access private
+ */
+$selected = false; // Chon san hay la khong chon tat ca duoc cau hinh tu dong theo module
+
+/**
+ * Show disable in inputs (Value of var decided by $selected)
+ * Hiển thị disable hay không trên từng dòng input (Giá trị này được quyết định bởi $selected)
+ * @var string
+ * @access private
+ */
+$disabled = '';
+
+/**
+ * Check checkbox? (Value of var decided by $selected)
+ * Chọn hay không chọn từng ô checkbox (Giá trị này được quyết định bởi $selected)
+ * @var string
+ * @access private
+ */
+$checked = '';
+
+// Set value for $selected by module
+// Đặt giá trị cho biến $selected theo module cụ thể
+switch($this->fid)
+{
+    case 'M759':
+        $selected = false;
+    break;
+
+    case 'M830':
+        $selected = true;
+        break;
+
+//    default:
+//        $selected = true;
+//    break;
+}
+
+// Set value for $disable (By $selected)
+// Đặt giá trị cho biến $disable theo giá trị của biến $selected
+if(!$selected)
+{
+    $disabled = 'disabled';
+}
+
+// Set value for $checked (By $selected)
+// Đặt giá trị cho biến $checked theo giá trị của biến $selected
+if($selected)
+{
+    $checked = 'checked';
+}
+
+
+?>
+
+<?php
+$j         = 1;
+$k         = 0;
+$starttime = strtotime($this->startdate);
+$endtime   =  strtotime($this->enddate);
+$group1    = 0;
+$group2    = 0;
+?>
+
+<style>
+    .plan_block
+    {
+        cursor: pointer;
+        background: #FF0;
+        border: 1px #ccc solid;
+        margin: 2px;
+        line-height: 12px;
+        font-size: 12px;
+    }
+
+    .border_ccc
+    {
+        border: 1px #ccc solid;
+    }
+
+</style>
+
+<script>
+function checkLine(ele)
+{
+	
+	if($(ele).is(':checked'))
+	{
+		$(ele).parent().parent().addClass('yellowBg');
+		$(ele).parent().parent().find('.hiddenSubmit').removeAttr('disabled');
+	}
+	else
+	{
+		$(ele).parent().parent().removeClass('yellowBg');
+		$(ele).parent().parent().find('.hiddenSubmit').attr('disabled',true);
+	}
+}
+
+function checkLine2(ele)
+{
+    var findCheckbox = $(ele).find('input:checkbox');
+    if(findCheckbox.is(':checked'))
+    {
+        findCheckbox.parent().parent().removeClass('yellowBg');
+        findCheckbox.parent().parent().find('.hiddenSubmit').attr('disabled',true);
+    }
+    else
+    {
+        findCheckbox.parent().parent().addClass('yellowBg');
+        findCheckbox.parent().parent().find('.hiddenSubmit').removeAttr('disabled');
+    }
+}
+
+
+</script>
+
+<div class="cal_content_title">
+    <p class="cal_content_title_arrow">
+        <a href="#1" 
+           onclick="createwo_file.showWeek('<?php echo @(int)$this->prev[0]?>','<?php echo @(int)$this->prev[1]?>','<?php echo @(int)$this->prev[2]?>');">
+            <img src="/images/calendar/left_arrow_32.png"/>
+        </a>
+    </p>
+    
+	<p class="cal_content_title_info">
+        <?php echo $this->startdate1->format('d-m-Y')?> - <?php echo Qss_Lib_Date::add_date($this->startdate1,6)->format('d-m-Y')?>
+    </p>
+    
+    <p class="cal_content_title_arrow">
+        <a href="#1" onclick="createwo_file.showWeek('<?php echo @(int)$this->next[0]?>','<?php echo @(int)$this->next[1]?>','<?php echo @(int)$this->next[2]?>');">
+            <img src="/images/calendar/right_arrow_32.png"/>
+        </a>
+    </p>
+</div><!-- end .cal_title -->
+
+<div class="cal_content_grid cal_content_week">
+    <table> 
+        
+        <tr class="rows ">
+            <?php for($i=0;$i<7;$i++):?>
+                <?php $date = Qss_Lib_Date::add_date($this->startdate1,$i);?>
+
+                <td style="
+                    border: 1px #ccc solid;
+                    <?php if($i==5 || $i==6):?>background-color: #eee;<?php else:?>background-color: #dfdfdf !important;<?php endif;?>
+                    width:<?php echo 100/7;?>%;">
+                    <?php echo Qss_Lib_Const::$TUAN[$i].' <br/> '.$date->format('d-m-Y');?>
+                </td><!-- end .cols -->
+            <?php endfor;?>
+        </tr><!-- end .rows -->
+
+
+        <?php //echo '<pre>'; print_r($this->data); die;?>
+        <?php foreach(@$this->data as $items):?>
+
+
+        <tr class="rows " style="cursor:pointer;">
+            <td colspan="7" class="left bold" style="border: 1px #ccc solid;" > &nbsp;&nbsp;&nbsp;<?php echo $items['Name'];?></td>
+        </tr>
+
+        <?php foreach(@$items['Data'] as $row=>$item):?>
+        <?php $k++;?>
+        <tr >
+            <?php for($j=1;$j<=7;$j++):?>
+                <?php
+
+                    $title  = '';
+                    if(isset($item[$j]) && $item[$j]->colstart)
+                    {
+						$title .= 'Thiết bị: '.htmlspecialchars($item[$j]->item->TenThietBi).' &#013;';
+                    	if($item[$j]->item->BoPhan)
+                        {
+                        	$title .= 'Bộ phận: '.htmlspecialchars($item[$j]->item->BoPhan).' &#013;';
+                        }
+                        $title .= 'Loại bảo trì: '.htmlspecialchars($item[$j]->item->LoaiBaoTri).' &#013;';
+                        $title .= 'Chu kỳ: '.htmlspecialchars($item[$j]->item->ChuKy).' &#013;';
+                        $title .= htmlspecialchars($item[$j]->item->CongViec);
+                        //$title .= 'Ngày bắt đầu: '.htmlspecialchars($item[$j]->item->StartDate).' &#013; ';
+                        //$title .= 'Ngày kết thúc: '.htmlspecialchars($item[$j]->item->EndDate).' &#013; ';
+                    }
+                ?>
+
+
+                <?php $date = Qss_Lib_Date::add_date($this->startdate1,($j-1) );?>
+
+
+                <?php if(isset($item[$j]) && $item[$j]->colstart):?>
+                    <td colspan="<?php echo $item[$j]->colspan;?>" >
+                        <div for="input<?php echo $k.$j;?>" class="plan_block left break-word border_ccc"  title="<?php echo $title;?>">
+                            <!-- Plan IFID/IFID kế hoạch -->
+                            <input type="hidden" name="ifid[]" value="<?php echo $item[$j]->item->IFID_M724?>"
+                                   class="hiddenSubmit"  <?php echo $disabled;?> />
+
+                            <!-- Plan IOID/IOID kế hoạch -->
+                            <input type="hidden" name="ioid[]" value="<?php echo @(int)$item[$j]->item->PIOID;?>"
+                                   class="hiddenSubmit"  <?php echo $disabled;?> />
+
+                            <!-- Start Date/Ngày bắt đầu -->
+                            <input type="hidden" name="start[]" value="<?php echo $item[$j]->item->StartDate?>"
+                                   class="hiddenSubmit"  <?php echo $disabled;?> />
+
+                            <!-- End date/Ngày kết thúc -->
+                            <input type="hidden" name="end[]" value="<?php echo $item[$j]->item->EndDate?>"
+                                   class="hiddenSubmit"  <?php echo $disabled;?> />
+
+                            <!-- Maint type/Loại bảo trì -->
+                            <input type="hidden" name="type[]" value="<?php echo $item[$j]->item->LoaiBaoTri?>"
+                                   class="hiddenSubmit"  <?php echo $disabled;?> />
+                                   
+                             <!-- chu kỳ bảo trì -->
+                            <input type="hidden" name="chuky[]" value="<?php echo $item[$j]->item->ChuKyIOID?>"
+                                   class="hiddenSubmit"  <?php echo $disabled;?> />       
+
+                            <!-- Ref Equip/IOID thiết bị -->
+                            <input type="hidden" name="refEq[]" value="<?php echo $item[$j]->item->Ref_MaThietBi;?>"
+                                   class="hiddenSubmit"  <?php echo $disabled;?> />
+
+                            <!-- Equip code/Mã thiết bị -->
+                            <input type="hidden" name="eqCode[]" value="<?php echo $item[$j]->item->MaThietBi;?>"
+                                   class="hiddenSubmit"  <?php echo $disabled;?> />
+
+                            <!-- Priority/Mức độ ưu tiên -->
+                            <input type="hidden" name="priority[]" value="<?php echo $item[$j]->item->MucDoUuTien;?>"
+                                   class="hiddenSubmit"  <?php echo $disabled;?> />
+
+                            <!-- Shift/Ca -->
+                            <input type="hidden" name="shift[]" value="<?php echo $item[$j]->item->Ca;?>"
+                                   class="hiddenSubmit"  <?php echo $disabled;?> />
+
+                            <!-- Component/Bộ phận -->
+                            <input type="hidden" name="component[]" value="<?php echo $item[$j]->item->BoPhan;?>"
+                                   class="hiddenSubmit"  <?php echo $disabled;?> />
+
+                            <!-- Lọc theo ngày/Filter by date (Not use) -->
+                            <input type="hidden" name="dateFilter[]" value="<?php echo $date->format('Y-m-d');?>"
+                                   class="hiddenSubmit"  <?php echo $disabled;?> />
+
+                            <!-- Lọc theo đơn vị/Filter by workcenter (Not use) -->
+                            <input type="hidden" name="workCenterFilter[]" value="<?php echo $item[$j]->item->TenDVBT;?>"
+                                   class="hiddenSubmit"  <?php echo $disabled;?> />
+
+                            <!-- Checbox/Chọn dòng -->
+                            <input type="checkbox" name="checkLine_<?php echo $j?>" id="input<?php echo $k.$j;?>"
+                                   onclick="checkLine(this)" <?php echo $checked;?>/> <?php echo $item[$j]->item->MaThietBi;?><?php if($item[$j]->item->BoPhan):?>/<?php echo $item[$j]->item->BoPhan?><?php endif;?>
+                        </div>
+                    </td>
+                <?php elseif(!isset($item[$j])):?>
+                    <td class="border_ccc" style="<?php if($j==6 || $j==7):?>background-color: #eee;<?php endif;?>">&nbsp;</td>
+                <?php endif;?>
+            <?php endfor;?>
+        </tr>
+        <?php endforeach;?>
+        <?php endforeach;?>
+
+    </table>
+</div><!-- end .cal_content_grid -->
+
+
+

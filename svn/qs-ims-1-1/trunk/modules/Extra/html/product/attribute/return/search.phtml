@@ -1,0 +1,179 @@
+<?php
+/**
+ * Nạp dữ liệu
+ */
+$serialLot  = $this->serialLot;
+$attributes = $this->attributes;
+$zoneAndBin = $this->zoneAndBin;
+$col        = 0;
+/*  Kết thúc nạp dữ liệu*/
+/**
+ * Xử lý dữ liệu
+ */
+
+/* Kết thúc xử lý dữ liệu */
+?>
+<!-- table -->
+
+<tr>
+	<td>STT <?php $col++;?>
+	</td>
+
+	<td><input type="checkbox" name="checkAll" id="checkAll"
+		onclick="checkAllLine(this)" /> <?php $col++;?>
+	</td>
+	<?php if($serialLot->serial): $col++;?>
+	<td>Số Serial</td>
+	<?php endif;?>
+
+	<?php if($serialLot->lot): $col++;?>
+	<td>Số Lô</td>
+	<?php endif;?>
+
+	<?php if($this->attributeExists): $col++;?>
+	<td>Mã thuộc tính</td>
+	<?php endif; ?>
+
+	<?php if($zoneAndBin['hasZone']):?>
+	<td>Zone</td>
+	<?php $col++;?>
+	<?php if($zoneAndBin['hasBin']):?>
+	<td>Bin</td>
+	<?php $col++;?>
+	<?php endif;// hasBin?>
+	<?php endif;//hasZone?>
+
+	<td>Số lượng <?php $col++;?>
+	</td>
+
+	<td>Số lượng cập nhật <?php $col++;?>
+	</td>
+</tr>
+
+
+	<?php if($this->itemQty>0):?>
+
+	<?php $i = 1;?>
+	<?php if($this->limit):?>
+
+<tr>
+	<td colspan="<?php echo $col;?>"><b>Số lượng sản phẩm cập nhật lại là <?php echo $this->itemQty;?>
+			/<?php echo $serialLot->itemQty;?> <?php echo strtolower($serialLot->itemUOM);?>
+	</b> <input type="hidden" name="updateQty"
+		value="<?php echo $this->itemQty;?>" />
+	</td>
+</tr>
+	<?php $lineNotAccess = false;?>
+	<?php $notLines = true?>
+	<?php foreach($this->limit as $val):?>
+
+	<?php
+	if($val->SoLuong && $serialLot->serial)
+	{
+		$lineNotAccess = true;
+	}
+	else
+	{
+		$lineNotAccess = false;
+		$notLines      = false;
+	}
+	?>
+<tr <?php if($lineNotAccess) echo 'style="display:none;"'?>
+	class="<?php echo ($val->existsIOID)?'return_customer_yellowBg':''?>">
+	<td><input type="hidden" name="sttUpdate[]" value="<?php echo $i;?>"
+	<?php echo ($val->existsIOID)?'':'disabled'?> /> <?php echo $i;$i++;?>
+	</td>
+
+	<td><input type="hidden" name="checkUpdate[]" id="check"
+	<?php echo ($val->existsIOID)?'value="1"':'value="0" disabled'?> /> <input
+		type="checkbox" onclick="enableAttr(this)"
+	<?php echo ($val->existsIOID)?'checked':''?>
+	<?php if($lineNotAccess) echo 'disabled'?> />
+	</td>
+
+	<?php if($serialLot->serial):?>
+	<td><input type="hidden" name="serialUpdate[]"
+		value="<?php echo $val->SoSerial;?>"
+		<?php echo ($val->existsIOID)?'':'disabled';?> /> <?php echo $val->SoSerial;?>
+	</td>
+	<?php endif;?>
+
+	<?php if($serialLot->lot):?>
+	<td><input type="hidden" name="lotUpdate[]"
+		value="<?php echo $val->SoLo;?>"
+		<?php echo ($val->existsIOID)?'':'disabled';?> /> <?php echo $val->SoLo;?>
+	</td>
+	<?php endif;?>
+
+	<?php if($this->attributeExists):?>
+	<td><input type="hidden" name="attrUpdate[]"
+		value="<?php echo $val->MaThuocTinh;?>"
+		<?php echo ($val->existsIOID)?'':'disabled';?> /> <?php echo $val->MaThuocTinh;?>
+	</td>
+	<?php endif;?>
+
+
+	<?php if($zoneAndBin['hasZone']):?>
+	<td><input type="hidden" name="zoneUpdate[]"
+		value="<?php echo $val->Zone;?>"
+		<?php echo ($val->existsIOID)?'':'disabled';?> /> <?php echo $val->Zone;?>
+	</td>
+	<?php if($zoneAndBin['hasBin']):?>
+	<td><input type="hidden" name="binUpdate[]"
+		value="<?php echo $val->Bin;?>"
+		<?php echo ($val->existsIOID)?'':'disabled';?> /> <?php echo $val->Bin;?>
+	</td>
+	<?php endif;// hasBin?>
+	<?php endif;//hasZone?>
+
+
+	<td><?php echo $val->SoLuong;?> <input type="hidden" name="qtyLine[]"
+		class="qtyLine" value="<?php echo $val->SoLuong;?>"
+		<?php echo ($val->existsIOID)?'':'disabled';?> /> <input type="hidden"
+		name="existsIOID[]"
+		value="<?php echo ($val->existsIOID)?($val->existsIOID):'';?>"
+		<?php echo ($val->existsIOID)?'':'disabled';?> />
+	</td>
+
+	<td><input type="text" name="qty[]" class="qty"
+		value="<?php echo $val->SoLuongCapNhat;?>"
+		<?php echo ($val->existsIOID)?'':'disabled';?> />
+	</td>
+
+</tr>
+		<?php endforeach;?>
+		<?php if($notLines):?>
+<tr>
+	<td colspan="<?php echo $col?>"><b><i> Không tìm thấy giá trị nào như
+				yêu cầu !</i> </b> <script type="text/javascript">
+		<!--
+		qssAjax.alert(' Không tìm thấy giá trị nào như yêu cầu !');
+		-->
+		</script>
+	</td>
+
+</tr>
+		<?php endif;?>
+<tr>
+	<td colspan="<?php echo $col;?>"><b>Số lượng sản phẩm cập nhật lại là <?php echo $this->itemQty;?>
+			/<?php echo $serialLot->itemQty;?> <?php echo strtolower($serialLot->itemUOM);?>
+	</b>
+	</td>
+</tr>
+		<?php else:?>
+<tr>
+	<td colspan="<?php echo $col?>"><b><i> Không tìm thấy giá trị nào như
+				yêu cầu !</i> </b> <script type="text/javascript">
+		<!--
+		qssAjax.alert(' Không tìm thấy giá trị nào như yêu cầu !');
+		-->
+		</script>
+	</td>
+
+</tr>
+		<?php endif;?>
+
+		<?php endif;?>
+
+
+<!-- end table -->

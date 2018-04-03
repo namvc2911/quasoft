@@ -1,0 +1,108 @@
+<script>
+function saveFilter() {	
+	var data = $('#report').serialize();
+	var url = sz_BaseUrl + '/system/field/filter/save';
+	qssAjax.call(url, data, function(jreturn) {
+		$('#qss_trace').dialog('close');
+		$('#szFilter').val(jreturn.message);
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+}
+function deleteFilter() {	
+	$('#qss_trace').dialog('close');
+	$('#szFilter').val('');
+}
+function toogle(objid){
+	$('#object_'+objid).toggle();
+}
+</script>
+<form id="report" method="get" action="/user/report/show">
+	<input type="hidden" name="fid"
+		value="<?php echo $this->form->FormCode?>">
+
+		<?php foreach ($this->form->o_fGetMainObjects() as $object):?>
+	<div class="line-hr" style="cursor: pointer !important"
+		onclick="toogle('<?php echo $object->ObjectCode?>')">
+		<span><?php echo $object->sz_Name?> </span>
+	</div>
+	<table class="detail" id="object_<?php echo $object->ObjectCode?>">
+		<tr>
+			<th width="15%">Tên trường</th>
+			<th width="15%">Điều kiện</th>
+		</tr>
+		<?php foreach ($object->loadFields() as $item):?>
+		<tr>
+			<td><?php echo $item->szFieldName?></td>
+			<td><?php echo Qss_Lib_Template::sz_fGetFieldElement($item);?></td>
+		</tr>
+		<?php endforeach;?>
+	</table>
+	<?php endforeach;?>
+
+	<?php foreach ($this->form->a_fGetSubObjects() as $object):?>
+	<div class="line-hr" style="cursor: pointer !important"
+		onclick="toogle('<?php echo $object->ObjectCode?>')">
+		<span><?php echo $object->sz_Name?> </span>
+	</div>
+	<table class="detail" style="display: none"
+		id="object_<?php echo $object->ObjectCode?>">
+		<tr>
+			<th width="15%">Tên trường</th>
+			<th width="15%">Điều kiện</th>
+		</tr>
+		<?php foreach ($object->loadFields() as $item):?>
+		<tr>
+			<td><?php echo $item->szFieldName?></td>
+			<td><?php echo Qss_Lib_Template::sz_fGetFieldElement($item);?></td>
+		</tr>
+		<?php endforeach;?>
+	</table>
+	<?php endforeach;?>
+
+	<div class="line-hr">
+		<span>Cấu hình</span>
+	</div>
+	<table class="detail">
+		<tr>
+		<?php if($this->form->i_Type == Qss_Lib_Const::FORM_TYPE_MODULE):?>
+			<td>Tình trạng</td>
+			<td><select name="status" id="status">
+					<option value=""></option>
+					<?php foreach($this->steps as $item):?>
+					<option class="<?php echo $item->Color?>"
+						value="<?php echo $item->StepNo?>">
+						<?php echo $item->Name?>
+					</option>
+					<?php endforeach;?>
+			</select>
+			</td>
+			<?php endif;?>
+		</tr>
+	</table>
+	<p>
+		<button type="button" class="btn-custom" onclick="saveFilter()">Lưu
+			các tham số</button>
+		<button type="button" class="btn-custom" onclick="deleteFilter()">Xóa
+			các tham số</button>
+
+</form>
+<script>
+$(document).ready(function() {	
+	<?php foreach($this->params as $key=>$val):?>
+		$('select[name="<?php echo $key?>"]').val('<?php echo $val?>');
+		if($('input[name="<?php echo $key?>"]').is(':radio')){	
+			if('<?php echo $val?>' == '1'){
+				$('#<?php echo $key?>t').attr('checked',true);
+			}
+			else if('<?php echo $val?>' == '0'){
+				$('#<?php echo $key?>f').attr('checked',true);
+			}
+		}
+		else{
+			$('input[name="<?php echo $key?>"]').val('<?php echo $val?>');
+		}
+		<?php endforeach;?>
+	
+});
+</script>

@@ -1,0 +1,79 @@
+<?php if($this->oldGeneral): // Neu co ke hoach cu?>
+<?php $oldGeneralIndex = 0; // Index cua mang in ke hoach cu ?>
+<?php foreach ($this->oldGeneral as $item): // Lap ke hoach cu?>
+
+<?php
+$inventory = @$this->inventory[$item->Ref_MaSP][$item->Ref_ThuocTinh]?$this->inventory[$item->Ref_MaSP][$item->Ref_ThuocTinh]:0;
+?>
+
+<tr class="bggrey2">
+	<td>
+		<!-- STT  -->
+		<div class="tree_level_<?php echo $item->Level?>">
+		<?php
+		if($item->Level == 1) // In so thu tu dau tien
+		{
+			echo $item->No;
+			$childItemIndex = 1; // Set thu tu cua san pham con  ve 1
+		} // Ket thuc tin so thu tu dau tien
+		else  // In so thu tu tiep theo
+		{
+			echo $childItemIndex++;
+		}// Ket thuc in so thu tu
+		?>
+		</div>
+	</td>
+
+	<td class="center">
+		<!-- Ngày XH --> <?php 
+		// In ngay xh voi level = 1
+		echo ($item->Level == 1)?Qss_Lib_Date::mysqltodisplay($item->NgayXuatHang):'-';
+		?>
+	</td>
+	<td class="center">
+		<!-- Ngày GH  --> <?php 
+		// In ngay gh voi level = 1
+		echo ($item->Level == 1)?Qss_Lib_Date::mysqltodisplay($item->NgayGiaoHang):'-';
+		?>
+	</td>
+	<td class="left">
+		<!-- Mã MH --> <?php echo $item->MaSP;?>
+	</td>
+	<td class="left">
+		<!-- Tên MH --> <?php echo $item->SanPham;?>
+	</td>
+	<td class="<?php echo $item->ThuocTinh?'left':'center';?>">
+		<!-- Thuộc tính --> <?php echo $item->ThuocTinh?$item->ThuocTinh:'-';?>
+	</td>
+	<td class="<?php echo $item->Ref_BOM?'left':'center';?>">
+		<!-- Thiết kế --> <?php echo $item->Ref_BOM?$item->BOM:'-';?>
+	</td>
+	<td class="left">
+		<!-- ĐVT  --> <?php echo $item->DonViTinh;?>
+	</td>
+	<td class="right">
+		<!-- SL --> <?php echo ($item->SoLuongSX + $item->SoLuongMH);?>
+	</td>
+	<td class="right">
+		<!-- SLSX --> <?php echo $item->SoLuongSX?>
+	</td>
+	<td class="right">
+		<!-- SL Mua --> <?php echo $item->SoLuongMH;?>
+	</td>
+
+	<td class="right">
+		<!-- Khau tru kho --> <?php echo $item->KhauTruKho?$item->KhauTruKho:0;?>
+	</td>
+
+	<td class="right">
+		<!-- Kho --> <?php echo $inventory;?>
+	</td>
+</tr>
+<tr style="display: none;">
+	<td><script> $('#keep_delete_item').append('<input type="hidden" name="deletePlanItemIOID[]" class="filter" value="<?php echo $item->IOID;?>" />');</script>
+	</td>
+</tr>
+		<?php endforeach;// Ket thuc lap ke hoach cu?>
+		<?php else: // Neu ko co ke hoach cu?>
+false
+		<?php endif; // Ket thuc kiem tra co ke hoach hay khong ??>

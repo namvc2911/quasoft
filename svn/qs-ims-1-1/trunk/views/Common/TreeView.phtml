@@ -1,0 +1,69 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	if($('#horizontal-toolbar').length){
+		var height = $(window).height() - 83 - $('#grid thead').height();
+	}
+	else{
+		var height = $(window).height() - 51 - $('#grid thead').height();
+	}
+	$('#grid').tableScroll({height:height,width:$('#view').width() + $('#midle').width() - 22});
+});
+</script>
+<table cellspacing="0" class="grid" id="grid">
+<thead>
+	<tr>
+		<th style="border-left: 1px solid rgb(204, 204, 204);"><?php echo $this->_translate(27,'STT')?></th>
+		<?php foreach($this->model->arrField as $key=>$field):?>
+		<th>
+			<?php if(is_numeric($this->model->arrFieldName[$key])):?>
+				<?php echo $this->_translate($this->model->arrFieldName[$key]);?>
+			<?php else:?>
+				<?php echo $this->model->arrFieldName[$key];?>
+			<?php endif;?>
+		</th>
+		<?php endforeach;?>
+	</tr>
+</thead>
+<tbody>
+<?php $level=1?>	
+<?php echo genData($this->model,0,$level);?>
+</tbody>
+<tfoot>		
+	<tr>
+		<th style="border-left: 1px solid rgb(204, 204, 204);">&nbsp;</th>
+		<?php foreach($this->model->arrField as $key=>$field):?>
+		<th style="">&nbsp;</th>
+		<?php endforeach;?>
+	</tr>
+</tfoot>
+</table>
+<?php 
+function genData($model,$id,$level)
+{
+	$data = $model->getByParent($id);
+?>	
+	<?php $i=1;?>
+	<?php foreach ($data as $item):?>
+	<tr id="<?php echo $item->{$model->dataField}?>" onclick="rowCLK(this);" rights="10">
+		<td class="nocount" value="<?php echo $i?>"><?php echo $i?></td>
+		<?php $first = 0?>
+		<?php foreach($model->arrField as $key=>$field):?>
+		<td
+			readonly = "0"
+			id="<?php echo $field?>"
+			class="data <?php echo Qss_Lib_Const::$FIELD_ALIGN[$model->arrFieldType[$key]]?> <?php if($model->arrFieldType[$key] == 9) echo ($item->{$field}?'col-checked':'col-unchecked')?>
+			<?php if(!$first){echo 'tree_level_'.$level;}?>"
+			name="<?php echo $field?>"
+			inputtype="<?php echo $model->arrFieldType[$key]?>"
+			value="<?php echo $item->{$field};?>"><?php if($model->arrFieldType[$key] != 9 ):?><?php if($model->arrFieldType[$key] == 8 ):?><?php echo Qss_Lib_Date::mysqltodisplay($item->{$field});?><?php else:?><?php echo $item->{$field};?><?php endif;?><?php endif?></td>
+			<?php $first++?>
+		<?php endforeach;?>
+	</tr>
+	<?php
+	$i++;
+	?>
+	<?php echo genData($model,$item->{$model->dataField},$level+1);?>
+	<?php endforeach;?>
+<?php 
+}
+?>

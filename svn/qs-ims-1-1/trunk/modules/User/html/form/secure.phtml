@@ -1,0 +1,58 @@
+<form id="secure_form" method="post">
+	<input type="hidden" name="ifid" value="<?php echo $this->form->i_IFID?>"> 
+<table cellspacing="0" class="detail grid_edit tablescroll_body" id="grid" style="width:50%">
+	<tr>
+		<th class="left">User ID</th>
+		<th class="left">User name</th>
+		<th class="left"><input type="checkbox" onchange="checkAllRecordRights(this,'C')"> Thêm DL</th>
+		<th class="left"><input type="checkbox" onchange="checkAllRecordRights(this,'R')"> Xem DL</th>
+		<th class="left"><input type="checkbox" onchange="checkAllRecordRights(this,'U')"> Sửa DL</th>
+		<th class="left"><input type="checkbox" onchange="checkAllRecordRights(this,'D')"> Xóa DL</th>
+	</tr>
+	<?php foreach ($this->recordrights as $item):?>
+	<tr>
+		<td><?php echo $item->UserName?></td>
+		<td><?php echo $item->UserID?></td>
+		<td class="left">
+			<input type="checkbox" name="userRecordRights_C[]" value="<?php echo $item->UID?>" <?php if($item->Rights & 1):?>checked<?php endif;?>>
+		</td>
+		<td class="left">
+			<input type="checkbox" name="userRecordRights_R[]" value="<?php echo $item->UID?>" <?php if($item->Rights & 2):?>checked<?php endif;?>>
+		</td>
+		<td class="left">
+			<input type="checkbox" name="userRecordRights_U[]" value="<?php echo $item->UID?>" <?php if($item->Rights & 4):?>checked<?php endif;?>>
+		</td>
+		<td class="left">
+			<input type="checkbox" name="userRecordRights_D[]" value="<?php echo $item->UID?>" <?php if($item->Rights & 8):?>checked<?php endif;?>>
+		</td>
+	</tr>
+	<?php endforeach;?>
+</table>
+</form>
+<script>
+$("tr").on('change',function() {
+	edit = true;
+	if(edit && $(this).attr('edit') != 1){
+		$(this).attr('edit',1);
+	}
+	toggleFormSave();
+});
+</script>
+<script>
+function checkAllRecordRights(ele,pre){
+	var checkBoxes = $("input[name=userRecordRights_"+pre+"\\[\\]]");
+    checkBoxes.prop("checked", ele.checked);
+}
+function save()
+{
+	var url = sz_BaseUrl + '/user/form/secure/save';
+	var data = $('#secure_form').serialize();
+	return qssAjax.call(url, data, function(jreturn) {
+		edit = false;
+		rowSecure();
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+
+}
+</script>

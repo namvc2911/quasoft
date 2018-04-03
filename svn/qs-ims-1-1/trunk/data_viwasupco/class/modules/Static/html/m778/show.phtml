@@ -1,0 +1,433 @@
+<style>
+#print-content th, #print-content td, #print-html th, #print-html td, .default_size {
+    font-size: 13px;
+}
+</style>
+
+<?php
+$excel_col      = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg             = "#EEEEEE";
+$row            = 2;
+$totalColumn    = 15;
+$colWidths      = array(47, 82, 82, 74, 59, 69, 98, 82, 134, 42, 51, 114, 48, 55, 193);
+$excelColWidths = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($colWidths);
+$autoFit        = Qss_Lib_Report::changeWidthToFitScreen($colWidths);
+
+// General Fit
+$totalGenCol    = 4;
+$genColWidths   = array(20, 20, 20, 20);
+$genAutoFit     = Qss_Lib_Report::changeWidthToFitScreen($genColWidths);
+
+// Param Fit
+$paramNo        = 0;
+$totalParamCol  = 5;
+$paramColWidths = array(47, 366, 98, 216, 503);
+$paramAutoFit   = Qss_Lib_Report::changeWidthToFitScreen($paramColWidths);
+
+// Sparepart & Document
+$SDNo        = 0;
+$totalSDCol  = 7;
+$SDColWidths = array(47, 150, 317,  98, 82, 176, 461);
+$SDAutoFit   = Qss_Lib_Report::changeWidthToFitScreen($SDColWidths);
+
+// Work order history
+$woHistoryNo        = 0;
+$breakdownNo        = 0;
+$totalWoHistoryCol  = 8;
+$woHistoryColWidths = array(47,198, 366, 98, 82, 98, 290);
+$woHistoryAutoFit   = Qss_Lib_Report::changeWidthToFitScreen($woHistoryColWidths);
+
+$status = '';
+$row    = 0;
+switch(@(int)$this->eq->TrangThai)
+{
+    case 0: $status = $this->_translate(71); break; // Hoạt động
+    case 1: $status = $this->_translate(72); break; // Thanh lý
+    case 2: $status = $this->_translate(73); break; // Mất
+    case 3: $status = $this->_translate(74); break; // Hỏng
+}
+
+?>
+
+<div class="portrait">
+    <!-- REPORT TITLE -->
+	<div id="head_print">
+
+        <div>
+            <div class="overflow" style=" overflow: hidden; width: 100%">
+                <div class="fl center" style="width: 40%">
+                    <xls row="<?php echo $row?>" column="A" column-merge="B" font-size="11" h-align="center" v-align="center" >ĐỘI BẢO TRÌ SỮA CHỮA & XÂY DỰNG</xls>
+                    <br/>
+                    <xls row="<?php echo ($row + 1)?>" column="A" column-merge="B" font-size="11" h-align="center" v-align="center">BM03.QT01.BTSC</xls>
+                    <br/>
+                </div>
+
+                <div class="fr center" style="width: 50%">
+                    <p style="font-size: 16px; line-height: 18px;">
+                        <b>
+                            <xls row="<?php echo $row?>" column="C" column-merge="E" font-size="16" h-align="center" v-align="center" bold="1">CÔNG TY CỔ PHẦN ĐẦU TƯ NƯỚC SẠCH SÔNG ĐÀ</xls>
+                        </b>
+                    </p>
+                    <xls row="<?php echo ($row + 1)?>" column="C" column-merge="E" font-size="11" h-align="center" v-align="center"  >Xóm Vật Lại, xã Phú Minh, huyện Kỳ Sơn, tỉnh Hòa Bình; </xls>
+                    <br/>
+                    <xls row="<?php echo ($row + 2)?>" column="C" column-merge="E" font-size="11" h-align="center" v-align="center"  >Điện thoại: 0218.3.840.152-0218.3.840.148; Fax 0218.3.840.148; </xls>
+                    <br/>
+                </div>
+
+                <?php $row = $row + 2;?>
+            </div>
+        </div>
+        <?php $row++;?>
+        <?php $row++;?>
+        <br/>
+
+		<center>
+		    <h2><?php echo $this->_translate(1);?></h2>
+		</center>
+	</div><!-- end div#head_print -->
+    <br/>
+
+    <!-- REPORT DATA -->
+    <div id="container">
+        <table cellpadding="0" cellspacing="0" border="0" class="" style="">
+
+            <!-- Mã thiết bị -->
+            <tr>
+                <td class="left bold" style="width: 20%" valign="top">
+                    Mã thiết bị:
+                </td>
+
+                <td class="left" valign="top">
+                    <?php echo $this->eq->MaThietBi;?>
+                </td>
+            </tr>
+
+            <!-- Tên thiết bị -->
+            <tr>
+                <td class="left bold"  valign="top">
+                    Tên thiết bị:
+                </td>
+
+                <td class="left" valign="top">
+                    <?php echo $this->eq->TenThietBi;?>
+                </td>
+            </tr>
+
+            <!-- Nhóm thiết bị -->
+            <tr>
+                <td class="left bold"  valign="top">
+                    Nhóm thiết bị:
+                </td>
+
+                <td class="left" valign="top">
+                    <?php echo $this->eq->NhomThietBi;?>
+                </td>
+            </tr>
+
+            <!-- Nhà sản xuất -->
+            <tr>
+                <td class="left bold"  valign="top">
+                    Nhà sản xuất:
+                </td>
+
+                <td class="left" valign="top">
+                    <?php echo $this->eq->XuatXu;?>
+                </td>
+            </tr>
+
+            <!-- Năm sản xuất -->
+            <tr>
+                <td class="left bold"  valign="top">
+                    Năm sản xuất:
+                </td>
+
+                <td class="left" valign="top">
+                    <?php echo $this->eq->NamSanXuat;?>
+                </td>
+            </tr>
+
+            <!-- Đơn vị quản lý -->
+            <tr>
+                <td class="left bold"  valign="top">
+                    Đơn vị quản lý:
+                </td>
+
+                <td class="left" valign="top">
+                    <?php echo @$this->eq->DonViQuanLy;?>
+                </td>
+            </tr>
+
+            <!-- Tình trạng -->
+            <tr>
+                <td class="left bold"  valign="top">
+                    Tình trạng:
+                </td>
+
+                <td class="left" valign="top">
+                    <?php echo $this->eq->Ref_TrangThai;?>
+                </td>
+            </tr>
+
+            <!-- Tình trạng -->
+            <tr>
+                <td class="left bold"  valign="top">
+                    Đặc tính kỹ thuật:
+                </td>
+
+                <td class="left" valign="top">
+                    <?php echo $this->eq->DacTinhKT;?>
+                </td>
+            </tr>
+        </table><!-- end table.border -->
+        <br/>
+
+        <p class="center bold">
+            Những quy định khi sử dụng và bảo dưỡng thiết bị
+        </p>
+
+        <p class="left">
+            <?php echo @$this->eq->QuyDinhKhiSuDungBaoDuong;?>
+        </p>
+        <br/>
+
+        <div class="left bold default_size">
+            A/ Thông số kỹ thuật
+        </div>
+        <br/>
+
+        <?php
+            // Cài đặt độ rộng bảng Thông số kỹ thuật
+            $widths = array(1, 4, 3, 3);
+            $widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+            $begin  = 0;
+        ?>
+        <table cellpadding="0" cellspacing="0" border="0" class="border" style="width:100%">
+            <tr class="bggrey">
+                <!-- STT -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">STT</th>
+                <!-- Thông số kỹ thuật -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Thông số kỹ thuật</th>
+                <!-- Đơn vị -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Đơn vị</th>
+                <!-- Giá trị -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Giá trị</th>
+            </tr>
+
+            <?php $paramNo = 0;?>
+            <?php foreach($this->techSpecifications as $data): // In bao cao?>
+                <tr>
+                    <!-- STT -->
+                    <td class="center" ><?php echo ++$paramNo;?></td>
+                    <!-- Thông số kỹ thuật -->
+                    <td class="left" ><?php echo $data->Ten;?></td>
+                    <!-- Đơn vị -->
+                    <td class="left" ><?php echo $data->DonViTinh;?></td>
+                    <!-- Giá trị -->
+                    <td class="left" ><?php echo $data->GiaTri;?></td>
+                </tr>
+            <?php endforeach;?>
+        </table>
+        <br/>
+
+        <div class="left bold default_size">
+            B/ Cấu trúc thiết bị
+        </div>
+        <br/>
+
+        <?php
+            // Cài đặt độ rộng bảng cấu trúc thiết bị
+            $widths = array(2, 4, 8, 4 ,3, 3);
+            $widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+            $begin  = 0;
+        ?>
+        <table cellpadding="0" cellspacing="0" border="0" class="border" style="width:100%">
+            <tr class="bggrey">
+                <!-- STT -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Vị trí</th>
+                <!-- Bộ phận -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Bộ phận</th>
+                <!-- Đặc tính kỹ thuật -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Đặc tính kỹ thuật</th>
+                <!-- Vật tư -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Vật tư</th>
+                <!-- Đơn vị tính -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Đơn vị tính</th>
+                <!-- Số lượng -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Số lượng</th>
+            </tr>
+
+            <?php $paramNo = 0;?>
+            <?php // echo '<pre>'; print_r($this->equipStructures); die;?>
+            <?php foreach($this->equipStructures as $data): // In bao cao?>
+                <tr>
+                    <!-- STT -->
+                    <td class="left" ><?php echo $data->ViTri;?></td>
+                    <!-- Bộ phận -->
+                    <td class="left" ><?php echo $data->BoPhan;?></td>
+                    <!-- Đặc tính kỹ thuật -->
+                    <td class="left" ><?php echo $data->DacTinhKyThuat;?></td>
+                    <!-- Vật tư -->
+                    <td class="left" ><?php echo "{$data->TenSP} ". ($data->MaSP?"({$data->MaSP})":'');?></td>
+                    <!-- Đơn vị tính -->
+                    <td class="left" ><?php echo $data->DonViTinh;?></td>
+                    <!-- Số lượng -->
+                    <td class="right" ><?php echo Qss_Lib_Util::formatNumber($data->SoLuongHC);?></td>
+                </tr>
+            <?php endforeach;?>
+        </table>
+        <br/>
+
+        <div class="left bold default_size">
+            C/ Hướng dẫn bảo trì
+        </div>
+        <br/>
+
+        <?php
+        // Cài đặt độ rộng bảng Hướng dẫn bảo trì
+        $widths = array(1, 3, 6, 3, 6);
+        $widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+        $begin  = 0;
+        ?>
+        <table cellpadding="0" cellspacing="0" border="0" class="border" style="width:100%">
+            <tr class="bggrey">
+                <!-- STT -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">STT</th>
+                <!-- Bộ phận -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Bộ phận</th>
+                <!-- Công việc bảo dưỡng/bảo trì -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Công việc bảo dưỡng/bảo trì</th>
+                <!-- Chu kỳ -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Chu kỳ</th>
+
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Vật tư</th>
+            </tr>
+
+            <?php $paramNo = 0;?>
+            <?php foreach($this->plans as $data): // In bao cao?>
+                <tr>
+                    <!-- STT -->
+                    <td class="center" ><?php echo ++$paramNo;?></td>
+                    <!-- Bộ phận -->
+                    <td class="left" ><?php echo $data->BoPhan;?></td>
+                    <!-- Công việc bảo dưỡng/bảo trì -->
+                    <td class="left" ><?php echo $data->MoTa;?></td>
+                    <!-- Chu kỳ -->
+                    <td class="left" ><?php echo $data->TongHopChuKy;?></td>
+                    <!-- Vật tư -->
+                    <td class="left" ><?php echo $data->TongHopVatTu;?></td>
+                </tr>
+            <?php endforeach;?>
+        </table>
+        <br/>
+
+        <div class="left bold default_size">
+            D/ Sự cố
+        </div>
+        <br/>
+
+        <?php
+        // Sự cố
+        $widths = array(1, 3, 5, 2.7, 2.7, 2.7, 5, 5);
+        $widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+        $begin  = 0;
+        ?>
+        <table cellpadding="0" cellspacing="0" border="0" class="border" style="width:100%">
+            <tr class="bggrey">
+                <!-- STT -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">STT</th>
+                <!-- Bộ phận -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Bộ phận</th>
+                <!-- Mô tả sự cố -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Mô tả sự cố</th>
+                <!-- Ngày sự cố -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Ngày sự cố</th>
+                <!-- Nguyên nhân -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Nguyên nhân</th>
+                <!-- Thời gian dừng máy -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Thời gian dừng máy</th>
+                <!-- Xử lý -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Xử lý</th>
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Vật tư</th>
+            </tr>
+
+            <?php $paramNo = 0;?>
+            <?php foreach($this->closedBreakdown as $data): // In bao cao?>
+                <tr>
+                    <!-- STT -->
+                    <td class="center" ><?php echo ++$paramNo;?></td>
+                    <!-- Bộ phận -->
+                    <td class="left" ><?php echo $data->BoPhan;?></td>
+                    <!-- Mô tả sự cố -->
+                    <td class="left" ><?php echo $data->MoTa;?></td>
+                    <!-- Ngày sự cố -->
+                    <td class="center" ><?php echo Qss_Lib_Date::mysqltodisplay($data->NgayBatDau);?></td>
+                    <!-- Nguyên nhân -->
+                    <td class="left" ><?php echo $data->MaNguyenNhanSuCo;?></td>
+                    <!-- Thời gian dừng máy -->
+                    <td class="right" ><?php echo Qss_Lib_Util::formatNumber($data->ThoiGianDungMay);?></td>
+                    <!-- Xử lý -->
+                    <td class="left" ><?php echo $data->XuLy;?></td>
+                    <td class="left" ><?php echo $data->TongHopVatTu;?></td>
+                </tr>
+            <?php endforeach;?>
+        </table>
+        <br/>
+
+
+        <div class="left bold default_size">
+            E/ Nhật ký bảo dưỡng
+        </div>
+        <br/>
+
+        <?php
+        // Sự cố
+        $widths = array(1, 3, 5, 2.7, 2.7, 2.7, 5, 3);
+        $widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+        $begin  = 0;
+        ?>
+        <table cellpadding="0" cellspacing="0" border="0" class="border" style="width:100%">
+            <tr class="bggrey">
+                <!-- STT -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">STT</th>
+                <!-- Bộ phận -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Bộ phận</th>
+                <!-- Nội dung bảo dưỡng/ Sửa chữa -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Nội dung bảo dưỡng/ Sửa chữa </th>
+                <!-- Ngày BD-SC -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Ngày BD-SC</th>
+                <!-- Ngoài kế hoạch -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Ngoài kế hoạch</th>
+                <!-- Người thực hiện -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Chịu trách nhiệm </th>
+
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Vật tư </th>
+                <!-- Ghi chú -->
+                <th class="center" style="width:<?php echo $widths[$begin++];?>%;">Ghi chú</th>
+            </tr>
+
+            <?php $paramNo = 0;?>
+            <?php foreach($this->closedUnbroken as $data): // In bao cao?>
+                <tr>
+                    <!-- STT -->
+                    <td class="center" ><?php echo ++$paramNo;?></td>
+                    <!-- Bộ phận -->
+                    <td class="left" ><?php echo $data->BoPhan;?></td>
+                    <!-- Nội dung bảo dưỡng/ Sửa chữa -->
+                    <td class="left" ><?php echo $data->MoTa;?></td>
+                    <!-- Ngày BD-SC -->
+                    <td class="center" ><?php echo Qss_Lib_Date::mysqltodisplay($data->NgayBatDau);?></td>
+                    <!-- Ngoài kế hoạch -->
+                    <td class="left" ></td>
+                    <!-- Người thực hiện -->
+                    <td class="left" ><?php echo $data->NguoiThucHien;?></td>
+
+                    <td class="left" ><?php echo @$data->TongHopVatTu;?></td>
+                    <!-- Ghi chú -->
+                    <td class="left" ><?php echo @$data->GhiChu;?></td>
+                </tr>
+            <?php endforeach;?>
+        </table>
+    </div><!-- end div#container -->
+</div><!-- END REPORT -->
+
+

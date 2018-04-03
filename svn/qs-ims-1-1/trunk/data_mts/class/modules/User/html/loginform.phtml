@@ -1,0 +1,1235 @@
+<meta charset="utf8"/>
+<title>Quasoft CMMS</title>
+<link rel="shortcut icon" href="/images/qs-ims.ico"/>
+
+<style>
+    #epLanguage, #epDepartmentID {
+        width:100%;
+        font-size: 12px;
+        line-height: 28px;
+        height: 28px;
+    }
+    
+    .center {
+        text-align: center;
+    }
+
+    #epSavePassword, #epSavePasswordText, .login_copyright {
+        font-size: 12px;
+        line-height: 18px;
+        height: 18px;
+    }
+
+    #login_box .topbox {
+        height: 150px;
+        border-bottom: 1px solid #aaa;
+    }
+
+    .background {
+        background-color: #1A5C7E;
+        margin-top: 0px;
+        background: #1A5C7E;
+    }
+
+    #login_box {
+        position: relative;
+        box-shadow: 3px 3px 10px #000;
+        width: 315px;
+        margin: 0px auto 0 auto;
+        top: 65px;
+        border: 1pt solid #ccc;
+        border-radius: 10px;
+        background: #fff;
+    }
+
+    .topbox .title {
+        padding-top: 0px;
+        text-align: center;
+        font-size: 20px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .topbox .message {
+        padding-top: 25px;
+    }
+
+</style>
+
+<style >
+    @charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset@charset"utf-8";/* CSS Document */
+    html
+    {
+        height: 100%;
+    }
+    a, a:link, a:visited, a:hover
+    {
+        text-decoration: none;
+    }
+    .refreshbtt
+    {
+        padding: 0px !important;
+    }
+    body
+    {
+        /*min-height: 100%;*/
+        max-height: 727px;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+        font-size: 14px;
+        font-family: 'Kuro' , Arial, Tahoma;
+        color: #222;
+        background: #fff !important;
+    }
+    .full-site
+    {
+        margin: 0;
+        padding: 0;
+        clear: both;
+        position: relative;
+        overflow: hidden;
+    }
+    .menu-top
+    {
+        background: #1a5c7e;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        display: inline-block;
+        clear: both;
+        margin-bottom: -4px;
+    }
+    .nav-login
+    {
+        width: 960px;
+        margin: 0 auto;
+        padding: 0;
+    }
+    .nav-login .nav-login-left
+    {
+        /*width: 580px;*/
+        float: left;
+        padding: 0px;
+    }
+    .nav-login .nav-login-left ul
+    {
+        height: 34px; /*padding-top:1px;*/
+    }
+    .nav-login-left ul li
+    {
+        float: left;
+        list-style: none;
+    }
+    .nav-login-left ul li a
+    {
+        float: left;
+        padding: 7px 20px;
+        line-height: 20px;
+    }
+    .nav-login-left ul li a:hover
+    {
+        background: #337359;
+    }
+    .nav-login-left ul div
+    {
+        color: #fff;
+        padding: 9px;
+        font-size: 14px;
+        font-family: Arial,Tahoma;
+    }
+    .body-main
+    {
+        margin: 0 auto;
+        padding: 0; /*
+            background: url("https://www.vietcombank.com.vn/IBanking2015/Content/web/css/../data_mts/images/bg_login_png.png") no-repeat scroll center 265px !important;
+            */
+    }
+    .body-main .content-main
+    {
+        margin: 0 auto;
+        padding: 0;
+        width: 960px;
+    }
+    .body-main .box-login
+    {
+        float: right;
+        width: 340px;
+        position: relative;
+        padding: 0 10px;
+        top: -227px; /* 30px -43px*/
+        z-index: 1000;
+    }
+    .body-main .content-login
+    {
+        background: #fff;
+        clear: both; /*  min-height: 469px; */
+        -webkit-border-radius: 20px 20px 20px 20px;
+        -moz-border-radius: 20px 20px 20px 20px;
+        border-radius: 20px 20px 20px 20px;
+        border-bottom: 1px solid #ccc;
+        border-left: 1px solid #ccc;
+        border-right: 1px solid #ccc;
+        -webkit-box-shadow: #222 0 4px 4px 4px;
+        -moz-box-shadow: #222 0 4px 4px 4px;
+        box-shadow: #222 0 1px 7px 0;
+        padding: 0 40px;
+        behavior: url("../js/libs/PIE-1.0.0/PIE.htc");
+        float: left;
+        padding-bottom: 20px;
+    }
+    .body-main .box-login .logo
+    {
+        /*background: url("https://www.vietcombank.com.vn/IBanking2015/Content/web/css/../data_mts/images/logo_login.png") no-repeat center top;*/
+        height: 150px;
+        text-align: right;
+    }
+    .body-main .box-login .info-login
+    {
+        padding: 0;
+    }
+    .info-login .control
+    {
+        clear: both;
+        float: left;
+        margin: 5px 0;
+        width: 100%;
+    }
+    .info-login .control input[type="text"], .info-login .control input[type="password"], .info-login .control input[type="submit"]
+    {
+        border: medium none;
+        padding: 6px;
+        border: 1px solid #cdcdcd;
+        width: 244px;
+        font-size: 12px;
+        font-family: Arial, Tahoma;
+    }
+    .img-captcha
+    {
+        width: 200px float: left;
+    }
+    .text-captcha
+    {
+        float: left;
+        vertical-align: top;
+        width: 150px;
+    }
+    .info-login .control .btn-dangnhap
+    {
+        background: #1a5c7e;
+        line-height: 30px;
+        width: 50%;
+        cursor: pointer;
+        border: none;
+        font-family: Arial, Tahoma;
+        font-size: 16px;
+        color: #FFF;
+    }
+    .login-link
+    {
+        padding-top: 15px;
+        float: left;
+        border-top: 1px dotted #bbbbbb;
+        margin-top: 10px;
+        width: 100%;
+    }
+    .login-link p
+    {
+        padding: 3px 0;
+    }
+    .login-link a
+    {
+        color: #222;
+        font-family: Arial,Tahoma !important;
+        font-size: 13px !important;
+        background: url("/data_mts/images/nav-left-icon.png") no-repeat left;
+        padding-left: 15px;
+        font-size: 13px;
+    }
+    .login-link a:hover
+    {
+        color: #15774a !important;
+    }
+    .content-main .box-content
+    {
+        width: 600px;
+        float: left;
+        padding: 0 10px; /*position: sticky; */
+    }
+    .content-main .dichvu-login
+    {
+        background: none repeat scroll 0 0 #176f39;
+        height: 107px;
+        left: 0;
+        opacity: 0.8;
+        position: absolute;
+        width: 65%;
+    }
+    .box-content .box-support-login
+    {
+        clear: both;
+        margin: 0 auto;
+        padding-bottom: 10px;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .box-content .box-support-service
+    {
+        clear: both;
+        margin: 0 auto;
+        padding-bottom: 10px;
+        padding-left: 0;
+        padding-right: 0;
+        width: 600px;
+        float: left;
+    }
+    .boder-none
+    {
+        border: none !important;
+    }
+    .box-content .box-support-service .f1, .box-content .box-support-service .f2, .box-content .box-support-service .f3
+    {
+        float: left;
+        font-size: 14px;
+        padding: 0 80px 0 0;
+    }
+    .f1 div, .f2 div, .f3 div
+    {
+        margin: 10px 0;
+    }
+    .f1 div a, .f2 div a, .f3 div a
+    {
+        background: none;
+        padding: 0 !important;
+        color: #FFF;
+        font-family: Arial, Tahoma;
+    }
+    .f1 div a:hover, .f2 div a:hover, .f3 div a:hover
+    {
+        color: #8cc63e;
+    }
+    .content-qc-login
+    {
+        padding: 20px 0;
+    }
+    .content-qc-login p
+    {
+        padding: 5px 0;
+    }
+    .title-qc-login a
+    {
+        font-size: 30px;
+        font-weight: bold;
+        color: #459748;
+    }
+    /*.box-support-login .f2 {
+width: 265px;
+}
+
+.box-support-login .f3 {
+width: 155px;
+}*/.box-support-service .f1 .demo-dv
+       {
+           /*   background: url("https://www.vietcombank.com.vn/IBanking2015/Content/web/css/../data_mts/images/v2/icon-demo.png") no-repeat scroll 0 0; */
+           padding: 15px 0 22px 50px;
+           border-bottom: 1px dotted #8cc63e;
+       }
+    .box-support-service .f1 .help
+    {
+        /* background: url("https://www.vietcombank.com.vn/IBanking2015/Content/web/css/../data_mts/images/v2/icon-help.png") no-repeat scroll 0 0; */
+        padding: 15px 0 15px 50px;
+    }
+    .box-support-service .f2 .huongdan-canhan
+    {
+        /* background: url("https://www.vietcombank.com.vn/IBanking2015/Content/web/css/../data_mts/images/v2/icon-canhan.png") no-repeat scroll 0 0; */
+        padding: 15px 0 22px 50px;
+        border-bottom: 1px dotted #8cc63e;
+    }
+    .box-support-service .f2 .huongdan-tochuc
+    {
+        /*   background: url("https://www.vietcombank.com.vn/IBanking2015/Content/web/css/../data_mts/images/v2/icon-doanhnghiep.png") no-repeat scroll 0 0; */
+        padding: 12px 0 12px 50px;
+    }
+    .box-support-service .f3 .bieuphi
+    {
+        /* background: url("https://www.vietcombank.com.vn/IBanking2015/Content/web/css/../data_mts/images/v2/icon-bieuphi.png") no-repeat scroll 0 0; */
+        padding: 15px 0 22px 50px;
+        border-bottom: 1px dotted #8cc63e;
+    }
+    .box-support-service .f3 .dieukhoan
+    {
+        /* background: url("https://www.vietcombank.com.vn/IBanking2015/Content/web/css/../data_mts/images/v2/icon-dieukhoan.png") no-repeat scroll 0 0; */
+        padding: 12px 0 12px 50px;
+    }
+    .ie7 .body-main .box-login
+    {
+        width: auto !important;
+    }
+    .ie7 .info-login .control INPUT
+    {
+        width: 245px;
+    }
+    .ie7 .body-main .content-login
+    {
+        padding: 0 !important;
+    }
+    .ie7 .info-login .control
+    {
+        margin: 5px 14px 0 14px !important;
+        float: none;
+    }
+    .ie7 .text-captcha
+    {
+        padding-left: 14px;
+    }
+    .ie7 .info-login .control .btn-dangnhap
+    {
+        line-height: none !important;
+        line-height: 1 !important;
+        padding: 5px 15px;
+    }
+    .ie7 .login-link
+    {
+        margin-left: 30px;
+        width: 254px;
+    }
+    .ie7 .fix-ie
+    {
+        width: auto;
+    }
+    .ie7 #nav UL#menu
+    {
+        padding-left: 25px !important;
+    }
+    .ie7 .body-main .box-login .logo
+    {
+        padding-right: 30px !important;
+        height: auto !important;
+    }
+    .ie7 .nav-login-left UL LI A
+    {
+        padding: 8px 20px !important;
+    }
+    .ie7 .form-info .control-group .controls SELECT
+    {
+        padding: 6px 10px 5px 5px !important;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        padding: 5px;
+    }
+    .ie7 .mes_error
+    {
+        width: 257px !important;
+        padding: 0 15px !important;
+        font-size: 12px;
+        font-family: Arial,Tahoma;
+    }
+    .mes_error
+    {
+        font-size: 12px;
+        font-family: Arial,Tahoma;
+    }
+    .full-slider
+    {
+        width: 100%;
+        background: url("/data_mts/images/bg-login-top2.gif") no-repeat center;
+        height: 462px;
+        clear: both;
+        display: inline-block;
+        position: relative;
+        width: 100%;
+    }
+    .fullflash
+    {
+        width: 100%;
+        height: 55px;
+        clear: both;
+        display: block;
+        position: absolute;
+        top: 569px;
+        z-index: 1000;
+
+        margin: 0;
+        padding: 0;
+    }
+    .full-content-login
+    {
+        background: url("/data_mts/images/bg_login_png.png") no-repeat scroll center top;
+        clear: both;
+        display: inline-block;
+        /*min-height: 430px;*/
+        position: relative;
+        top: -202px;
+        width: 100%;
+        z-index: 999;
+    }
+    .fix-dichvu
+    {
+        padding-top: 185px;
+    }
+    .da-slide-current img, .fix-img-qc img
+    {
+        bottom: 0;
+        position: absolute;
+    }
+    .fix-img-qc
+    {
+        width: 309px;
+        height: 386px;
+        float: left;
+    }
+    .ie7 .menu-top
+    {
+        margin-bottom: 0 !important;
+    }
+</style>
+<style media="" >
+    /*
+HTML5 Reset :: style.css
+----------------------------------------------------------
+We have learned much from/been inspired by/taken code where offered from:
+
+Eric Meyer					:: http://meyerweb.com
+HTML5 Doctor				:: http://html5doctor.com
+and the HTML5 Boilerplate	:: http://html5boilerplate.com
+
+-------------------------------------------------------------------------------*//* Let's default this puppy out
+-------------------------------------------------------------------------------*/html, body, body div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, figure, footer, header, menu, nav, section, time, mark, audio, video, details, summary
+    {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        font-size: 100%;
+        font-weight: normal;
+        vertical-align: baseline;
+        background: transparent;
+    }
+    article, aside, figure, footer, header, nav, section, details, summary
+    {
+        display: block;
+    }
+    /* Handle box-sizing while better addressing child elements:
+http://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/ */html
+                                                                                             {
+                                                                                                 box-sizing: border-box;
+                                                                                             }
+    *, *:before, *:after
+    {
+        box-sizing: inherit;
+    }
+    /* consider resetting the default cursor: https://gist.github.com/murtaugh/5247154 *//* Responsive images and other embedded objects
+*/img, object, embed
+      {
+          max-width: 100%;
+      }
+    /*
+Note: keeping IMG here will cause problems if you're using foreground images as sprites.
+ In fact, it *will* cause problems with Google Maps' controls at small size.
+If this is the case for you, try uncommenting the following:
+
+#map img {
+    max-width: none;
+}
+*//* force a vertical scrollbar to prevent a jumpy page */html
+                                                              {
+                                                                  overflow-y: scroll;
+                                                              }
+    /* we use a lot of ULs that aren't bulleted.
+don't forget to restore the bullets within content. */ul
+                                                              {
+                                                                  list-style: none;
+                                                              }
+    blockquote, q
+    {
+        quotes: none;
+    }
+    blockquote:before, blockquote:after, q:before, q:after
+    {
+        content: '';
+        content: none;
+    }
+    a
+    {
+        margin: 0;
+        padding: 0;
+        font-size: 100%;
+        vertical-align: baseline;
+        background: transparent;
+    }
+    del
+    {
+        text-decoration: line-through;
+    }
+    abbr[title], dfn[title]
+    {
+        border-bottom: 1px dotted #000;
+        cursor: help;
+    }
+    /* tables still need cellspacing="0" in the markup */table
+                                                         {
+                                                             /*border-collapse: collapse;*/
+                                                             border-spacing: 0;
+                                                         }
+    th
+    {
+        font-weight: bold;
+        vertical-align: bottom;
+    }
+    td
+    {
+        font-weight: normal;
+        vertical-align: top;
+    }
+    hr
+    {
+        display: block;
+        height: 1px;
+        border: 0;
+        border-top: 1px solid #ccc;
+        margin: 1em 0;
+        padding: 0;
+    }
+    input, select
+    {
+        vertical-align: middle;
+    }
+    pre
+    {
+        white-space: pre; /* CSS2 */
+        white-space: pre-wrap; /* CSS 2.1 */
+        white-space: pre-line; /* CSS 3 (and 2.1 as well, actually) */
+        word-wrap: break-word; /* IE */
+    }
+    input[type="radio"]
+    {
+        vertical-align: text-bottom;
+    }
+    input[type="checkbox"]
+    {
+        vertical-align: bottom;
+    }
+    .ie7 input[type="checkbox"]
+    {
+        vertical-align: baseline;
+    }
+    .ie6 input
+    {
+        vertical-align: text-bottom;
+    }
+    select, input, textarea
+    {
+        font: 99% sans-serif;
+    }
+    table
+    {
+        font-size: inherit;
+        font: 100%;
+    }
+    small
+    {
+        font-size: 85%;
+    }
+    strong
+    {
+        font-weight: bold;
+    }
+    td, td img
+    {
+        vertical-align: top;
+    }
+    /* Make sure sup and sub don't mess with your line-heights http://gist.github.com/413930 */sub, sup
+                                                                                               {
+                                                                                                   font-size: 75%;
+                                                                                                   line-height: 0;
+                                                                                                   position: relative;
+                                                                                               }
+    sup
+    {
+        top: -0.5em;
+    }
+    sub
+    {
+        bottom: -0.25em;
+    }
+    /* standardize any monospaced elements */pre, code, kbd, samp
+                                             {
+                                                 font-family: monospace, sans-serif;
+                                             }
+    /* hand cursor on clickable elements */.clickable, label, input[type=button], input[type=submit], input[type=file], button
+                                           {
+                                               cursor: pointer;
+                                           }
+    /* Webkit browsers add a 2px margin outside the chrome of form elements */button, input, select, textarea
+                                                                              {
+                                                                                  margin: 0;
+                                                                              }
+    /* make buttons play nice in IE */button, input[type=button]
+                                      {
+                                          width: auto;
+                                          overflow: visible;
+                                      }
+    /* scale images in IE7 more attractively */.ie7 img
+                                               {
+                                                   -ms-interpolation-mode: bicubic;
+                                               }
+    /* prevent BG image flicker upon hover
+(commented out as usage is rare, and the filter syntax messes with some pre-processors)
+.ie6 html {filter: expression(document.execCommand("BackgroundImageCache", false, true));}
+*//* let's clear some floats */.clearfix:before, .clearfix:after
+                                   {
+                                       content: "\0020";
+                                       display: block;
+                                       height: 0;
+                                       overflow: hidden;
+                                   }
+    .clearfix:after
+    {
+        clear: both;
+    }
+    .clearfix
+    {
+        zoom: 1;
+    }
+    img
+    {
+        vertical-align: top;
+    }
+</style>
+<style media="" >
+    .da-slider
+    {
+        z-index: 9;
+        width: 100%;
+        min-width: 520px;
+        height: 426px;
+        position: relative;
+        overflow: hidden;
+        -webkit-transition: background-position 1.4s ease-in-out 0.3s;
+        -moz-transition: background-position 1.4s ease-in-out 0.3s;
+        -o-transition: background-position 1.4s ease-in-out 0.3s;
+        -ms-transition: background-position 1.4s ease-in-out 0.3s;
+        transition: background-position 1.4s ease-in-out 0.3s;
+        margin-top: 20px;
+    }
+    .da-slide
+    {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0px;
+        left: 0px;
+        font-family: 'Kuro' , Arial, Tahoma;
+        text-align: left;
+    }
+    .da-slide-current
+    {
+        z-index: 1000;
+    }
+    .da-slider-fb .da-slide
+    {
+        left: 100%;
+    }
+    .da-slider-fb .da-slide.da-slide-current
+    {
+        left: 0px;
+    }
+    .da-slide h2, .da-slide .ct, .da-slide .da-link, .da-slide .da-img
+    {
+        /*position: absolute;*/
+        opacity: 0; /*left: 110%;*/
+    }
+    .da-slider-fb .da-slide h2, .da-slider-fb .da-slide .ct, .da-slider-fb .da-slide .da-link
+    {
+        /*left: 10%;*/
+        opacity: 1;
+    }
+    .da-slider-fb .da-slide .da-img
+    {
+        /*left: 60%;*/
+        opacity: 1;
+    }
+    .da-slide h2 a
+    {
+        color: #00502F;
+        font-size: 27px; /*white-space: nowrap;*/
+        z-index: 10;
+        font-family: 'Kuro' , Arial, Tahoma;
+        font-weight: bold;
+        padding: 10px 0;
+    }
+    .da-slide .ct
+    {
+        padding-top: 25px;
+        color: #333;
+        font-size: 14px;
+        line-height: 22px;
+        overflow: hidden;
+        font-family: Arial, Tahoma; /*padding-left: 275px;*/
+    }
+    .da-slide .da-img
+    {
+        text-align: center;
+        width: 30%;
+        top: 70px;
+        height: 256px;
+        line-height: 320px;
+        left: 110%; /*60%*/
+    }
+    .da-slide .da-link
+    {
+        top: 270px; /*depends on p height*/
+        border-radius: 30px;
+        box-shadow: 0px 1px 1px rgba(0,0,0,0.1);
+        color: #fff;
+        text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+        border: 8px solid rgba(255,255,255,0.8);
+        padding: 2px 20px 0px;
+        font-size: 18px;
+        line-height: 30px;
+        width: 80px;
+        text-align: center;
+        background: rgba(255,255,255,0.2);
+    }
+    .da-slide .da-link:hover
+    {
+        background: rgba(255,255,255,0.3);
+    }
+    .da-dots
+    {
+        -moz-user-select: none;
+        bottom: 175px;
+        left: 0;
+        padding-right: 40px;
+        position: absolute;
+        text-align: right;
+        width: 100%;
+        z-index: 2000;
+        padding-right: 40px; /*width: 100%;
+	position: absolute;
+	text-align: center;
+	left: 0px;
+	bottom: 20px;
+	z-index: 2000;
+	-moz-user-select: none;
+	-webkit-user-select: none;*/
+    }
+    .da-dots span
+    {
+        display: inline-block;
+        position: relative;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #85C03E;
+        margin: 3px;
+        cursor: pointer;
+        box-shadow: 1px 1px 1px rgba(0,0,0,0.1) inset, 1px 1px 1px rgba(255,255,255,0.1);
+    }
+    .da-dots span.da-dots-current:after
+    {
+        content: '';
+        width: 8px;
+        height: 8px;
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        border-radius: 50%;
+        background: rgb(255,255,255);
+        background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(47%,rgba(246,246,246,1)), color-stop(100%,rgba(237,237,237,1)));
+        background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%);
+        background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%);
+        background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%);
+        background: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 );
+    }
+    .da-arrows
+    {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+    }
+    .da-arrows span
+    {
+        position: absolute;
+        top: 50%;
+        height: 30px;
+        width: 30px;
+        border-radius: 50%;
+        background: #e4b42d;
+        cursor: pointer;
+        z-index: 2000;
+        opacity: 0;
+        box-shadow: 1px 1px 1px rgba(0,0,0,0.1) inset, 1px 1px 1px rgba(255,255,255,0.1);
+        -webkit-transition: opacity 0.4s ease-in-out 0.2s;
+        -moz-transition: opacity 0.4s ease-in-out 0.2s;
+        -o-transition: opacity 0.4s ease-in-out 0.2s;
+        -ms-transition: opacity 0.4s ease-in-out 0.2s;
+        transition: opacity 0.4s ease-in-out 0.2s;
+    }
+    .da-slider:hover .da-arrows span
+    {
+        opacity: 1;
+    }
+    .da-arrows span:after
+    {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        top: 5px;
+        left: 5px; /* background: transparent url("https://www.vietcombank.com.vn/IBanking2015/Content/web/css/../data_mts/images/arrows.png") no-repeat top left; */
+        border-radius: 50%;
+        box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    .da-arrows span:hover:after
+    {
+        box-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    }
+    .da-arrows span:active:after
+    {
+        box-shadow: 1px 1px 1px rgba(255,255,255,0.1);
+    }
+    .da-arrows span.da-arrows-next:after
+    {
+        background-position: top right;
+    }
+    .da-arrows span.da-arrows-prev
+    {
+        left: 15px;
+    }
+    .da-arrows span.da-arrows-next
+    {
+        right: 15px;
+    }
+    .da-slide-current h2, .da-slide-current .da-link
+    {
+        left: 0;
+        opacity: 1;
+    }
+    .da-slide-current .ct
+    {
+        left: 0;
+        opacity: 1;
+    }
+    /* Animation classes and animations *//* Slide in from the right*/.da-slide-fromright h2
+                                                                      {
+                                                                          -webkit-animation: fromRightAnim1 0.6s ease-in 0.8s both;
+                                                                          -moz-animation: fromRightAnim1 0.6s ease-in 0.8s both;
+                                                                          -o-animation: fromRightAnim1 0.6s ease-in 0.8s both;
+                                                                          -ms-animation: fromRightAnim1 0.6s ease-in 0.8s both;
+                                                                          animation: fromRightAnim1 0.6s ease-in 0.8s both;
+                                                                      }
+    .da-slide-fromright .ct
+    {
+        -webkit-animation: fromRightAnim2 0.6s ease-in 0.8s both;
+        -moz-animation: fromRightAnim2 0.6s ease-in 0.8s both;
+        -o-animation: fromRightAnim2 0.6s ease-in 0.8s both;
+        -ms-animation: fromRightAnim2 0.6s ease-in 0.8s both;
+        animation: fromRightAnim2 0.6s ease-in 0.8s both;
+    }
+    .da-slide-fromright .da-link
+    {
+        -webkit-animation: fromRightAnim3 0.4s ease-in 1.2s both;
+        -moz-animation: fromRightAnim3 0.4s ease-in 1.2s both;
+        -o-animation: fromRightAnim3 0.4s ease-in 1.2s both;
+        -ms-animation: fromRightAnim3 0.4s ease-in 1.2s both;
+        animation: fromRightAnim3 0.4s ease-in 1.2s both;
+    }
+    .da-slide-fromright .da-img
+    {
+        -webkit-animation: fromRightAnim4 0.6s ease-in 0.8s both;
+        -moz-animation: fromRightAnim4 0.6s ease-in 0.8s both;
+        -o-animation: fromRightAnim4 0.6s ease-in 0.8s both;
+        -ms-animation: fromRightAnim4 0.6s ease-in 0.8s both;
+        animation: fromRightAnim4 0.6s ease-in 0.8s both;
+    }
+    @-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframesfromRightAnim1{0%{left:110%;opacity:0;}100%{left:10%;opacity:1;}@-webkit-keyframesfromRightAnim2{0%{left:110%;opacity:0;}100%{left:10%;opacity:1;}@-webkit-keyframesfromRightAnim3{0%{left:110%;opacity:0;}1%{left:10%;opacity:0;}100%{left:10%;opacity:1;}@-webkit-keyframesfromRightAnim4{0%{left:110%;opacity:0;}100%{left:60%;opacity:1;}@-moz-keyframesfromRightAnim1{0%{left:110%;opacity:0;}100%{left:10%;opacity:1;}@-moz-keyframesfromRightAnim2{0%{left:110%;opacity:0;}100%{left:10%;opacity:1;}@-moz-keyframesfromRightAnim3{0%{left:110%;opacity:0;}1%{left:10%;opacity:0;}100%{left:10%;opacity:1;}@-moz-keyframesfromRightAnim4{0%{left:110%;opacity:0;}100%{left:60%;opacity:1;}@-o-keyframesfromRightAnim1{0%{left:110%;opacity:0;}100%{left:10%;opacity:1;}@-o-keyframesfromRightAnim2{0%{left:110%;opacity:0;}100%{left:10%;opacity:1;}@-o-keyframesfromRightAnim3{0%{left:110%;opacity:0;}1%{left:10%;opacity:0;}100%{left:10%;opacity:1;}@-o-keyframesfromRightAnim4{0%{left:110%;opacity:0;}100%{left:60%;opacity:1;}@-ms-keyframesfromRightAnim1{0%{left:110%;opacity:0;}100%{left:10%;opacity:1;}@-ms-keyframesfromRightAnim2{0%{left:110%;opacity:0;}100%{left:10%;opacity:1;}@-ms-keyframesfromRightAnim3{0%{left:110%;opacity:0;}1%{left:10%;opacity:0;}100%{left:10%;opacity:1;}@-ms-keyframesfromRightAnim4{0%{left:110%;opacity:0;}100%{left:60%;opacity:1;}@keyframesfromRightAnim1{0%{left:110%;opacity:0;}100%{left:10%;opacity:1;}@keyframesfromRightAnim2{0%{left:110%;opacity:0;}100%{left:10%;opacity:1;}@keyframesfromRightAnim3{0%{left:110%;opacity:0;}1%{left:10%;opacity:0;}100%{left:10%;opacity:1;}@keyframesfromRightAnim4{0%{left:110%;opacity:0;}100%{left:60%;opacity:1;}/* Slide in from the left*/
+        .da-slide-fromleft h2
+        {
+            -webkit-animation: fromLeftAnim1 0.6s ease-in 0.6s both;
+            -moz-animation: fromLeftAnim1 0.6s ease-in 0.6s both;
+            -o-animation: fromLeftAnim1 0.6s ease-in 0.6s both;
+            -ms-animation: fromLeftAnim1 0.6s ease-in 0.6s both;
+            animation: fromLeftAnim1 0.6s ease-in 0.6s both;
+        }
+        .da-slide-fromleft .ct
+        {
+            -webkit-animation: fromLeftAnim2 0.6s ease-in 0.6s both;
+            -moz-animation: fromLeftAnim2 0.6s ease-in 0.6s both;
+            -o-animation: fromLeftAnim2 0.6s ease-in 0.6s both;
+            -ms-animation: fromLeftAnim2 0.6s ease-in 0.6s both;
+            animation: fromLeftAnim2 0.6s ease-in 0.6s both;
+        }
+        .da-slide-fromleft .da-link
+        {
+            -webkit-animation: fromLeftAnim3 0.4s ease-in 1.2s both;
+            -moz-animation: fromLeftAnim3 0.4s ease-in 1.2s both;
+            -o-animation: fromLeftAnim3 0.4s ease-in 1.2s both;
+            -ms-animation: fromLeftAnim3 0.4s ease-in 1.2s both;
+            animation: fromLeftAnim3 0.4s ease-in 1.2s both;
+        }
+        .da-slide-fromleft .da-img
+        {
+            -webkit-animation: fromLeftAnim4 0.6s ease-in 0.6s both;
+            -moz-animation: fromLeftAnim4 0.6s ease-in 0.6s both;
+            -o-animation: fromLeftAnim4 0.6s ease-in 0.6s both;
+            -ms-animation: fromLeftAnim4 0.6s ease-in 0.6s both;
+            animation: fromLeftAnim4 0.6s ease-in 0.6s both;
+        }
+        @-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframesfromLeftAnim1{0%{left:-110%;opacity:0;}100%{left:10%;opacity:1;}@-webkit-keyframesfromLeftAnim2{0%{left:-110%;opacity:0;}100%{left:10%;opacity:1;}@-webkit-keyframesfromLeftAnim3{0%{left:-110%;opacity:0;}1%{left:10%;opacity:0;}100%{left:10%;opacity:1;}@-webkit-keyframesfromLeftAnim4{0%{left:-110%;opacity:0;}100%{left:60%;opacity:1;}@-moz-keyframesfromLeftAnim1{0%{left:-110%;opacity:0;}100%{left:10%;opacity:1;}@-moz-keyframesfromLeftAnim2{0%{left:-110%;opacity:0;}100%{left:10%;opacity:1;}@-moz-keyframesfromLeftAnim3{0%{left:-110%;opacity:0;}1%{left:10%;opacity:0;}100%{left:10%;opacity:1;}@-moz-keyframesfromLeftAnim4{0%{left:-110%;opacity:0;}100%{left:60%;opacity:1;}@-o-keyframesfromLeftAnim1{0%{left:-110%;opacity:0;}100%{left:10%;opacity:1;}@-o-keyframesfromLeftAnim2{0%{left:-110%;opacity:0;}100%{left:10%;opacity:1;}@-o-keyframesfromLeftAnim3{0%{left:-110%;opacity:0;}1%{left:10%;opacity:0;}100%{left:10%;opacity:1;}@-o-keyframesfromLeftAnim4{0%{left:-110%;opacity:0;}100%{left:60%;opacity:1;}@-ms-keyframesfromLeftAnim1{0%{left:-110%;opacity:0;}100%{left:10%;opacity:1;}@-ms-keyframesfromLeftAnim2{0%{left:-110%;opacity:0;}100%{left:10%;opacity:1;}@-ms-keyframesfromLeftAnim3{0%{left:-110%;opacity:0;}1%{left:10%;opacity:0;}100%{left:10%;opacity:1;}@-ms-keyframesfromLeftAnim4{0%{left:-110%;opacity:0;}100%{left:60%;opacity:1;}@keyframesfromLeftAnim1{0%{left:-110%;opacity:0;}100%{left:10%;opacity:1;}@keyframesfromLeftAnim2{0%{left:-110%;opacity:0;}100%{left:10%;opacity:1;}@keyframesfromLeftAnim3{0%{left:-110%;opacity:0;}1%{left:10%;opacity:0;}100%{left:10%;opacity:1;}@keyframesfromLeftAnim4{0%{left:-110%;opacity:0;}100%{left:60%;opacity:1;}/* Slide out to the right */
+            .da-slide-toright h2
+            {
+                -webkit-animation: toRightAnim1 0.6s ease-in 0.6s both;
+                -moz-animation: toRightAnim1 0.6s ease-in 0.6s both;
+                -o-animation: toRightAnim1 0.6s ease-in 0.6s both;
+                -ms-animation: toRightAnim1 0.6s ease-in 0.6s both;
+                animation: toRightAnim1 0.6s ease-in 0.6s both;
+            }
+            .da-slide-toright .ct
+            {
+                -webkit-animation: toRightAnim2 0.6s ease-in 0.3s both;
+                -moz-animation: toRightAnim2 0.6s ease-in 0.3s both;
+                -o-animation: toRightAnim2 0.6s ease-in 0.3s both;
+                -ms-animation: toRightAnim2 0.6s ease-in 0.3s both;
+                animation: toRightAnim2 0.6s ease-in 0.3s both;
+            }
+            .da-slide-toright .da-link
+            {
+                -webkit-animation: toRightAnim3 0.4s ease-in both;
+                -moz-animation: toRightAnim3 0.4s ease-in both;
+                -o-animation: toRightAnim3 0.4s ease-in both;
+                -ms-animation: toRightAnim3 0.4s ease-in both;
+                animation: toRightAnim3 0.4s ease-in both;
+            }
+            .da-slide-toright .da-img
+            {
+                -webkit-animation: toRightAnim4 0.6s ease-in both;
+                -moz-animation: toRightAnim4 0.6s ease-in both;
+                -o-animation: toRightAnim4 0.6s ease-in both;
+                -ms-animation: toRightAnim4 0.6s ease-in both;
+                animation: toRightAnim4 0.6s ease-in both;
+            }
+            @-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframestoRightAnim1{0%{left:10%;opacity:1;}100%{left:100%;opacity:0;}@-webkit-keyframestoRightAnim2{0%{left:10%;opacity:1;}100%{left:100%;opacity:0;}@-webkit-keyframestoRightAnim3{0%{left:10%;opacity:1;}99%{left:10%;opacity:0;}100%{left:100%;opacity:0;}@-webkit-keyframestoRightAnim4{0%{left:60%;opacity:1;}30%{left:55%;opacity:1;}100%{left:100%;opacity:0;}@-moz-keyframestoRightAnim1{0%{left:10%;opacity:1;}100%{left:100%;opacity:0;}@-moz-keyframestoRightAnim2{0%{left:10%;opacity:1;}100%{left:100%;opacity:0;}@-moz-keyframestoRightAnim3{0%{left:10%;opacity:1;}99%{left:10%;opacity:0;}100%{left:100%;opacity:0;}@-moz-keyframestoRightAnim4{0%{left:60%;opacity:1;}30%{left:55%;opacity:1;}100%{left:100%;opacity:0;}@-o-keyframestoRightAnim1{0%{left:10%;opacity:1;}100%{left:100%;opacity:0;}@-o-keyframestoRightAnim2{0%{left:10%;opacity:1;}100%{left:100%;opacity:0;}@-o-keyframestoRightAnim3{0%{left:10%;opacity:1;}99%{left:10%;opacity:0;}100%{left:100%;opacity:0;}@-o-keyframestoRightAnim4{0%{left:60%;opacity:1;}30%{left:55%;opacity:1;}100%{left:100%;opacity:0;}@-ms-keyframestoRightAnim1{0%{left:10%;opacity:1;}100%{left:100%;opacity:0;}@-ms-keyframestoRightAnim2{0%{left:10%;opacity:1;}100%{left:100%;opacity:0;}@-ms-keyframestoRightAnim3{0%{left:10%;opacity:1;}99%{left:10%;opacity:0;}100%{left:100%;opacity:0;}@-ms-keyframestoRightAnim4{0%{left:60%;opacity:1;}30%{left:55%;opacity:1;}100%{left:100%;opacity:0;}@keyframestoRightAnim1{0%{left:10%;opacity:1;}100%{left:100%;opacity:0;}@keyframestoRightAnim2{0%{left:10%;opacity:1;}100%{left:100%;opacity:0;}@keyframestoRightAnim3{0%{left:10%;opacity:1;}99%{left:10%;opacity:0;}100%{left:100%;opacity:0;}@keyframestoRightAnim4{0%{left:60%;opacity:1;}30%{left:55%;opacity:1;}100%{left:100%;opacity:0;}/* Slide out to the left*/
+                .da-slide-toleft h2
+                {
+                    -webkit-animation: toLeftAnim1 0.6s ease-in both;
+                    -moz-animation: toLeftAnim1 0.6s ease-in both;
+                    -o-animation: toLeftAnim1 0.6s ease-in both;
+                    -ms-animation: toLeftAnim1 0.6s ease-in both;
+                    animation: toLeftAnim1 0.6s ease-in both;
+                }
+                .da-slide-toleft .ct
+                {
+                    -webkit-animation: toLeftAnim2 0.6s ease-in 0.3s both;
+                    -moz-animation: toLeftAnim2 0.6s ease-in 0.3s both;
+                    -o-animation: toLeftAnim2 0.6s ease-in 0.3s both;
+                    -ms-animation: toLeftAnim2 0.6s ease-in 0.3s both;
+                    animation: toLeftAnim2 0.6s ease-in 0.3s both;
+                }
+                .da-slide-toleft .da-link
+                {
+                    -webkit-animation: toLeftAnim3 0.4s ease-in both;
+                    -moz-animation: toLeftAnim3 0.4s ease-in both;
+                    -o-animation: toLeftAnim3 0.4s ease-in both;
+                    -ms-animation: toLeftAnim3 0.4s ease-in both;
+                    animation: toLeftAnim3 0.4s ease-in both;
+                }
+                .da-slide-toleft .da-img
+                {
+                    -webkit-animation: toLeftAnim4 0.6s ease-in 0.6s both;
+                    -moz-animation: toLeftAnim4 0.6s ease-in 0.6s both;
+                    -o-animation: toLeftAnim4 0.6s ease-in 0.6s both;
+                    -ms-animation: toLeftAnim4 0.6s ease-in 0.6s both;
+                    animation: toLeftAnim4 0.6s ease-in 0.6s both;
+                }
+                @-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframes@-webkit-keyframestoLeftAnim1{0%{left:10%;opacity:1;}30%{left:15%;opacity:1;}100%{left:-50%;opacity:0;}@-webkit-keyframestoLeftAnim2{0%{left:10%;opacity:1;}30%{left:15%;opacity:1;}100%{left:-50%;opacity:0;}@-webkit-keyframestoLeftAnim3{0%{left:10%;opacity:1;}99%{left:10%;opacity:0;}100%{left:-50%;opacity:0;}@-webkit-keyframestoLeftAnim4{0%{left:60%;opacity:1;}40%{left:70%;opacity:1;}90%{left:0%;opacity:0;}100%{left:-50%;opacity:0;}@-moz-keyframestoLeftAnim1{0%{left:10%;opacity:1;}30%{left:15%;opacity:1;}100%{left:-50%;opacity:0;}@-moz-keyframestoLeftAnim2{0%{left:10%;opacity:1;}30%{left:15%;opacity:1;}100%{left:-50%;opacity:0;}@-moz-keyframestoLeftAnim3{0%{left:10%;opacity:1;}99%{left:10%;opacity:0;}100%{left:-50%;opacity:0;}@-moz-keyframestoLeftAnim4{0%{left:60%;opacity:1;}40%{left:70%;opacity:1;}90%{left:0%;opacity:0;}100%{left:-50%;opacity:0;}@-o-keyframestoLeftAnim1{0%{left:10%;opacity:1;}30%{left:15%;opacity:1;}100%{left:-50%;opacity:0;}@-o-keyframestoLeftAnim2{0%{left:10%;opacity:1;}30%{left:15%;opacity:1;}100%{left:-50%;opacity:0;}@-o-keyframestoLeftAnim3{0%{left:10%;opacity:1;}99%{left:10%;opacity:0;}100%{left:-50%;opacity:0;}@-o-keyframestoLeftAnim4{0%{left:60%;opacity:1;}40%{left:70%;opacity:1;}90%{left:0%;opacity:0;}100%{left:-50%;opacity:0;}@-ms-keyframestoLeftAnim1{0%{left:10%;opacity:1;}30%{left:15%;opacity:1;}100%{left:-50%;opacity:0;}@-ms-keyframestoLeftAnim2{0%{left:10%;opacity:1;}30%{left:15%;opacity:1;}100%{left:-50%;opacity:0;}@-ms-keyframestoLeftAnim3{0%{left:10%;opacity:1;}99%{left:10%;opacity:0;}100%{left:-50%;opacity:0;}@-ms-keyframestoLeftAnim4{0%{left:60%;opacity:1;}40%{left:70%;opacity:1;}90%{left:0%;opacity:0;}100%{left:-50%;opacity:0;}@keyframestoLeftAnim1{0%{left:10%;opacity:1;}30%{left:15%;opacity:1;}100%{left:-50%;opacity:0;}@keyframestoLeftAnim2{0%{left:10%;opacity:1;}30%{left:15%;opacity:1;}100%{left:-50%;opacity:0;}@keyframestoLeftAnim3{0%{left:10%;opacity:1;}99%{left:10%;opacity:0;}100%{left:-50%;opacity:0;}@keyframestoLeftAnim4{0%{left:60%;opacity:1;}40%{left:70%;opacity:1;}90%{left:0%;opacity:0;}100%{left:-50%;opacity:0;}</style>
+
+<script type="text/javascript">
+<!--
+	function doLogin(){
+		var username = document.getElementById('epUserID').value;
+		var password = document.getElementById('epPassWord').value;
+		if(username == '' || password == ''){
+			qssAjax.alert('<?php echo $this->_translate(6)?>');
+			return false;
+		}
+		return true;
+	}
+//-->
+</script>
+
+
+
+<div class="full-site">
+    <div class="menu-top">
+        <div class="nav-login">
+            <div class="nav-login-left">
+                <ul>
+                    <li>
+                        <img src="/data_mts/images/home.png"></li></ul>
+            </div>
+        </div>
+    </div>
+    <div class="body-main">
+        <div class="full-slider">
+            <div class="content-main">
+            </div>
+        </div>
+        <div class="fullflash">
+            <div style="margin: 0 auto; padding: 0; width: 1000px; overflow: hidden;        border-bottom:1px #ddd solid; border-top:1px #ddd solid;">
+                <center>
+
+                    <img id="imgFlashBanner" src="/data_mts/images/flash-banner.gif" style="border-width:0px;">
+                </center>
+            </div>
+        </div>
+        <div class="full-content-login box-content">
+            <div style="width: 960px; margin: 0px auto">
+
+                <form action="login" id="login_form" method="POST" onsubmit="return doLogin();">
+                    <div class="box-login">
+                        <div class="content-login">
+                            <div class="logo">
+                                <img src="/data_mts/images/logo_login.png">
+                                <div style="height: 25px; text-align: right; font-size: 11px; color: red;">
+                                    <div style="padding-top: 5px;">
+
+                                    </div>
+                                </div>
+                                <div style="padding-top: 10px; text-align: right; font-weight: bold;">
+
+                                </div>
+                            </div>
+                            <div class="info-login">
+
+                                <div id="panel1" onkeypress="javascript:return WebForm_FireDefaultButton(event, 'btnSubmit')">
+                                    <input type="hidden" name="source"><div class="control">
+                                        <input name="epUserID" type="text" id="epUserID" autocomplete="off" placeholder="<?php echo $this->_translate(2)?>" class="login-user"></div>
+                                    <div class="control">
+                                        <input name="epPassWord" type="password" id="epPassWord" autocomplete="off" placeholder="Mật khẩu" class="login-pass">
+                                    </div>
+                                    <div class="control">
+                                        <?php echo $this->views->Common->TreeCombo($this->departments,'epDepartmentID',$this->deptid)?>
+                                    </div>
+
+                                    <div class="control">
+                                        <select id="epLanguage" name="epLanguage" class="login-user">
+                                            <!--<option <?php if($this->lang == 'vn') echo 'selected';?> value="vn">Tiếng việt</option>
+-->
+                                            <?php foreach ($this->languages as $language):?>
+                                                <option
+                                                    <?php if($this->lang == $language->Code) echo 'selected';?>
+                                                        value="<?php echo $language->Code?>">
+                                                    <?php echo $language->Name?>
+                                                </option>
+                                            <?php endforeach;?>
+                                        </select>
+                                    </div>
+
+                                    <div class="control">
+                                        <input id="epSavePassword" type="checkbox" name="epSavePassword" value="1" />&nbsp;&nbsp;&nbsp;
+                                        <label for="epSavePassword" id="epSavePasswordText"><?php echo $this->_translate(4)?></label>
+                                    </div>
+
+
+                                    <div class="control mes_error">
+                                        <span class="err_msg red bold" style="color:red;"><?php if($this->err == 'ERR_AUTHENTICATE') echo $this->_translate(8); elseif($this->err == 'ERR_SESSION') echo $this->_translate(9);?>
+				</span>
+                                    </div>
+
+                                    <div class="control fix-ie" style="text-align: center">
+                                        <input type="submit" name="btnSubmit" value="Đăng nhập" id="btnSubmit">
+                                    </div>
+                                    <div class="login-link">
+                                        <div class="login_copyright center">Copyright© by QUASOFT</div>
+                                        <div class="login_copyright center">Power by QS-IMS</div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="app_login background" style="display:none">
+	<div class="login_up">&nbsp;</div>
+	<div class="login_logo">
+		<img width="500" src="/data_mts/images/logoMTS.png" />
+	</div>
+	<div id="login_box">
+		<div class="topbox">
+			<div class="title">
+                <img width="200" src="/data_mts/images/logo_loginMTS.png" />
+            </div>
+			<div class="message">
+				<span class="err_msg"><?php if($this->err == 'ERR_AUTHENTICATE') echo $this->_translate(8); elseif($this->err == 'ERR_SESSION') echo $this->_translate(9);?>
+				</span>
+			</div>
+		</div>
+		<form action="login" id="login_form" method="POST"
+			onsubmit="return doLogin();">
+			<div class="midbox">
+				<div class="loginform">
+					<table>
+						<tr>
+							<td width="38%"><?php echo $this->_translate(2)?></td>
+							<td><input type="text" class="field" id="epUserID"
+								name="epUserID" size="30" value=""></td>
+						</tr>
+						<tr>
+							<td><?php echo $this->_translate(3)?></td>
+							<td><input type="password" class="field" id="epPassWord"
+								name="epPassWord" value="" size="30" maxlength="32"></td>
+						</tr>
+						<tr>
+							<td><?php echo $this->_translate(5)?></td>
+							<td><?php echo $this->views->Common->TreeCombo($this->departments,'epDepartmentID',$this->deptid)?></td>
+						</tr>
+						<tr>
+							<td><?php echo $this->_translate(7)?></td>
+							<td><select id="epLanguage" name="epLanguage">
+									<!--<option <?php if($this->lang == 'vn') echo 'selected';?> value="vn">Tiếng việt</option>
+-->
+							<?php foreach ($this->languages as $language):?>
+									<option
+									<?php if($this->lang == $language->Code) echo 'selected';?>
+										value="<?php echo $language->Code?>">
+										<?php echo $language->Name?>
+									</option>
+									<?php endforeach;?>
+							</select></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><input id="epSavePassword" class="checkbox" type="checkbox"
+								name="epSavePassword" value="1" />&nbsp;&nbsp;&nbsp;<label
+								for="epSavePassword"><?php echo $this->_translate(4)?> </label>
+							</td>
+						</tr>
+
+						<tr>
+							<td colspan="2" align="right"><button class="submit"
+									type="submit"">
+									<?php echo $this->_translate(1)?>
+								</button></td>
+						</tr>
+					</table>
+					<p>&nbsp;</p>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="login_copyright">Copyright© by QUASOFT</div>
+	<div class="login_copyright">Power by QS-IMS</div>
+</div>
+<script>
+document.getElementById('epUserID').focus();
+</script>

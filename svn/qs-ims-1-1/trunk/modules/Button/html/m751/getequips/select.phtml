@@ -1,0 +1,34 @@
+<script>
+    $(document).ready(function(){
+        // Tim kiem khi an enter
+        $('#m412_material_filter_dialbox').keypress(function (e) {
+            if (e.which == 13) {
+                m412_material_button.search();
+                return false;    //<---- Add this line
+            }
+        });
+
+        // Xoa cac mat hang da duoc chon vao trong danh sach
+        $('.selected_line').each(function(){
+            var refItem = $(this).find('.RefItem').val();
+            var stock = $(this).find('.stock').val();
+            $('#select_m412_material_box select option[value="'+refItem+'"][stock="'+stock+'"]').remove();
+        });
+    });
+</script>
+
+<div id="select_m412_material_box">
+    <input type="text" id="m412_material_filter_dialbox" placeholder="Gõ & ấn enter để tìm kiếm" style="width: 94%" />
+
+    <select class="select" size="17" multiple="multiple">
+        <?php foreach($this->data as $item):?>
+            <option value="<?php echo $item->IOID;?>"
+                    equiptypeioid="<?php echo $item->IOID;?>"
+                    uomioid="<?php echo @(int)$item->Ref_DonViTinh;?>"
+                    equiptype="<?php echo $item->TenLoai;?>"
+                    uom="<?php echo @$item->DonViTinh;?>">
+                <?php echo $item->TenLoai;?>
+            </option>
+        <?php endforeach;?>
+    </select>
+</div>

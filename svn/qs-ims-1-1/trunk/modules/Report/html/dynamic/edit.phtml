@@ -1,0 +1,586 @@
+<?php
+$countColumn = count($this->columns);
+?>
+
+<style>
+.dynamic_add {
+	padding: 5px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	border: 1px #DDD solid;
+	background: #FFFF00;
+	cursor: pointer;
+	font-size: 12px;
+}
+
+#selected_columns th {
+	cursor: pointer;
+}
+
+.marker_edit { /*border:1px red solid;*/
+	background: #FFB894 !important;
+}
+
+.ui-sortable-placeholder {
+	border: 2px dotted #aaa;
+	height: auto;
+	width: 80px;
+	background: #58a !important;
+}
+</style>
+
+<script type="text/javascript">
+function saveReport() {
+	var url = sz_BaseUrl + '/report/dynamic/save';
+	var data = $('#qss_form').serialize();
+	qssAjax.call(url, data, function(jreturn) {
+		window.location.href = sz_BaseUrl + '/report/dynamic';//should reload only grid
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+}
+function reloadReport() {
+	var url  = sz_BaseUrl + '/report/dynamic/edit';
+	var data = $('#qss_form').serialize();
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#qss_combo').html(jreturn);
+		$('#qss_combo').dialog({ width: 1000,height:600 });
+	});
+}
+
+$(function() {
+    // Hiển thị các cột đã chọn dạng sắp xếp được.
+    selected_movable();
+    unselected_movable();
+    init_selected();
+});
+
+function init_selected()
+{
+    <?php if($countColumn):?>
+    var len = parseInt($('#selected_columns #sortable th').length);
+    if(len == 0)
+    {
+        replace = '<th class="init_column"><div>Thêm cột hiển thị</div></th>'
+        $('#selected_columns #sortable').html(replace);
+    }
+    <?php endif;?>
+}
+
+function init_selected_drag()
+{
+    <?php if($countColumn):?>
+    var len = parseInt($('#selected_columns #sortable th').length) - 1;
+    if(len <= 0)
+    {
+        replace = '<th class="init_column"><div>Thêm cột hiển thị</div></th>'
+        $('#selected_columns #sortable').html(replace);
+    }
+    <?php endif;?>    
+}
+
+function remove_init_selected()
+{
+    var len = parseInt($('#selected_columns #sortable th').length);
+    if(len > 1) $('.init_column').remove();
+}
+
+// Cho phep sap xep cac cot chon hien thi cua bao cao
+function selected_movable()
+{
+    $( "#selected_columns #sortable" ).sortable({
+        placeholder: "ui-sortable-placeholder" 
+    })
+    .disableSelection(); 
+    
+    $('#selected_columns td').draggable({
+        drag: function(){
+            // as you drag, add your "dragging" class, like so:
+            show_col_detail(this);
+            
+        }        
+    });    
+    
+    $('#un_selected_cols').droppable({
+        drop: function(event,ui){
+            var findID = ui.draggable.attr("id");
+            if(findID){
+               col_hide(findID);
+               init_selected_drag();
+            }
+    }
+    });      
+}
+
+// Cho phep keo tha cac cot chua chon cua bao cao
+function unselected_movable()
+{
+    $('.dynamic_add').draggable({
+        drag: function(){
+            // as you drag, add your "dragging" class, like so:
+            show_col_detail(this);
+        }        
+        , revert:true
+    });
+    $('#selected_columns').droppable({
+        drop: function(event,ui){
+            var findID = ui.draggable.attr("id");
+            if(findID){
+                col_show(findID);
+            }
+    }
+    });      
+    
+
+}
+
+function col_mark()
+{
+    $('.report_col').each(function(){$(this).removeClass('marker_edit');});
+    
+    if($('#col_id').val())
+    {
+        $('#'+$('#col_id').val()).addClass('marker_edit');    
+    }
+}
+
+
+// Hien thi thong tin cua cot
+function show_col_detail(ele)
+{
+    var colid = $(ele).find('.col_param_cid').val();
+    var sl    = $('#'+colid).find('.col_param_display').val();
+    
+    $('#col_code').val($(ele).find('.col_param_code').val()); 
+    $('#col_default_name').val($(ele).find('.col_param_default_name').val()); 
+    $('#col_custom_name').val($(ele).find('.col_param_custom_name').val()); 
+    $('#col_custom_style').val($(ele).find('.col_param_custom_style').val()); 
+    $('#col_custom_width').val($(ele).find('.col_param_custom_width').val()); 
+    $('#col_default_width').val($(ele).find('.col_param_default_width').val()); 
+    $('#col_id').val($(ele).find('.col_param_cid').val());
+    
+    // Doan code nay ko sai, cung khong phai do duom da
+    // Ma do thu tu load nen can phai viet nhu the nay
+    $('#col_show_or_hidden').removeAttr('checked');
+    $('#col_show_or_hidden').val(sl);
+    
+    if(sl == 1)
+    {
+       $('#col_show_or_hidden').attr('checked', true); 
+    }
+    col_mark();
+}
+
+// Thay đổi tên của cột
+function col_change_name(ele)
+{
+    var strFindID = $('#col_id').val();
+    if(!strFindID) return;
+    
+    
+    var reVal  = $(ele).val();
+    var findID = $('#'+strFindID);
+    var defaultName = findID.find('.col_param_default_name');
+    var customName = findID.find('.col_param_custom_name');
+    var customNameDisplay = findID.find('.col_display_name');
+    customName.val(reVal);
+    customNameDisplay.text(reVal);
+    
+    if(!reVal)
+    {
+        customNameDisplay.text(defaultName.val());
+    }
+}
+
+// Thay đổi class của cột
+function col_change_style(ele)
+{
+    var strFindID = $('#col_id').val();
+    if(!strFindID) return;
+    
+    var reVal  = $(ele).val();
+    var findID = $('#'+strFindID);
+    var style = findID.find('.col_param_custom_style');
+    style.val(reVal);
+}
+
+// Thay đổi độ rộng của cột
+function col_change_width(ele)
+{
+    var strFindID = $('#col_id').val();
+    if(!strFindID) return;
+    
+    var reVal  = $(ele).val();
+    var findID = $('#'+strFindID);
+    var widthVal = findID.find('.col_param_custom_width');
+    widthVal.val(reVal);
+}
+
+// Thêm cột vào trong phần hiển thị
+function col_show(strFindID)
+{
+    var replace = '';
+    var findID  = $('#'+strFindID); 
+    var html    = findID.html();
+    var display = parseInt($('#'+strFindID).find('.col_param_display').val());
+    
+    if(display == 0)
+    {    
+        replace = '<th id="'+strFindID+'" class="report_col " onclick="show_col_detail(this)">'
+        replace += '<div  >';
+        replace += html;
+        replace += '</div>';
+        replace += '</th>';  
+
+        findID.remove();
+        $('#selected_columns #sortable').append(replace);
+        $('#'+strFindID).find('.col_param_display').val(1);
+        $('#'+strFindID).find('.col_param_check').val(1);
+        $('#'+strFindID).find('.col_param_check').attr('checked', true);    
+        $('#col_show_or_hidden').val(1);
+        $('#col_show_or_hidden').attr('checked', true); 
+        unselected_movable();
+        col_mark();
+        remove_init_selected();
+    }
+}
+
+// Bỏ cột ra khỏi phần hiển thị
+function col_hide(strFindID)
+{
+    var replace = '';
+    var findID  = $('#'+strFindID);   
+    var html    = findID.html();
+    var display = parseInt($('#'+strFindID).find('.col_param_display').val());
+    
+    if(display == 1)
+    {
+        replace = '<div id="'+strFindID+'" class="fl dynamic_add report_col ui-draggable" onclick="show_col_detail(this)">';
+        replace += html;
+        replace += '</div>';    
+
+        findID.remove();
+        $('#un_selected_cols').append(replace);  
+        $('#'+strFindID).find('.col_param_display').val(0);
+        $('#'+strFindID).find('.col_param_check').val(0);
+        $('#'+strFindID).find('.col_param_check').removeAttr('checked');    
+        $('#col_show_or_hidden').val(0);
+        $('#col_show_or_hidden').removeAttr('checked');    
+        unselected_movable();
+        col_mark();
+        init_selected();
+    }
+    
+}
+
+
+// Thêm hoặc bớt cột vào trong phần hiển thị
+function col_show_hide(ele, strFindID)
+{
+    if(!strFindID) return;
+    
+    if($(ele).is(':checked'))
+    {
+        col_show(strFindID);
+    }
+    else
+    {
+        col_hide(strFindID);
+    }
+}
+
+// Thay đổi ẩn/hiện của cột trong phần chi tiết cột
+function col_change_display(ele)
+{
+    var strFindID = $('#col_id').val();
+    col_show_hide(ele, strFindID);
+    
+}
+
+// Thay đổi ẩn hiện của cột bên trong cột
+function col_change_display_inside(ele)
+{
+    var strFindID = $(ele).parent().find('.col_param_cid').val();
+    col_show_hide(ele, strFindID);
+}
+
+
+</script>
+
+<script>$('.div').resizable()</script>
+<form
+	id="qss_form" method="post">
+	<input type="hidden" name="reportid"
+		value="<?php echo (int)@$this->report->RID?>">
+	<table class="detail">
+		<tr>
+			<th width="15%">Chọn báo cáo</th>
+			<td class="required"><select style="width: 200px" name="report"
+				onchange="reloadReport()">
+					<option value="0">--- Chọn báo cáo ---</option>
+					<?php foreach ($this->allreports as $key=>$val):?>
+					<option value="<?php echo $key?>"
+					<?php if($key == $this->newcode):?> selected <?php endif;?>>
+						<?php echo $val?>
+					</option>
+					<?php endforeach;?>
+			</select>
+			</td>
+		</tr>
+		<tr>
+			<th>Tên báo cáo</th>
+			<td class="required"><input style="width: 300px" name="name"
+				type="text"
+				value="<?php echo @$this->report->Name?$this->report->Name:$this->name?>">
+			</td>
+		</tr>
+		<tr>
+			<th>Nhóm theo</th>
+			<td><select style="width: 200px" id="groupby" name="groupby">
+					<option value="">--- Không chọn ---</option>
+					<?php foreach ($this->orgcolumns as $key=>$val):?>
+					<option <?php if($key == @$this->report->GroupBy):?> selected
+					<?php endif;?> value="<?php echo $key?>">
+						<?php echo $val?>
+					</option>
+					<?php endforeach;?>
+			</select>
+			</td>
+		</tr>
+		<tr>
+			<th>Sắp xếp</th>
+			<td><select style="width: 200px" id="orderby" name="orderby">
+					<option value="">--- Không chọn ---</option>
+					<?php foreach ($this->orgcolumns as $key=>$val):?>
+					<option <?php if($key == @$this->report->OrderBy):?> selected
+					<?php endif;?> value="<?php echo $key?>">
+						<?php echo $val?>
+					</option>
+					<?php endforeach;?>
+			</select>
+			</td>
+		</tr>
+
+		<tr>
+			<th>Độ rộng</th>
+			<td>
+				<input type="text" style="width: 200px" id="width" name="width" value="<?php echo @$this->report->FieldWidth?$this->report->FieldWidth:Qss_Lib_Extra_Const::LANDSCAPE_WIDTH;?>" /> px
+			</td>
+		</tr>
+
+		<?php if($countColumn):?>
+		<tr>
+			<th>Chỉnh sửa báo cáo</th>
+			<td>&nbsp;</td>
+		</tr>
+		<?php endif;?>
+	</table>
+
+	<br />
+
+	<div>
+
+		<div class="ui_box_s100 center">
+			<fieldset>
+				<legend>Trường hiển thị</legend>
+
+				<!-- Các cột đã chọn hiển thị dạng bảng -->
+				<table class="grid border_table" id="selected_columns">
+					<tr id="sortable">
+						<?php foreach($this->columns as $col):?>
+							<?php if($col->Selected):?>
+								<th id="col_<?php echo $col->Code;?>" class="report_col center "
+									onclick="show_col_detail(this)">
+									<div>
+										<!-- @note: Chuyển style thành class -->
+										<span class="col_display_name"><?php echo $col->Name;?> </span> <input
+											type="checkbox" class="col_param_check" checked="" value=""
+											size="12" onclick="col_change_display_inside(this)" /> <input
+											type="hidden" class="col_param_cid"
+											value="col_<?php echo $col->Code;?>" /> <input type="hidden"
+																						   class="col_param_code" name="column_code[]"
+																						   value="<?php echo $col->Code?>" /> <input type="hidden"
+																																	 class="col_param_default_name" value="<?php echo $col->Name?>" />
+										<input type="hidden" class="col_param_custom_name"
+											   name="name_<?php echo $col->Code?>"
+											   value="<?php echo $col->Name?>" /> <input type="hidden"
+																						 class="col_param_default_width"
+																						 value="<?php echo $this->width[$col->Code]?>" /> <input
+											type="hidden" class="col_param_custom_width"
+											name="width_<?php echo $col->Code?>"
+											value="<?php echo @$col->Width;?>" /> <input type="hidden"
+																						 class="col_param_custom_style"
+																						 name="class_<?php echo $col->Code?>"
+																						 value="<?php echo $col->Class?>" " /> <input type="hidden"
+																																	  class="col_param_display" name="display_<?php echo $col->Code?>"
+																																	  value="<?php echo $col->Selected?1:0;?>" />
+										<!-- order se theo thu tu insert -->
+									</div>
+								</th>
+							<?php endif;?>
+						<?php endforeach;?>
+					</tr>
+				</table>
+			</fieldset>
+		</div>
+
+	</div>
+
+	<br />
+
+	<div>
+			<div class="ui_box_s50_left">
+				<fieldset>
+					<legend>Chọn trường</legend>
+
+					<!-- Hiển thị các cột chưa được chọn -->
+					<div class="clearfix" id="un_selected_cols">
+						<?php foreach($this->columns as $col):?>
+							<?php if(!$col->Selected):?>
+								<div id="col_<?php echo $col->Code;?>"
+									 class="fl dynamic_add report_col" onclick="show_col_detail(this)">
+									<!-- @note: Chuyển style thành class -->
+									<span class="col_display_name"><?php echo $col->Name;?> </span> <input
+										type="checkbox" class="col_param_check" value="0" size="12"
+										onclick="col_change_display_inside(this)" /> <input type="hidden"
+																							class="col_param_cid" value="col_<?php echo $col->Code;?>" /> <input
+										type="hidden" class="col_param_code" name="column_code[]"
+										value="<?php echo $col->Code?>" /> <input type="hidden"
+																				  class="col_param_default_name" value="<?php echo $col->Name?>" /> <input
+										type="hidden" class="col_param_custom_name"
+										name="name_<?php echo $col->Code?>" value="<?php echo $col->Name?>" />
+									<input type="hidden" class="col_param_default_width"
+										   value="<?php echo $this->width[$col->Code]?>" /> <input
+										type="hidden" class="col_param_custom_width"
+										name="width_<?php echo $col->Code?>"
+										value="<?php echo @$col->Width;?>" /> <input type="hidden"
+																					 class="col_param_custom_style" name="class_<?php echo $col->Code?>"
+																					 value="<?php echo $col->Class?>" " /> <input type="hidden"
+																																  class="col_param_display" name="display_<?php echo $col->Code?>"
+																																  value="<?php echo $col->Selected?1:0;?>" />
+								</div>
+							<?php endif;?>
+						<?php endforeach;?>
+					</div>
+				</fieldset>
+			</div>
+
+
+			<?php if($countColumn):?>
+				<!-- Hiển thị thông tin chi tiết một cột khi chọn giá trị -->
+
+				<div class="ui_box_s50_right">
+					<fieldset>
+						<legend>Chỉnh sửa</legend>
+
+						<table class="detail">
+							<tr>
+								<td>
+									Mã:
+								</td>
+								<td>
+									<input type="hidden" id="col_id" value="" />
+									<input type="hidden" id="col_default_width" value="" />
+									<input type="text" id="col_code" class="readonly" readonly="" value="" size="8" />
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									Tên:
+								</td>
+								<td> <input type="text" id="col_default_name" class="readonly"
+											readonly="" value="" size="12" />
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									Tên tùy chỉnh:
+								</td>
+								<td> <input type="text" id="col_custom_name" value=""
+											size="12" onkeyup="col_change_name(this)" />
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									Style:
+								</td>
+								<td> <input type="text" id="col_custom_style" value=""
+											size="12" onkeyup="col_change_style(this)" />
+								</td>
+							</tr>
+
+							<tr>
+								<td></td>
+								<td class="red">
+									left: căn trái, right: căn phải, center: căn giữa
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									Hiện/ẩn:
+								</td>
+								<!--        <td >
+								Tỷ lệ độ rộng:<input type="text" id="col_custom_width" value="" size="6" onkeyup="col_change_width(this)"/>
+							</td>-->
+								<td> <input type="checkbox" id="col_show_or_hidden" value=""
+											size="12" onclick="col_change_display(this)" />
+								</td>
+							</tr>
+						</table>
+					</fieldset>
+				</div>
+
+
+			<?php endif;?>
+	</div>
+
+	<table>
+		<tr>
+			<th width="100" class="right">
+				<button class="btn-custom" onclick="saveReport()" type="button">Lưu báo cáo</button>
+				<?php if(isset($this->report->RID)):?>
+				<button class="btn-custom"
+					onclick="deleteReport(<?php echo @(int)$this->report->RID;?>)"
+					type="button">Xóa báo cáo</button> <?php endif;?>
+			</th>
+		</tr>
+	</table>
+</form>
+				<?php /*
+				<table class="grid">
+				<tr>
+				<th>Code</th>
+				<th>Name</th>
+				<th>Custom Name</th>
+				<th title="Căn lề: left, rigth, center. Định dạng: bold, italic. Lưu ý style cách nhau bằng dấu cách">Style <br/> (left right center bold italic)  </th>
+				<th>Display</th>
+				<th>Order</th>
+				</tr>
+				<?php foreach ($this->columns as $item):?>
+				<tr>
+				<td><input type="hidden" name="column_code[]" value="<?php echo $item->Code?>"><?php echo $item->Code?></td>
+				<td><?php echo $item->Name?></td>
+				<td><input type="text" name="name_<?php echo $item->Code?>" value="<?php echo $item->Name?>"></td>
+				<td><input type="text" name="class_<?php echo $item->Code?>" value="<?php echo $item->Class?>"></td>
+				<td><input type="checkbox" name="display_<?php echo $item->Code?>" value="1" <?php if($item->Selected):?>checked<?php endif;?>></td>
+				<td><input type="text" name="order_<?php echo $item->Code?>" value="<?php echo $item->OrderNo?>"></td>
+				</tr>
+				<?php endforeach;?>
+				</table>
+				<table>
+				<tr>
+				<th width="100">
+				<button class="btn-custom" onclick="saveReport()" type="button">Save</button>
+				<?php if(isset($this->report->RID)):?>
+				<button class="btn-custom" onclick="deleteReport()" type="button">Xóa báo cáo</button>
+				<?php endif;?>
+				</th>
+				</tr>
+				</table>
+				</form>
+				*
+				*/?>

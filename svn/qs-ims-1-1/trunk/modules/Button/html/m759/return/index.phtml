@@ -1,0 +1,69 @@
+<script type="text/javascript" src="/js/common.js"></script>
+
+<script>
+    var m759_return_button = {
+        show : function()
+        {
+            var url  = sz_BaseUrl + '/button/m759/return/show';
+            var data = $('#m759_return_form').serialize();
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#m759_return_show').html(jreturn);
+            });
+        },
+
+        save : function()
+        {
+            var url  = sz_BaseUrl + '/button/m759/return/save';
+            var data = $('#m759_return_form').serialize();
+
+            qssAjax.confirm('Bạn có thực sự muốn lưu lại?',function(){
+                qssAjax.call(url, data, function(jreturn) {
+                    if(jreturn.message != '')
+                    {
+                        qssAjax.notice(jreturn.message);
+                    }
+
+                }, function(jreturn) {
+                    qssAjax.alert(jreturn.message);
+                });
+            });
+        }
+
+
+    }
+
+    $(document).ready(function(){
+        m759_return_button.show();
+    });
+</script>
+
+<div id="wrapper">
+    <form id="m759_return_form">
+        <input type="hidden" name="ifid" value="<?php echo $this->ifid;?>">
+
+        <div>
+            Chọn kho trả lại<!-- Chọn phiếu xuất kho <Load san pham theo phieu xuat kho> -->
+            <?php
+            $id            = 'warehouse';
+            $getFields     = array('num'=>3,
+                'objects'=>array('ODanhSachKho'=>array(
+                    'id'=>'IOID'
+                ,'display1'=>'MaKho'
+                ,'display2'=>'TenKho') ));
+            ?>
+
+            <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+        </div>
+
+        <div id="m759_return_show">
+
+        </div>
+    </form>
+
+    <br/>
+
+    <div>
+        <button type="button" class="btn btn-custom" onclick="m759_return_button.save()"> Trả lại </button>
+    </div>
+</div>

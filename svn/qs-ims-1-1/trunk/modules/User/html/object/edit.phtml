@@ -1,0 +1,137 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	if(<?php echo $this->object->i_IOID?> == 0){
+		if(bLS){
+			var data = localStorage.getItem('<?php echo $this->object->FormCode?>');
+			if(data != null){
+				data = JSON.parse(data);
+				$.each(data, function() {
+					$('#'+this.name).val(this.value);
+				});
+			}
+		}
+	}
+	//onchange set fedit = true;
+	$('#object_<?php echo $this->object->ObjectCode?>_edit').on('keyup change',function(){
+		oedit = true;
+	});
+});
+</script>
+<div id="horizontal-toolbar" class="horizontal-toolbar">
+	<div id="btnSAVE"
+		onclick="objectSave('<?php
+			echo $this->object->i_IFID?>','<?php
+			echo $this->object->intDepartmentID?>',<?php
+			echo $this->object->i_IOID?>,'<?php
+			echo $this->object->ObjectCode?>');"
+		title="<?php echo $this->_translate(34)?>" class="btn_main_top">
+		<a class="icon-32-save" href="#1"></a>
+	</div>
+	<div
+		onclick="objectSave('<?php
+			echo $this->object->i_IFID?>','<?php
+			echo $this->object->intDepartmentID?>',<?php
+			echo $this->object->i_IOID?>,'<?php
+			echo $this->object->ObjectCode?>',1);"
+		title="<?php echo $this->_translate(35)?>" class="btn_main_top">
+		<a class="icon-32-save-back" href="#1"></a>
+	</div>
+	<div
+		onclick="objectDuplicate('<?php
+			echo $this->object->i_IFID?>','<?php
+			echo $this->object->intDepartmentID?>',<?php
+			echo $this->object->i_IOID?>,'<?php
+			echo $this->object->ObjectCode?>');"
+		title="Nhân đôi" class="btn_main_top">
+		<a class="icon-32-duplicate" href="#1"></a>
+	</div>
+	<div
+		onclick="objectBack('<?php
+			echo $this->object->i_IFID?>','<?php
+			echo $this->object->intDepartmentID?>','<?php
+			echo $this->object->ObjectCode?>');"
+		title="<?php echo $this->_translate(32,'Trở lại')?>"
+		class="btn_main_top">
+		<a class="icon-32-back" href="#1"></a>
+	</div>
+
+	<div class="icon-32_separator"></div>
+
+	<?php /*if($this->prev):?>window.location.href='/user/object/edit?ifid=<?php echo $this->prev->IFID?>&deptid=<?php echo $this->prev->DepartmentID?>&ioid=<?php echo $this->prev->IOID?>&objid=<?php echo $this->previnitData?>'<?php endif;*/?>
+	<div id="btnPREV"
+		onclick="<?php if($this->prev):?>openModule('', '/user/object/edit?ifid=<?php echo $this->prev->IFID?>&deptid=<?php echo $this->prev->DepartmentID?>&ioid=<?php echo $this->prev->IOID?>&objid=<?php echo $this->previnitData?>');<?php endif;?>"
+		title="<?php echo $this->_translate(36)?>"
+		class="btn_main_top <?php if(!$this->prev):?>btn_disabled<?php endif;?>">
+		<a class="icon-32-prev" href="#1"></a>
+	</div>
+	<?php /* if($this->next):?>window.location.href='/user/object/edit?ifid=<?php echo $this->next->IFID?>&deptid=<?php echo $this->next->DepartmentID?>&ioid=<?php echo $this->next->IOID?>&objid=<?php echo $this->nextinitData?>'<?php endif;*/?>
+	<div id="btnNEXT"
+		onclick="<?php if($this->next):?>openModule('', '/user/object/edit?ifid=<?php echo $this->next->IFID?>&deptid=<?php echo $this->next->DepartmentID?>&ioid=<?php echo $this->next->IOID?>&objid=<?php echo $this->nextinitData?>');<?php endif;?>"
+		title="<?php echo $this->_translate(37)?>"
+		class="btn_main_top <?php if(!$this->next):?>btn_disabled<?php endif;?>">
+		<a class="icon-32-next" href="#1"></a>
+	</div>
+	<?php if(count((array)$this->bashes)):?>
+	<div class="icon-32_separator"></div>
+	<?php foreach($this->bashes as $item):?>
+	<?php $arr = explode(',',$item->Step)?>
+	<?php if(in_array($this->form->i_Status,$arr) && $item->Record):?>
+	<?php switch($item->Type):
+case 2:?>
+<?php case 3:?>
+	<div
+		class="extra-button extra-button-record <?php if(!$this->object->i_IOID):?>extra-disabled<?php endif;?>"
+		onclick="bashRun(<?php echo $this->form->i_IFID?>,<?php echo $item->BID?>,'<?php echo $item->BashName?>',this)">
+		<a href="#1"><?php echo $item->BashName?> </a>
+	</div>
+	<?php break;?>
+	<?php case 4:?>
+	<div
+		class="extra-button extra-button-record <?php if(!$this->object->i_IOID):?>extra-disabled<?php endif;?>"
+		onclick="popupOther(<?php echo $this->form->i_IFID?>,'<?php echo $this->object->ObjectCode?>','<?php echo $item->Class?>',this)">
+		<a href="#1"><?php echo $item->BashName?> </a>
+	</div>
+	<?php break;?>
+	<?php case 5:?>
+	<div
+		class="extra-button extra-button-record <?php if(!$this->object->i_IOID):?>extra-disabled<?php endif;?>"
+		onclick="openOther(<?php echo $this->form->i_IFID?>,'<?php echo $this->object->ObjectCode?>','<?php echo $item->Class?>',this)">
+		<a href="#1"><?php echo $item->BashName?> </a>
+	</div>
+	<?php break;?>
+	<?php endswitch;?>
+	<?php endif;?>
+	<?php endforeach;?>
+	<?php endif;?>
+</div>
+
+<div class="clear"></div>
+<div id="view">
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#1"><span><?php echo $this->form->sz_Name?>
+						/ <?php echo $this->object->sz_Name?> </span> </a></li>
+		</ul>
+	</div>
+	<hr>
+	<form id="object_<?php echo $this->object->ObjectCode?>_edit"
+		method="post">
+		<input type="hidden" name="fid" id="fid"
+			value="<?php echo $this->object->FormCode?>"> <input type="hidden"
+			name="ifid" id="ifid" value="<?php echo $this->object->i_IFID?>"> <input
+			type="hidden" name="deptid" id="deptid"
+			value="<?php echo $this->object->intDepartmentID?>"> <input
+			type="hidden" name="ioid" id="ioid"
+			value="<?php echo $this->object->i_IOID?>"> <input type="hidden"
+			name="objid" id="objid"
+			value="<?php echo $this->object->ObjectCode?>">
+		<div id="qss_object">
+		<?php echo $this->objectedit;?>
+		</div>
+	</form>
+</div>
+<div
+	id="qss_trace" title="<?php echo $this->object->sz_Name?>"></div>
+<div
+	id="qss_combo"
+	title="<?php echo $this->object->sz_Name;//echo $this->_translate(74)?>"></div>

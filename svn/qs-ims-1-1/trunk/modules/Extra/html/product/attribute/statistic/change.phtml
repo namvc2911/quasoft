@@ -1,0 +1,125 @@
+
+<?php
+$serialLot      = $this->serialLot;
+$zoneAndBinFrom = $this->zoneAndBinFrom;
+$zoneAndBinTo   = $this->zoneAndBinTo;
+$oldValue       = $this->oldValue;
+?>
+<tr class="bggrey">
+	<th>STT</th>
+
+	<th>Kho lấy hàng</th>
+
+	<?php if($serialLot->serial):?>
+	<th>Số serial</th>
+	<?php endif;?>
+
+	<?php if($serialLot->lot):?>
+	<th>Số lot</th>
+	<?php endif;?>
+
+	<?php if($serialLot->lot || $serialLot->serial):?>
+	<th>Ngày nhận</th>
+	<?php endif;?>
+
+	<?php if($serialLot->lot || $serialLot->serial):?>
+	<th>Ngày sx</th>
+	<?php endif;?>
+
+	<?php if($serialLot->lot || $serialLot->serial):?>
+	<th>Ngày hạn</th>
+	<?php endif;?>
+
+	<?php if($zoneAndBinFrom['hasZone']):?>
+	<th>Zone</th>
+	<?php endif;?>
+
+	<?php if($zoneAndBinFrom['hasBin']):?>
+	<th>Bin</th>
+	<?php endif;?>
+
+	<th>Kho nhận hàng</th>
+
+	<?php if($zoneAndBinTo['hasZone']):?>
+	<th>Zone</th>
+	<?php endif;?>
+
+	<?php if($zoneAndBinTo['hasBin']):?>
+	<th>Bin</th>
+	<?php endif;?>
+
+	<?php if($attributes):?>
+	<th>Thuộc tính</th>
+	<?php endif;?>
+
+	<th>Số lượng</th>
+
+
+</tr>
+	<?php $i=0;?>
+	<?php foreach ($oldValue as $val):?>
+<tr>
+
+	<td><?php $i++;?> <?php echo $i;?>
+	</td>
+
+	<td><?php echo $val->KhoLayHang?>
+	</td>
+
+	<?php if($serialLot->serial):?>
+	<td><?php echo $val->SoSerial?>
+	</td>
+	<?php endif;?>
+
+	<?php if($serialLot->lot):?>
+	<td><?php echo $val->SoLo?>
+	</td>
+	<?php endif;?>
+
+
+	<?php if($serialLot->lot || $serialLot->serial):?>
+	<td><?php echo Qss_Lib_Date::mysqltodisplay($val->NgayNhan)?>
+	</td>
+	<?php endif;?>
+
+	<?php if($serialLot->lot || $serialLot->serial):?>
+	<td><?php echo Qss_Lib_Date::mysqltodisplay($val->NgaySX)?>
+	</td>
+	<?php endif;?>
+
+	<?php if($serialLot->lot || $serialLot->serial):?>
+	<td><?php echo Qss_Lib_Date::mysqltodisplay($val->NgayHan)?>
+	</td>
+	<?php endif;?>
+
+	<?php if($zoneAndBinFrom['hasZone']):?>
+	<td><?php echo $val->TuZone?>
+	</td>
+	<?php endif;?>
+
+	<?php if($zoneAndBinFrom['hasBin']):?>
+	<td><?php echo $val->TuBin?>
+	</td>
+	<?php endif;?>
+
+	<td><?php echo $val->KhoNhanHang?></td>
+
+	<?php if($zoneAndBinTo['hasZone']):?>
+	<td><?php echo $val->DenZone?>
+	</td>
+	<?php endif;?>
+
+	<?php if($zoneAndBinTo['hasBin']):?>
+	<td><?php echo $val->DenBin?>
+	</td>
+	<?php endif;?>
+
+	<?php if($attributes):?>
+	<td><?php echo $val->MaThuocTinh?>
+	</td>
+	<?php endif;?>
+
+	<td><?php echo $val->SoLuong?>
+	</td>
+</tr>
+	<?php endforeach;?>

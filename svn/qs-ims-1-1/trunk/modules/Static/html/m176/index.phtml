@@ -1,0 +1,197 @@
+<style>
+    .m707_filter_box
+    {
+        float: left;
+        display: inline;
+        line-height: 24px;
+        height: 24px;
+        padding-bottom: 5px;
+        vertical-align: middle;
+    }
+    .m707_filter_box_title
+    {
+        min-width: 80px;
+        font-weight: bold;
+        float: left;
+    }
+    .m707_filter_box_dat
+    {
+        min-width: 100px;
+        margin-right: 10px;
+        float: left;
+    }
+    .m707_filter_box_dat input[type="text"]
+    {
+        width: 80px !important;
+    }
+
+    .m707_filter_box_dat #start, .m707_filter_box_dat #end
+    {
+        width: 80px !important;
+    }
+
+    .m707_data table
+    {
+        margin-top: 5px;;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+    }
+
+    .status_box
+    {
+        clear: both;
+        width: 100%;
+        margin: 1px;
+        font-size: 11px;
+    }
+
+    .status_color
+    {
+        float: left;
+        padding: 6px;
+        text-align: center;
+        border: 1px #ccc solid;
+    }
+
+    .status_text {
+        float: left;
+        padding: 6px;
+    }
+
+    .status_one_color {
+        background: yellow none repeat scroll 0 0;
+        font-weight: bold;
+    }
+
+
+    .status_two_color {
+        background: pink none repeat scroll 0 0;
+        font-weight: bold;
+    }
+</style>
+
+<script>
+    var m707 = {
+        show : function()
+        {
+            var url  = sz_BaseUrl + '/static/m176/show';
+            var data = $('#m707_form').serialize();
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('.m707_data').html(jreturn);
+            });
+        }
+    };
+
+
+$(document).ready(function(){
+    $('.datepicker').each(function(){
+        $(this).datepicker();
+    });
+
+    var view_height = $('#view').height();
+
+    $('#view').height(view_height - 20);
+})
+</script>
+
+<form id="m707_form">
+    <div id="m707_wrap">
+
+        <div class="m707_filter">
+
+            <div class="m707_filter_box">
+                <div class="m707_filter_box_title">
+                    Thời gian:
+                </div>
+
+                <div class="m707_filter_box_dat">
+                    <?php echo $this->views->Report->Datepicker('start', date('d-m-Y')); ?>
+                    <?php echo $this->views->Report->Datepicker('end', date('d-m-Y')); ?>
+                </div>
+            </div>
+
+            <!--  Nhân viên  -->
+            <div class="m707_filter_box">
+                <div class="m707_filter_box_title">
+                    Nhân viên:
+                </div>
+
+                <div class="m707_filter_box_dat">
+                    <?php echo $this->views->Report->SimpleComboBox('employee', $this->employees);?>
+                </div>
+            </div>
+
+            <div class="m707_filter_box">
+                <div class="m707_filter_box_title">
+                    Tình trạng:
+                </div>
+
+                <div class="m707_filter_box_dat">
+                    <?php echo $this->views->Report->SimpleComboBox('status', $this->status);?>
+                </div>
+            </div>
+
+            <div class="m707_filter_box">
+                <div class="m707_filter_box_dat">
+                    <button type="button" class="btn btn-custom" onclick="m707.show()"> Xem</button>
+                </div>
+            </div>
+
+
+
+            <div class="fr">
+                Trang:
+                <a class="bold"
+                   onclick="$('#einfo-history-page').val('1'); m707.show();"
+                   href="#" title="Trang trước"
+                   id ="einfo-history-back-page">
+                    <<
+                </a>
+
+                <input id="einfo-history-page"
+                       value="1"
+                       style="width: 20px !important; text-align: center;"
+                       onchange="m707.show();"
+                       name="einfo_history_page"> / <span id="einfo-history-total-page">1</span>
+
+                <a class="bold"
+                   onclick="$('#einfo-history-page').val('1'); m707.show();"
+                   href="#"
+                   title="Trang sau"
+                   id ="einfo-history-next-page">
+                    >>
+                </a>
+                Hiển thị:
+
+                <select id="einfo-history-display"
+                        onchange="m707.show();"
+                        style="width: 100;"
+                        name="einfo_history_display">
+                    <option value="10">10</option>
+                    <option value="20" selected >20</option>
+                    <option value="50" >50</option>
+                    <option value="100" >100</option>
+                </select>
+
+            </div>
+
+
+        </div>
+
+        <div class="clear"></div>
+        <div class="clear"></div>
+
+        <div id="view">
+            <div class="clear"></div>
+            <div class="m707_data">
+
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    m707.show();
+</script>
+
+<div id="m707_add"></div>

@@ -1,0 +1,60 @@
+<?php
+$projectID      = 'project';
+$projectDisplay = array('num'=>3,'objects'=>array('ODuAn'=>array('id'=>'IOID','display1'=>'MaDuAn','display2'=>'TenDuAn', 'order'=>'MaDuAn') ));
+?>
+
+<script>
+    function printPreview()
+    {
+        var project = $('#project').val();
+        var msg   = '';
+
+        msg += common_checkEmpty(project, '<?php echo $this->_translate(2)?>');
+
+        if(msg != '')
+        {
+            qssAjax.alert(msg);
+            return;
+        }
+        else
+        {
+            var url = sz_BaseUrl + '/static/m812/show';
+            var data = $('#report').serialize();
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#print-area').html(jreturn);
+                removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+            });
+        }
+    }
+
+</script>
+
+
+<div class="clear"></div>
+<div id="view">
+    <div class="line-hr">
+        <span><?php echo $this->_translate(1)?> </span>
+    </div>
+    <form id="report" method="post" action="/static/m812/show">
+        <table class="detail">
+            <!-- Dự án -->
+            <tr>
+                <th width="20%" class="report-param-label">
+                    <?php echo $this->_translate(2)?>
+                    <span class="red bold">(*)</span>
+                </th>
+                <td>
+                    <?php echo $this->views->Report->ComboBox($projectID,$projectDisplay);?>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <p>
+
+
+    <hr>
+    <?php echo $this->views->Report->PrintToolbar();?>
+    <div id="print-content">
+        <div id="print-area"></div>
+    </div>
+</div>

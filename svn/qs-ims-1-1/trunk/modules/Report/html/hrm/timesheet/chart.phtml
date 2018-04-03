@@ -1,0 +1,121 @@
+<script>
+function printPreview(){
+	var ngaybd = $('#start').val();
+	var ngaykt = $('#end').val();
+	var ky     = $('#period').val();
+        var msg    = '';
+	if(ngaybd == '' || ngaykt == '' || ky == '')	{
+		msg += '<?php echo $this->_translate(9)?>';
+	}
+
+	 var firstValue = ngaybd.split('-');
+	 var secondValue = ngaykt.split('-');
+	 var firstDate=new Date();
+	 firstDate.setFullYear(firstValue[2],(firstValue[1] - 1 ),firstValue[0]);
+	 var secondDate=new Date();
+	 secondDate.setFullYear(secondValue[2],(secondValue[1] - 1 ),secondValue[0]);     
+
+	 if (firstDate > secondDate)
+	 {
+		msg += '<?php echo $this->_translate(10)?>';
+	 }
+
+	/*
+	$('#report').submit(function() {
+        window.open('', 'formpopup', 'statusbar=no,resizable=yes,scrollbars=yes, addressbar=no,maximize=yes');
+        this.target = 'formpopup';
+    });
+	$('#report').submit();
+	*/
+       
+        if(msg != '')
+        {
+            qssAjax.alert(msg);
+            return;
+        }
+        else
+        {
+            var url = sz_BaseUrl + '/report/hrm/timesheet/chart1';
+            var data = $('#report').serialize();
+            qssAjax.getHtml(url, data, function(jreturn) {
+                    $('#print-area').html(jreturn);
+                    removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+            });
+        }
+	
+	
+}
+</script>
+<?php
+$solar       = new Qss_Model_Calendar_Solar();
+$daysInMonth = $solar->getDaysInMonth(date('m'), date('Y'));
+?>
+<div class="clear"></div>
+<div id="view">
+	<div class="line-hr">
+		<span><?php echo $this->_translate(1)?> </span>
+	</div>
+	<form id="report" method="post" action="/report/hrm/timesheet/chart1">
+		<table class="detail">
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Ngày bắt đầu --> <?php echo $this->_translate(2)?></th>
+				<td><?php echo $this->views->Report->Datepicker('start', '01-'.date('m').'-'.date('Y'));?><span
+					class="bold red">(*)</span></td>
+			</tr>
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Ngày kết thúc --> <?php echo $this->_translate(3)?></th>
+				<td><?php echo $this->views->Report->Datepicker('end', date('d-m-Y'));?><span
+					class="bold red">(*)</span></td>
+			</tr>
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Kỳ --> <?php echo $this->_translate(7)?></th>
+				<td><?php echo $this->views->Report->SelectPeriod('period', 'period'); ?>
+					<span class="bold red">(*)</span>
+				</td>
+			</tr>
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Phòng ban --> <?php echo $this->_translate(5)?></th>
+				<td><?php
+				$id            = 'department';
+				$getFields     = array('num'=>3,
+                                       'objects'=>array('OPhongBan'=>array(
+                                                            'id'=>'MaPhongBan'
+                                                            ,'display1'=>'MaPhongBan'
+                                                            ,'display2'=>'TenPhongBan')) );
+                                                            ?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+				</td>
+			</tr>
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Nhân viên --> <?php echo $this->_translate(4)?></th>
+				<td><?php
+				$id            = 'employee';
+				$getDataObject = array('ODanhSachNhanVien'=>array('MaNhanVien', 'TenNhanVien'));
+				$getFields     = array('num'=>2,
+                                       'objects'=>array('ODanhSachNhanVien'=>array(
+                                                                'id'=>'MaNhanVien'
+                                                                ,'display1'=>'MaNhanVien'
+                                                                ,'display2'=>'TenNhanVien')) );
+                                                                $getLookupFilter = array( 0=>array('id'=>'department'
+                                                                , 'refField'=>array('ODanhSachNhanVien'=>'MaPhongBan')
+                                                                , 'required'=>0));
+                                                                ?> <?php echo $this->views->Report->ListBox($id, $getDataObject,$getFields
+                                                                , $getLookupFilter);?>
+				</td>
+			</tr>
+
+		</table>
+	</form>
+	<p>
+	
+	
+	<hr>
+	<?php echo $this->views->Report->PrintToolbar();?>
+	<div id="print-content">
+		<div id="print-area"></div>
+	</div>
+</div>

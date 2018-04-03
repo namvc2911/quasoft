@@ -1,0 +1,61 @@
+<div class="cal_content_wrap">
+	<div class="cal_content">
+	<?php echo $this->content?>
+	</div>
+</div>
+<div class="cal_select">
+<?php echo $this->select?>
+	<div class="filter">
+		<form name="cal_form" id="cal_form">
+			<input type="hidden" id="fid" name="fid"
+				value="<?php echo $this->fid?>"> <input type="hidden" id="type"
+				name="type" value="<?php echo $this->type?>"> <input type="hidden"
+				id="day" name="day" value="<?php echo $this->day?>"> <input
+				type="hidden" id="week" name="week" value="<?php echo $this->week?>">
+			<input type="hidden" id="month" name="month"
+				value="<?php echo $this->month?>"> <input type="hidden" id="year"
+				name="year" value="<?php echo $this->year?>">
+			<!-- <div class="name">
+				<div class="title">
+				<?php echo $this->_translate(6)?>
+				</div>
+				<div class="select">
+					<ul>
+					<?php foreach($this->users as $item):?>
+						<li><input type="checkbox" name="user[]"
+							id="user_<?php echo $item->UID?>" value="<?php echo $item->UID?>"
+							<?php if(in_array($item->UID,$this->owner)) echo 'checked';?> />
+							<label for="user_<?php echo $item->UID?>"><?php echo $item->UserName?>
+						</label>
+						</li>
+						<?php endforeach;?>
+					</ul>
+				</div>
+			</div>
+			-->
+			<?php if(count((array)$this->filters)):?>
+			<div class="form">
+				<div class="title">
+				<?php echo $this->_translate(7)?>
+				</div>
+				<div class="select">
+					<ul>
+					<?php foreach($this->filters as $item):?>
+						<li><input type="checkbox" name="filter[]"
+							id="filter_<?php echo $item->ID?>" value="<?php echo $item->ID?>"
+							<?php if(in_array($item->ID,$this->filter)) echo 'checked';?> />
+							<label for="filter_<?php echo $item->ID?>"><?php echo $item->Value?>
+						</label>
+						</li>
+						<?php endforeach;?>
+					</ul>
+				</div>
+			</div>
+			<?php endif;?>
+			<div class="extra-button">
+				<a onclick="reloadCalendar()" href="#1"><span><?php echo $this->_translate(8);?>
+				</span> </a>
+			</div>
+		</form>
+	</div>
+</div>

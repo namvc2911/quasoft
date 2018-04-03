@@ -1,0 +1,30 @@
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+	<button id="btnDELETE" type="button" class="btn btn_main_top" disabled
+		onClick="rowDelete()">
+		<?php echo $this->_translate(1)?>
+	</button>
+
+	<button id="btnDELETE" type="button" class="btn btn_main_top"
+		onClick="rowSearch()">
+		<?php echo $this->_translate(23)?>
+	</button>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="div-search" class="clearfix" style="display: none;">
+	<?php
+	echo $this->searchform;
+	?>
+	</div>
+	<div id="qss_form">
+	<?php
+	echo $this->pager;
+	echo $this->listview;
+	?>
+	</div>
+</div>
+<div
+	id="qss_trace" title="<?php //echo $this->form->sz_Name?>"></div>
+<div
+	id="qss_combo"
+	title="<?php echo $this->_translate(74,'Nháy đúp chuột để chọn')?>"></div>

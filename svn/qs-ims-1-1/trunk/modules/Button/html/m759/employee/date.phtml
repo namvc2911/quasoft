@@ -1,0 +1,35 @@
+<span class="bold red"><?php echo $this->employee->TenNhanVien?> <?php echo Qss_Lib_Date::mysqltodisplay($this->date)?></span>
+<table class="detail">
+<tr>
+	<th class="left">STT</th>
+	<th class="left">WO#</th>
+	<th class="left">Equipment#</th>
+	<th class="left">Equipment Name</th>
+	<th class="left">Work center</th>
+	<th class="left">Description</th>
+	<th>&nbsp;</th>
+</tr>
+<?php $i=1?>
+<?php foreach ($this->workorders as $item):?>
+	<tr>
+		<td><?php echo $i?></td>
+		<td><?php echo $item->SoPhieu?></td>
+		<td><?php echo $item->MaThietBi?></td>
+		<td><?php echo $item->TenThietBi?></td>
+		<td><?php echo $item->MaDVBT?></td>
+		<td><?php echo $item->MoTa?></td>
+		<td><a href="#" onclick="m759_employee_plan.cancelWOByDate(<?php echo $item->IFID_M759?>,<?php echo $this->eid?>,'<?php echo $this->date?>')">Xóa</a></td>
+	</tr>
+	<?php $i++?>
+<?php endforeach;?>
+</table>
+<div class="line-hr">
+<span>Thêm phiếu bảo trì</span>
+</div>
+<select id="type" style="width: 200px">
+	<option value="0">Ngày dự kiến <?php echo Qss_Lib_Date::mysqltodisplay($this->date)?></option>
+	<option value="1">Tất các các phiếu chưa giao việc</option>
+</select>
+<button class="btn" onclick="m759_employee_plan.showWOByDate('<?php echo $this->date?>')">Tìm phiếu</button>
+<button class="btn" onclick="m759_employee_plan.saveWOByDate(<?php echo $this->eid?>,'<?php echo $this->date?>')">Giao việc</button>
+<div id="dialog_m759_employee_plan"></div>

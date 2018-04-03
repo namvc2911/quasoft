@@ -1,0 +1,73 @@
+<?php
+$oldThietBi = '';
+?>
+
+<script>
+    $(document).ready(function() {
+        // set datepicker
+        $('.datepicker').each(function () {
+            $(this).datepicker({dateFormat: "dd-mm-yy"});
+            $(this).attr('placeholder', 'dd-mm-yyyy');
+        });
+        /* Datepicker*/
+
+        loadEquips();
+
+
+        $('#input_date').keypress(function (e) {
+            if (e.which == 13) {
+                loadEquips();
+                return false;    //<---- Add this line
+            }
+        });
+
+        $('#input_date').change(function ()
+        {
+            loadEquips();
+        });
+    });
+
+    function saveWorkingTime()
+    {
+        var data = $('#update_params_manual_form').serialize();//, #shiftsFilter
+        var url = sz_BaseUrl + '/extra/maintenance/equip/params/manual/save';
+        qssAjax.call(url, data, function(jreturn) {
+            if(jreturn.message != '')
+            {
+                qssAjax.alert(jreturn.message);
+            }
+        }, function(jreturn) {
+            qssAjax.alert(jreturn.message);
+        });
+    }
+
+    function loadEquips()
+    {
+        var url = 'http://' + location.host + '/extra/maintenance/equip/params/manual/show';
+        var data = {input_date:$('#input_date').val()};
+        qssAjax.getHtml(url, data, function(jreturn) {
+            $('#update_params_manual_table').html(jreturn);
+            $('#update_params_manual_table').show();
+        });
+    }
+
+
+
+</script>
+
+<div class="clear"></div>
+
+<form id="update_params_manual_form">
+
+    <div >
+        Ngày nhập liệu: <input type="text" class="datepicker" id="input_date" name="input_date" value="<?php echo $this->date;?>">
+
+        <button type="button" onclick="saveWorkingTime()" class="btn_main_top btn"> Lưu giờ chạy máy </button>
+    </div>
+    <div id="view">
+        <div id="update_params_manual_table" style="padding-bottom: 22px;"></div>
+
+    </div>
+
+</form>
+<div id="qss_trace"></div>

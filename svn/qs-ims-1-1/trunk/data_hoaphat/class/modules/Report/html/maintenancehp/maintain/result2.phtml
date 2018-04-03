@@ -1,0 +1,35 @@
+<?php 
+$arrCount = array(1=>'meeting',2=>'call',3=>'email',4=>'task',5=>'event',6=>'other');
+$arrStatus = array(0=>'chưa bắt đầu',1=>'đang thực hiện',2=>'hoàn thành',3=>'hủy');
+?>
+
+
+<div class="line-hr"><span><?php echo $this->_translate(83)?></span></div>
+<table>
+	<tr>
+		<tr>
+		<td width="100" valign="top"><textarea id="comment" name="comment" rows="2" cols="40"
+		onkeydown="saveComment(event,'<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->cuser->user_id?>')"></textarea>
+		<button type="button" style="" onclick="saveCommentSent(event,'<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->cuser->user_id?>')" class="btn-custom">Sent</button>
+		<br />
+		<span class="notify_time"><?php echo $this->_translate(84)?></span>
+		</td>
+		</tr>
+		
+		<tr>
+		<td>
+		<br/>
+		<table class="detail">
+		<?php foreach ($this->comments as $item):?>
+			<tr>
+				<td width="260" valign="top"><?php echo $item->UserName?> <span class="notify_time">(<?php echo $this->_translate(93)?> <?php echo date('H:i',$item->Time)?> <?php echo $this->_translate(92)?> <?php echo Qss_Lib_Date::mysqltodisplay($item->Date)?>)</span></td>
+				<td><?php echo $item->Comment?> </td>
+			</tr>
+			<?php endforeach;?>
+		</table>
+		</td>
+		</tr>
+	</tr>
+
+</table>
+

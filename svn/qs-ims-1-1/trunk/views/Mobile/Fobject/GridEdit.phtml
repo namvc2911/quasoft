@@ -1,0 +1,249 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	rowCLK(document.getElementById($.cookie('form_selected')));
+	if($('#horizontal-toolbar').length){
+		var height = $(window).height() - 156 - $('#grid thead').height();//-8
+	}
+	else{
+		var height = $(window).height() - 124 - $('#grid thead').height();
+	}
+	//height = 200;
+	var width = $('#view').width() + $('#midle').width() - 18;
+	<?php if($this->o_Object->orderType && is_numeric($this->o_Object->orderType)):?>
+		width = <?php echo $this->o_Object->orderType?>;
+	<?php endif;?>
+	$('#grid').tableScroll({height:height,width:width});
+	$('#grid').click(function(event){
+		//grid_editing = true;
+	    //event.stopPropagation();tag will not hide
+	});
+	$(".mobile-checkbox-row").change(function() {
+	    $(this).parent().toggleClass("bgblue", this.checked)
+	 });
+	$('.mobile-checkbox-column').each(function(){
+		$(this).height($(this).parent().parent().children().eq(1).height());
+	});
+});
+edit = false;
+var combo = {};
+function checkThis(el){
+	if($(el).is(':checked')){
+		$(el).addClass('grid_selected');
+	}
+	else{
+		$(el).removeClass('grid_selected');
+	}
+	if($('.grid_selected').length == 0){
+		$('#btnMORE').prop('disabled', true);	
+	}
+	else{
+		$('#btnMORE').prop('disabled', false);
+	}
+}
+</script>
+<?php $cfield = new Qss_Model_CField();?> 
+<?php $i = ($this->currentpage - 1) * $this->limit + 1;?>
+<?php foreach ($this->objects as $object)://data?>
+	<div class="mobile-box-data-line <?php echo $i%2==0?'bglightblue':'';?>" style="display: table;height:100%">
+	<label for="<?php echo $object->IFID;?>">
+	<div class="mobile-checkbox-column">
+		<div>
+			<input onchange="checkThis(this);" class="mobile-checkbox-row" id="<?php echo $object->IFID;?>" deptid="<?php echo $object->DeptID;?>" type="checkbox">
+		</div>
+	</div>
+	</label>
+	<div onclick="rowFObjectEdit('<?php echo $object->FormCode?>',<?php echo $object->IFID;?>,<?php echo $object->DepartmentID;?>,'<?php echo $this->refifid?>')" style="float: left; width:94%;">
+	<?php foreach($this->mainobjects as $item)://objects?>
+	<?php 
+		$rowclass = '';
+		$rowstyleclass = "Qss_Bin_Style_{$item->ObjectCode}";
+		if(class_exists($rowstyleclass))
+		{
+			$rowstyle = new $rowstyleclass($object);
+			$rowclass = $rowstyle->__doExecute();
+		}
+	?>
+	
+	<?php endforeach;//objects?>
+		<?php foreach($this->mainobjects as $item)://objects?>
+		<?php 
+			//$item->initData($object->IFID,$object->DepartmentID,0);
+			$fields = $item->loadFields();
+			$item->i_IOID = $object->IOID;
+			$item->i_IFID = $object->IFID;
+		?>
+		<?php $first = true;?>
+		<?php foreach ($fields as $field):?>
+			<?php if ( $field->bGrid & 2):?>
+			<?php $jsonData = $field->getJsonRegx();?>
+			<?php $jsonCellData = $field->getJsonCell();?>
+		<?php
+		$display = ''; 
+		switch ( $field->intFieldType )
+		{
+            case 4:
+                if($object->{$field->FieldCode}) {
+                    $display = date('H:i', strtotime($object->{$field->FieldCode}));
+                }
+                break;
+
+			case 17:
+				$custom = "Qss_Bin_Display_{$field->ObjectCode}_{$field->FieldCode}";
+				if(class_exists($custom))
+				{
+					$customobject = new $custom($object);
+					$display = $customobject->__doExecute();
+				}
+				else
+				{
+					$custom = 'Qss_Bin_Calculate_'.$field->ObjectCode.'_'.$field->FieldCode;
+					if(class_exists($custom))
+					{
+						$customobject = new $custom($item);
+						$display = $customobject->__doExecute();
+					}
+				}
+				$object->{$field->FieldCode} = $display;
+				break;
+			case 9:
+				$display = Qss_Lib_Template::Image($object->{$field->FieldCode},$field->intFieldWidth);
+				break;
+			case 7:
+				$display = Qss_Lib_Template::CheckBox($object->{$field->FieldCode}, $object->{$field->FieldCode}, "", true);
+				break;
+
+			case 8:
+				$display = Qss_Lib_Template::FileDown($object->{$field->FieldCode},$field);
+				break;
+			case 10:
+				$display = Qss_Lib_Date::mysqltodisplay($object->{$field->FieldCode});
+				break;
+			case 11:
+				$cfield = new Qss_Model_CField();
+				$cur = $object->{"Ref_".$field->FieldCode};
+				if(!$cur)
+				{
+					$cur = $cfield->getPrimary()->Code;
+				}
+				$currency = $cfield->getDataByCode($cur);
+				if ( $currency)
+				{
+					$display = is_numeric($object->{$field->FieldCode})?number_format($object->{$field->FieldCode} / 1000, (int)$currency->Precision, $currency->DecPoint, $currency->ThousandsSep):$object->{$field->FieldCode};
+					$display .= $currency->Symbol;
+				} 
+				break;
+			case 13:
+				$display = Qss_Lib_Template::getBarCode($object->{$field->FieldCode},$field->szTValue,$field->szFValue);
+				break;
+			default:
+				if($field->intFieldType != 7 || $field->intInputType == 5  || $field->intInputType == 3)
+				{
+					if($jsonData)
+					{
+						$display = isset($jsonData[$object->{$field->FieldCode}])?$jsonData[$object->{$field->FieldCode}]:'';
+					}
+					else
+					{
+						$display = Qss_Lib_Util::textToHtml($object->{$field->FieldCode});
+					}
+				}
+				break;
+		}
+		
+		$currency = $cfield->getDataByCode($this->szValue);
+		if ( $currency)
+		{
+			//$ret = is_numeric($this->dMoney)?number_format($this->dMoney/100, 2, '.', ','):$this->dMoney;
+			$ret = is_numeric($this->dMoney)?number_format($this->dMoney/1000, (int)$currency->Precision, $currency->DecPoint, $currency->ThousandsSep):$this->dMoney;
+		}
+		$colclass = '';
+		$colstyleclass = "Qss_Bin_Style_{$field->ObjectCode}_{$field->FieldCode}";
+		if(class_exists($colstyleclass))
+		{
+			$colstyle = new $colstyleclass($object);
+			$colclass = $colstyle->__doExecute();
+		}
+		elseif(is_array($jsonCellData) && count($jsonCellData) && isset($jsonCellData[$object->{$field->FieldCode}]))
+		{
+			$colclass = $jsonCellData[$object->{$field->FieldCode}];
+		}
+		?>
+		<?php if($first):?>
+			<div style="width:65%">
+				<?php if($item->b_Tree):?><span class="tree_level_<?php echo $object->level?> <?php if($object->close):?>tree_close<?php elseif($object->rgt-$object->lft > 1):?>tree_open<?php else:?>tree_last<?php endif;?>"></span><?php endif;?>
+				<span class="title"><?php echo $field->szFieldName?>: <?php echo $display?></span>
+			</div>
+		<?php else:?>
+			<div>
+                <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
+                    <tr>
+                        <td style="width: 100px;">
+                            <?php echo $field->szFieldName?>:
+                        </td>
+                        <td class="<?php echo $colclass?>">
+                            <?php echo $display?>
+                        </td>
+                    </tr>
+				</table>
+			</div>
+		<?php endif;?>
+		 
+		<?php $first = false;?>
+		<?php endif;?>
+		<?php endforeach;//fields?>
+		<?php endforeach;//objects?>
+		
+		<div style="position: absolute; top:2px; right: 2px;">
+		 	<?php if($this->form->i_Type == Qss_Lib_Const::FORM_TYPE_MODULE):?>
+                <span class="<?php if($this->arrcolor[$object->Status]) echo $this->arrcolor[$object->Status]; else echo 'data';?>">(<?php echo $this->arrname[$object->Status];?>)</span>
+			<?php endif;?>
+            <span class="bold">#<?php echo $i;?></span>
+        </div>
+		</div>
+		<?php if($this->form->i_Type == Qss_Lib_Const::FORM_TYPE_MODULE):?>
+			<?php 
+        		$step = new Qss_Model_System_Step($this->form->i_WorkFlowID);
+				$step->v_fInitByStepNumber($object->Status);
+				$approvers = $step->getApproverByUser($object->IFID,$this->user->user_id);
+				$arrQuickStep = explode(',',@$step->szQuickStep);
+        	?>
+        	<?php if($step->intStepType && count($approvers)):?>
+        	<div class="fr" style="clear: both;">
+				<?php foreach ($approvers as $it):?>	
+					<?php if($it->AUID):?>
+						<?php if($it->AUID == $this->user->user_id && $item->UID):?>	
+							<button id="btnAPPROVE" type="button" class="btn btn_main_top" style="color: red"
+								onclick="reject(<?php echo $it->SAID?>,<?php echo $object->IFID?>,<?php echo $object->DepartmentID?>,'<?php echo $this->form->FormCode?>')">
+								Hủy "<?php echo $it->Name?>"
+							</button>
+						<?php else:?>
+							<button id="btnAPPROVE" type="button" class="btn btn_main_top" style="color: green" disabled>
+								<?php echo $it->Name?>
+							</button>
+						<?php endif;?>
+					<?php elseif($it->UID == $this->user->user_id):?>
+						<button id="btnAPPROVE" type="button" class="btn btn_main_top" style="color: green"
+							onclick="approve(<?php echo $it->SAID?>,<?php echo $object->IFID?>,<?php echo $object->DepartmentID?>,'<?php echo $this->form->FormCode?>')">
+							<?php echo $it->Name?>
+						</button>
+					<?php endif;?>
+				<?php endforeach;?>
+			</div>
+			<?php endif;?>
+			<?php endif;?>
+			<?php if(@$step->szQuickStep):?>
+				<?php foreach ($arrQuickStep as $quick):?>
+					<button id="btnREQUEST" type="button" class="btn btn_main_top <?php echo $this->arrcolor[$quick]?>" onclick="sendRequest('<?php echo $this->form->FormCode?>',<?php echo $object->IFID?>,<?php echo $object->DepartmentID?>,'<?php echo $quick?>','');">
+						<?php echo $this->arrname[$quick]?>
+					</button>
+				<?php endforeach;?>
+			<?php endif;?>
+		</div>
+	<?php $i++?>
+<?php endforeach;//data?>
+<script>
+function rowEdit(ifid,deptid){
+	var url = sz_BaseUrl + '/user/form/edit?ifid=' + ifid + '&deptid=' + deptid;
+	openModule('', url);		
+}
+</script>

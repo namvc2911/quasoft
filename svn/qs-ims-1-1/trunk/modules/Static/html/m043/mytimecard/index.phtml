@@ -1,0 +1,75 @@
+<div id="einfo-tabs" class="navmenutab" style="border-bottom: 1px solid #ccc;">
+    <ul>
+        <li class="splash"></li>
+        <li class="active">
+            <a id="einfo_tab_MY_TIME_CARD" onclick="Static_M043.showTimeCard('MY_TIME_CARD')" href="#" tab="1" class="einfo_tab">
+                <span>Time card của tôi</span>
+            </a>
+        </li>
+
+        <li class="splash"></li>
+        <li class="">
+            <a id="einfo_tab_LEAVE" onclick="Static_M043.showTimeCard('LEAVE')" href="#" tab="2" class="einfo_tab">
+                <span>Nghỉ phép</span>
+            </a>
+        </li>
+
+        <li class="splash"></li>
+        <li class="">
+            <a id="einfo_tab_OT" onclick="Static_M043.showTimeCard('OT')" href="#" tab="2" class="einfo_tab">
+                <span>Làm thêm</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<br/>
+<br/>
+<br/>
+
+<?php /*
+<form id="filter_mytimecard_detail">
+    <div class="fr" style="width: 50%;">
+        <div class="fr" style="padding: 3px;">
+            <button type="button" class="btn" onclick="Static_M043.showTimeCard();" > Xem </button> &nbsp;&nbsp;
+        </div>
+
+
+        <div class="fr" style="padding: 5px;">
+            <!-- Du An --> <?php
+            $id            = 'kycong';
+            $getDataObject = array('OKyCong'=>array('MaKyCong', 'TenKyCong'));
+            $getFields     = array('num'=>2,
+                'objects'=>array('OKyCong'=>array(
+                    'id'=>'IOID'
+                ,'display1'=>'MaKyCong'
+                ,'display2'=>'TenKyCong')) );
+            $selectedID   = $this->kyCong;
+            $selectedText = $this->strKyCong;
+
+            echo $this->views->Report->ListBox(
+                $id, $getDataObject, $getFields, array(), array(), '', $selectedText, $selectedID
+            );
+            ?>
+
+
+        </div>
+
+        <div class="fr bold"  style="padding: 8px;">
+            Kỳ công:
+        </div>
+
+
+    </div>
+
+    <div class="clear"></div>
+    <br/>
+</form>
+ */?>
+
+<div id="mytimecard_data_table">
+
+</div>
+
+<script>
+    Static_M043.showTimeCard('MY_TIME_CARD');
+</script>

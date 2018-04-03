@@ -1,0 +1,553 @@
+<script>
+    var ODanhSachXuatKho = {
+        global_data  : new Array(),
+        global_ioid  : 0,
+        global_qty   : new Array(),
+        global_item  : new Array(),
+        global_uom   : new Array(),
+        global_idx   : 0,
+        global_begin : '',
+        global_stock : <?php echo @(int)$this->output->Ref_Kho;?>,
+        global_ifid  : <?php echo @(int)$this->output->IFID_M506;?>,
+        global_idxToIoid : new Array(),
+        global_ioidToIdx : new Array(),
+        global_saveFalse : 0,
+        time : new Date().getTime(),
+
+
+        convertIdxAndIoid : function () {
+            var idx  = 0;
+            var ioid = 0;
+
+            $('.grid_tr').each(function () {
+                ioid = parseInt($(this).attr('id'));
+
+                ODanhSachXuatKho.global_idxToIoid[idx]  = parseInt($(this).attr('id'));
+                ODanhSachXuatKho.global_ioidToIdx[ioid] = idx;
+                idx++;
+            });
+        },
+
+        setGlobalBegin : function () {
+            ODanhSachXuatKho.global_begin = '<table class="border_table" cellpadding="0" cellspacing="0" border="0">';
+            ODanhSachXuatKho.global_begin += '<tr>';
+            ODanhSachXuatKho.global_begin += '<th style="width: 30%" class="center"><?php echo $this->_translate(1)?></th>';
+            ODanhSachXuatKho.global_begin += '<th style="width: 30%" class="center">Serial</th>';
+            ODanhSachXuatKho.global_begin += '<th style="width: 20%" class="center"><?php echo $this->_translate(2)?></th>';
+            ODanhSachXuatKho.global_begin += '<th style="width: 20%"  class="center"><?php echo $this->_translate(3)?></th>';
+            ODanhSachXuatKho.global_begin += '</tr>';
+
+            for(i = 0; i < 10; i++)
+            {
+                ODanhSachXuatKho.global_begin += '<tr>';
+                ODanhSachXuatKho.global_begin += '<td class="left"></td>';
+                ODanhSachXuatKho.global_begin += '<td class="left"></td>';
+                ODanhSachXuatKho.global_begin += '<td class="left"></td>';
+                ODanhSachXuatKho.global_begin += '<td class="left"></td>';
+                ODanhSachXuatKho.global_begin += '</tr>';
+            }
+
+            ODanhSachXuatKho.global_begin += '</table>';
+        },
+
+        initStorageTable : function () {
+            if(ODanhSachXuatKho.global_begin == '')
+            {
+                ODanhSachXuatKho.setGlobalBegin();
+            }
+            $('#ODanhSachXuatKho_Bin_List').html(ODanhSachXuatKho.global_begin);
+        },
+
+        changeClickTrAttribute : function(){
+            var onlickText = ''; // Onclick attribute of data lines
+            var idText     = 0;  // Id attribute of data lines
+
+            // Replace the onclick attribute on data lines
+            // Insert a new function to display a status storage table
+            $('tr.grid_tr').each(function () {
+                onlickText = $(this).attr('onclick');
+                idText     = $(this).attr('id');
+
+                $(this).attr('onclick', '');
+                $(this).attr('onclick', onlickText + ' ODanhSachXuatKho.showStockStatus(this); ');
+            });
+        },
+
+        changeClickSave :function () {
+            var onlickTextSave     = $('#btnSAVE').attr('onclick');
+            var onlickTextSaveBack = $('#btnSAVEBACK').attr('onclick');
+
+            var save1 = 'var promise = []; var p = ODanhSachXuatKho.savePositionList();';
+            save1 += 'promise.push(p);';
+            save1 += '$.when.apply($, promise).done(function() {';
+            save1 += 'formSave("M506", "<?php echo $this->ifid;?>", "<?php echo $this->deptid;?>");';
+            save1 += '});';
+
+            var save2 = 'var promise2 = []; var p2 = ODanhSachXuatKho.savePositionList();';
+            save2 += 'promise2.push(p2);';
+            save2 += '$.when.apply($, promise2).done(function() {';
+            save2 += 'formSave("M506", "<?php echo $this->ifid;?>", "<?php echo $this->deptid;?>", 1);';
+            save2 += '});';
+
+            $('#btnSAVE').attr('onclick', '');
+            $('#btnSAVE').attr('onclick', save1);
+
+
+            $('#btnSAVEBACK').attr('onclick', '');
+            $('#btnSAVEBACK').attr('onclick', save2);
+        },
+
+        getLocalStorage : function () {
+            return localStorage.getItem("ODanhSachXuatKho_TrangThaiLuuTru");
+        },
+
+        setLocalStorage : function (data) {
+            var jsonData = JSON.stringify(data);
+            localStorage.setItem("ODanhSachXuatKho_TrangThaiLuuTru", jsonData);
+        },
+
+        removeLocalStorage : function () {
+            localStorage.removeItem("ODanhSachXuatKho_TrangThaiLuuTru");
+        },
+
+        keepIndex : function () {
+            localStorage.setItem("ODanhSachXuatKho_DongSo", ODanhSachXuatKho.global_idx);
+        },
+
+        getIndex : function () {
+            return localStorage.getItem("ODanhSachXuatKho_DongSo");
+        },
+
+        resetIndex : function () {
+            localStorage.setItem("ODanhSachXuatKho_DongSo", 0);
+        },
+
+        addCallShowStockStatus : function () {
+            $('.grid_selected').find('td#MaSP').attr('onchange',  ' ODanhSachXuatKho.showStockStatus($(this).parent())');
+            $('.grid_selected').find('td#DonViTinh').find('#combo_DonViTinh').attr('onchange', ' ODanhSachXuatKho.showStockStatus($(this).parent().parent())');
+            // $('.grid_selected').find('td#SoLuong').find('textarea.editor').attr('onkeyup', ' ODanhSachXuatKho.callShowStockStatusDelay($(this).parent().parent())');
+        },
+
+        callShowStockStatusDelay : function (ele) {
+            setTimeout( function() { ODanhSachXuatKho.showStockStatus(ele); },2000);
+        },
+
+        /**
+         * Display status storage table when click on the data lines
+         * @param ioid
+         */
+        showStockStatus : function(ele) {
+            var selected  = $('.grid_selected').length;
+            var qtyTemp   = $(ele).find('td#SoLuong').find('textarea.editor').val();
+            var qty       = qtyTemp?$.trim(qtyTemp):$(ele).find('td#SoLuong').text();
+            qty           = qty?parseFloat(qty):0;
+            var itemTemp  = $(ele).find('td#MaSP').attr('value');
+            var item      = itemTemp?parseInt(itemTemp):0;
+            var uomTemp   = $(ele).find('td#DonViTinh').find('#combo_DonViTinh').val();
+            var uom       = uomTemp?parseInt(uomTemp):$(ele).find('td#DonViTinh').attr('value');
+            uom           = uom?uom:0;
+            var idx       = parseInt($(ele).index('.grid_tr'));
+            var ioid      = parseInt($(ele).attr('id'));
+            var ifid      = parseInt($(ele).attr('ifid'));
+            var url       = sz_BaseUrl + '/button/m506/position/index';
+
+            if(idx == undefined || idx < 0) // fix idx = 0 cho truong hop chua co dong nao
+            {
+                idx = 0;
+            }
+
+            var data      = {ifid: ifid, ioid: ioid, item: item, qty: qty, idx: idx, uom: uom};
+
+            if(ODanhSachXuatKho.global_qty[idx]  == undefined) { ODanhSachXuatKho.global_qty[idx]  = 0; }
+            if(ODanhSachXuatKho.global_item[idx] == undefined) { ODanhSachXuatKho.global_item[idx] = 0; }
+            if(ODanhSachXuatKho.global_uom[idx]  == undefined) { ODanhSachXuatKho.global_uom[idx]  = 0; }
+
+            if(selected == 1)
+            {
+                // Call ajax when
+                // Select other line
+                // Or same line however qty/item/uom is change
+                if(ODanhSachXuatKho.global_idx != idx
+                    || (ODanhSachXuatKho.global_qty[idx] != qty
+                    || ODanhSachXuatKho.global_item[idx] != item
+                    || ODanhSachXuatKho.global_uom[idx] != uom)
+                )
+                {
+                    qssAjax.getHtml(url, data, function(jreturn) {
+                        $('#ODanhSachXuatKho_Bin_List').html(jreturn);
+
+                        var onclickText = $('#m402-position-renew-button').attr('onclick');
+                        $('#m402-position-renew-button').attr('onclick', onclickText + ' ODanhSachXuatKho.keepData('+idx+')');
+
+                        ODanhSachXuatKho.global_ioid      = ioid;
+                        ODanhSachXuatKho.global_qty[idx]  = qty;
+                        ODanhSachXuatKho.global_item[idx] = item;
+                        ODanhSachXuatKho.global_uom[idx]  = uom;
+                        ODanhSachXuatKho.global_idx       = idx;
+                        ODanhSachXuatKho.keepIndex();
+
+                        i = 0;
+                        $('#ODanhSachXuatKho_Bin_List').find('.m506-position-data-line').each(function () { // Keep Bin
+                            $(this).find('.m506_position_select').attr('onchange', 'ODanhSachXuatKho.keepData('+idx+')');
+                            $(this).find('.m506_position_serial').attr('onkeyup', 'ODanhSachXuatKho.keepData('+idx+')');
+                            $(this).find('.m506_position_qty').attr('onkeyup', 'ODanhSachXuatKho.keepData('+idx+')');
+                            i++;
+                        });
+
+                        ODanhSachXuatKho.loadKeeper(idx);
+                        ODanhSachXuatKho.keepData(idx);
+                    });
+                }
+            }
+            else
+            {
+                $('#ODanhSachXuatKho_Bin_List').html(ODanhSachXuatKho.global_begin);
+                ODanhSachXuatKho.global_ioid  = 0;
+                ODanhSachXuatKho.global_qty   = new Array();
+                ODanhSachXuatKho.global_item  = new Array();
+                ODanhSachXuatKho.global_uom   = new Array();
+                ODanhSachXuatKho.global_idx   = 0;
+                ODanhSachXuatKho.resetIndex();
+            }
+        },
+
+        /**
+         * Display old values (Lost when refresh/Keep until refresh)
+         */
+        loadKeeper : function (idx) {
+
+
+            var jsonOldData  = ODanhSachXuatKho.getLocalStorage();//localStorage.getItem("ODanhSachXuatKho_TrangThaiLuuTru");
+            var oldData      = $.parseJSON(jsonOldData);
+            var i            = 0;
+
+            if(oldData == undefined || oldData[idx] == undefined || oldData[idx] == null)
+            {
+                return;
+            }
+
+            $('#ODanhSachXuatKho_Bin_List').find('.m506-position-data-line').each(function () { // Keep Bin
+                if(oldData[idx][i] != undefined && oldData[idx][i].bin != undefined)
+                {
+                    $(this).find('.m506_position_select').val(oldData[idx][i].bin);
+                }
+
+                if(oldData[idx][i] != undefined && oldData[idx][i].serial != undefined)
+                {
+                    $(this).find('.m506_position_serial').val(oldData[idx][i].serial);
+                }
+
+                if(oldData[idx][i] != undefined && oldData[idx][i].qty != undefined)
+                {
+                    $(this).find('.m506_position_qty').val(oldData[idx][i].qty);
+                }
+                i++;
+            });
+        },
+
+        initData : function () {
+            if(ODanhSachXuatKho.global_ioidToIdx.length == 0)
+            {
+                ODanhSachXuatKho.convertIdxAndIoid();
+            }
+
+            var data = [];
+
+            <?php $oldInputLineIOID = '';?>
+            <?php foreach($this->oldBin as $item):?>
+            <?php
+            if($item->OutputLineIOID != $oldInputLineIOID)
+            {
+                $i = 0;
+            }
+            ?>
+
+            if(ODanhSachXuatKho.global_ioidToIdx[<?php echo $item->OutputLineIOID;?>] != undefined)
+            {
+                if(data[ODanhSachXuatKho.global_ioidToIdx[<?php echo $item->OutputLineIOID;?>]] == undefined)
+                {
+                    data[ODanhSachXuatKho.global_ioidToIdx[<?php echo $item->OutputLineIOID;?>]] = [];
+                }
+
+                data[ODanhSachXuatKho.global_ioidToIdx[<?php echo $item->OutputLineIOID;?>]][<?php echo $i++;?>] =
+                {bin:<?php echo @(int)$item->Ref_Bin;?>, serial: '<?php echo $item->SoSerial;?>', qty: '<?php echo $item->SoLuong?$item->SoLuong:0;?>', item: <?php echo @(int)$item->Ref_MaSanPham;?>, uom : <?php echo @(int)$item->Ref_DonViTinh;?>, stock: <?php echo @(int)$item->Ref_Kho;?>};
+            }
+
+            <?php $oldInputLineIOID = $item->OutputLineIOID;?>
+            <?php endforeach;?>
+
+            ODanhSachXuatKho.setLocalStorage(data);
+
+            console.log(data)
+        },
+
+        /**
+         * Keep the old values until page refresh
+         * @param idx
+         */
+        keepData : function(idx, childLine) {
+            var data   = [];
+            data[idx]  = [];
+            var i      = 0;
+            var bin    = 0;
+            var serial = '';
+            var qty    = 0;
+            var jsonData;
+            var jsonOldData  = ODanhSachXuatKho.getLocalStorage();//localStorage.getItem("ODanhSachXuatKho_TrangThaiLuuTru");
+            var oldData;
+
+            var dataLine  = $('.grid .grid_tr').eq(idx);
+            var exDataLine = $('.grid .grid_tr').eq(idx).length;
+
+            if(exDataLine == 0)
+            {
+                dataLine  = $('.grid .grid_selected');
+            }
+
+            var itemTemp  = dataLine.find('td#MaSP').attr('value');
+            var item      = itemTemp?parseInt(itemTemp):0;
+
+
+            var uomTemp   = dataLine.find('td#DonViTinh').find('#combo_DonViTinh').val();
+            var uom       = uomTemp?parseInt(uomTemp):dataLine.find('td#DonViTinh').attr('value');
+            uom           = uom?uom:0;
+
+            var childLine = (childLine == undefined)?'':childLine;
+
+            $('#ODanhSachXuatKho_Bin_List').find('.m506-position-data-line').each(function () { // Keep Bin
+                if(childLine === '' || childLine == i) {
+                    bin    = parseInt($(this).find('.m506_position_select').val());
+                    serial = $(this).find('.m506_position_serial').val();
+                    qty    = $(this).find('.m506_position_qty').val();
+
+                    if((bin != 0 && bin != undefined) || (serial != '' && serial != undefined))
+                    {
+                        serial = serial?serial:'';
+                        bin    = bin?bin:0;
+
+                        data[idx][i] = [];
+                        data[idx][i] = {bin:bin, serial:serial, qty: qty, item: item, uom : uom, stock: ODanhSachXuatKho.global_stock};
+                        i++;
+                    }
+                }
+            });
+
+            if(jsonOldData)
+            {
+                oldData      = $.parseJSON(jsonOldData);
+
+                if(oldData == undefined) { oldData = []; }
+                if(oldData[idx] == undefined) { oldData[idx] = []; }
+
+                if(childLine !== '')
+                {
+                    if(oldData[idx][childLine] == undefined) { oldData[idx][childLine] = []; }
+                    oldData[idx][childLine] = data[idx][childLine];
+                    alert(childLine);
+                }
+                else
+                {
+                    oldData[idx] = data[idx];
+                }
+
+
+                ODanhSachXuatKho.setLocalStorage(oldData);
+            }
+            else
+            {
+
+                ODanhSachXuatKho.setLocalStorage(data);
+            }
+            // console.dir(data);
+            // console.dir($.parseJSON(jsonData))
+        },
+
+        changeLocalStorageToData : function () {
+            var jsonData  = ODanhSachXuatKho.getLocalStorage();
+            var data      = $.parseJSON(jsonData);
+            var bin       = new Array();
+            var serial    = new Array();
+            var qty       = new Array();
+            var uom       = new Array();
+            var stock     = new Array();
+            var k         = 0;
+            var ret       = [];
+            ret['bin']    = [];
+            ret['serial'] = [];
+            ret['qty']    = [];
+            ret['item']   = [];
+            ret['uom']    = [];
+            ret['stock']  = [];
+
+            for(i in data) {
+                for(j in data[i]) {
+                    if(data[i][j].bin != undefined) ret['bin'][k]    = data[i][j].bin;
+                    if(data[i][j].serial != undefined) ret['serial'][k] = data[i][j].serial;
+                    if(data[i][j].qty != undefined) ret['qty'][k]    = data[i][j].qty;
+                    if(data[i][j].item != undefined) ret['item'][k]   = data[i][j].item;
+                    if(data[i][j].uom != undefined) ret['uom'][k]    = data[i][j].uom;
+                    ret['stock'][k]  = ODanhSachXuatKho.global_stock;
+                    k++;
+                }
+            }
+
+            return ($.param({bin: ret['bin'] , serial: ret['serial'], qty :ret['qty'], item: ret['item'], uom: ret['uom'], ifid: ODanhSachXuatKho.global_ifid , stock: ret['stock']}));
+        },
+
+        savePositionList : function() {
+            var data = ODanhSachXuatKho.changeLocalStorageToData();
+            var url  = sz_BaseUrl + '/button/m506/position/save';
+
+            qssAjax.call(url, data, function(jreturn) {
+                ODanhSachXuatKho.global_saveFalse = 0;
+                if(jreturn.message != '') {
+                    qssAjax.alert(jreturn.message);
+                }
+            }, function(jreturn) {
+                ODanhSachXuatKho.global_saveFalse = 1;
+                qssAjax.alert(jreturn.message);
+            });
+        }
+    };
+
+    $(document).ready(function () {
+        ODanhSachXuatKho.removeLocalStorage();
+        ODanhSachXuatKho.initStorageTable();
+        ODanhSachXuatKho.changeClickTrAttribute();
+        ODanhSachXuatKho.changeClickSave();
+        ODanhSachXuatKho.convertIdxAndIoid();
+        ODanhSachXuatKho.initData();
+        var idx = ODanhSachXuatKho.getIndex()?ODanhSachXuatKho.getIndex():0;
+
+        // Click first tr data when open module
+        $('.grid .grid_tr').eq(idx).click();
+
+        // Show status storage table when press up key or down key
+        $(document).on('keydown',function(e) {
+            var code = (e.keyCode ? e.keyCode : e.which);
+            switch (code) {
+                case 40: // Down pressed
+                    ODanhSachXuatKho.showStockStatus($('.grid .grid_selected'));
+                    break;
+                case 38: // Up pressed
+                    ODanhSachXuatKho.showStockStatus($('.grid .grid_selected'));
+                    break;
+
+                case 27: // ESC
+                    ODanhSachXuatKho.showStockStatus($('.grid .grid_selected'));
+                    break;
+
+                case 113: // F2
+                    ODanhSachXuatKho.showStockStatus($('.grid .grid_selected'));
+                    ODanhSachXuatKho.addCallShowStockStatus();
+                    break;
+
+                case 114: // F3
+                    $('.grid .grid_tr').removeClass('grid_selected');
+                    $('.grid .grid_tr').last().addClass('grid_selected');
+                    ODanhSachXuatKho.showStockStatus($('.grid .grid_selected'));
+                    ODanhSachXuatKho.addCallShowStockStatus();
+                    break;
+            }
+        });
+    });
+</script>
+
+
+
+<div style="float: left; width: 100%">
+    <div style="float: left; width: 60%">
+        <?php echo $this->pager?>
+        <?php echo $this->grid?>
+    </div>
+
+    <div style="float: left; width: 29%; padding: 0.5%;" id="ODanhSachXuatKho_Bin_List">
+
+    </div>
+
+    <div style="float: left; width: 10%; text-align: center;">
+        <button style="width: 100px;" id="btnOINSERT" type="button"
+                onclick="rowInsert('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->object->ObjectCode?>');"
+                class="btn-custom" <?php if( !$this->object->bInsert || !($this->Rights & 1)):?>disabled<?php endif;?>>
+            <?php echo $this->_translate(12)?>
+        </button>
+        <br>
+        <button style="width: 100px;" id="btnOEDIT" type="button"
+                onclick="rowEdit('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->object->ObjectCode?>');"
+                class="btn-custom" disabled>
+            <?php echo $this->_translate(13)?>
+        </button>
+        <br>
+        <button style="width: 100px;" id="btnDELETE" type="button"
+                onclick="rowDelete('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->object->ObjectCode?>');"
+                class="btn-custom" disabled>
+            <?php echo $this->_translate(14)?>
+        </button>
+
+        <?php if($this->object->bTrack):?>
+            <br>
+            <button style="width: 100px;" id="btnEIMPORT" type="button"
+                    onclick="rowIOExcel('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->object->ObjectCode?>');"
+                    class="btn-custom">
+                <?php echo $this->_translate(33)?>
+            </button>
+        <?php endif;?>
+
+        <?php if($this->object->b_Tree):?>
+            <br>
+            <button style="width: 100px;" id="btnUP" type="button"
+                    onclick="rowUpDown('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->object->ObjectCode?>',1);"
+                    class="btn-custom" disabled>
+                <?php echo $this->_translate(35)?>
+            </button>
+            <br>
+            <button style="width: 100px;" id="btnDOWN" type="button"
+                    onclick="rowUpDown('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->object->ObjectCode?>',0);"
+                    class="btn-custom" disabled>
+                <?php echo $this->_translate(36)?>
+            </button>
+        <?php endif;?>
+        <br>
+        <button style="width: 100px;" id="btnOREFRESH" type="button"
+                onclick="rowObjectSearch('<?php echo $this->object->i_IFID;?>','<?php echo $this->object->intDepartmentID;?>','<?php echo $this->object->ObjectCode;?>');"
+                class="btn-custom">
+            <?php echo $this->_translate(23)?>
+        </button>
+        <?php foreach($this->bashes as $item):?>
+            <?php $arr = explode(',',$item->Step)?>
+            <?php if(in_array($this->form->i_Status,$arr)):?>
+                <?php switch($item->Type):
+                    case 2:?>
+                    <?php case 3:?>
+                        <br>
+                        <button style="width: 100px; color: yellow" type="button"
+                                class="btn-custom extra-button <?php if($item->Record):?>extra-button-object-record<?php endif;?>" <?php if($item->Record):?>disabled<?php endif;?>
+                                onclick="bashRun(<?php echo $this->form->i_IFID?>,<?php echo $item->BID?>,'<?php echo $item->BashName?>',this,'<?php echo $this->object->ObjectCode?>')">
+                            <?php echo $item->BashName?>
+                        </button>
+                        <?php break;?>
+                    <?php case 4:?>
+                        <br>
+                        <button style="width: 100px; color: yellow" type="button"
+                                class="btn-custom extra-button <?php if($item->Record):?>extra-button-orecord<?php endif;?>" <?php if($item->Record):?>disabled<?php endif;?>
+                                onclick="popupOther(<?php echo $this->form->i_IFID?>,'<?php echo $this->object->ObjectCode?>','<?php echo $item->Class?>',this)">
+                            <?php echo $item->BashName?>
+                            </a>
+                        </button>
+                        <?php break;?>
+                    <?php case 5:?>
+                        <br>
+                        <button style="width: 100px; color: yellow" type="button"
+                                class="btn-custom extra-button <?php if($item->Record):?>extra-button-orecord<?php endif;?>" <?php if($item->Record):?>disabled<?php endif;?>
+                                onclick="openOther(<?php echo $this->form->i_IFID?>,'<?php echo $this->object->ObjectCode?>','<?php echo $item->Class?>',this)">
+                            <?php echo $item->BashName?>
+                        </button>
+                        <?php break;?>
+                    <?php endswitch;?>
+            <?php endif;?>
+        <?php endforeach;?>
+
+    </div>
+</div>
+
+

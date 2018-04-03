@@ -1,0 +1,152 @@
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+	<button id="btnINSERT" type="button" class="btn btn_main_top" <?php if(!($this->form->i_fGetRights($this->user->user_group_list) & 1)):?>disabled<?php endif;?>
+		onclick="rowInsert('<?php echo $this->form->FormCode?>');">
+		<?php echo $this->_translate(12)?>
+	</button>
+	<button id="btnEDIT" type="button" class="btn btn_main_top" disabled
+		onclick="rowEdit();">
+		<?php echo $this->_translate(13)?>
+	</button>
+	<button id="btnDETAIL" type="button" class="btn btn_main_top" disabled
+		onclick="rowTrace();">
+		<?php echo $this->_translate(17)?>
+	</button>
+	<button id="btnDELETE" type="button" class="btn btn_main_top" disabled
+		onclick="rowDelete('<?php echo $this->form->FormCode?>');">
+		<?php echo $this->_translate(14)?>
+	</button>
+	
+	<?php if ($this->object->bTrack):?>
+	<button id="btnEIMPORT" type="button" class="btn btn_main_top"
+		onclick="exportExcel('<?php
+					echo $this->form->FormCode?>','<?php
+					echo $this->form->i_DepartmentID?>','<?php
+					echo $this->object->ObjectCode?>');">
+		<?php echo $this->_translate(10)?>
+	</button>
+	<?php endif;?>
+	
+	<?php if($this->form->hasPrint()):?>
+	<button id="btnPRINT" type="button" class="btn btn_main_top" disabled
+		onclick="rowPrint();">
+		<?php echo $this->_translate(15)?>
+	</button>
+	<?php endif;?>
+	<!--<div class="btn_main_top btn_disabled"
+	onclick="rowValidate('<?php
+	echo $this->form->FormCode?>')"
+	title="<?php echo $this->_translate(16)?>" id="btnVALIDATE"><a href="#1"
+	class="icon-32-validate"></a></div>-->
+	<?php if ( $this->form->i_Type == Qss_Lib_Const::FORM_TYPE_MODULE ):?>
+	<div class="dropdown" style="float:left;">
+	<button id="btnWORKFLOW" type="button" class="btn btn_main_top" disabled
+		onclick="rowWorkflow(this);">
+		<?php echo $this->_translate(8)?>
+		<span style="display: block;" class="downarrowclass">&nbsp;</span>
+	</button>
+		<ul class="dropdown-content">
+
+	  	</ul>
+	</div> 
+	<?php endif;?>
+	<div class="icon-32_separator"></div>
+	<!--<div class="btn_main_top btn_disabled" onclick="rowRecord()"
+	title="<?php echo $this->_translate(1)?>" id="btnDOCUMENT"><div id="action_document" class="action_notify"></div><a href="#1" class="icon-32-document"></a></div>
+-->
+	<?php if ( $this->form->i_Type == Qss_Lib_Const::FORM_TYPE_PROCESS):?>
+	<button id="btnEVENT" type="button" class="btn btn_main_top" disabled
+		onclick="rowCalendar()">
+		<?php echo $this->_translate(4)?>
+	</button>
+	<?php endif;?>
+	<?php if($this->form->getCalendar()):?>
+	<button id="btnCALENDAR" type="button" class="btn btn_main_top"
+		onclick="rowEvent('<?php echo $this->form->FormCode?>')">
+		<?php echo $this->_translate(3)?>
+	</button>
+	<?php endif;?>
+	<!--	
+<?php if($this->form->hasDesign()):?>
+<div class="btn_main_top btn_disabled" onclick="rowEmail()"
+	title="<?php echo $this->_translate(6)?>" id="btnEMAIL"><a href="#1" class="icon-32-email"></a></div>
+<?php endif;?>	
+<div class="btn_main_top" onclick="rowExcel('<?php echo $this->form->FormCode?>')"
+	title="Excel" id="btnEXCEL"><a href="#1" class="icon-32-eimport"></a></div>-->
+	<button id="btnREFRESH" type="button" class="btn btn_main_top"
+		onclick="rowSearch('<?php echo $this->form->FormCode;?>');">
+		<?php echo $this->_translate(23)?>
+	</button>
+	<?php if ( $this->form->i_Type == Qss_Lib_Const::FORM_TYPE_PROCESS):?>
+	<div class="icon-32_separator"></div>
+	<button id="btnPROCESS" type="button" class="btn btn_main_top" disabled
+		onclick="rowProcess()">
+		<?php echo $this->_translate(7)?>
+	</button>
+	<?php endif;?>
+	<?php if($this->form->o_fGetMainObject()->b_Tree):?>
+	<div class="icon-32_separator"></div>
+	<button id="btnUP" type="button" class="btn btn_main_top icon-32-up" disabled
+		onclick="rowUpDown('<?php echo $this->form->FormCode?>',1);"
+		title="<?php echo $this->_translate(35)?>">
+		&nbsp;
+	</button>
+	<button id="btnDOWN" type="button" class="btn btn_main_top icon-32-down" disabled
+		onclick="rowUpDown('<?php echo $this->form->FormCode?>',0);"
+		title="<?php echo $this->_translate(36)?>">
+		&nbsp;
+	</button>
+	<?php endif;?>
+	<?php if(count((array)$this->bashes)):?>
+	<div class="icon-32_separator"></div>
+	<?php foreach($this->bashes as $item):?>
+	<?php if(!$item->Record):?>
+	<?php switch($item->Type):
+case 2:?>
+<?php case 3:?>
+	<button type="button" class="btn extra-button" steps="<?php echo $item->Step?>"
+		onclick="formbashRun(<?php echo $item->BID?>,'<?php echo $item->BashName?>',this,0)">
+		<?php echo $item->BashName?>
+	</button>
+	<?php break;?>
+	<?php case 4:?>
+	<button type="button" class="btn extra-button" steps="<?php echo $item->Step?>"
+		onclick="formpopupOther('<?php echo $item->FormCode?>','<?php echo $item->Class?>',this)">
+		<?php echo $item->BashName?>
+	</button>
+	<?php break;?>
+	<?php case 5:?>
+	<button type="button" class="btn extra-button" steps="<?php echo $item->Step?>"
+		onclick="formopenOther('<?php echo $item->FormCode?>','<?php echo $item->Class?>',this)">
+		<?php echo $item->BashName?>
+	</button>
+	<?php break;?>
+	<?php endswitch;?>
+	<?php endif;?>
+	<?php endforeach;?>
+	<?php endif;?>
+	<div style="float: right;">
+	<button id="btnSEARCH" type="button" class="btn btn_main_top"
+		onclick="showSearch();">
+		<?php echo $this->_translate(24)?>
+	</button>
+	</div>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="div-search" class="clearfix" style="display: none;">
+	<?php echo $this->searchform;?>
+		<div>
+			<div class="btn-custom center" style="width:70px" onclick="rowSearch('<?php echo $this->form->FormCode;?>');"><?php echo $this->_translate(81)?></div>
+			<div class="btn-custom center" style="width:70px" onclick="rowCleanSearch('<?php echo $this->form->FormCode;?>');"><?php echo $this->_translate(82)?></div>
+			<div class="btn-custom center" style="width:70px" onclick="showSearch();"><?php echo $this->_translate(83)?></div>
+		</div>  
+	</div>
+	<div id="qss_form">
+	<?php echo $this->pager;?>
+		<?php echo $this->listview;?>
+	</div>
+</div>
+<div
+	id="qss_trace" title="<?php echo $this->form->sz_Name?>"></div>
+<div
+	id="qss_combo" title="<?php echo $this->form->sz_Name?>"></div>

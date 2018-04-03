@@ -1,0 +1,60 @@
+<?php
+$stt    = 0;
+$stt2   = 0;
+$begin  = 0;
+$width  = 1200;
+//$widths = array(1,3,5,3,2,2,3,2,2,2,3,1,1);
+$widths = array(1,3,5,3,2,2,4,1,1);
+$fix    = Qss_Lib_Report::changeWidthToFitScreen2($widths, $width);
+$total  = 9;
+?>
+
+
+<table id="grid" cellspacing="0" cellpadding="0" border="0" class="grid" >
+    <thead>
+        <tr>
+            <th style="width: <?php echo $fix[$begin++];?>px;"> STT </th>
+            <th style="width: <?php echo $fix[$begin++];?>px;"> Mã thiết bị </th>
+            <th style="width: <?php echo $fix[$begin++];?>px;"> Tên thiết bị </th>
+            <th style="width: <?php echo $fix[$begin++];?>px;"> Số phiếu </th>
+            <!--<th style="width: <?php //echo $fix[$begin++];?>px;"> Vị trí </th>-->
+            <!--<th style="width: <?php //echo $fix[$begin++];?>px;"> Bộ phận </th>-->
+            <th style="width: <?php echo $fix[$begin++];?>px;"> Ngày bắt đầu </th>
+            <th style="width: <?php echo $fix[$begin++];?>px;"> Ngày kết thúc </th>
+            <th style="width: <?php echo $fix[$begin++];?>px;"> Nguyên nhân dừng máy </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <?php foreach($this->report as $item):?>
+            <tr class="<?php echo ($item->Type == 'WORKORDER')?'bgpink':'bgyellow'; ?>">
+                <td class="center"> <?php echo ++$stt + $this->sttAdd;?> </td>
+                <td class="left"> <a target="_blank" href="/user/form/edit?ifid=<?php echo $item->IFID;?>&deptid=<?php echo $this->deptid;?>"><?php echo $item->MaThietBi;?> </a></td>
+                <td class="left"> <?php echo $item->TenThietBi;?> </td>
+                <td class="left"> <?php echo $item->SoPhieu;?> </td>
+                <!--            <td class="left"> --><?php //echo $item->ViTri;?><!-- </td>-->
+                <!--            <td class="left"> --><?php //echo $item->BoPhan;?><!-- </td>-->
+                <td class="center"> <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayDungMay);?> </td>
+                <td class="center"> <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayKetThucDungMay);?> </td>
+                <td class="left"> <?php echo $item->MaNguyenNhanSuCo;?> - <?php echo $item->TenNguyenNhanSuCo;?></td>
+            </tr>
+        <?php endforeach;?>
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function(){
+        $('#einfo-history-back-page').attr("onclick", "$('#einfo-history-page').val('<?php echo $this->back;?>'); m715.show();");
+
+        $('#einfo-history-page').val(<?php echo $this->page;?>);
+
+        $('#einfo-history-next-page').attr("onclick", "$('#einfo-history-page').val('<?php echo $this->next;?>'); m715.show();");
+
+        $('#einfo-history-display').val(<?php echo $this->display;?>);
+
+        $('#einfo-history-total-page').text(<?php echo $this->totalPage;?>);
+
+        var height = $(window).height() - 220 - $('#grid thead').height();//-8
+        $('#grid').tableScroll({height:height,width:'100%'});
+    });
+</script>

@@ -1,0 +1,13 @@
+<?php if ( $this->o_User instanceof Qss_Model_UserInfo ):?>
+    <div id="menu-box">
+        <?php foreach($this->menu as $item):?>
+            <div style="padding-left: <?php echo ($item->level-1) * 10;?>px" class="<?php if($item->group):?>bold<?php endif;?>">
+                <?php if($item->group):?>
+                    <?php echo $item->display;?>
+                <?php else: ?>
+                    <a href="#<?php echo $item->code;?>" onclick="loadHelper('<?php echo $item->code;?>');"><?php echo $item->display;?></a>
+                <?php endif;?>
+            </div>
+        <?php endforeach;?>
+    </div>
+<?php endif;?>

@@ -1,0 +1,450 @@
+<script type="text/javascript" src="/js/common.js"></script>
+
+<script type="text/javascript">    
+    var M411 = {
+        // Hien thi ke hoach chi tiet
+        plan : function()
+        {
+                      
+        	var url  = sz_BaseUrl + '/static/M411/plan';
+        	var data = $('#M411_plan_form').serialize();
+        	
+        	qssAjax.getHtml(url, data, function(jreturn) {
+        		$('#M411_plan_box').html(jreturn);
+        	});                
+        },
+
+        // Lap hop dong nguyen tac
+        agreement : function()
+        {
+        	var url  = sz_BaseUrl + '/static/M411/agreement';
+        	var data = $('#M411_plan_form').serialize();
+        	
+        	qssAjax.getHtml(url, data, function(jreturn) {
+        		$('#M411_agreement_box').html(jreturn);
+        		$('#M411_agreement_box').dialog({width: 800, height: 400});
+        	});             
+        },
+
+        // Tao don hang tu hop dong nguyen tac
+        createOrder1 : function(formID)
+        {
+        	var url  = sz_BaseUrl + '/static/M411/createorder1';
+        	var data = $('#'+formID).serialize();
+        	var data2 = common_url_to_array(data);
+        	var AllQtyZero = 1; 
+
+        	if(data2.itemioid == undefined)
+        	{
+            	qssAjax.alert('Bạn cần chọn ít nhất một mặt hàng để tạo đơn hàng!');
+            	return;
+        	}
+        	else
+        	{
+            	for(i in data2.qty)
+            	{
+                	if(data2.qty[i] != 0)
+                	{
+                		AllQtyZero = 0;
+                	}
+            	}  
+
+            	if(AllQtyZero == 1)
+            	{
+                	qssAjax.alert('Bạn cần có ít nhất mặt hàng có số lượng lớn hơn 0 để tạo đơn hàng!');
+                	return;                	
+            	}          	
+        	}        	
+
+    		qssAjax.confirm('Bạn có thực sự muốn tạo đơn hàng này?',function(){
+        		qssAjax.call(url, data, function(jreturn) {
+        			if(jreturn.message != '')
+        			{
+        				qssAjax.notice(jreturn.message);
+        			}
+
+        			M411.plan();
+        			M411.agreement();
+        		}, function(jreturn) {
+        			qssAjax.alert(jreturn.message);
+        		});
+    		});
+        	
+
+        },        
+
+        // Lap bao gia
+        quotation1Index : function()
+        {
+        	var url  = sz_BaseUrl + '/static/M411/quotation1';
+        	var data = $('#M411_plan_form').serialize();
+        	
+        	qssAjax.getHtml(url, data, function(jreturn) {
+        		$('#M411_quotation1_box').html(jreturn);
+        		$('#M411_quotation1_box').dialog({width: 800, height: 400});
+        	});             
+        },
+       
+
+        createQuotation : function(formID)
+        {
+        	var url  = sz_BaseUrl + '/static/M411/createquotation';
+        	var data = $('#M411_quotation1_form').serialize();
+        	var data2 = common_url_to_array(data);
+        	var AllQtyZero = 1; 
+        	var alertMess  = '';
+
+        	if(data2.itemioid == undefined)
+        	{
+        		alertMess += 'Bạn cần chọn ít nhất một mặt hàng để lập báo giá!\n';
+        	}
+        	else
+        	{
+            	for(i in data2.qty)
+            	{
+                	if(data2.qty[i] != 0)
+                	{
+                		AllQtyZero = 0;
+                	}
+            	}  
+
+            	if(AllQtyZero == 1)
+            	{
+            		alertMess += 'Bạn cần có ít nhất mặt hàng có số lượng lớn hơn 0 để lập báo giá!\n';
+            	}          	
+        	}        	
+
+            if(data2.partnerioid == undefined || !data2.partnerioid)
+            {
+            	alertMess += 'Nhà cung cấp yêu cầu bắt buộc!\n';
+            }
+
+            if(alertMess != '')
+            {
+            	qssAjax.alert(alertMess);
+            	return;
+            }
+        	
+
+        	qssAjax.confirm('Bạn có thực sự muốn tạo báo giá này?',function(){
+        		qssAjax.call(url, data, function(jreturn) {
+        			if(jreturn.message != '')
+        			{
+        				qssAjax.notice(jreturn.message);
+        			}
+
+        			$('#M411_quotation1_box').dialog('close');
+        			M411.plan();
+        			
+        		}, function(jreturn) {
+        			qssAjax.alert(jreturn.message);
+        		});
+        	});
+        },         
+
+        // Xem bao gia
+        quotation2 : function()
+        {
+        	var url  = sz_BaseUrl + '/static/M411/quotation2';
+        	var data = $('#M411_plan_form').serialize();
+        	
+        	qssAjax.getHtml(url, data, function(jreturn) {
+        		$('#M411_quotation2_box').html(jreturn);
+        		$('#M411_quotation2_box').dialog({width: 800, height: 400});
+        	});             
+        },    
+
+        // Tao don hang tu xem bao gia
+        createOrder2 : function(formID)
+        {
+        	var url  = sz_BaseUrl + '/static/M411/createorder2';
+        	var data = $('#'+formID).serialize();
+        	var data2 = common_url_to_array(data);
+        	var AllQtyZero = 1; 
+
+        	if(data2.itemioid == undefined)
+        	{
+            	qssAjax.alert('Bạn cần chọn ít nhất một mặt hàng để tạo đơn hàng!');
+            	return;
+        	}
+        	else
+        	{
+            	for(i in data2.qty)
+            	{
+                	if(data2.qty[i] != 0)
+                	{
+                		AllQtyZero = 0;
+                	}
+            	}  
+
+            	if(AllQtyZero == 1)
+            	{
+                	qssAjax.alert('Bạn cần có ít nhất mặt hàng có số lượng lớn hơn 0 để tạo đơn hàng!');
+                	return;                	
+            	}          	
+        	}            	
+
+        	qssAjax.confirm('Bạn có thực sự muốn tạo đơn hàng này?',function(){
+        		qssAjax.call(url, data, function(jreturn) {
+        			if(jreturn.message != '')
+        			{
+        				qssAjax.notice(jreturn.message);
+        			}
+        			
+        			$('#M411_quotation2_box').dialog('close');
+        			M411.plan();
+        			
+        		}, function(jreturn) {
+        			qssAjax.alert(jreturn.message);
+        		});
+        	});
+        	
+
+        },             
+
+        // So sanh bao gia
+        quotation3 : function()
+        {
+        	var url  = sz_BaseUrl + '/static/M411/quotation3';
+        	var data = $('#M411_plan_form').serialize();
+        	
+        	qssAjax.getHtml(url, data, function(jreturn) {
+        		$('#M411_quotation3_box').html(jreturn);
+        		$('#M411_quotation3_box').dialog({width: $( document ).width(), height: 400});
+        	});             
+        }, 
+
+        // Tao don hang tu so sanh bao gia
+        createOrder3 : function(formID)
+        {
+        	var url   = sz_BaseUrl + '/static/M411/createorder3';
+        	var data  = $('.M411_quotation3_form_'+formID).serialize();
+        	var data2 = common_url_to_array(data);
+        	var partnerName = $('#partner_name_'+formID).val();
+        	var i = 0;
+        	var AllQtyZero = 1; 
+
+        	if(data2.itemioid == undefined)
+        	{
+            	qssAjax.alert('Bạn cần chọn ít nhất một mặt hàng để tạo đơn hàng!');
+            	return;
+        	}
+        	else
+        	{
+            	for(i in data2.qty)
+            	{
+                	if(data2.qty[i] != 0)
+                	{
+                		AllQtyZero = 0;
+                	}
+            	}  
+
+            	if(AllQtyZero == 1)
+            	{
+                	qssAjax.alert('Bạn cần có ít nhất mặt hàng có số lượng lớn hơn 0 để tạo đơn hàng!');
+                	return;                	
+            	}          	
+        	}
+
+
+        	
+
+
+        	qssAjax.confirm('Bạn có thực sự muốn tạo đơn hàng cho '+partnerName+'?',function(){
+        		qssAjax.call(url, data, function(jreturn) {
+        			if(jreturn.message != '')
+        			{
+        				qssAjax.notice(jreturn.message);
+        			}
+        			
+        			$('#M411_quotation3_box').dialog('close');
+        			M411.plan();
+        			
+        		}, function(jreturn) {
+        			qssAjax.alert(jreturn.message);
+        		});
+        	});
+
+        },
+
+        checkCompareQuotationLine : function(ele, formID, line)
+        {
+            if($(ele).is(':checked'))
+            {
+                $('.table_line_disabled_'+formID+'_'+line).each(function(){ $(this).removeAttr('disabled'); });
+                $('.marker_'+formID+'_'+line).addClass('marker_check');
+            }
+            else
+            {
+                $('.table_line_disabled_'+formID+'_'+line).each(function(){ $(this).attr('disabled', true); });
+                $('.marker_'+formID+'_'+line).removeClass('marker_check');
+            }            
+        },
+
+        checkAllOnePartner : function(ele, formID)
+        {
+            var no_check; 
+            
+            if($(ele).is(':checked'))
+            {
+                $('.table_line_disabled_'+formID).each(function(){ $(this).removeAttr('disabled'); });
+                $('.marker_'+formID).each(function(){
+                    no_check = $(this).attr('no_check');
+                    if(no_check != 1)
+                    {
+                    	$(this).addClass('marker_check');
+                    }
+                	
+        		});
+
+                        
+                $('.checkbox_'+formID).attr('checked', true);
+            }
+            else
+            {
+                $('.table_line_disabled_'+formID).each(function(){ $(this).attr('disabled', true); });
+                $('.marker_'+formID).removeClass('marker_check');
+                $('.checkbox_'+formID).removeAttr('checked');
+            }             
+        },
+
+        changeTotalAmountInAgreement: function(ele)
+        {
+            var qty       = $(ele).val();
+            var unitprice = $(ele).parent().parent().find('.M411_agreement_unitprice').val();
+            var ret       = common_format_money(qty * unitprice);
+
+            $(ele).parent().parent().find('.M411_agreement_totalamount').text('').text(ret);
+        },
+
+        changeTotalAmountInShowQuotation: function(ele)
+        {
+            var qty       = $(ele).val();
+            var unitprice = $(ele).parent().parent().find('.M411_show_quotation_unitprice').val();
+            var ret       = common_format_money(qty * unitprice);
+
+            $(ele).parent().parent().find('.M411_show_quotation_totalamount').text('').text(ret);
+        },
+
+        changeTotalAmountInCompareQuotation: function(ele, formID, line)
+        {
+            var qty       = $(ele).val();
+            var unitprice = $('.M411_compare_quotation_unitprice_'+formID+'_'+line).val();
+            var ret       = common_format_money(qty * unitprice);
+
+            $(ele).parent().parent().find('.M411_compare_quotation_totalamount_'+formID+'_'+line).text('').text(ret);
+        }
+        
+    }  
+</script>
+
+<div class="clear"></div>
+
+<div id="view">
+    <div id="M405_wrap">
+
+        <!-- Dial box: Chọn kế hoạch cần xử lý -->
+        <div id="M411_plan_selector">
+        
+            
+            <form id="M411_plan_form">    
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td class="left" width="100px">
+                            Chọn kế hoạch:
+                        </td>
+                    
+<!--                         <td class="left" width="200px"> -->
+            				<?php
+// //                 				$getFields = array(
+// //                 			        'num'=>2
+// //                 				    , 'objects'=>array('OKeHoachMuaSam' => array('id' => 'IOID', 'display1' => 'SoPhieu', 'order'=>'IOID DESC'))
+// //                 				);
+                				
+// //                 				echo $this->views->Report->ComboBox('planioid', $getFields);
+            				?>   
+<!--         				</td> -->
+        				
+                        <td class="left" width="200px">
+            				<?php
+                				echo $this->views->Report->SimpleComboBox('planioid', $this->approvePlans);
+            				?>   
+        				</td>        				
+        				
+        				
+            				
+<!--         				<td class="left" width="200px"> -->
+        					<?php
+// //         					$id = 'planioid';
+// //         					$getDataObject = array('OKeHoachMuaSam' => array('SoPhieu'));
+// //         					//,'OKhuVuc'=>array('MaKhuVuc','Ten')
+// //         					$getFields = array('num' => 2,
+// //         						'objects' => array('OKeHoachMuaSam' => array(
+// //         								'id' => 'IOID'
+// //         								, 'display1' => 'SoPhieu'
+// //         						        , 'order'=>'IOID DESC')));
+//         					?>
+        					<?php // echo $this->views->Report->ListBox($id, $getDataObject, $getFields); ?>
+<!--         				</td>            				                      -->
+                        
+                        
+                        <td  class="left">
+                            <!-- Button: Kiểm tra kế hoạch -->
+                            <button type="button" class="btn btn-custom" onclick="M411.plan();">
+                                <?php echo $this->_translate(1);?>
+                            </button>
+                        </td>
+                    </tr>                                      
+                </table>                           
+
+            </form>
+            
+
+            
+        </div>
+        <!-- END #M411_plan_selector -->
+        
+        <div class="clear"></div>
+        <br/>
+
+
+        <!-- Table: Kiểm tra phiếu yêu cầu -->
+        <div id="M411_plan_box">
+
+        </div>
+        <!-- END #M411_plan_box -->
+        
+        <div class="clear"></div>
+        
+        <!-- Table: Kiểm tra hợp đồng nguyên tắc -->
+        <div id="M411_agreement_box" title="<?php echo $this->_translate(11);?>">
+
+        </div>
+        <!-- END #M411_agreement_box -->       
+        
+        <div class="clear"></div>
+        
+        <!-- Table: Lập báo giá -->
+        <div id="M411_quotation1_box" title="<?php echo $this->_translate(12);?>">
+
+        </div>
+        <!-- END #M411_quotation1_box -->  
+        
+        <div class="clear"></div>
+        
+        <!-- Table: Xem báo giá -->
+        <div id="M411_quotation2_box" title="<?php echo $this->_translate(13);?>">
+
+        </div>
+        <!-- END #M411_quotation2_box -->          
+        
+        <div class="clear"></div>
+        
+        <!-- Table: So sánh báo giá -->
+        <div id="M411_quotation3_box" title="<?php echo $this->_translate(14);?>">
+
+        </div>
+        <!-- END #M411_quotation3_box -->           
+
+    </div><!-- END #M405_wrap -->
+</div>

@@ -1,0 +1,109 @@
+<script>
+	function printPreview()
+	{
+		common_selectDialBox('vendor');
+		var start = $('#start').val();
+		var end   = $('#end').val();
+		var msg   = '';
+//		var next  = true;
+//		var warning = common_dateWarning('D'
+//				, '<?php //echo json_encode(Qss_Lib_Extra_Const::$DATE_LIMIT);?>'
+//				, start, end)
+
+		msg += common_checkEmpty(start, '<?php echo $this->_translate(23) ?>');
+		msg += common_checkEmpty(end, '<?php echo $this->_translate(24) ?>');
+		msg += common_compareStartAndEnd(start, end);
+		
+
+		if(msg)
+		{
+			qssAjax.alert(msg);
+			return;
+		}
+		else
+		{
+			var url = sz_BaseUrl + '/report/inventory/input/vendor1';
+			var data = $('#report').serialize();
+			qssAjax.getHtml(url, data, function(jreturn) {
+					$('#print-area').html(jreturn);
+					removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+			});
+		}		
+	}
+</script>
+
+<div>
+	<div class="clear"></div>
+	<div id="view">
+		<div class="line-hr">
+			<span><?php echo $this->_translate(20) ?> </span>
+		</div>
+		<form id="report" method="get"
+			action="/report/inventory/input/vendor1">
+			<table class="detail">
+
+				<tr>
+					<th width="20%" class="report-param-label"><?php echo $this->_translate(8)?>
+					</th>
+
+					<td><?php echo $this->views->Report->Datepicker('start', date('01-m-Y') );?>
+						<span class="bold red">(*)</span>
+					</td>
+				</tr>
+
+				<tr>
+					<th width="20%" class="report-param-label"><?php echo $this->_translate(9)?>
+					</th>
+					<td><?php echo $this->views->Report->Datepicker('end', date('t-m-Y') );?>
+						<span class="bold red">(*)</span>
+					</td>
+				</tr>
+
+
+				<tr>
+					<th width="20%" class="report-param-label"><?php echo $this->_translate(22) ?>:
+					</th>
+					<td><?php
+					/*
+						$id = 'vendor';
+						$getFields = array('num' => 2,
+						'objects' => array('ODoiTac' => array(
+						'id' => 'IOID'
+						, 'display1' => 'MaDoiTac'
+						, 'display2' => 'TenDoiTac')));
+						?>
+						<?php echo $this->views->Report->ComboBox($id, $getFields); */?> <?php echo $this->views->Report->DialBox('vendor', $this->vendorsDialBoxData);?>
+					</td>
+				</tr>
+
+
+				<?php /*
+				<tr>
+				<th width="20%" class="report-param-label"><?php echo $this->_translate(21) ?>:</th>
+				<td>
+
+				<?php
+
+				$id = 'warehouse';
+				$getFields = array('num' => 2,
+				'objects' => array('ODanhSachKho' => array(
+				'id' => 'IOID'
+				, 'display1' => 'MaKho'
+				, 'display2' => 'TenKho')));
+				?>
+				<?php echo $this->views->Report->ComboBox($id, $getFields);?>
+				<?php echo $this->views->Report->DialBox('warehouse', $this->stocksDialBoxData);?>
+				</td>
+				</tr>
+				*/?>
+
+
+			</table>
+		</form>
+		<hr>
+		<?php echo $this->views->Report->PrintToolbar(); ?>
+		<div id="print-content">
+			<div id="print-area"></div>
+		</div>
+	</div>
+</div>

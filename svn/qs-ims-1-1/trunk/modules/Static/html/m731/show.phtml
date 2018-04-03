@@ -1,0 +1,424 @@
+<style>
+.now_16 {
+	background: url("/images/status/warning_16.png");
+	width: 16px;
+	height: 16px;
+}
+
+.duesoon_16 {
+	background: url("/images/status/warning_16.png");
+	width: 16px;
+	height: 16px;
+}
+
+.normal_16 {
+	background: url("/images/status/normal_16.png");
+	width: 16px;
+	height: 16px;
+}
+
+.overdue_16 {
+	background: url("/images/status/Block_16.png");
+	width: 16px;
+	height: 16px;
+}
+
+.question_16 {
+	background: url("/images/status/question_16.png");
+	width: 16px;
+	height: 16px;
+}
+
+.margin_left_2 {
+	margin-left: 2px;
+}
+</style>
+
+
+<?php
+$excel_col   = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$row         = 2;
+$totalCol    = 12;
+$colWidths   = array(1,2,3,1,1,2,2,2,2,2);
+$totalCol    = count($colWidths);
+$excelWidths = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($colWidths, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+$fitWidths   = Qss_Lib_Report::changeWidthToFitScreen($colWidths, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<!-- end form#excel -->
+
+<div class="landscape">
+	<excel orientation="landscape" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+
+	<div id="head_print">
+	<?php echo $this->views->Common->Landscape() ?>
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(20) ?>
+				</xls>
+			</h2>
+		</center>
+	</div>
+	<!-- end #head_print -->
+	<?php $row++ ?>
+
+	<div id="container">
+		<table class="border" style="width: 100%" cellpadding="0"
+			cellspacing="0">
+			<!-- TITLE -->
+			<?php $col = 0; ?>
+			<tr class="bggrey">
+				<!-- STT  -->
+				<th 
+					id="<?php echo 'col'.$col;?>"
+					markerid="<?php echo 'col'.$col;?>"
+					class="report_title_marker"
+					style="width:<?php echo $fitWidths[$col]; ?>px"
+					col="<?php echo $col;?>"
+				><xls row="<?php echo $row ?>"
+						width="<?php echo $excelWidths[$col]; ?>"
+						column="<?php echo $excel_col[++$col]; ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $this->_translate(21) ?>
+					</xls>
+				</th>
+
+				<!-- Ma thiet bi  -->
+				<th 
+					id="<?php echo 'col'.$col;?>"
+					markerid="<?php echo 'col'.$col;?>"
+					class="report_title_marker"
+					style="width:<?php echo $fitWidths[$col]; ?>px"
+					col="<?php echo $col;?>"
+				><xls row="<?php echo $row ?>"
+						width="<?php echo $excelWidths[$col]; ?>"
+						column="<?php echo $excel_col[++$col]; ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $this->_translate(22) ?>
+					</xls>
+				</th>
+
+
+				<!-- Ten thiet bi  -->
+				<th 
+					id="<?php echo 'col'.$col;?>"
+					markerid="<?php echo 'col'.$col;?>"
+					class="report_title_marker"
+					style="width:<?php echo $fitWidths[$col]; ?>px"
+					col="<?php echo $col;?>"
+				><xls row="<?php echo $row ?>"
+						width="<?php echo $excelWidths[$col]; ?>"
+						column="<?php echo $excel_col[++$col]; ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $this->_translate(23) ?>
+					</xls>
+				</th>
+
+<!-- Model -->
+				<th 
+					id="<?php echo 'col'.$col;?>"
+					markerid="<?php echo 'col'.$col;?>"
+					class="report_title_marker"
+					style="width:<?php echo $fitWidths[$col]; ?>px"
+					col="<?php echo $col;?>"
+				><xls row="<?php echo $row ?>"
+						width="<?php echo $excelWidths[$col]; ?>"
+						column="<?php echo $excel_col[++$col]; ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> Bộ phận
+					</xls>
+				</th>
+				<!-- Model -->
+				<th 
+					id="<?php echo 'col'.$col;?>"
+					markerid="<?php echo 'col'.$col;?>"
+					class="report_title_marker"
+					style="width:<?php echo $fitWidths[$col]; ?>px"
+					col="<?php echo $col;?>"
+				><xls row="<?php echo $row ?>"
+						width="<?php echo $excelWidths[$col]; ?>"
+						column="<?php echo $excel_col[++$col]; ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $this->_translate(37) ?>
+					</xls>
+				</th>
+
+				<!-- Ngay dua vao su dung -->
+				<th 
+					id="<?php echo 'col'.$col;?>"
+					markerid="<?php echo 'col'.$col;?>"
+					class="report_title_marker"
+					style="width:<?php echo $fitWidths[$col]; ?>px"
+					col="<?php echo $col;?>"
+				><xls row="<?php echo $row ?>"
+						width="<?php echo $excelWidths[$col]; ?>"
+						column="<?php echo $excel_col[++$col]; ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $this->_translate(40) ?>
+					</xls>
+				</th>
+
+				<!-- Loai bao tri  -->
+				<th
+					id="<?php echo 'col'.$col;?>"
+					markerid="<?php echo 'col'.$col;?>"
+					class="report_title_marker"
+					style="width:<?php echo $fitWidths[$col]; ?>px"
+					col="<?php echo $col;?>"
+				><xls row="<?php echo $row ?>"
+						width="<?php echo $excelWidths[$col]; ?>"
+						column="<?php echo $excel_col[++$col]; ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $this->_translate(25) ?>
+					</xls>
+				</th>
+
+				<!-- Ngay bao tri gan nhat  -->
+				<th 
+					id="<?php echo 'col'.$col;?>"
+					markerid="<?php echo 'col'.$col;?>"
+					class="report_title_marker"
+					style="width:<?php echo $fitWidths[$col]; ?>px"
+					col="<?php echo $col;?>"
+				><xls row="<?php echo $row ?>"
+						width="<?php echo $excelWidths[$col]; ?>"
+						column="<?php echo $excel_col[++$col]; ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $this->_translate(26) ?>
+					</xls>
+				</th>
+
+				<!-- Ngay bao tri tiep theo -->
+				<th 
+					id="<?php echo 'col'.$col;?>"
+					markerid="<?php echo 'col'.$col;?>"
+					class="report_title_marker"
+					style="width:<?php echo $fitWidths[$col]; ?>px"
+					col="<?php echo $col;?>"
+				><xls row="<?php echo $row ?>"
+						width="<?php echo $excelWidths[$col]; ?>"
+						column="<?php echo $excel_col[++$col]; ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $this->_translate(27) ?>
+					</xls>
+				</th>
+
+				<!-- Tinh trang -->
+				<th 
+					id="<?php echo 'col'.$col;?>"
+					markerid="<?php echo 'col'.$col;?>"
+					class="report_title_marker"
+					style="width:<?php echo $fitWidths[$col]; ?>px"
+					col="<?php echo $col;?>"
+				><xls row="<?php echo $row ?>"
+						width="<?php echo $excelWidths[$col]; ?>"
+						column="<?php echo $excel_col[++$col]; ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $this->_translate(28) ?>
+					</xls>
+				</th>
+			</tr>
+			<?php $row++ ?>
+
+			<!-- CONTENT -->
+			<?php $no = 0; ?>
+			<?php $makv = '';?>
+			<?php foreach($this->report as $item):?>
+			<?php if($makv != $item->MaKhuVuc):?>
+				<tr>
+					<!-- Khu vực -->
+					<td class="bold italic" colspan="<?php echo $totalCol;?>">
+						<!-- title --> <xls row="<?php echo $row?>"
+							column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+							h-align="center" v-align="center" border="1"> <?php echo $item->MaKhuVuc;?>
+						</xls>
+					</td>
+			<?php endif;?>
+			<?php
+            $bgcolor = '';
+			$past   = $item->NgayYeuCau;
+			if($item->NgayYeuCau)
+			{
+				$startdate = date_create($item->NgayYeuCau);
+			}
+			else
+			{
+				$startdate = date_create($item->NgayBatDau);
+			}
+			$past = Qss_Lib_Date::mysqltodisplay($past);
+			$next = Qss_Lib_Date::add_date($startdate, $item->khoangcach)->format('d-m-Y');
+			
+			$status = 0;
+			$overday = 0;
+			if($item->khoangcachthucte == -1)
+			{
+				if($item->khoangcach < $item->khoangcachbatdau)
+				{
+					$status = 4;
+					$overday = $item->khoangcachbatdau - $item->khoangcach;
+					if( $item->khoangcachbatdau - $item->khoangcach > $item->khoangcach)
+					{
+						$bgcolor = 'bgyellow';
+					}
+				}
+				elseif($item->khoangcach < ($item->khoangcachbatdau + 7))
+				{
+					$status = 3;
+				}
+				else
+				{
+					$status = 2;
+				}
+			}
+			elseif($item->khoangcach < $item->khoangcachthucte)
+			{
+				$status = 4;
+				$overday = $item->khoangcachthucte - $item->khoangcach;
+				if( $item->khoangcachthucte - $item->khoangcach > $item->khoangcach)
+				{
+					$bgcolor = 'bgyellow';
+				}
+			}
+			elseif($item->khoangcach < ($item->khoangcachthucte + 7))
+			{
+				$status = 3;
+			}
+			else
+			{
+				$status = 2;
+			}
+
+			switch ($status)
+			{
+				// Do mac dinh he thong mac dinh sinh ra phieu bao tri tu ke hoach
+				// nen co the hieu ko co phieu la dung han
+				case 0: // ko co phieu bao tri
+					$mStatus       = $this->_translate(29);
+					$class         = 'normal_16';
+					break;
+
+				case 1: // dung han
+					$mStatus       = $this->_translate(30);
+					$class         = 'normal_16';
+					break;
+
+				case 2: // con han
+					$mStatus       = $this->_translate(31);
+					$class         = 'normal_16';
+					break;
+
+				case 3: // sap het han
+					$mStatus       = $this->_translate(32);
+					$class         = 'duesoon_16';
+					break;
+
+				case 4: // qua han
+					$mStatus       = $this->_translate(33);
+					$class         = 'overdue_16';
+					break;
+
+				default:
+					$mStatus       = $this->_translate(36);
+					$class         = 'overdue_16';
+					break;
+
+			}
+			$title = $item->CongViec;
+			if($overday)
+			{
+				if($title)
+				{
+					$title .= "\n";
+				}
+				$title .= "Quá hạn {$overday} ngày";
+			}
+			?>
+			<?php $col = 0;?>
+			<tr class="<?php echo $bgcolor;?>" title="<?php echo $title?>">
+				<!-- STT -->
+				<td class="center" col="<?php echo $col;?>">
+					<!-- title --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo ++$no;?>
+					</xls>
+				</td>
+
+				<!-- Ma Thiet Bi -->
+				<td class="left" col="<?php echo $col;?>">
+					<!-- title --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $item->MaThietBi;?>
+					</xls>
+				</td>
+
+				<!-- Ten Thiet Bi -->
+				<td class="left" col="<?php echo $col;?>">
+					<!-- title --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $item->TenThietBi;?>
+					</xls>
+				</td>
+				<!-- Bo phan -->
+				<td class="left" col="<?php echo $col;?>">
+					<!-- title --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $item->BoPhan;?>
+					</xls>
+				</td>
+				<!-- Model -->
+				<td class="left" col="<?php echo $col;?>">
+					<!-- title --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $item->Model;?>
+					</xls>
+				</td>
+
+				<!-- Ngay dua vao su dung -->
+				<td class="left" col="<?php echo $col;?>">
+					<!-- title --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayDuaVaoSuDung);?>
+					</xls>
+				</td>
+
+				<!-- Loai bao tri -->
+				<td class="left" col="<?php echo $col;?>">
+					<!-- title --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $item->MoTa;?>
+					</xls>
+				</td>
+
+				<!-- Ngay bao tri gan nhat -->
+				<td class="center" col="<?php echo $col;?>">
+					<!-- title --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $past;?>
+					</xls>
+				</td>
+
+				<!-- Ngay bao tri tiep theo -->
+				<td class="center" col="<?php echo $col;?>">
+					<!-- title --> <xls row="<?php echo $row?>"
+						column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo $next?> </xls>
+				</td>
+
+				<!-- Tinh trang -->
+				<td class="left" col="<?php echo $col;?>">
+					<!-- title -->
+					<div class="<?php echo $class; ?> fl  margin_left_2">&nbsp;</div>
+					<div class="fl margin_left_2">
+						<xls row="<?php echo $row?>"
+							column="<?php echo $excel_col[++$col]?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"> <?php echo $mStatus?>
+						</xls>
+					</div>
+				</td>
+			</tr>
+			<?php $row++ ?>
+			<?php $makv = $item->MaKhuVuc?>
+			<?php endforeach; // End $this->report ?>
+		</table>
+		<!-- end table.border -->
+	</div>
+	<!-- end #container -->
+</div>
+<!-- end .portrait -->

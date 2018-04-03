@@ -1,0 +1,1290 @@
+<style><!--
+#view
+{
+overflow-y: hidden !important;
+}
+.grid .editor
+{
+border-color: blue;
+width: auto;
+margin:0px !important;
+}
+.grid .lookup
+{
+border-color: blue;
+width: auto;
+margin:0px !important;
+}
+.grid .combo
+{
+border-color: blue;
+width: auto;
+margin:0px !important;
+}
+.grid .date
+{
+border-color: blue;
+position: absolute;
+width: auto;
+margin:0px !important;
+}
+/*.grid div
+{
+border-color: blue;
+position:absolute !important;
+}*/
+.select-grid
+{
+position:absolute;
+left:0px;
+height:20px;
+width: 20px;
+background-color: green;
+}
+.select-grid span
+{
+float: right;
+height:20px;
+width: 20px;
+cursor: pointer;
+}
+--></style>
+<script type="text/javascript">
+$(document).ready(function() {
+	rowCLK(document.getElementById($.cookie('form_selected')));
+	if($('#horizontal-toolbar').length){
+		var height = $(window).height() - 156 - $('#grid thead').height();//-8
+	}
+	else{
+		var height = $(window).height() - 124 - $('#grid thead').height();
+	}
+	//height = 200;
+	var width = $('#view').width() + $('#midle').width() - 18;
+	<?php if($this->o_Object->orderType && is_numeric($this->o_Object->orderType)):?>
+		width = <?php echo $this->o_Object->orderType?>;
+	<?php endif;?>
+	$('#grid').tableScroll({height:height,width:width});
+	$('#grid').click(function(event){
+		//grid_editing = true;
+	    //event.stopPropagation();tag will not hide
+	});
+});
+edit = false;
+var combo = {};
+var gotoifid = 0;
+</script>
+<?php $cfield = new Qss_Model_CField();?>
+<?php $groupbys = $this->groupby;?>
+<?php $widthPercent = 97 - count($groupbys);?>
+<?php if($this->form->i_Type == Qss_Lib_Const::FORM_TYPE_MODULE && !in_array(-1,$groupbys)):?>
+	<?php if($this->isApprove):?>
+		<?php $widthPercent = $widthPercent - 8;?>
+	<?php endif;?>
+	<?php $widthPercent = $widthPercent - 7;?>	
+<?php endif;?>
+
+<?php $totalWidth = 0;?>
+<?php foreach($this->mainobjects as $item)://objects?>
+	<?php $fields = $item->loadFields();?>
+	<?php foreach ($fields as $field):?>
+		<?php if ( $field->bGrid & 1 && !in_array($field->FieldCode,$groupbys)):?>
+			<?php $totalWidth += $field->szRefLabel;?>	
+		<?php endif;?>
+	<?php endforeach;?>
+<?php endforeach;?>
+
+
+<?php $c = 1?>
+<?php $totalPercent = 0?>
+<?php foreach($this->mainobjects as $item)://objects?>
+	<?php $fields = $item->loadFields();?>
+	<?php foreach ($fields as $field):?>
+		<?php if ( $field->bGrid & 1 && !in_array($field->FieldCode,$groupbys)):?>
+			<?php $columnWidth = 0;?>
+			<?php if($totalWidth):?>
+				<?php if($c%2==0):?>
+					<?php $columnWidth = ceil(($field->szRefLabel/$totalWidth)*$widthPercent*100)/100;?>
+				<?php else:?>
+					<?php $columnWidth = floor(($field->szRefLabel/$totalWidth)*$widthPercent*100)/100;?>
+				<?php endif;?>
+			<?php endif;?>
+			<?php $last = $field;?>
+			<?php $field->columnWidth = $columnWidth?>
+			<?php $totalPercent += $columnWidth?>
+			<?php $c++?>	
+		<?php endif;?>
+	<?php endforeach;?>
+<?php endforeach;?>
+<?php if($totalPercent):?>
+	<?php $last->columnWidth += $widthPercent - $totalPercent?>
+<?php endif;?>
+
+<?php foreach($groupbys as $groupby):?>
+	<?php ${'groupbyvalue_'.$groupby} = '';?>
+<?php endforeach;?>
+<table cellspacing="0" class="grid <?php if($this->form->i_Type < Qss_Lib_Const::FORM_TYPE_MODULE):?>grid_edit<?php endif;?>" id="grid">
+<thead>
+	<tr>
+		<?php for($j = 0;$j < count($groupbys) - 1;$j++):?>
+			<th width="1%" style="border-right:0px;">&nbsp;</th>
+		<?php endfor;?>
+		<th width="3%" style="border-left: 1px solid rgb(204, 204, 204);">
+			<input type="checkbox" onchange="toggleGridCheckbox(this)">
+		</th>
+		<?php if($this->o_Object->bTrack && 0):?>
+		<th><?php echo $this->_translate(29,'Người thực hiện')?></th>
+		<?php $this->gridFieldCount++;?>
+		<?php endif;?>
+		<?php foreach($this->mainobjects as $item)://objects?>
+		<?php $fields = $item->loadFields();?>
+			<?php foreach ($fields as $field):?>
+				<?php if ( ($field->bGrid & 1) && !in_array($field->FieldCode,$groupbys)):?>
+					<th <?php if($field->bReadOnly):?>readonly=1<?php endif;?> class="th_<?php echo $field->FieldCode?>"
+						width="<?php echo $field->columnWidth?>%">
+                        <?php if(!$item->b_Tree):?>
+                            <a href="#" onclick="rowSort('<?php echo $this->o_Object->FormCode?>','<?php echo $field->FieldCode?>')">
+                                <?php echo $field->szFieldName;?>
+                                <?php if(array_key_exists($field->FieldCode,$this->orderfield)):?>
+                                    <img border="0/" src="../../images/<?php echo ($this->orderfield[$field->FieldCode]=='ASC')?'up':'down';?>.gif" />
+                                <?php endif;?>
+                            </a>
+                        <?php else:?>
+                            <?php echo $field->szFieldName;?>
+                            <?php if(array_key_exists($field->FieldCode,$this->orderfield)):?>
+                                <img border="0/" src="../../images/<?php echo ($this->orderfield[$field->FieldCode]=='ASC')?'up':'down';?>.gif" />
+                            <?php endif;?>
+                        <?php endif;?>
+
+					</th>
+				<?php endif;?>
+			<?php endforeach;?>
+		<?php endforeach;//objects?>
+		<?php if($this->form->i_Type == Qss_Lib_Const::FORM_TYPE_MODULE && !in_array(-1,$groupbys)):?>
+			<?php if($this->isApprove):?>
+				<?php $this->gridFieldCount++;?>
+				<th style="width: 8%;"></th>
+			<?php endif;?>	
+			<?php $this->gridFieldCount++;?>
+			<th width="7%">
+                <?php if(!$item->b_Tree):?>
+                    <a href="#"onclick="rowSort('<?php echo $this->o_Object->FormCode?>','-1')">
+                        <?php echo $this->_translate(31,'Tình trạng')?> <?php if(isset($this->orderfield[-1])):?>
+                            <img border="0" src="../../images/<?php echo ($this->orderfield[-1]=='ASC')?'up':'down';?>.gif" />
+                        <?php endif;?> </a>
+                <?php else:?>
+                    <?php echo $this->_translate(31,'Tình trạng')?> <?php if(isset($this->orderfield[-1])):?>
+                        <img border="0" src="../../images/<?php echo ($this->orderfield[-1]=='ASC')?'up':'down';?>.gif" />
+                    <?php endif;?>
+                <?php endif;?>
+
+                </th>
+		<?php endif;?>
+	</tr>
+</thead>
+<tbody>
+	<tr style="height: 0px !important;">
+	<?php for($j = 0;$j < count($groupbys) - 1;$j++):?>
+			<td width="1%" style="height: 0px !important;"></td>
+	<?php endfor;?>
+	<td class="nocount" style="height: 0px !important;"></td>
+	<?php if($this->o_Object->bTrack && 0):?>
+		<td style="height: 0px !important;"></td>
+	<?php endif;?>
+	<?php foreach($this->mainobjects as $item)://objects?>
+		<?php $fields = $item->loadFields();?>
+	<?php foreach ($fields as $field):?>
+		<?php if ( ($field->bGrid & 1) && !in_array($field->FieldCode,$groupbys)):?>
+		<td width="<?php echo $field->columnWidth?>%" style="height: 0px !important;"></td>
+		<?php endif;?>
+	<?php endforeach;?>
+	<?php endforeach;//objects?>
+	<?php if($this->form->i_Type == Qss_Lib_Const::FORM_TYPE_MODULE && !in_array(-1,$groupbys)):?>
+		<?php if($this->isApprove):?>
+		<td style="height: 0px !important;"></td>
+		<?php endif;?>
+		<td width="7%" style="height: 0px !important;"></td>
+	<?php endif;?>
+	</tr>
+	<?php
+	$form_rights = $this->form->i_fGetRights($this->user->user_group_list);
+	$i = ($this->currentpage - 1) * $this->limit + 1;
+	?>
+	<?php foreach ($this->objects as $object)://data?>
+	<?php foreach($this->mainobjects as $item)://objects?>
+	<?php
+		$rowclass = '';
+		$rowstyleclass = "Qss_Bin_Style_{$item->ObjectCode}";
+		if(class_exists($rowstyleclass))
+		{
+			$rowstyle = new $rowstyleclass($object);
+			$rowclass = $rowstyle->__doExecute();
+		}
+	?>
+
+	<?php endforeach;//objects?>
+	<?php
+	if($this->form->i_Type == Qss_Lib_Const::FORM_TYPE_MODULE)
+	{
+		$rights = $form_rights & (Qss_Lib_Const::FORM_RIGHTS_READ | $this->arrformrights[$object->Status]);
+	}
+	else
+	{
+		$rights = $form_rights;
+	}
+	?>
+	<?php if(count($groupbys)):?>
+		<?php $change = -1;?>
+		<?php $key = 1?>
+		<?php foreach ($groupbys as $groupby):?>
+			<?php if($groupby != -1 && $groupby != -2):?>
+				<?php $groupbyfield = $this->form->getFieldByCode($item->ObjectCode,$groupby);?>
+				<?php $jsonDataGroup = $groupbyfield->getJsonRegx();?>
+				<?php if($change !== -1 && $key > $change):?>
+					<?php ${'groupbyvalue_'.$groupby} = '';?>
+				<?php endif;?>
+				<?php if($groupbyfield && $groupbyfield->FieldCode && $object->{$groupbyfield->FieldCode} !== ${'groupbyvalue_'.$groupby}):?>
+				<?php $change = $key;?>
+				<tr>
+					<?php for($j = 1;$j < $key;$j++):?>
+						<td class="groupcol" >&nbsp;</td>
+					<?php endfor;?>
+					<td class="groupby tree_level_1 tree_close" colspan="<?php echo ($this->gridFieldCount-$key+1+in_array(-1,$groupbys)+in_array(-2,$groupbys))?>"><?php echo $groupbyfield->szFieldName?>: <?php if($groupbyfield->intFieldType == 10) echo Qss_Lib_Date::mysqltodisplay($object->{$groupbyfield->FieldCode}); elseif($jsonDataGroup) echo $object->{'Ref_'.$groupbyfield->FieldCode};else echo $object->{$groupbyfield->FieldCode};?></td>
+				</tr>
+				<?php $i=1;?>
+				<?php endif;?>
+				<?php ${'groupbyvalue_'.$groupby} = $object->{$groupbyfield->FieldCode};?>
+			<?php elseif ($groupby == -1 && $this->form->i_Type == Qss_Lib_Const::FORM_TYPE_MODULE):?>
+				<?php if($change !== -1 && $key > $change):?>
+					<?php ${'groupbyvalue_'.$groupby} = null;?>
+				<?php endif;?>
+				<?php if($object->Status !== ${'groupbyvalue_'.$groupby}):?>
+				<?php $change = $key;?>
+				<tr>
+					<?php for($j = 1;$j < $key;$j++):?>
+						<td class="groupcol" >&nbsp;</td>
+					<?php endfor;?>
+					<td class="groupby tree_level_1 tree_close" colspan="<?php echo $this->gridFieldCount-$key+1+in_array(-1,$groupbys)+in_array(-2,$groupbys)?>">Tình trạng: <?php echo $this->arrname[$object->Status];?></td>
+				</tr>
+				<?php $i=1;?>
+				<?php endif;?>
+				<?php ${'groupbyvalue_'.$groupby} = $object->Status;?>
+			<?php elseif ($groupby == -2):?>
+				<?php if($change !== -1 && $key > $change):?>
+					<?php ${'groupbyvalue_'.$groupby} = null;?>
+				<?php endif;?>
+				<?php if($object->UserName !== ${'groupbyvalue_'.$groupby}):?>
+				<?php $change = $key;?>
+				<tr>
+					<?php for($j = 1;$j < $key;$j++):?>
+						<td class="groupcol" >&nbsp;</td>
+					<?php endfor;?>
+					<td class="groupby tree_level_1 tree_close" colspan="<?php echo $this->gridFieldCount-$key+1+in_array(-1,$groupbys)+in_array(-2,$groupbys)?>">Người tạo: <?php echo $object->UserName;?></td>
+				</tr>
+				<?php $i=1;?>
+				<?php endif;?>
+				<?php ${'groupbyvalue_'.$groupby} = $object->UserName;?>
+			<?php endif;?>
+			<?php $key++?>
+		<?php endforeach;?>
+	<?php endif;?>
+	<tr edit="0"
+		status="<?php echo $object->Status?>"
+		title="<?php // echo $object->ErrorMessage;?>"
+		rights="<?php echo $rights?>"
+		form_rights="<?php echo $form_rights?>"
+		deptid="<?php echo $object->DepartmentID?>"
+		id="<?php echo $object->IFID?>"
+		fid="<?php echo $object->FormCode?>"
+		ondblclick="rowEdit(); return false;"
+		onclick="rowCLK(this,event);"
+		<?php echo ($i % 2 == 0)?'bgcolor="#f7f9f9"':""?>
+		class="<?php echo $rowclass?>">
+		<?php for($j = 0;$j < count($groupbys) - 1;$j++):?>
+			<td class="groupcol" >&nbsp;</td>
+		<?php endfor;?>
+		<?php //echo ($object->DepartmentID!=$this->user->user_dept_id)?'bgcolor="#E7EBF7"':""?>
+		<td class="nocount <?php if($object->Error):?><?php endif;?>"><input type="checkbox" class="grid_checkbox"></td>
+		<?php if($this->o_Object->bTrack && 0):?>
+		<td class="data" style="border-left: 1px solid #CCCCCC"><?php echo $object->UserName?></td>
+		<?php endif;?>
+
+		<?php foreach($this->mainobjects as $item)://objects?>
+		<?php
+			//$item->initData($object->IFID,$object->DepartmentID,0);
+			$fields = $item->loadFields();
+			$item->i_IOID = $object->IOID;
+			$item->i_IFID = $object->IFID;
+		?>
+		<?php $first = true;?>
+		<?php foreach ($fields as $field):?>
+			<?php $field->intIOID = $object->IOID?>
+			<?php $field->intIFID = $object->IFID?>
+		
+			<?php //$field->v_fSetValue($object->{$field->FieldCode});//set val?>
+			<?php if ( ($field->bGrid & 1) && !in_array($field->FieldCode,$groupbys)):?>
+			<?php $jsonData = $field->getJsonRegx();?>
+			<?php $jsonCellData = $field->getJsonCell();?>
+		<?php
+		$display = '';
+		switch ( $field->intFieldType )
+		{
+            case 4:
+                if($object->{$field->FieldCode}) {
+                    $display = date('H:i', strtotime($object->{$field->FieldCode}));
+                }
+            break;
+
+			case 17:
+				$custom = "Qss_Bin_Display_{$field->ObjectCode}_{$field->FieldCode}";
+				if(class_exists($custom))
+				{
+					$customobject = new $custom($object);
+					$display = $customobject->__doExecute();
+				}
+				else
+				{
+					$custom = 'Qss_Bin_Calculate_'.$field->ObjectCode.'_'.$field->FieldCode;
+					if(class_exists($custom))
+					{
+						$customobject = new $custom($item);
+						$display = $customobject->__doExecute();
+					}
+				}
+				$object->{$field->FieldCode} = $display;
+				break;
+			case 9:
+				$display = Qss_Lib_Template::Image($object->{$field->FieldCode},$field->intFieldWidth);
+				break;
+			case 8:
+				$display = Qss_Lib_Template::FileDown($object->{$field->FieldCode},$field);
+				break;
+			case 10:
+				$display = Qss_Lib_Date::mysqltodisplay($object->{$field->FieldCode});
+				break;
+			case 11:
+				$cfield = new Qss_Model_CField();
+				$cur = $object->{"Ref_".$field->FieldCode};
+				if(!$cur || $field->intInputType == 3)
+				{
+					$cur = $cfield->getPrimary()->Code;
+				}
+				$currency = $cfield->getDataByCode($cur);
+				if ( $currency)
+				{
+					$display = is_numeric($object->{$field->FieldCode})?number_format($object->{$field->FieldCode} / 1000, (int)$currency->Precision, $currency->DecPoint, $currency->ThousandsSep):$object->{$field->FieldCode};
+					$display .= $currency->Symbol;
+				}
+				break;
+			case 13:
+				$display = Qss_Lib_Template::getBarCode($object->{$field->FieldCode},$field->szTValue,$field->szFValue);
+				break;
+			default:
+				if($field->intFieldType != 7 || $field->intInputType == 5  || $field->intInputType == 3)
+				{
+					if($jsonData)
+					{
+						$display = isset($jsonData[$object->{$field->FieldCode}])?$jsonData[$object->{$field->FieldCode}]:'';
+					}
+					else
+					{
+						$display = Qss_Lib_Util::textToHtml($object->{$field->FieldCode});
+					}
+				}
+				break;
+		}
+
+		$currency = $cfield->getDataByCode($this->szValue);
+		if ( $currency)
+		{
+			//$ret = is_numeric($this->dMoney)?number_format($this->dMoney/100, 2, '.', ','):$this->dMoney;
+			$ret = is_numeric($this->dMoney)?number_format($this->dMoney/1000, (int)$currency->Precision, $currency->DecPoint, $currency->ThousandsSep):$this->dMoney;
+		}
+		$colclass = '';
+		$colstyleclass = "Qss_Bin_Style_{$field->ObjectCode}_{$field->FieldCode}";
+		if(class_exists($colstyleclass))
+		{
+			$colstyle = new $colstyleclass($object);
+			$colclass = $colstyle->__doExecute();
+		}
+		elseif(is_array($jsonCellData) && count($jsonCellData) && isset($jsonCellData[$object->{$field->FieldCode}]))
+		{
+			$colclass = $jsonCellData[$object->{$field->FieldCode}];
+		}
+		if($field->szStyle)
+		{
+			$colclass .= ' ' . $field->szStyle;
+		}
+		?>
+		<td cache="<?php echo $field->lookupFilter;?>"
+			class="data  <?php if($field->intFieldType == 7 && $field->intInputType != 5) echo ($object->{$field->FieldCode}?'col-checked':'col-unchecked')?>
+			<?php echo $colclass?$colclass:Qss_Lib_Const::$FIELD_ALIGN[$field->intFieldType-1]?>"
+			name="<?php echo $field->ObjectCode?>_<?php echo $field->FieldCode?>" id="<?php echo $field->FieldCode?>"
+			<?php if($field->bReadOnly):?>readonly=1<?php endif;?> inputtype="<?php echo $field->intInputType?>"
+			reffid="<?php echo $field->RefFormCode?>" refobjid="<?php echo $field->RefObjectCode?>"
+			reffieldid="<?php echo $field->RefFieldCode?>"
+			refresh="<?php echo $field->isRefresh?>"
+			default="<?php echo $field->szDefaultVal?>"
+		<?php if($field->intInputType == 5 || $field->intFieldType == 15):?>
+		value="<?php echo $object->{$field->FieldCode}?>"
+		<?php elseif($field->intInputType == 3 || $field->intInputType == 4):?>
+		value="<?php echo $object->{"Ref_".$field->FieldCode}?>"
+		<?php endif;?>
+			dwidth="<?php echo $field->intFieldWidth?>"><?php if($item->b_Tree):?><span <?php if(($object->rgt-$object->lft) > 1):?>onclick="cellTree(this);"<?php endif;?> class="<?php if($first):?>tree_level_<?php echo @$object->level?> <?php if(@$object->close):?>tree_close<?php elseif($object->rgt-$object->lft > 1):?>tree_open<?php else:?>tree_last<?php endif;?><?php endif;?>"></span><?php endif;?><?php echo $display?></td>
+			<?php endif;?>
+			<?php $first = false;?>
+		<?php endforeach;//fields?>
+		<?php endforeach;//objects?>
+		<?php if($this->form->i_Type == Qss_Lib_Const::FORM_TYPE_MODULE && !in_array(-1,$groupbys)):?>
+			<!-- Duyệt -->
+			<?php if($this->isApprove):?>
+			<td style="white-space:nowrap;" class="break">
+			<?php
+        		$step = new Qss_Model_System_Step($this->form->i_WorkFlowID);
+				$step->v_fInitByStepNumber($object->Status);
+				$approvers = $step->getApproverByUser($object->IFID,$this->user->user_id);
+				$arrQuickStep = explode(',',@$step->szQuickStep);
+        	?>
+        	<?php if($step->intStepType && count($approvers)):?>
+	        	<?php foreach ($approvers as $it):?>
+	        		<?php if($it->AUID):?>
+						<?php if($it->AUID == $this->user->user_id && $it->UID):?>
+							<input id="approve_<?php echo $it->SAID?>_<?php echo $object->IFID?>" type="checkbox" checked onclick="reject(<?php echo $it->SAID?>,<?php echo $object->IFID?>,<?php echo $object->DepartmentID?>,'<?php echo $this->form->FormCode?>'); return false;"/>
+							<label for="approve_<?php echo $it->SAID?>_<?php echo $object->IFID?>" class="green break"><?php echo $it->Name?></label> <br/>
+						<?php else:?>
+							<input type="checkbox" checked disabled/>
+							<label class="green break"><?php echo $it->Name?></label> <br/>
+						<?php endif;?>
+					<?php elseif($it->UID == $this->user->user_id):?>
+						<input id="approve_<?php echo $it->SAID?>_<?php echo $object->IFID?>" type="checkbox" onclick="approve(<?php echo $it->SAID?>,<?php echo $object->IFID?>,<?php echo $object->DepartmentID?>,'<?php echo $this->form->FormCode?>'); return false;"/>
+						<label for="approve_<?php echo $it->SAID?>_<?php echo $object->IFID?>" class="green break"><?php echo $it->Name?></label> <br/>
+					<?php else:?>
+						<input id="approve_<?php echo $it->SAID?>_<?php echo $object->IFID?>" type="checkbox" disabled onclick="approve(<?php echo $it->SAID?>,<?php echo $object->IFID?>,<?php echo $object->DepartmentID?>,'<?php echo $this->form->FormCode?>'); return false;"/>
+						<label for="approve_<?php echo $it->SAID?>_<?php echo $object->IFID?>" class="green break"><?php echo $it->Name?></label> <br/>
+					<?php endif;?>
+				<?php endforeach;?>
+			<?php endif;?>
+			<?php if(@$step->szQuickStep):?>
+				<?php foreach ($arrQuickStep as $quick):?>
+					<input id="changestep_<?php echo $quick?>_<?php echo $object->IFID?>" type="checkbox" onclick="sendRequest('<?php echo $this->form->FormCode?>',<?php echo $object->IFID?>,<?php echo $object->DepartmentID?>,'<?php echo $quick?>',''); return false;"/>
+					<label for="changestep_<?php echo $quick?>_<?php echo $object->IFID?>" class="<?php echo $this->arrcolor[$quick]?>"><?php echo $this->arrname[$quick]?></label> <br/>
+				<?php endforeach;?>
+			<?php endif;?>
+			</td>
+			<?php endif;?>
+			<!-- Tình trạng -->
+			<td class="<?php if($this->arrcolor[$object->Status]) echo $this->arrcolor[$object->Status]; else echo 'data';?> center"><?php echo $this->arrname[$object->Status]?>
+			</td>
+		<?php endif;?>
+	</tr>
+	<?php
+	$i++;
+	?>
+	<?php endforeach;//data?>
+
+	<?php if(($form_rights & Qss_Lib_Const::FORM_RIGHTS_CREATE) && !count($this->objects)):?>
+		<tr
+		rights="13"
+		deptid="<?php echo $this->form->i_DepartmentID?>"
+		id="0" 
+		edit="-1"
+		fid="<?php echo $this->form->FormCode?>"
+		onclick="rowCLK(this,event);">
+		<?php for($j = 0;$j < count($groupbys) - 1;$j++):?>
+			<td width="1%" class="groupcol">&nbsp;</td>
+		<?php endfor;?>
+		<td width="3%" class="nocount">*</td>
+		<?php if($this->o_Object->bTrack && 0):?>
+		<td class="data" style="border-left: 1px solid #CCCCCC"><?php echo $this->user->user_name?></td>
+		<?php endif;?>
+		<?php foreach($this->mainobjects as $item)://objects?>
+		<?php $fields = $item->loadFields();?>
+		<?php foreach ($fields as $field):?>
+			<?php if ( $field->bGrid & 1  && !in_array($field->FieldCode,$groupbys)):?>
+		<td cache="<?php echo $field->lookupFilter;?>"
+			class="data <?php echo Qss_Lib_Const::$FIELD_ALIGN[$field->intFieldType-1]?> <?php if($field->intFieldType == 7) echo ($field->getValue()?'col-checked':'col-unchecked')?>"
+			name="<?php echo $field->ObjectCode?>_<?php echo $field->FieldCode?>" id="<?php echo $field->FieldCode?>"
+			<?php if($field->bReadOnly):?>readonly=1<?php endif;?> inputtype="<?php echo $field->intInputType?>"
+			reffid="<?php echo $field->RefFormCode?>" refobjid="<?php echo $field->RefObjectCode?>" 
+			reffieldid="<?php echo $field->RefFieldCode?>"
+			refresh="<?php echo $field->isRefresh?>"
+			default="<?php echo $field->szDefaultVal?>"
+			dwidth="<?php echo $field->intFieldWidth?>"><?php if($field->intFieldType != 7 || $field->intInputType == 5 ):?><?php echo $field->sz_fGetDisplay(false);?><?php endif;?></td>
+			<?php endif;?>
+		<?php endforeach;?>
+		<?php endforeach;//objects?>
+		<?php if($this->form->i_Type == Qss_Lib_Const::FORM_TYPE_MODULE && !in_array(-1,$groupbys)):?>
+		<?php if($this->isApprove):?>
+			<td style="width: 0px;"></td>
+		<?php endif;?>	
+		<td>***</td>
+			<?php endif;?>
+	</tr>
+	<?php endif;?>
+</tbody>
+<tfoot>		
+	<tr>
+		<th style="border-left: 1px solid rgb(204, 204, 204);" colspan="<?php echo $this->gridFieldCount?>">
+		<div id="form_detail_infor" style="width:100%; overflow: hidden;display: inline-block; text-align: left;"></div>
+		</th>
+	</tr>
+</tfoot>
+</table>
+<script>
+$("tr").on('change',function() {
+	if(edit && $(this).attr('edit') != 1){
+		$(this).attr('edit',1);
+	}
+});
+</script>
+<script>
+function cellTree(el) {
+	if(!edit){
+		$('#qss_form_tree').val($(el).parent().parent().attr('id'));
+		rowSearch($(el).parent().parent().attr('fid'));
+	}
+}
+function editAllRow(){
+	var promise = [];
+	var el = $('.grid_edit').find('tr').eq(1);
+	if($(el).attr('rights') & 4){
+		$(el).children('td').each(function(){
+			var p = editCell(this);
+			promise.push(p);
+		});
+	}
+	$.when.apply($, promise).done(function(){
+		$('.grid_edit').find('tr').each(function(){
+			if($(this).attr('id') !== undefined && $(this).index() > 1){
+				editRow(this);
+			}
+		});
+	});
+}
+function editSelectedRow(){
+	if(row != null){
+		editRow(row);
+	}
+	else{
+		if($('.grid_selected').length){
+			var promise = [];
+			var el = $('.grid_selected').first();
+			if($(el).attr('rights') & 4){
+				$(el).children('td').each(function(){
+					var p = editCell(this);
+					promise.push(p);
+				});
+			}
+			$.when.apply($, promise).done(function(){
+				$('.grid_selected').each(function(idx){
+					if($(this).attr('id') !== undefined && idx > 0){
+						editRow(this);
+					}
+				});
+			});
+		}
+	}
+}
+function editRow(el){
+	if($(el).attr('rights') & 4){
+		$(el).children('td').each(function(){
+			editCell(this);
+		});
+		$(el).children('td:nth-child(2)').find('textarea').focus();
+		$(el).children('td:nth-child(2)').find('select').focus();
+		$(el).children('td:nth-child(2)').find('input').focus();
+		//row = el;
+		rowCLK(el);
+	}
+}
+function insertRow(){
+	//var row = $('.grid_edit').find('tr:last');
+	if (row == null) {
+		row = $('.grid_edit').find('tr:last');
+	}
+	if($(row).index() == 0){
+		return;
+	}
+	if($(row).attr('id')==0 && $(row).attr('edit') == -1){
+		$(row).attr('edit',0)
+		var newrow = row;
+	}
+	else{
+		var newrow = $(row).clone().insertAfter(row);
+		$(newrow).on('change',function() {
+			if(edit && $(this).attr('edit') != 1){
+				$(this).attr('edit',1);
+			}
+		});
+	}
+	$(newrow).attr('id',0);
+	$(newrow).attr('rights',13);
+	$(newrow).find('td').each(function(){
+		$(this).attr('readonly',$('.th_'+$(this).attr('id')).attr('readonly'));
+		//neu co custom button thì cho hien thi luon
+		if($(this).find('button').length == 0 && $(this).attr('default') != 'KEEP'){
+			$(this).text('');	
+		}
+		else{
+			$(this).find('button.custom-button-field').prop('disabled',true);
+		}
+		if($(this).attr('default') != 'KEEP'){
+			$(this).removeAttr('value');
+		}
+		if($(this).attr('default') == 'KEEP'){
+			var idx = $(this).index();
+			if($(row).children('td:eq('+idx+')').find('textarea').val() !== undefined){
+				$(this).text($(row).children('td:eq('+idx+')').find('textarea').val());	
+			}
+		}
+		else if($(this).attr('default') != 'AUTO' && $(this).attr('default') !== undefined && $(this).attr('default') != ''){
+			$(this).text($(this).attr('default'));
+		}
+		if($(this).hasClass('col-checked')){
+			$(this).removeClass('col-checked');	
+			$(this).addClass('col-unchecked');
+		}
+	});
+	$(newrow).find('.nocount').text('*');
+	$('.tablescroll_wrapper').scrollTop($(newrow).position().top);
+	editRow(newrow);
+}
+function displayRow(row){
+	$(row).children('td').each(function(){
+		displayCell(this);
+	});
+}
+function getRow(row,retval){
+	//var retval = {};
+	var val = false;
+	$(row).children('td').each(function(){
+		val = getCell(this);
+		if(val !== false){
+			retval[$(this).attr('name')] = val;
+		}
+	});
+	return retval;
+}
+function cancelRow(){
+	var tr = $('.grid_edit').find('tr:last');
+	rowSearch($(tr).attr('fid'));
+}
+
+function editCell(cell){
+	if($(cell).is('[readonly]')){
+		return;
+	}
+	if($(cell).hasClass('nocount')){
+		return;
+	}
+	var width = $(cell).width() - 4;
+	var height = $(cell).height() - 4;
+	var text = $(cell).text();
+	$(cell).text('');
+	var inputtype = parseInt($(cell).attr('inputtype'));
+	switch(inputtype ){
+	case 1:
+	case 2:
+		var ctrl = $('<textarea/>').addClass('editor');
+		$(cell).append(ctrl);
+		ctrl.css('height',height);
+		ctrl.css('width','99%');
+		$(ctrl).val(qssAjax.br2nl(text));
+		//$(ctrl).focus();
+		$(ctrl).focus(function(){
+	    	$(this).select();
+		});
+		break;
+	case 9:
+		//$(cell).text('');
+		var checked = $(cell).hasClass('col-checked');
+		var ctrl = $('<input/>').attr({ type: 'checkbox'});
+		if(checked){
+			$(ctrl).attr('checked',true);
+			}
+		$(cell).append(ctrl);
+		break;
+	case 8:
+		//$(cell).text('');
+		var ctrl = $('<input/>').css('height',height-2)
+								.addClass('editor');
+		$(cell).append(ctrl);
+		$(ctrl).datepicker();
+		$(ctrl).datepicker('option', {dateFormat: 'dd-mm-yy',showOn:'focus'});
+		$(ctrl).val(text);
+		//$(ctrl).datepicker('show');
+		ctrl.css('width','95%');
+		$('#ui-datepicker-div').click(function(event){
+			//grid_editing = true;
+			event.stopPropagation();
+		});
+		break;
+	case 5:
+		var ctrl = $('<select/>').addClass('combo');
+		$(ctrl).attr('id','combo_' + $(cell).attr('id'))
+									.css('height',height);
+		$(cell).append(ctrl);
+		ctrl.css('width','99%');
+		var url = sz_BaseUrl + '/user/field/option';
+		var tr = $(cell).parent();
+		var data = {fieldid:$(cell).attr('id'),selected:$(cell).attr('value')};
+		data['fid'] = $(tr).attr('fid');
+		data['deptid'] = $(tr).attr('deptid');
+		data['ifid'] = $(tr).attr('id');
+		$(tr).find('td').each(function(){
+			data[$(this).attr('name')] = $(this).attr('value');
+			}
+		);
+		var option = null;
+		if($(cell).attr('cache') == 1){
+			option = combo['combo_'+$(cell).attr('id')];
+		}
+		if(option != null && option !== undefined){
+			$(cell).find('#combo_' + $(cell).attr('id')).html(option);
+			$(cell).find('#combo_' + $(cell).attr('id')).val($(cell).attr('value'));
+		}
+		else{
+			return qssAjax.getHtml(url, data, function(jreturn) {
+				$(cell).find('#combo_' + $(cell).attr('id')).html(jreturn);
+				combo['combo_'+$(cell).attr('id')] = jreturn;
+				$(cell).find('select').change(function(){
+					var val = $(this).val();
+					$(cell).attr('value',val);
+					if ($(cell).attr('refresh') == 1) {
+						refresh($(cell).parent()[0]);
+					}
+				});
+			});
+		}
+		$(ctrl).change(function(){
+			var val = $(this).val();
+			$(cell).attr('value',val);
+			if ($(cell).attr('refresh') == 1) {
+				refresh($(cell).parent()[0]);
+			}
+		});
+		$(ctrl).click();
+		break;
+	case 3:
+		var ctrl = $('<select/>').addClass('combo');
+		$(ctrl).attr('id','combo_' + $(cell).attr('id'))
+									.css('height',height);
+		$(cell).append(ctrl);
+		ctrl.css('width','99%');
+		var url = sz_BaseUrl + '/user/field/option';
+		var tr = $(cell).parent();
+		var data = {fieldid:$(cell).attr('id'),selected:$(cell).attr('value')};
+		data['fid'] = $(tr).attr('fid');
+		data['deptid'] = $(tr).attr('deptid');
+		data['ifid'] = $(tr).attr('id');
+		$(tr).find('td').each(function(){
+			data[$(this).attr('name')] = $(this).attr('value');
+			}
+		);
+		var option = null;
+		if($(cell).attr('cache') == 1){
+			option = combo['combo_'+$(cell).attr('id')];
+		}
+		if(option != null && option !== undefined){
+			$(cell).find('#combo_' + $(cell).attr('id')).html(option);
+			//$(cell).find('#combo_' + $(cell).attr('id')).val($(cell).attr('value'));
+			$(cell).find('#combo_' + $(cell).attr('id')+' option[val='+$(cell).attr('val')+']').prop('selected',true);
+		}
+		else{
+			return qssAjax.getHtml(url, data, function(jreturn) {
+				$(cell).find('#combo_' + $(cell).attr('id')).html(jreturn);
+				combo['combo_'+$(cell).attr('id')] = jreturn;
+				$(cell).find('select').change(function(){
+					var val = $(this).val();
+					$(cell).attr('value',val);
+					if ($(cell).attr('refresh') == 1) {
+						refresh($(cell).parent()[0]);
+					}
+				});
+			});
+		}
+		$(ctrl).change(function(){
+			var val = $(this).val();
+			$(cell).attr('value',val);
+			if ($(cell).attr('refresh') == 1) {
+				refresh($(cell).parent()[0]);
+			}
+		});
+		$(ctrl).click();
+		break;
+	case 4:
+		var ctrl = $('<input/>').addClass('lookup');
+		var parent = $('<div/>').addClass('tag-div');
+		$(parent).append(ctrl);
+		$(cell).append(parent);
+		$(ctrl).attr('id','lookup_' + $(cell).attr('id')+'_'+$(cell).parent().index())
+									.css('height',height)
+									.css('width','99%');
+		$(ctrl).val(text);
+		$(ctrl).focus(function(){
+	    	$(this).select();
+		});
+		$(ctrl).change(function(){
+			if($(this).val() != ''){
+				$(this).addClass('bgpink'); 
+			} 
+			else {
+				$(this).removeClass('bgpink');
+			}
+		});
+		//$(ctrl).focus();
+		var tr = $(cell).parent();
+		var data = {fid:$(tr).attr('fid'),deptid:$(tr).attr('deptid'),ifid:$(tr).attr('id')};
+		$(tr).find('td').each(function(){
+			data[$(this).attr('name')] = $(this).attr('value');
+			}
+		);
+		data = $.param(data);
+		$(function () {
+			var url = sz_BaseUrl + '/user/field/tag?fieldid='+$(cell).attr('id');
+			$('#lookup_' + $(cell).attr('id')+'_'+$(cell).parent().index()).tagSuggest({
+		        url: url,
+		        data:data,
+		        icon: false,
+		        delay: 500,
+		        separator : '*',
+		        tagContainer: 'div',
+		        callback: selecting,
+		        element: '#lookup_' + $(cell).attr('id')+'_'+$(cell).parent().index()
+		    });
+		});
+		break;
+	case 11:
+		//popupSelect(cell);
+		break;
+	case 12:
+		//popupGridAttr(cell);
+		break;		
+	case 6:
+		$(cell).file(function(inp) {
+			inp.id = inp.name = 'myFileInput';
+			
+			/* Upload file by ajax */
+			disabledLayout();
+			$.ajaxFileUpload({
+				url : sz_BaseUrl + '/user/field/uploadpicture',
+				secureuri : false,
+				fileElementId : inp,
+				dataType : 'json',
+				success : function(data, status) {
+					/* Upload file successfully */
+					if (data.error) {
+						qssAjax.alert(data.message);
+						enabledLayout();
+					} else {
+						$(cell).attr('value',data.image);
+						$(cell).find('img').remove();
+						var ctrl = $('<img/>').attr('src','/user/field/tmp?file='+data.image)
+												.attr('width',$(cell).attr('dwidth'));
+						$(cell).append(ctrl);
+						enabledLayout();
+					}
+				},
+				error : function(data, status, e) {
+					/* If upload error */
+					qssAjax.alert(e);
+				}
+			});
+		});
+		break;
+	case 7:
+		$(cell).file(function(inp) {
+			inp.id = inp.name = 'myFileInput';
+			
+			/* Upload file by ajax */
+			disabledLayout();
+			$.ajaxFileUpload({
+				url : sz_BaseUrl + '/user/field/uploadfile',
+				secureuri : false,
+				fileElementId : inp,
+				dataType : 'json',
+				success : function(data, status) {
+					/* Upload file successfully */
+					if (data.error) {
+						qssAjax.alert(data.message);
+						enabledLayout();
+					} else {
+						$(cell).attr('value',data.image);
+						$(cell).find('a').remove();
+						$(cell).text('');
+						var ctrl = $('<a/>').attr('target','new')
+												.attr('href','/user/field/tmp?file='+data.image);
+						$(ctrl).text('tải về');
+						$(cell).append(ctrl);
+						enabledLayout();
+					}
+				},
+				error : function(data, status, e) {
+					/* If upload error */
+					qssAjax.alert(e);
+				}
+			});
+		});
+	break;
+	}
+}
+function displayCell(cell){
+	if($(cell).hasClass('nocount')){
+		return;
+	}
+	if ($("#ui-datepicker-div").is(":visible") && $("#ui-datepicker-div").html() != "") {
+		$(cell).find('input').datepicker('hide');
+	}
+	if($(cell).is('[readonly]') || $(cell).attr('inputtype') == 7 || $(cell).attr('inputtype') == 6){
+		return;
+	}
+	var text = $(cell).find('textarea').val();
+	var val = $(cell).find('select option:selected').val();
+	if($(cell).attr('inputtype') == 3 || $(cell).attr('inputtype') == 5){
+		if($(cell).find('select').length){
+			text = $(cell).find('select option:selected').text();
+		}
+		else{
+			return;
+		}
+	}
+	var check = '';
+	if(!text && $(cell).attr('inputtype') != 9){
+		text = $(cell).find('input').val();
+	}	
+	if($(cell).attr('inputtype') == 9){	
+		if($(cell).find('input').attr("checked")){
+			check = 1;
+			}
+		else{
+			check = 0;
+			}
+	}
+	if($(cell).attr('inputtype') == 3 || $(cell).attr('inputtype') == 5){
+		$(cell).attr('value',val);
+	}
+	else if($(cell).attr('inputtype') != 4){
+		$(cell).attr('value',(check != '')?check:((text || $(cell).attr('inputtype') == 11 || $(cell).attr('inputtype') == 12)?text:''));
+	}
+}
+function getCell(cell){
+	if($(cell).hasClass('nocount')){
+		return false;
+	}
+	if($(cell).is('[readonly]') || $(cell).attr('inputtype') == 7 || $(cell).attr('inputtype') == 6){
+		return false;
+	}
+	var text = $(cell).find('textarea').val();
+	var val = $(cell).find('select option:selected').val();
+	if($(cell).attr('inputtype') == 3 || $(cell).attr('inputtype') == 5){
+		if($(cell).find('select').length == 0){
+			return false;
+		}
+	}
+	var check = '';
+	if(!text && $(cell).attr('inputtype') != 9){
+		text = $(cell).find('input').val();
+	}	
+	if($(cell).attr('inputtype') == 9){	
+		if($(cell).find('input').attr("checked")){
+			check = 1;
+			}
+		else{
+			check = 0;
+			}
+	}
+	if($(cell).attr('inputtype') == 3 || $(cell).attr('inputtype') == 5){
+		return val;
+	}
+	else if($(cell).attr('inputtype') == 4){
+		return $(cell).attr('value');
+	}
+	else {
+		return (check != '')?check:((text || $(cell).attr('inputtype') == 11 || $(cell).attr('inputtype') == 12)?text:'');
+	}
+}
+function setRowValue(row){
+	$(row).children('td').each(function(){
+		setCellValue(this);
+	});
+}
+
+function setCellValue(cell){
+	if($(cell).hasClass('nocount')){
+		return;
+	}
+	if($(cell).is('[readonly]') || !edit || $(cell).attr('inputtype') == 7 || $(cell).attr('inputtype') == 6)
+	{
+		return;
+	}
+	var val = $(cell).find('select option:selected').val();
+	var text = $(cell).find('textarea').val();
+	var val = $(cell).find('select option:selected').val();
+	if($(cell).attr('inputtype') == 3 || $(cell).attr('inputtype') == 5)
+	{
+		if($(cell).find('select').length)
+		{
+			text = $(cell).find('select option:selected').text();
+		}
+		else
+		{
+			return;
+		}
+	}
+	var check = '';
+	if(!text && $(cell).attr('inputtype') != 9)
+	{
+		text = $(cell).find('input').val();
+	}	
+	if($(cell).attr('inputtype') == 9){	
+		if($(cell).find('input').attr("checked"))
+		{
+			check = 1;
+		}
+		else
+		{
+			check = 0;
+		}
+	}
+	if($(cell).attr('inputtype') == 3 || $(cell).attr('inputtype') == 5){
+		$(cell).attr('value',val);
+	}
+	else if($(cell).attr('inputtype') != 4){
+		$(cell).attr('value',(check != '')?check:((text || $(cell).attr('inputtype') == 11 || $(cell).attr('inputtype') == 12)?text:''));
+	}
+}
+function save(){
+	//esc = false;
+	edit = false;
+	var save = false;
+	$('.grid_edit').find('tr').each(function(){
+		if($(this).attr('edit') == 1){
+			saveRow(this);
+			save = true;
+		}
+	});
+	if(!edit){
+		var tr = $('.grid_edit').find('tr:last');
+		rowSearch($(tr).attr('fid'),gotoifid);
+		$('#btnSAVE').prop('disabled',true);
+		$('#btnSAVEBACK').prop('disabled',true);
+	}
+}
+function saveRow(tr)
+{
+	gotoifid = 0;
+	displayRow(tr);
+	var data = {fid:$(tr).attr('fid'),deptid:$(tr).attr('deptid'),ifid:$(tr).attr('id')};
+	$(tr).find('td').each(function(){
+		data[$(this).attr('name')] = $(this).attr('value');
+		}
+	);
+	var url = sz_BaseUrl + '/user/form/save';
+	return qssAjax.call(url, data, function(jreturn) {
+		$(tr).attr('edit',0);
+		if(jreturn.status !== undefined){
+			//$(tr).attr('id',jreturn.status);
+			gotoifid = jreturn.status;
+		}
+		$(tr).attr('i',0);
+		if(jreturn.message != ''){
+			qssAjax.alert(jreturn.message);
+		}
+	}, function(jreturn) {
+		//esc = true;
+		edit=true;
+		qssAjax.alert(jreturn.message,function(){
+			var rcell = $(tr).find('td[name="'+jreturn.status+'"]');
+			if($(rcell).length){
+				$(rcell).addClass('required');
+				$(rcell).find('textarea').focus();
+				$(rcell).find('input').focus();
+				$(rcell).find('select').focus();
+			}
+		});
+		//$(tr).find('td').addClass('bgred');//để tạm
+	},false);
+}
+function refresh(tr)
+{
+	var data = {fid:$(tr).attr('fid'),deptid:$(tr).attr('deptid'),ifid:$(tr).attr('id')};
+	data = getRow(tr,data);
+	var url = sz_BaseUrl + '/user/form/reload';
+	qssAjax.call(url, data, function(jreturn) {
+		self = tr;
+		$.each(jreturn, function(i, item) {
+			tr = self;
+			var loadcell = $(tr).find('td[name="'+i+'"]');
+			if(loadcell.length != 0){//item.value != null || item.readonly
+				if(parseInt($(loadcell).attr('inputtype')) == 3 || parseInt($(loadcell).attr('inputtype')) == 4 || parseInt($(loadcell).attr('inputtype')) == 11 || parseInt($(loadcell).attr('inputtype')) == 12){
+					if(typeof item.value === 'string'){
+						var parts = item.value.split(',');
+					}
+				}
+				$(loadcell).attr('value',item.value);
+				if(item.readonly){
+					$(loadcell).attr('readonly','');
+					$(loadcell).html(item.display);//them vào
+				}
+				else{
+					if(typeof $(loadcell).attr('readonly') !== typeof undefined){
+						$(loadcell).removeAttr('readonly');
+						editCell(loadcell);
+					}
+				}
+			}
+			if(typeof $(loadcell).attr('readonly') === typeof undefined){
+				switch(parseInt($(loadcell).attr('inputtype')) ){
+					case 1:
+					case 2:
+						$(loadcell).find('textarea').val(item.display);
+						break;
+					case 9:
+						//đã set value bên trên
+						break;
+					case 8:
+						$(loadcell).find('input').val(item.display);
+						break;
+					case 5:
+						$(loadcell).find('input').val(item.value);
+						break;	
+					case 3:
+						var ctrl = $(loadcell).find('select');
+						var url = sz_BaseUrl + '/user/field/option';
+						var tr = $(loadcell).parent();
+						var data = {fieldid:$(loadcell).attr('id'),selected:$(loadcell).attr('value')};
+						data['fid'] = $(tr).attr('fid');
+						data['deptid'] = $(tr).attr('deptid');
+						data['ifid'] = $(tr).attr('id');
+						$(tr).find('td').each(function(){
+							data[$(this).attr('name')] = $(this).attr('value');
+						});
+						return qssAjax.getHtml(url, data, function(jreturn) {
+							$(loadcell).find('#combo_' + $(loadcell).attr('id')).html(jreturn);
+						});
+						break;
+					case 4:
+						var width = $(loadcell).width() - 4;
+						var height = $(loadcell).height() - 4;
+						var val = $(loadcell).find('input').val();
+						var focus = $(loadcell).find('input').is(':focus');
+						$(loadcell).empty();
+						var ctrl = $('<input/>').addClass('lookup');
+						var parent = $('<div/>').addClass('tag-div');
+						$(parent).append(ctrl);
+						$(loadcell).append(parent);
+						$(ctrl).attr('id','lookup_' + $(loadcell).attr('id')+'_'+$(loadcell).parent().index())
+													.css('height',height)
+													.css('width',width-2);
+						
+						if(focus){
+							$(ctrl).focus();
+							$(ctrl).val(val);
+						}
+						else{
+							$(ctrl).val(item.display);
+						}
+						//$(loadcell).find('textarea').val(item.display);
+						var tr = $(loadcell).parent();
+						var data = {fid:$(tr).attr('fid'),ifid:$(tr).attr('ifid'),deptid:$(tr).attr('deptid')};
+						$(tr).find('td').each(function(){
+							data[$(this).attr('name')] = $(this).attr('value');
+						});
+						data = $.param(data);
+						$(function () {
+							var url = sz_BaseUrl + '/user/field/tag?fieldid='+$(loadcell).attr('id');
+							$(loadcell).find('#lookup_' + $(loadcell).attr('id')+'_'+$(loadcell).parent().index()).tagSuggest({
+						        url: url,
+						        data: data,
+						        icon: false,
+						        delay: 500,
+						        separator : '*',
+						        tagContainer: 'div',
+						        callback: selecting,
+						        element: '#lookup_' + $(loadcell).attr('id')+'_'+$(loadcell).parent().index()
+						    });
+						});
+						break;
+				}
+			}
+		  });
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+}
+function popupSelect(ele) {
+	esc = false;
+	refelement = ele;
+	var fieldid = $(refelement).attr('reffieldid');
+	reffieldid = fieldid;
+	isrefresh = $(refelement).attr('refresh');
+	var url = sz_BaseUrl + '/user/form/select';
+	var data = {
+		fieldid : $(refelement).attr('id')
+		};
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#qss_combo').html(jreturn);
+		$('#qss_combo').dialog({close: function(event,ui) {
+			select = null;
+			//esc = false;
+		}});
+		if(select == null && $('#selecttable').length){
+			select = $('#selecttable').find('tr').eq(1)[0];
+		}
+		selectCLK(select);
+	});
+}
+function popupGridAttr(ele) {
+	var tr = $(ele).parent()[0];
+	displayRow(tr);
+	esc = false;
+	refelement = ele;
+	var fieldid = $(refelement).attr('reffieldid');
+	reffieldid = fieldid;
+	isrefresh = $(refelement).attr('refresh');
+	var url = sz_BaseUrl + '/extra/element/attr';
+	var data = {fid:$(tr).attr('fid'),
+				deptid:$(tr).attr('deptid'),
+				ifid:$(tr).attr('id'),
+				fieldid : $(refelement).attr('id')};
+	$(tr).find('td').each(function(){
+			data[$(this).attr('name')] = $(this).attr('value');
+		}
+	);
+	editRow(ele);
+	qssAjax.getHtml(url, data, function(jreturn) {
+		$('#qss_combo').html(jreturn);
+		$('#qss_combo').dialog({ width: 500,height:500 });
+	});
+}
+function selectTrace() {
+	if (select == null) {
+		return;
+	}
+	$(refelement).attr('value',$(select).attr('ioid'));
+	$(refelement).text($(select).attr('vdisplay'));
+	$('#qss_combo').html('');
+	$('#qss_combo').dialog('close');
+	if (isrefresh == 1) {
+		refresh(row);
+	}
+	select = null;
+}
+function selecting(workingTags,id,element)
+{
+	$(element).val(workingTags);
+	var cell = $(element).parent().parent();
+	var old = $(cell).attr('value');
+	if(id)
+		$(cell).attr('value',id);
+	else
+		$(cell).attr('value','0');
+	if ($(cell).attr('refresh') == 1 && id != old) {
+		refresh(row);
+	}
+	$(element).closest('tr').change();
+	$(element).change();
+	$(element).blur();
+	$(element).removeClass('bgpink');
+	$(element).focus();
+}
+</script>

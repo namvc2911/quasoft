@@ -1,0 +1,91 @@
+.chat-box{
+    display: block;
+    text-decoration: none;
+    cursor: pointer;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 0px 6px 0px 6px;
+    width: 300px;
+    background-color: #4e69a2;
+    color: white;
+	overflow: hidden;
+}
+#divChatList{
+    display: block;
+    border:1px solid #4e69a2;
+    padding: 0px 6px 0px 6px;
+
+}
+.rowchat{
+    cursor: pointer;
+    padding-top: 2px;
+}
+.online{
+    color:green;
+    font-weight: bold;
+}
+
+.offline{
+    color:grey;
+    
+}
+
+.modal-footer-chat {
+    padding: 0px;
+    text-align: right;
+    border-top: 1px solid #e5e5e5;
+}
+
+.blink_me {
+    -webkit-animation-name: blinker;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+
+    -moz-animation-name: blinker;
+    -moz-animation-duration: 1s;
+    -moz-animation-timing-function: linear;
+    -moz-animation-iteration-count: infinite;
+
+    animation-name: blinker;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@-moz-keyframes blinker {
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+@-webkit-keyframes blinker {
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+@keyframes blinker {
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+.pull-left{
+	float:left;
+}
+
+.pull-right{
+	float: right;
+}
+.scroller {
+    margin: 0;
+    overflow-y: scroll;
+    padding: 0 12px 0 0;
+}
+.text-chat{
+	height: 26px;
+	width: 80%
+}

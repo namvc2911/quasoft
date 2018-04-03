@@ -1,0 +1,91 @@
+<script>
+    $(document).ready(function(){
+        // Tim kiem khi an enter
+        $('#m402_material_filter_dialbox').keypress(function (e) {
+            if (e.which == 13) {
+                m402_material_button.search();
+                return false;    //<---- Add this line
+            }
+        });
+
+        // Tim kiem khi go xong phim
+        $('#m402_material_filter_dialbox').keyup(function ()
+        {
+            m402_material_button.search();
+        });
+
+        // Xoa cac mat hang da duoc chon vao trong danh sach
+        $('.selected_line').each(function(){
+            var refItem = $(this).find('.RefItem').val();
+            $('#select_m402_material_box select option[value="'+refItem+'"]').remove();
+        });
+    });
+</script>
+
+<div id="select_m402_material_box">
+    <input type="text" id="m402_material_filter_dialbox"
+           placeholder="Search" style="width: 94%" />
+    <select class="select" size="16" multiple="multiple">
+        <?php if($this->filter == 1): // truong hop chon tu don hang, phieu xuat kho?>
+
+            <!-- Truong hop chon tu don hang, phieu xuat kho -->
+            <?php if(count($this->order)):?>
+                <optgroup label="Đơn mua hàng" groupmarker="1">
+            <?php endif;?>
+
+            <?php foreach($this->order as $item):?>
+                <option value="<?php echo $item->RefItem;?>"
+                        itemioid="<?php echo $item->RefItem;?>"
+                        uomioid="<?php echo $item->RefUOM;?>"
+                        itemcode="<?php echo $item->MaSP;?>"
+                        itemname="<?php echo $item->TenSanPham;?>"
+                        uom="<?php echo $item->DonViTinh;?>"
+                        qty="<?php  echo $item->SoLuong;?>"
+                        groupmarker="1">
+                    <?php echo $item->MaSP;?> - <?php echo $item->TenSanPham;?> (<?php echo $item->DonViTinh;?>)
+                </option>
+            <?php endforeach;?>
+
+            <?php if(count($this->order)):?>
+                </optgroup>
+            <?php endif;?>
+
+            <?php if(count($this->output)):?>
+                <optgroup label="Phiếu xuất kho" groupmarker="2">
+            <?php endif;?>
+
+            <?php foreach($this->output as $item):?>
+                <option value="<?php echo $item->Ref_MaSP;?>"
+                        itemioid="<?php echo $item->Ref_MaSP;?>"
+                        uomioid="<?php echo $item->Ref_DonViTinh;?>"
+                        itemcode="<?php echo $item->MaSP;?>"
+                        itemname="<?php echo $item->TenSP;?>"
+                        uom="<?php echo $item->DonViTinh;?>"
+                        qty="<?php  echo $item->SoLuong;?>"
+                        groupmarker="2"
+                    >
+                    <?php echo $item->MaSP;?> - <?php echo $item->TenSP;?> (<?php echo $item->DonViTinh;?>)
+                </option>
+            <?php endforeach;?>
+
+            <?php if(count($this->output)):?>
+                </optgroup>
+            <?php endif;?>
+        <?php elseif($this->filter == 2): // Truong hop chon tu danh sach mat hang?>
+
+            <!-- Truong hop chon tu don hang, phieu xuat kho -->
+            <?php foreach($this->items as $item):?>
+                <option value="<?php echo $item->IOID;?>"
+                        itemioid="<?php echo $item->IOID;?>"
+                        uomioid="<?php echo $item->Ref_DonViTinh;?>"
+                        itemcode="<?php echo $item->MaSanPham;?>"
+                        itemname="<?php echo $item->TenSanPham;?>"
+                        uom="<?php echo $item->DonViTinh;?>"
+                        qty="1"
+                        groupmarker="0">
+                    <?php echo $item->MaSanPham;?> - <?php echo $item->TenSanPham;?> (<?php echo $item->DonViTinh;?>)
+                </option>
+            <?php endforeach;?>
+        <?php endif;?>
+    </select>
+</div>

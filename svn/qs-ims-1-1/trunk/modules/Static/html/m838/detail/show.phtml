@@ -1,0 +1,139 @@
+<?php
+$width  = '1200';
+$widths = array(2, 3, 3, 5, 6, 6, 5, 4, 2, 4, 4);
+$fit    = Qss_Lib_Report::changeWidthToFitScreen2($widths, $width);
+$totalCols = count($widths);
+$month  = '';
+$i      = 0;
+$begin  = 0;
+?>
+
+
+
+
+<table class="border_table" cellspacing="0" cellpadding="0" border="0" style="width:<?php echo $width;?>px">
+    <tr>
+        <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+            <input type="checkbox" onclick="common_check_all_table_line(this, '.cwpo_line_checkbok', '.cwpo_line_checkbok_val')"/>
+        </th>
+
+        <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+            Ngày bắt đầu
+        </th>
+
+        <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+            Ngày kết thúc
+        </th>
+
+        <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+            Mã thiết bị
+        </th>
+
+        <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+            Tên thiết bị
+        </th>
+
+        <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+            Tên công việc
+        </th>
+
+        <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+            Bộ phận
+        </th>
+
+        <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+            Loại bảo trì
+        </th>
+
+        <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+            Lần
+        </th>
+
+        <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+            Tình trạng
+        </th>
+
+        <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+            Phiếu bảo trì
+        </th>
+    </tr>
+
+
+    <?php foreach($this->detailPlans as $item):?>
+
+        <?php if($this->generalPlan->LoaiLich != 4 && $this->generalPlan->LoaiLich != 5):?>
+            <?php if($month != $item->ThangBatDau):?>
+                <?php $i = 0; // reset;?>
+                <tr>
+                    <th colspan="<?php echo $totalCols;?>" class="left" style="padding-left: 2px;">
+                        Tháng <?php echo $item->ThangBatDau;?>
+                    </th>
+                </tr>
+            <?php endif;?>
+            <?php $month = $item->ThangBatDau;?>
+        <?php endif;?>
+
+        <tr class="<?php if($i%2==0):?>bgwhite<?php else:?>bglightblue<?php endif;?>">
+            <td class="center">
+                <input class="table_line_disabled OKeHoachChiTiet_IOID" type="hidden" value="<?php echo $item->IOID;?>" name="OKeHoachChiTiet_IOID[]" disabled>
+                <input class="table_line_disabled OKeHoachChiTiet_IFID" type="hidden" value="<?php echo $item->IFID_M837;?>" name="OKeHoachChiTiet_IFID[]" disabled>
+                <input class="table_line_disabled OKeHoachChiTiet_DeptID" type="hidden" value="<?php echo $this->deptid;?>" name="OKeHoachChiTiet_DeptID[]" disabled>
+
+
+                <input type="checkbox" class="cwpo_line_checkbok " onclick="common_check_table_line(this, '.cwpo_line_checkbok_val')"
+
+                    >
+                <input type="hidden" class="table_line_disabled cwpo_line_checkbok_val" name="CheckBox[]"  value="0" disabled>
+            </td>
+
+            <td class="center">
+                <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayBatDau);?>
+            </td>
+
+            <td class="center">
+                <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayKetThuc);?>
+            </td>
+
+            <td class="left">
+                <a href="#1" title="Click để sửa!" onclick="popupWindowFormEdit(<?php echo $item->IFID_M837;?>, <?php echo $this->deptid;?>, {}, function(){ m838.listDetail('<?php echo $this->ifid;?>'); })">
+                    <?php echo $item->MaThietBi;?>
+                </a>
+            </td>
+
+            <td class="left">
+                <?php echo $item->TenThietBi;?>
+            </td>
+
+            <td class="left">
+                <?php echo $item->MoTa;?>
+            </td>
+
+            <td class="<?php if($item->Ref_ViTri):?>left<?php else:?>center<?php endif;?>">
+                <?php echo $item->ViTri;?> - <?php echo $item->BoPhan;?>
+            </td>
+
+            <td class="left">
+                <?php echo $item->LoaiBaoTri;?>
+            </td>
+
+            <td class="left">
+                <?php echo $item->LanBaoTri;?>
+            </td>
+
+            <td class="center <?php echo $item->Color;?>">
+                <?php echo $item->StepName;?>
+            </td>
+
+            <td class="center">
+                <?php if($item->SoPhieuBaoTri):?>
+                    <a href="#1" onclick="popupWindowFormEdit(<?php echo $item->IFID_M759;?>, <?php echo $this->deptid;?>, {})"> <?php echo $item->SoPhieuBaoTri;?> </a>
+                <?php else:?>
+                    <?php if($this->generalPlan->StepNo == 3
+                        && $item->StepNo == 2):// Chi tao khi ke hoach tong the da duyet va chua co pbt ?>
+                        <a href="#1" onclick="m838.createOrder(<?php echo $item->IFID_M837;?>);"> Tạo phiếu bảo trì </a>
+                    <?php endif;?>
+                <?php endif;?>
+            </td>
+        </tr>
+    <?php endforeach;?>
+</table>

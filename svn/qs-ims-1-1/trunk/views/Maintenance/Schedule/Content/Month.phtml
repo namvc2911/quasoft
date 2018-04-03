@@ -1,0 +1,73 @@
+<div class="cal_content_title">
+    <p class="cal_content_title_arrow"><a href="#1" onclick="showMonth('<?php echo $this->prev[0]?>','<?php echo $this->prev[1]?>');"><img src="/images/calendar/left_arrow_32.png"/></a></p>
+	<p class="cal_content_title_info">Tháng <?php echo $this->m?>/<?php echo $this->y?></p>
+    <p class="cal_content_title_arrow"><a href="#1" onclick="showMonth('<?php echo $this->next[0]?>','<?php echo $this->next[1]?>');"><img src="/images/calendar/right_arrow_32.png"/></a></p>
+</div><!-- end .cal_title -->
+<?php $starttime=strtotime($this->startdate);?>
+<?php $endtime=strtotime($this->enddate);?>
+<?php $startday = date('w',$starttime);?>
+
+<div class="cal_content_grid cal_content_month">
+	<div class="rows">
+    	<?php for($i=1;$i<=$this->daysInMonth;$i++):?>
+        <div class="cols cols_<?php echo $this->daysInMonth?> <?php if(($i + $startday) % 7 == 0 || ($i + $startday) % 7 == 1):?>cal_cols_holiday<?php endif;?>">
+        	<?php echo $i?>
+        </div><!-- end .cal_content_grid_cols -->
+        <?php endfor;?>
+    </div><!-- end .rows -->
+    
+	<?php $j=1;?>
+	<?php $group1 = 0?>
+	<?php $group2 = 0?>
+	<?php foreach($this->data as $item):?>
+		<?php $start=strtotime($item->SDate);?>
+		<?php $end= strtotime($item->EDate);?>
+		<?php if($group1 !== $item->Ref_MaDVBT):?>
+			<div class="rows_group"><?php echo $item->TenDVBT?>
+			</div>
+		<?php endif;?>
+		<?php if($group2 !== $item->Ref_NguoiThucHien):?>
+			<div class="rows_group"><?php echo $item->NguoiThucHien?$item->NguoiThucHien:'Chưa giao việc'?>
+			</div>
+		<?php endif;?>
+		<div class="rows">
+			<?php $mleft=1;?>
+			<?php $mright=$this->daysInMonth;?>
+			<?php if($start > $starttime):?>
+					<?php $mleft=date('d',$start);?>
+			<?php endif;?>
+			<?php $mright=date('d',$endtime);?>
+			<?php if($end < $endtime):?>
+				<?php $mright= date('d',$end);?>
+			<?php endif;?>
+			 <div class="event_parent"> 
+				<?php if($start < $starttime):?>
+					<div  class = "leftArrow"></div>
+				<?php endif;?>
+				<div class="event <?php echo (strpos($item->color,'bg') !== false) ? $item->color:('bgyellow '.$item->color)?>" style="margin-left:<?php echo (100/$this->daysInMonth)*($mleft-1);?>%; width:<?php echo (100/$this->daysInMonth)*($mright-$mleft+1);?>%;  border:1px #ccc solid;" title="<?php echo $item->SoPhieu?> <?php echo $item->LoaiBaoTri?>" onclick="popupFormEdit('M759',<?php echo $item->IFID?>,<?php echo $item->DepartmentID?>, {},reloadCalendar)"><?php echo $item->MaThietBi?></div>
+				<?php if($end > $endtime):?>
+					<div  class = "rightArrow"></div>
+				<?php endif;?>
+			</div>
+			<?php for($i=1;$i<=$this->daysInMonth;$i++):?>
+				<div class="cols cols_<?php echo $this->daysInMonth?> <?php if(($i + $startday) % 7 == 0 || ($i + $startday) % 7 == 1):?>cal_cols_holiday<?php endif;?>">
+					&nbsp;
+				</div><!-- end .cal_content_grid_cols -->
+			<?php endfor;?>
+		</div>
+	<?php $j++;?>
+	<?php $group1 =  $item->Ref_MaDVBT?>
+	<?php $group2 =  $item->Ref_NguoiThucHien?>
+	<?php endforeach;?>	
+	
+    <?php while($j<30):?>
+		<div class="rows">
+			<?php for($i=1;$i<=$this->daysInMonth;$i++):?>
+			<div class="cols cols_<?php echo $this->daysInMonth?> <?php if(($i + $startday) % 7 == 0 || ($i + $startday) % 7 == 1):?>cal_cols_holiday<?php endif;?>">
+				&nbsp;
+			</div><!-- end .cal_content_grid_cols -->
+			<?php endfor;?>
+		</div>
+		<?php $j++;?>
+    <?php endwhile;?>
+</div><!-- end .cal_content_grid -->

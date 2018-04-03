@@ -1,0 +1,201 @@
+<script>
+var dialog_<?php echo $this->object->ObjectCode?> = {
+		rowObjectEditRefresh: function(input,refresh) {
+			if($(input).val()=='null'){
+				var selected = $(input).find(':selected');
+				org_fieldid = $(selected).attr('org_fieldid');
+				org_objid = $(selected).attr('org_objid');
+				fid = $(selected).attr('fid');
+				objid = $(selected).attr('objid');
+				fielid = $(selected).attr('fielid');
+				ifid = $(selected).attr('ifid');
+				json = $(selected).attr('json');
+				createNew(org_objid,org_fieldid,fid,objid,fielid,ifid,json);
+				$(input).val('');
+				return false;
+			}
+			if(refresh == 1){
+				var ifid = $('.popup-edit').find('#ifid').val();
+				var deptid = $('.popup-edit').find('#deptid').val();
+				var ioid = $('.popup-edit').find('#ioid').val();
+				var objid = $('.popup-edit').find('#objid').val();
+				var url = sz_BaseUrl + '/user/object/refresh?ifid=' + ifid + '&deptid='
+						+ deptid + '&ioid=' + ioid + '&objid=' + objid;
+				var data = $('.popup-edit').find('#object_' + objid + '_edit').serialize();
+				$('.popup-edit').find('#object_' + objid + '_edit').find('input[type=checkbox]').each(function(){
+					if(!$(this).is(':checked')){
+						data += '&' + $(this).attr('name') +'=';
+					}
+				});
+				qssAjax.getHtml(url, data, function(jreturn) {
+					if(jreturn != ''){
+						$('.popup-edit').find('#qss_object_popup').html(jreturn);
+						$(input).focus();
+						var val = $(input).val();
+						$(input).val('');
+						$(input).val(val);
+					}
+				}, function(jreturn) {
+					qssAjax.alert(jreturn.message);
+				});
+			}
+		},
+		
+		onObjectKeyupRefresh: function() {
+			clearInterval(timer);
+			timer = setTimeout(function() { //then give it a second to see if the user is finished
+				var ifid = $('.popup-edit').find('#ifid').val();
+				var deptid = $('.popup-edit').find('#deptid').val();
+				var ioid = $('.popup-edit').find('#ioid').val();
+				var objid = $('.popup-edit').find('#objid').val();
+				var url = sz_BaseUrl + '/user/object/refresh?ifid=' + ifid + '&deptid='
+						+ deptid + '&ioid=' + ioid + '&objid=' + objid;
+				var data = $('.popup-edit').find('#object_' + objid + '_edit').serialize();
+				$('.popup-edit').find('#object_' + objid + '_edit').find('input[type=checkbox]').each(function(){
+					if(!$(this).is(':checked')){
+						data += '&' + $(this).attr('name') +'=';
+					}
+				});
+				qssAjax.getHtml(url, data, function(jreturn) {
+					if(jreturn != ''){
+						$('.popup-edit').find('#qss_object_popup').html(jreturn);
+					}
+				}, function(jreturn) {
+					qssAjax.alert(jreturn.message);
+				});
+		    }, 2000);
+		},
+		uploadPicture: function(field) {
+			/* Upload file by ajax */
+			disabledLayout();
+			$.ajaxFileUpload({
+				url : sz_BaseUrl + '/user/field/uploadpicture',
+				secureuri : false,
+				fileElementId : $('#' + field + '_picture'),
+				dataType : 'json',
+				success : function(data, status) {
+					/* Upload file successfully */
+					if (data.error) {
+						qssAjax.alert(data.message);
+						disabledLayout();
+					} else {
+						$('#' + field).val(data.image);
+						$('#' + field).parent().find('img').attr('src','/user/field/picture?file='+data.image);
+						enabledLayout();
+					}
+				},
+				error : function(data, status, e) {
+					/* If upload error */
+					qssAjax.alert(e);
+				}
+			});
+		}
+	};	 
+function multiObjectSave(ifid, deptid, ioids, objid) {
+	var form = $('#qss_dialog').find('#object_' + objid + '_edit');
+	var data = $(form).serialize();
+	$(form).find('input[type=checkbox]').each(function(){
+		if(!$(this).is(':checked')){
+			data += '&' + $(this).attr('name') +'=';
+		}
+	});
+	var url = sz_BaseUrl + '/user/object/msave?ifid=' + ifid + '&deptid=' + deptid+ '&objid=' + objid + '&ioids=' + ioids;
+	qssAjax.call(url, data, function(jreturn) {
+		if(jreturn.message != ''){
+			qssAjax.alert(jreturn.message,function(){
+				dialog_<?php echo $this->object->ObjectCode?>.fedit = false;
+				$('#qss_dialog').dialog('close'); // close dialog insert
+				rowObject(objid);
+			});
+		}
+		else{
+			dialog_<?php echo $this->object->ObjectCode?>.fedit = false;
+			$('#qss_dialog').dialog('close'); // close dialog insert
+			rowObject(objid);
+		}
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+}
+function multi_select_field(el){
+	$(el).closest('.ui_box_line').find('.element').find('input, textarea, select').prop('disabled',!$(el).is(':checked'));
+}
+$(document).ready(function() {
+	$('.datepicker').each(function() {
+		$(this).datepicker({dateFormat: "dd-mm-yy"});
+		$(this).attr('placeholder', 'dd-mm-yyyy');
+	});/* Datepicker*/
+
+	if('<?php echo $this->mobile?>' == ''){
+		$('input.integer').number( true, 0 );
+		$('input.decimal').each(function(){
+			var decimals		= (typeof $(this).attr('precision') !== 'undefined' ) ? $(this).attr('precision') : 2;
+			$(this).number( true, decimals);
+		});
+		$('input.money').each(function(){
+			var thousands_sep	= (typeof $(this).attr('thousandssep') !== 'undefined') ? $(this).attr('thousandssep') : thousands_sep;
+			var dec_point		= (typeof $(this).attr('decpoint') !== 'undefined') ? $(this).attr('decpoint') : dec_point;
+			var decimals		= (typeof $(this).attr('precision') !== 'undefined' ) ? $(this).attr('precision') : decimals;
+			$(this).number( true, decimals,dec_point,thousands_sep);
+		});
+	}
+	$('.element').find('input, textarea, select').prop('disabled',true);
+});
+</script>
+<div id="qss_form">
+	<form id="object_<?php echo $this->object->ObjectCode ?>_edit" method="post">
+		<input type="hidden" name="ifid" id="ifid" value="<?php echo $this->object->i_IFID ?>"> 
+		<input type="hidden" name="deptid" id="deptid" value="<?php echo $this->object->intDepartmentID ?>"> 
+		<input type="hidden" name="ioid" id="ioid" value="<?php echo $this->object->i_IOID ?>"> 
+		<input type="hidden" name="objid" id="objid" value="<?php echo $this->object->ObjectCode ?>">
+		<div>
+			<button
+				onclick="multiObjectSave('<?php echo $this->object->i_IFID?>','<?php echo $this->object->intDepartmentID?>','<?php echo $this->ioids?>','<?php echo $this->object->ObjectCode?>')"
+				type="button" class="btn-custom"><?php echo $this->_translate(35)?></button>
+			<button
+				onclick="$('#qss_dialog').dialog( 'close' );"
+				type="button" class="btn-custom"><?php echo $this->_translate(32)?></button>
+		</div>
+		<div class="navmenutab tabs-menu">
+			<ul>
+				<li class="splash"></li>
+				<li class="active normal"><a href="#form_tab_1"><span>Sửa nhiều bản ghi</span>
+				</a>
+				</li>
+			</ul>
+		</div>
+		<div style="border-top: 1px solid #999; clear: both;"></div>
+		<div class="ui_box" id="form_tab_1">
+			<?php $hasField =false;?>
+			
+			
+			<?php $object = $this->object;?>
+			<?php $fields = $object->getMultiEditableFields();?>
+			<?php if(!($object->bPublic & 1) && count($fields)):?>
+			<div class="ui_box_s100">
+				<fieldset>
+					<legend>
+						<?php echo $object->sz_Name?>
+					</legend>
+					<?php foreach ($fields as $f):?>
+						<?php $hasField = true;?>
+						<div class="ui_box_line">
+							<div class="label">
+								<input type="checkbox" id="multi_<?php echo $f->ObjectCode?>_<?php echo $f->FieldCode?>" name="multi_<?php echo $f->ObjectCode?>_<?php echo $f->FieldCode?>" onchange="multi_select_field(this)" value="1">
+								<label for="multi_<?php echo $f->ObjectCode?>_<?php echo $f->FieldCode?>""><?php echo $f->szFieldName;?>
+								</label>
+							</div>
+							<div class="element">
+							<?php echo $object->sz_fGetFormFieldElement($f->FieldCode,$this->user,true);?>
+							</div>
+						</div>
+					<?php endforeach;?>
+				</fieldset>
+			</div>
+			<?php endif;?>
+			<?php if(!$hasField):?>
+				<h3><?php echo $this->_translate(1)?></h3>
+			<?php endif;?>
+		</div>
+	</form>
+</div>

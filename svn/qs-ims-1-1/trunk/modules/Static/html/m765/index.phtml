@@ -1,0 +1,547 @@
+<style>
+    #m765_view
+    {
+        position: relative;
+    }
+
+    #m765_filter
+    {
+        height: 24px;
+        line-height: 24px;
+        margin-right: 20px;
+    }
+
+    #m765_general_input
+    {
+        /*display: table-cell;*/
+        vertical-align: middle;
+        font-weight: bold;
+        padding-bottom: 5px;
+    }
+
+    #m765_multi
+    {
+        background-color: #ccc;
+        border: 1px solid #999;
+        bottom: 0;
+        height: 24px;
+        left: 112px;
+        margin-bottom: 0;
+        position: fixed;
+        right: 0;
+        line-height: 24px;
+        display: table-cell;
+        vertical-align: middle;
+        font-weight: bold;
+    }
+
+    input
+    {
+        vertical-align:middle;
+    }
+
+    .m607_filter_box
+    {
+        float: left;
+        display: inline;
+        line-height: 24px;
+        height: 24px;
+        padding-bottom: 5px;
+        vertical-align: middle;
+
+    }
+    .m607_filter_box_title
+    {
+        min-width: 75px;
+        font-weight: bold;
+        float: left;
+    }
+    .m607_filter_box_dat
+    {
+        min-width: 175px;
+        margin-right: 10px;
+        float: left;
+    }
+    .m607_filter_box_dat input[type="text"], .m607_filter_box_dat select
+    {
+        width: 150px !important;
+    }
+
+    .m607_filter_box_dat #start, .m607_filter_box_dat #end
+    {
+        width: 80px !important;
+    }
+
+    .m607_data table
+    {
+        margin-top: 5px;;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+    }
+
+    .dropdown-content1 {
+        background-color: #f9f9f9;
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+        display: none;
+        margin-top: -5px;
+        min-width: 160px;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        z-index: 1000;
+    }
+
+
+    .dropdown-content1 li {
+        color: black;
+        display: block;
+        height: 25px;
+        list-style: outside none none;
+        padding: 0;
+        text-decoration: none;
+    }
+
+
+</style>
+
+<script>
+    var m765_author = 0;
+
+//    setInterval(function(){
+//        if ($('#m765_author').val() != m765_author){
+//            m765_author = $('#m765_author').val();
+//        }
+//    }, 500);
+
+    var m765 = {
+
+        firstNeverLoad : 1, // Khong load thiet bi khi moi vao
+
+        safelySave : 2, // Ban dau chua xac dinh trang thai
+
+        finish : function (ifid, deptid) {
+            var url  = '/user/form/request/';
+            var data = {ifids:ifid, deptids:deptid, stepno: 2, comment:''};
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != '')
+                {
+                    qssAjax.notice(jreturn.message);
+                }
+
+                location.href = '/static/m765';
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+        },
+
+        approve : function (said, ifid, deptid) {
+            var url  = '/user/form/approve/';
+            var data = {said:said, ifid:ifid, deptid:deptid};
+
+            qssAjax.confirm(
+                'Bạn muốn xác nhận kiểm tra?',
+                function () {
+                    qssAjax.call(url, data, function(jreturn) {
+                        if(jreturn.message != '')
+                        {
+                            qssAjax.notice(jreturn.message);
+                        }
+
+                        location.href = '/static/m765';
+                    }, function(jreturn) {
+                        qssAjax.alert(jreturn.message);
+                    })
+                }
+
+            );
+        },
+        loadEquips : function()
+        {
+            	var url  = sz_BaseUrl + '/static/m765/show';
+                var data = $('#update_params_manual_form').serialize();
+
+                qssAjax.getHtml(url, data, function(jreturn) {
+                    $('#update_params_manual_table').html(jreturn);
+                    $('#update_params_manual_table').show();
+
+                    m765.safelySave = 1;
+                    m765.warningSave();
+                });
+        },
+
+        /**
+         * Đánh dấu dòng nếu giá trị của dòng vượt qua max hoặc nhỏ hơn min <Neu min = 0, max = 0 coi nhu khong dung min mãx>
+         * @param ele
+         */
+        highlightMinMax : function(ele)
+        {
+            var val = parseFloat($(ele).val());
+            var min = parseFloat($(ele).parent().parent().find('.min').val());
+            var max = parseFloat($(ele).parent().parent().find('.max').val());
+
+            if( !(min == 0 && max == 0) && (val >= max || val <= min) )
+            {
+            	 $(ele).parent().addClass('bgpink');
+                 $(ele).parent().removeClass('bglightgreen');
+            }
+            else
+            {
+            	$(ele).parent().removeClass('bgpink');
+                $(ele).parent().addClass('bglightgreen');
+            }
+        },
+
+        higlightOnOff :function(ele, index1)
+        {
+            var val = $(ele).val();
+
+            if($(ele).is(':checked'))
+            {
+                // Loai bo check khac va check lai o nay
+                $('.radio_'+index1).removeAttr('checked');
+                $(ele).attr('checked', true);
+
+                // Dien gia tri vao
+                $(ele).parent().parent().find('#m765_checkbox_'+index1).val(val);
+
+                if(val == 2)
+                {
+                    $(ele).parent().addClass('bgpink');
+                    $(ele).parent().removeClass('bglightgreen');
+                }
+                else
+                {
+                    $(ele).parent().removeClass('bgpink');
+                    $(ele).parent().addClass('bglightgreen');
+                }
+            }
+            else
+            {
+                $('.radio_'+index1).removeAttr('checked');
+                $(ele).parent().parent().find('#m765_checkbox_'+index1).val(0);
+                $(ele).parent().removeClass('bgpink');
+                $(ele).parent().addClass('bglightgreen');
+            }
+        },
+
+        changeStatus : function (ele, index1)
+        {
+            var val = $(ele).val();
+
+            if($(ele).is(':checked'))
+            {
+                // Loai bo check khac va check lai o nay
+                $('.status_radio_'+index1).removeAttr('checked');
+                $(ele).attr('checked', true);
+
+                // Dien gia tri vao
+                $('#m765_checkbox_status_'+index1).val(val);
+
+                // m765_status_text
+                $('#m765_status_btn_'+index1).text($(ele).parent().parent().find('.m765_status_text').text());
+            }
+            else
+            {
+                $('.status_radio_'+index1).removeAttr('checked');
+                $('#m765_checkbox_status_'+index1).val(0);
+                $('#m765_status_btn_'+index1).text('Chưa xử lý');
+            }
+
+            $(ele).parent().parent().parent().hide();
+        },
+
+        saveWorkingTime : function()
+        {
+            var data = $('#update_params_manual_form').serialize();//, #shiftsFilter
+            var url = sz_BaseUrl + '/static/m765/save';
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != '')
+                {
+                    qssAjax.alert(jreturn.message);
+                }
+
+                m765.loadEquips();
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+
+        },
+
+        rowWorkflow1 : function(el) {
+
+            var thisDropdown = $(el).parent().find('.dropdown-content1');
+            $('.dropdown-content1').not(thisDropdown).hide();
+
+            if($(thisDropdown).is(':visible'))
+            {
+                $(thisDropdown).hide();
+            }
+            else
+            {
+                $(thisDropdown).show();
+            }
+        },
+
+        printParam : function()
+        {
+            var url       = sz_BaseUrl + '/static/m765/print?popup=1';
+
+            url          += '&'+ $('.filter-param').serialize();
+            var newwindow = window.open(url,"mywindow1", "toolbar=yes, scrollbars=yes, resizable=yes");
+            if (window.focus) {newwindow.focus()}
+            return false;
+        },
+
+        checkedAll : function(ele)
+        {
+            var val = $(ele).val();
+            $('.line_data').find('.bgpink').removeClass('bgpink')
+            							.addClass('bglightgreen');
+
+            if($(ele).is(':checked'))
+            {
+                $('.radio_all').removeAttr('checked');
+                $(ele).attr('checked', true);
+
+                if(val == 1) // True
+                {
+                    $('.radio_true').each(function(){
+                        $(this).attr('checked', true);
+                    });
+                    $('.radio_false').each(function(){
+                        $(this).removeAttr('checked');
+                    });
+                    $('.m765_value_check').each(function(){
+                        $(this).val(val);
+                    });
+                }
+                else
+                {
+                    $('.radio_false').each(function(){
+                        $(this).attr('checked', true);
+                    });
+                    $('.radio_true').each(function(){
+                        $(this).removeAttr('checked');
+                    });
+                    $('.m765_value_check').each(function(){
+                        $(this).val(val);
+                        $(this).parent().addClass('bgpink');
+                        $(this).parent().removeClass('bglightgreen');
+                    });
+                }
+            }
+            else
+            {
+                $(ele).removeAttr('checked');
+
+                if(val == 1) // True
+                {
+                    $('.radio_true').each(function(){
+                        $(this).removeAttr('checked');
+                    });
+                    $('.m765_value_check').each(function(){
+                        $(this).val(0);
+                    });
+                }
+                else
+                {
+                    $('.radio_false').each(function(){
+                        $(this).removeAttr('checked');
+                    });
+                    $('.m765_value_check').each(function(){
+                        $(this).val(0);
+                    });
+                }
+            }
+        },
+
+        setAllValue : function(ele)
+        {
+            $val = $(ele).val();
+            $('.m765_value').val($val);
+            $('.m765_value').keyup();
+        },
+
+        warningSave : function()
+        {
+            if(m765.safelySave == 0)
+            {
+                $('#m765_safely_save_warning').show();
+            }
+            else
+            {
+                $('#m765_safely_save_warning').hide();
+            }
+        }
+
+    }
+
+    $(document).ready(function() {
+        // set datepicker
+        $('.datepicker').each(function () {
+            $(this).datepicker({dateFormat: "dd-mm-yy"});
+            $(this).attr('placeholder', 'dd-mm-yyyy');
+        });
+
+        $('#filter_params input, #filter_params select').each(function () {
+           $(this).addClass('filter-param');
+        });
+        
+        $('#input_date').change(function(){ m765.loadEquips() });
+        $('#input_time').change(function(){ m765.safelySave = 0; m765.warningSave();});
+        $('#m765_shift').change(function(){ m765.loadEquips(); });
+
+
+        setInterval(function(){
+            if ($('#m765_author').val() != m765_author){
+                m765_author = $('#m765_author').val();
+
+                m765.loadEquips();
+            }
+        }, 500);
+    });
+</script>
+
+<?php
+$filterBy    = array('ODanhSachNhanVien'=>array('MaNhanVien', 'TenNhanVien'));
+$showFields  = array(
+        'num'=>2,
+        'objects'=>array(
+            'ODanhSachNhanVien'=>array(
+                'id'=>'IOID'
+                ,'display1'=>'MaNhanVien'
+                ,'display2'=>'TenNhanVien'
+            )
+        )
+);
+?>
+
+<div class="clear"></div>
+
+<form id="update_params_manual_form">
+    <!-- Chỉ số - theo tab được chon -->
+    <input type="hidden" value="" name="param" id="m765_param" />
+    <input type="hidden" value="" name="param_type" id="m765_param_type">
+    <input type="hidden" value="" name="ref_param_type" id="m765_param_ref_type">
+    <input type="hidden" value="" name="param_uom" id="m765_param_uom">
+    <input type="hidden" value="" name="ref_param_uom" id="m765_param_ref_uom">
+
+    <div id="filter_params">
+        <table class="detail">
+            <tr>
+                <th class="report-param-label" width="20%">
+                    Ngày nhập:
+                </th>
+                <td>
+                    <input type="text" class="datepicker" id="input_date" name="input_date" value="<?php echo $this->date;?>">
+                </td>
+
+                <th class="report-param-label" width="20%">
+                    Dây chuyền:
+                </th>
+                <td>
+                    <?php echo $this->views->Report->SimpleComboBox('filter_line', $this->lines);?>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <th class="report-param-label" width="20%">
+                    Giờ nhập:
+                </th>
+                <td>
+                    <input type="text" class="" id="input_time" name="input_time" value="<?php echo $this->time;?>">
+                </td>
+
+                <th class="report-param-label" width="20%">
+                    Khu vực:
+                </th>
+                <td>
+                    <?php echo $this->views->Report->SimpleComboBox('filter_location', $this->locations);?>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <th class="report-param-label" width="20%">
+                    Người nhập:
+                </th>
+                <td>
+                    <?php echo $this->views->Report->ListBox('m765_author', $filterBy, $showFields, array(), array(), '', $this->m765_author_tag, $this->m765_author);?>
+                </td>
+
+                <th class="report-param-label" width="20%">
+                    Loại thiết bị:
+                </th>
+                <td>
+                    <?php echo $this->views->Report->SimpleComboBox('filter_type', $this->equiptypes);?>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <th class="report-param-label" width="20%">
+                    Ca làm việc:
+                </th>
+                <td>
+                    <?php if(Qss_Lib_System::fieldActive('ONhatTrinhThietBi', 'Ca')):?>
+                        <?php echo $this->views->Report->SimpleComboBox('m765_shift', $this->shifts);?>
+                    <?php endif;?>
+                </td>
+
+                <th class="report-param-label" width="20%">
+                    Thiết bị:
+                </th>
+                <td>
+                    <?php echo $this->views->Report->SimpleListBox('filter_equip', '/static/m765/equips',  'style="width:200px;"', 'filter_equip');?>
+                </td>
+                <td>
+                    <button id="btnSAVE" type="button" onclick="m765.loadEquips()" class="btn_main_top btn"> Lọc theo điều kiện </button>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+    <div class="clear"></div>
+
+    <div id="view">
+            <div class="fl">
+            	<label class="bold">Lọc theo chỉ số: </label>
+				<select id="filter_param" name="filter_param" onchange="m765.loadEquips()">
+                	<option value="0"
+							param=""
+                            type=""
+                            reftype=""
+                            uom=""
+                            ishour="">
+						</option>
+					<?php foreach($this->equipparams as $param):?>
+                    	<option value="<?php echo $param->IOID;?>"
+								param="<?php echo $param->ChiSo;?>"
+	                            type="<?php echo $param->DongHo;?>"
+	                            reftype="<?php echo $param->Ref_DongHo;?>"
+	                            uom="<?php echo $param->DonViTinh;?>"
+	                            ishour="<?php echo (int)$param->Gio;?>">
+	                            <?php echo $param->ChiSo;?> (<?php echo $param->DonViTinh;?>)
+						</option>
+					<?php endforeach;?>
+				</select>
+				<label class="bold">Nhập tự động: </label>
+				<input type="text" value="" onkeyup="m765.setAllValue(this)" onchange="m765.setAllValue(this)" size="5"/>
+	            <input id="radio_all_true" class="radio_all" type="checkbox" value="1" onclick="m765.checkedAll(this)">OK
+	            <input id="radio_all_false" class="radio_all" type="checkbox" value="2" onclick="m765.checkedAll(this)">NOK
+                </div>
+
+                <div class="fr">
+                    <button id="btnSAVE" type="button" onclick="m765.saveWorkingTime()" class="btn_main_top btn"> Lưu thông tin chạy máy </button>
+                    <button id="btnSAVE" type="button" onclick="m765.printParam()" class="btn_main_top btn"> In bảng nhập dữ liệu đo  </button>
+                </div>
+            <!-- END .navmenutab - các tab chỉ số -->
+
+            <div class="clear"></div>
+
+            <div id="update_params_manual_table"></div>
+    </div>
+</form><!-- END form#update_params_manual_form -->
+
+<div id="qss_trace"></div>

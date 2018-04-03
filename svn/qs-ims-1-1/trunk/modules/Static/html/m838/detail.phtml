@@ -1,0 +1,186 @@
+<?php
+$width  = '1000';
+$widths = array(2, 3, 3, 5, 6, 5, 6, 3);
+$fit    = Qss_Lib_Report::changeWidthToFitScreen2($widths, $width);
+$month  = '';
+$i      = 0;
+?>
+
+<div class="clear"></div>
+
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+    <button type="button" class="btn extra-button" > Duyệt </button>
+    <button type="button" class="btn extra-button" > Xóa </button>
+
+    <div class="empty_block">&nbsp; </div>
+
+    <button class="btn extra-button" type="button" onclick="popupWindowFormInsert('M837', <?php echo $this->deptid;?>, {OKeHoachBaoTri_KeHoachTongThe:<?php echo $this->generalPlan->IOID;?>}, function(){ m838.edit(<?php echo $this->ifid;?>) })"> Tạo kế hoạch đột xuất </button>
+    <button class="btn extra-button" type="button"> Tạo từ kế hoạch định kỳ </button>
+    <button class="btn extra-button" type="button"> Bảo trì phòng ngừa </button>
+
+    <div class="fr">
+        <button type="button" class="btn extra-button" > Tạo phiếu bảo trì </button>
+        <button type="button" class="btn extra-button" onclick="m838.back()"> Trở lại </button>
+    </div>
+
+</div>
+
+<div class="clear"></div>
+
+<div id="view">
+    <div class="full-width-line-wrap" id="filter">
+
+        <table class="" cellspacing="0" cellpadding="0" border="0" style="">
+            <tr>
+                <th class="left" style="width: 100px;">
+                    Người duyệt :
+                </th>
+
+                <td class="left" >
+                    <input type="text" style="width: 200px;" value="<?php echo $this->generalPlan->NguoiPheDuyet;?>"/>
+                </td>
+
+                <td>
+                    &nbsp;
+                </td>
+            </tr>
+
+            <tr>
+                <th class="left">
+                    Ngày duyệt :
+                </th>
+
+                <td class="left">
+                    <input type="text" style="width: 200px;" value="<?php echo Qss_Lib_Date::mysqltodisplay($this->generalPlan->NgayPheDuyet);?>"/>
+                </td>
+
+                <td>
+                    &nbsp;
+                </td>
+            </tr>
+
+            <tr>
+                <th class="left">
+                    Mô tả :
+                </th>
+
+                <td class="left" style="padding: 0px 3px">
+                    <textarea style="width: 300px; height: 100px"><?php echo $this->generalPlan->MoTa;?></textarea>
+                </td>
+
+                <td>
+                    &nbsp;
+                </td>
+            </tr>
+
+            <tr>
+                <th class="left">
+                    &nbsp;
+                </th>
+
+                <td class="left" style="padding: 5px 3px;">
+                    <button type="button" class="btn btn-custom"> Cập nhật </button>
+                </td>
+
+                <td>
+                    &nbsp;
+                </td>
+            </tr>
+
+        </table>
+    </div>
+
+    <div class="clear"></div>
+
+    <div id="qss_form">
+        <div class="tablescroll">
+            <table class="border_table" cellspacing="0" cellpadding="0" border="0" style="width:<?php echo $width;?>px">
+                <tr>
+                    <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                        <input type="checkbox" />
+                    </th>
+
+                    <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                        Ngày bắt đầu
+                    </th>
+
+                    <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                        Ngày kết thúc
+                    </th>
+
+                    <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                        Mã thiết bị
+                    </th>
+
+                    <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                        Tên thiết bị
+                    </th>
+
+                    <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                        Bộ phận
+                    </th>
+
+                    <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                        Loại bảo trì
+                    </th>
+
+                    <th class="center" style="width: <?php echo $fit[$begin++];?>px">
+                        Tình trạng
+                    </th>
+                </tr>
+
+
+                <?php foreach($this->detailPlans as $item):?>
+                    <?php $tempDate  = strtotime($item->NgayBatDau); ?>
+                    <?php $tempMonth = date("m", $tempDate).'-'.(int)date('Y', $tempDate);?>
+                    <?php if($month != $tempMonth):?>
+                        <?php $i = 0; // reset;?>
+                        <tr>
+                            <th colspan="8" class="left" style="padding-left: 2px;">
+                                Tháng <?php echo $tempMonth;?>
+                            </th>
+                        </tr>
+                    <?php endif;?>
+                    <?php $month = $tempMonth;?>
+
+                    <tr class="<?php if($i%2):?>bgwhite<?php else:?>bglightblue<?php endif;?>">
+                        <td class="center">
+                            <input type="checkbox" />
+
+                            <input type="hidden" name="detail_ifid[]" value="<?php echo $item->IFID_M837;?>" />
+                            <input type="hidden" name="detail_ioid[]" value="<?php echo $item->IOID;?>" />
+                        </td>
+
+                        <td class="center">
+                            <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayBatDau);?>
+                        </td>
+
+                        <td class="center">
+                            <?php echo Qss_Lib_Date::mysqltodisplay($item->NgayKetThuc);?>
+                        </td>
+
+                        <td class="left">
+                            <a href="#1" title="Click để sửa!"><?php echo $item->MaThietBi;?></a>
+                        </td>
+
+                        <td class="left">
+                            <?php echo $item->TenThietBi;?>
+                        </td>
+
+                        <td class="<?php if($item->Ref_ViTri):?>left<?php else:?>center<?php endif;?>">
+                            <?php echo $item->ViTri;?> - <?php echo $item->BoPhan;?>
+                        </td>
+
+                        <td class="left">
+                            <?php echo $item->LoaiBaoTri;?>
+                        </td>
+
+                        <td class="center <?php echo $item->Color;?>" style="padding: 3px;">
+                            <?php echo $item->StepName;?>
+                        </td>
+                    </tr>
+                <?php endforeach;?>
+            </table>
+        </div>
+    </div>
+</div>

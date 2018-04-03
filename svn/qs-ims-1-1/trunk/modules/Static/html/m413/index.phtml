@@ -1,0 +1,169 @@
+<style>
+#M413_info_table tr td, #M413_info_table tr th
+{
+    padding:3px;
+}
+
+#M413_info_table .title
+{
+    width:150px;
+}
+</style>
+
+<script>
+var M413 = 
+{
+    PAYMENT_MODULE : 'M220',
+    INVOICE_MODULE : 'M404',
+		
+    /**
+     * Kiem tra don hang
+     */
+	checkOrder : function()
+	{
+		M413.info();    // Thong tin don hang
+		M413.process(); // Tien do xu ly
+		M413.invoice(); // Hoa don cua don hang
+		M413.payment(); // Thanh toan cua don hang
+	}, 
+
+	info : function()
+	{
+    	var url  = sz_BaseUrl + '/static/M413/info';
+    	var data = $('#M413_plan_form').serialize();
+    	
+    	qssAjax.getHtml(url, data, function(jreturn) {
+    		$('#M413_info_box').html(jreturn);
+    	});  
+	},
+	
+	/**
+	 * Tien do don hang <Nhan hang>
+	 */	
+    process : function()
+    {
+    	var url  = sz_BaseUrl + '/static/M413/process';
+    	var data = $('#M413_plan_form').serialize();
+    	
+    	qssAjax.getHtml(url, data, function(jreturn) {
+    		$('#M413_process_box').html(jreturn);
+    	});         
+    },
+
+    /**
+     * Theo doi hoa don cua don hang
+     */
+     invoice : function()
+     {
+     	var url  = sz_BaseUrl + '/static/M413/invoice';
+    	var data = $('#M413_plan_form').serialize();
+    	
+    	qssAjax.getHtml(url, data, function(jreturn) {
+    		$('#M413_invoice_box').html(jreturn);
+    	});          
+     },
+
+    /**
+     * Theo doi thanh toan cua don hang
+     */
+    payment : function()
+    {
+     	var url  = sz_BaseUrl + '/static/M413/payment';
+    	var data = $('#M413_plan_form').serialize();
+    	
+    	qssAjax.getHtml(url, data, function(jreturn) {
+    		$('#M413_payment_box').html(jreturn);
+    	});         
+    },
+
+    /**
+     * Đóng đơn hàng <Cần kiểm tra thanh toán hết cho đơn hàng hay chưa>
+     */
+    closeOrder : function()
+    {
+    	    
+    },
+
+    /**
+     * Tao hoa don 
+     */
+    createInvoice : function(dat, sFunction)
+    {
+    	popupFormInsert(M413.INVOICE_MODULE, dat, sFunction);
+    },
+
+    /**
+     * Tao thanh toan
+     */
+    createPayment : function(dat, sFunction)
+    {
+    	popupFormInsert(M413.PAYMENT_MODULE, dat, sFunction);
+    },
+
+    /**
+     * Tao thanh toan tu hoa don
+     */  
+    createPayment2 : function()
+    {
+
+    },
+
+    /**
+     * Xu ly nut da thanh toan
+     */
+    paid :function()
+    {
+        
+    }   
+    
+}
+</script>
+
+<div class="clear"></div>
+
+<div id="view">
+    <div id="M413_wrap">
+        <div id="M413_select_order">
+            <form id="M413_plan_form">    
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <!-- Chọn đơn hàng -->
+                        <td class="left" width="100px">
+                            <?php echo $this->_translate(1)?>: 
+                        </td>
+        				
+        				<!-- Combobox: Đơn hàng đã đặt hàng chưa kết thúc -->
+                        <td class="left" width="200px">
+            				<?php echo $this->views->Report->SimpleComboBox('orderioid', $this->bookedOrders); ?>   
+        				</td>        				
+    
+        				<!-- Button: Kiểm tra đơn hàng -->
+                        <td  class="left">
+                            <button type="button" class="btn btn-custom" onclick="M413.checkOrder();">
+                                 <?php echo $this->_translate(2)?>
+                            </button>
+                        </td>
+                    </tr>                                      
+                </table>                           
+            </form><!-- end form#M413_plan_form -->       
+        </div><!-- end #M413_select_order -->
+        <br/>
+        
+        <!-- Hien thi thong tin don hang -->
+        <div class="clear"></div>
+        <div id="M413_info_box"></div><!-- end #M413_info_box -->
+        
+        <!-- Hien thi tien do don hang -->
+        <div class="clear"></div>
+        <div id="M413_process_box"></div><!-- end #M413_process_box -->
+        
+        <!-- Hien thi hoa don -->
+        <div class="clear"></div>
+        <div id="M413_invoice_box"></div><!-- end #M413_invoice_box -->
+        
+        <!-- Hien thi thanh toan -->
+        <div class="clear"></div>
+        <div id="M413_payment_box"></div><!-- end #M413_payment_box -->
+    </div><!-- end #M413_wrap -->
+</div><!-- end #view -->
+

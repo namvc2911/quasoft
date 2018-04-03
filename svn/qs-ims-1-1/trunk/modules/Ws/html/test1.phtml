@@ -1,0 +1,23 @@
+<?php $status = array(-1=>'wrong security code',0=>'not sent',1=>'sent');?>
+<?php $class = array(-1=>'error',0=>'error',1=>'working');?>
+<h2>Web service function test</h2>
+<?php if(isset($this->retval)):?>
+<p><span>Status: <?php echo $this->retval?></span>
+<?php endif;?>
+<form method="post">
+<input type="hidden" name="OK" value="1">
+<table border="1">
+<tr>
+<th>Security code</th><td><input name="code" value="<?php echo $this->wscode?>" /></td>
+</tr>
+<tr>
+<th>Phone No (Default: <?php echo $this->defaultno?>)</th><td><input name="phoneno" value="<?php echo $this->phoneno?>" /></td>
+</tr>
+<tr>
+<th>Content</th><td><input name="content" value="<?php echo $this->content?>" /></td>
+</tr>
+<tr >
+<th colspan="2"><input type="submit" value="Send"/></th>
+</tr>
+</table>
+</form>

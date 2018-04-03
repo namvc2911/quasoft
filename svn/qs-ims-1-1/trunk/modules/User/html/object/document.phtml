@@ -1,0 +1,323 @@
+<style>
+.document_add {
+	margin: 10px 0 0 25px;
+}
+
+.document_add td {
+	height: 25px;
+}
+
+#document_alert .title {
+	font-size: 12px;
+	font-style: italic;
+	font-weight: bold;
+	line-height: 18px;
+	padding-left: 2px;
+}
+
+#document_alert .list {
+	color: red;
+	font-size: 11px;
+}
+
+#document_alert  .list .overflow {
+	overflow: hidden;
+}
+
+#document_alert  .list .f_left {
+	width: 50%;
+	float: left;
+}
+
+#document_alert  .list .f_right {
+	width: 49.5%;
+	float: right;
+}
+
+a#upload {
+	cursor: y
+}
+
+.document_table th {
+	text-align: left;
+	height: 50px;
+	padding: 5px 5px;
+	border-bottom: 1px dotted black;
+}
+
+.document_table td { /*font-size:11px;
+	font-family:Arial;*/
+	height: 50px;
+	padding: 5px 5px;
+	border-bottom: 1px dotted black;
+}
+
+.row_title {
+	line-height: 13px;
+	font-style: italic;
+	background: gray;
+	color: white;
+	font-weight: bold;
+}
+
+.row_title td {
+	padding: 2px 5px;
+}
+
+.document_table .w05 {
+	width: 5%;
+}
+
+.document_table .w1 {
+	width: 10%;
+}
+
+.document_table .w15 {
+	width: 15%;
+}
+
+.document_table .w2 {
+	width: 20%;
+}
+
+.document_table .w25 {
+	width: 25%;
+}
+
+.document_table .w3 {
+	width: 30%;
+}
+
+.document_table .w4 {
+	width: 40%;
+}
+
+.document_table .w45 {
+	width: 45%;
+}
+</style>
+<script>
+function downloadTemplate(id) {
+	var url = sz_BaseUrl + '/admin/document/download?id=' + id;
+	//window.location.href = url;
+        openModule('', url);
+}
+function attachObjectDocument()
+{
+	var url = sz_BaseUrl + '/user/form/attach';
+	var data = $('#document_object').serialize();
+	qssAjax.call(url, data, function(jreturn) {
+		objectDocument(<?php echo $this->form->i_IFID?>,<?php echo $this->form->i_DepartmentID?>,<?php echo $this->ioid?>);
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+
+}
+function downloadDoc(id){
+	var url = sz_BaseUrl + '/user/document/download?id='+id;
+	//window.location.href = url;
+        openModule('', url);
+}
+function deleteDocument(ifid,id)
+{
+	qssAjax.confirm('<?php echo $this->_translate(1);?>',function(){
+		var url = sz_BaseUrl + '/user/form/dettach';
+		var data = {ifid:ifid,id:id};
+		qssAjax.call(url, data, function(jreturn) {
+			objectDocument(<?php echo $this->form->i_IFID?>,<?php echo $this->form->i_DepartmentID?>,<?php echo $this->ioid?>);
+		}, function(jreturn) {
+			qssAjax.alert(jreturn.message);
+		});
+	});
+}
+function editDocument(ifid,id)
+{
+	var url = sz_BaseUrl + '/user/form/load/document';
+	var data = {ifid:ifid,id:id};
+	qssAjax.call(url, data, function(jreturn) {
+		$('#fdid').val(jreturn.data.fdid);
+		$('#document_type').val(jreturn.data.dtid);
+		$('#document').val(jreturn.data.docname);
+		$('#document_id').val(jreturn.data.docid);
+		$('#reference').val(jreturn.data.reference);
+		$('#updateButton').html('<?php echo $this->_translate(2);?>');
+	}, function(jreturn) {
+		qssAjax.alert(jreturn.message);
+	});
+}
+</script>
+
+
+<div class="float: left;width: 90%">
+	<?php if(count((array)$this->requires)):?>
+	<div id="document_alert">
+		<div class="title">
+		<?php echo $this->_translate(9);?>
+		</div>
+		<div class="list">
+		<?php foreach($this->requires as $item):?>
+			<div class="overflow">
+				<div class="f_left">
+					-
+					<?php echo $item->Code?>
+					:
+					<?php echo $item->Type?>
+				</div>
+				<!-- end .left -->
+				<div class="f_right">
+				<?php if($item->File):?>
+					<a href="#!" onclick="downloadTemplate(<?php echo $item->DTID?>)"><?php echo $this->_translate(10);?>
+					</a>
+					<?php endif;?>
+				</div>
+				<!-- end .right -->
+			</div>
+			<!-- end .overflow -->
+			<?php endforeach;?>
+		</div>
+		<!-- end .list -->
+	</div>
+	<!-- end #document_alert -->
+	<div class="border"></div>
+	<!--  end .border -->
+	<?php endif;?>
+
+	<div id="document_table" style="float: left; width: 88%">
+		<table class="document_table" border="0">
+			<tr class="row_first">
+				<th class="w05 center"><?php echo $this->_translate(15);?>
+				</th>
+				<!-- end .cell 5-->
+				<th class="w2"><?php echo $this->_translate(12);?>
+				</th>
+				<!-- end .cell 2-->
+				<th class="w2"><?php echo $this->_translate(13);?>
+				</th>
+				<!-- end .cell 3-->
+				<th class="w2"><?php echo $this->_translate(14);?>
+				</th>
+				<!-- end .cell 4-->
+				<th class="w15"><?php echo $this->_translate(16);?>
+				</th>
+				<!-- end .cell 6-->
+				<th class="w05"></th>
+				<!-- end .cell 7-->
+				<th class="w05"></th>
+				<!-- end .cell 8-->
+			</tr>
+
+			<?php $step = 0?>
+			<?php $i = 0?>
+			<?php foreach ($this->documents as $item):?>
+			<?php $i++?>
+			<tr>
+				<td class="center"><?php if($item->Ext):?> <img
+					src="/user/document/picture?file=<?php echo $item->DID?>.<?php echo $item->Ext?>"
+					height="80"> <?php else:?> &nbsp; <?php endif;?>
+				</td>
+				<td><?php if($item->Code):?> <?php echo $item->Code?> - <?php echo $item->Type?>
+				<?php else:?> <?php echo $this->_translate(19);?> <?php endif;?>
+				</td>
+				<td><?php if($item->docname):?><a href="#!"
+					onclick="downloadDoc(<?php echo $item->DID?>)"><?php echo $item->docname?>
+				</a> <?php else:?>&nbsp;<?php endif;?>
+				</td>
+				<td><?php echo $item->Reference?>&nbsp;</td>
+				<td><?php echo Qss_Lib_Date::mysqltodisplay($item->Date)?><br> 
+				<span class="notify_time"><?php echo Qss_Lib_Date::mysqltodisplay($item->Date,'H:i:s')?></span>
+				</td>
+				<td class="center"><?php if($item->StepNo == $this->form->i_Status && ($this->rights & 2)  && (!$this->form->lockid)):?>
+					<a href="#!"
+					onclick="editDocument(<?php echo $this->form->i_IFID?>, <?php echo $item->FDID?>)"><?php echo $this->_translate(20);?>
+				</a> <?php else:?> - <?php endif;?>
+				</td>
+				<td class="center"><?php if($item->StepNo == $this->form->i_Status && ($this->rights & 2)  && (!$this->form->lockid)):?>
+					<a href="#!"
+					onclick="deleteDocument(<?php echo $this->form->i_IFID?>, <?php echo $item->FDID?>)"><?php echo $this->_translate(21);?>
+				</a> <?php else:?> - <?php endif;?>
+				</td>
+			</tr>
+
+			<?php $step = $item->StepNo?>
+			<?php endforeach;?>
+		</table>
+		<!-- end .document_table -->
+
+	</div>
+	<!-- end #document_table -->
+
+	<div style="float: left; width: 88%;">
+	<?php if( ($this->rights & 2)  && (!$this->form->lockid)):?>
+		<fieldset>
+			<legend>Thêm tài liệu</legend>
+			<form id="document_object" method="post">
+				<input type="hidden" name="fdid" id="fdid"> 
+				<input type="hidden" name="ifid" value="<?php echo $this->form->i_IFID?>"> 
+				<input type="hidden" name="ioid" value="<?php echo $this->ioid?>">
+				<input type="hidden" id="document_id" name="document_id">
+				<table class="document_add">
+					<tr>
+						<td class="w1"><?php echo $this->_translate(22);?>: <!-- Chọn loại tài liệu -->
+						</td>
+						<td class="w25"><select id="document_type" name="document_type"
+							style="width: 215px;">
+								<option value="">
+									--
+									<?php echo $this->_translate(3);?>
+									--
+								</option>
+								<?php foreach($this->documenttypes as $item):?>
+								<option value="<?php echo $item->DTID?>">
+								<?php echo $item->Code?>
+									-
+									<?php echo $item->Type?>
+								</option>
+								<?php endforeach;?>
+						</select>
+						</td>
+						<!-- end .cell -->
+					</tr>
+					<tr>
+						<td class="w1"><?php echo $this->_translate(5);?>:&nbsp;</td>
+						<!-- end .cell -->
+
+						<td class="w45"><a id="upload" href="#!"><?php echo $this->_translate(6);?>
+						</a>
+						</td>
+						<!-- end .cell -->
+					</tr>
+					<tr>
+						<td class="w1"><?php echo $this->_translate(4);?>:&nbsp;</td>
+						<!-- end .cell -->
+						<td class="w45"><input type="text" size="40" id="document"
+							name="document">
+						</td>
+						<!-- end .cell -->
+					</tr>
+
+					<tr>
+						<td><?php echo $this->_translate(8);?>:&nbsp;</td>
+						<!-- end .cell -->
+
+						<td><input type="text" name="reference" id="reference" value=""
+							size="40" />
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" class="center">
+							<button type="button" id="updateButton" class="btn-custom"
+								onclick="attachObjectDocument()">
+								&nbsp;
+								<?php echo $this->_translate(7);?>
+								&nbsp;
+							</button>
+						</td>
+						<!-- end .cell -->
+					</tr>
+				</table>
+				<!-- end .document_table -->
+			</form>
+		</fieldset>
+		<?php endif;?>
+	</div>
+</div>

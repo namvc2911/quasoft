@@ -1,0 +1,203 @@
+<style type="text/css" media="screen">
+<!--
+.tag-container {
+	position: relative !important;
+}
+-->
+</style>
+<script type="text/javascript">
+    <!--
+    $(function () {
+    	var url = sz_BaseUrl + '/system/field/tagging?objid=<?php echo @$this->transferinitData?>';
+        $('#szRegx').tagSuggest({
+            url: url,
+            delay: 200
+        });
+    });
+    //-->
+    </script>
+<form method="post" id="qss_form">
+	<input type="hidden" value="<?php echo @$this->transfer->FTID?>"
+		name="ID" />
+	<div id="horizontal-toolbar" class="horizontal-toolbar">
+		<div id="btnSAVE" class="btn_main_top" onclick="formTransferSave()"
+			title="<?php echo $this->_translate(34)?>">
+			<a href="#" class="icon-32-apply"></a>
+		</div>
+		<div class="btn_main_top" onclick="formTransferBack()"
+			title="<?php echo $this->_translate(32)?>">
+			<a href="#" class="icon-32-back"></a>
+		</div>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<div id="item-actions">
+			<ul>
+				<li class="item-action active"><a href="#"><span><?php echo $this->_translate(121)?>
+					</span> </a></li>
+			</ul>
+		</div>
+		<table border="0">
+			<tr>
+				<td><?php echo $this->_translate(101)?></td>
+				<td><select onchange="formTransferLoadObject(this.value,'ObjID',0);"
+					name="FID">
+						<option value="">
+							-----
+							<?php echo $this->_translate(38)?>
+							-----
+						</option>
+						<?php foreach ($this->modules as $object):?>
+						<option <?php if(@$this->transfer->FID == $object->FID):?>
+							selected <?php endif;?> value="<?php echo $object->FID?>">
+							<?php echo $object->Name?>
+						</option>
+						<?php endforeach;?>
+				</select> <?php if(@$this->transfer->FID):?> <script>
+		formTransferLoadObject('<?php echo $this->transfer->FID?>','ObjID','<?php echo $this->transferinitData?>');
+		formTransferLoadField('<?php echo $this->transferinitData?>','FieldID','<?php echo $this->transfer->FieldID?>');
+		formTransferLoadField('<?php echo $this->transferinitData?>','FLinkFieldID','<?php echo $this->transfer->FLinkFieldID?>');
+		formTransferLoadField('<?php echo $this->transferinitData?>','FLinkFieldID2','<?php echo $this->transfer->FLinkFieldID2?>');
+		formTransferLoadObject('<?php echo $this->transfer->ToFID?>','ToObjID','<?php echo $this->transfer->ToObjID?>');
+		formTransferLoadField('<?php echo $this->transfer->ToObjID?>','ToFieldID','<?php echo $this->transfer->ToFieldID?>');
+		formTransferLoadField('<?php echo $this->transfer->ToObjID?>','LinkFieldID','<?php echo $this->transfer->LinkFieldID?>');
+		formTransferLoadField('<?php echo $this->transfer->ToObjID?>','LinkFieldID2','<?php echo $this->transfer->LinkFieldID2?>');
+		</script> <?php endif;?></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(102)?></td>
+				<td><select
+					onchange="formTransferLoadField(this.value,'FieldID',0);formTransferLoadField(this.value,'FLinkFieldID');formTransferLoadField(this.value,'FLinkFieldID2')"
+					name="ObjID" id="ObjID">
+						<option value="">
+							-----
+							<?php echo $this->_translate(38)?>
+							-----
+						</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(103)?></td>
+				<td><select name="FieldID" id="FieldID">
+						<option value="">
+							-----
+							<?php echo $this->_translate(38)?>
+							-----
+						</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(98)?></td>
+				<td><select
+					onchange="formTransferLoadObject(this.value,'ToObjID',0);"
+					name="ToFID">
+						<option value="">
+							-----
+							<?php echo $this->_translate(38)?>
+							-----
+						</option>
+						<?php foreach ($this->lists as $object):?>
+						<option <?php if(@$this->transfer->ToFID == $object->FID):?>
+							selected <?php endif;?> value="<?php echo $object->FID?>">
+							<?php echo $object->Name?>
+						</option>
+						<?php endforeach;?>
+				</select></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(99)?></td>
+				<td><select
+					onchange="formTransferLoadField(this.value,'ToFieldID',0);formTransferLoadField(this.value,'LinkFieldID',0);formTransferLoadField(this.value,'LinkFieldID2',0);"
+					name="ToObjID" id="ToObjID">
+						<option value="">
+							-----
+							<?php echo $this->_translate(38)?>
+							-----
+						</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(100)?></td>
+				<td><select name="ToFieldID" id="ToFieldID">
+						<option value="">-----select one-----</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(138)?></td>
+				<td><select name="FLinkFieldID" id="FLinkFieldID">
+						<option value="">
+							-----
+							<?php echo $this->_translate(38)?>
+							-----
+						</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(139)?></td>
+				<td><select name="LinkFieldID" id="LinkFieldID">
+						<option value="">
+							-----
+							<?php echo $this->_translate(38)?>
+							-----
+						</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(138)?> 2</td>
+				<td><select name="FLinkFieldID2" id="FLinkFieldID2">
+						<option value="">
+							-----
+							<?php echo $this->_translate(38)?>
+							-----
+						</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(139)?> 2</td>
+				<td><select name="LinkFieldID2" id="LinkFieldID2">
+						<option value="">
+							-----
+							<?php echo $this->_translate(38)?>
+							-----
+						</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(54)?></td>
+				<td><select name="Expr">
+						<option value="0" <?php if(@$this->transfer->Expr == 0):?>
+							selected <?php endif;?>>
+							<?php echo $this->_translate(141)?>
+						</option>
+						<option value="1" <?php if(@$this->transfer->Expr == 1):?>
+							selected <?php endif;?>>
+							<?php echo $this->_translate(142)?>
+						</option>
+						<option value="2" <?php if(@$this->transfer->Expr == 2):?>
+							selected <?php endif;?>>
+							<?php echo $this->_translate(140)?>
+						</option>
+						<option value="3" <?php if(@$this->transfer->Expr == 3):?>
+							selected <?php endif;?>>
+							<?php echo $this->_translate(143)?>
+						</option>
+						<option value="4" <?php if(@$this->transfer->Expr == 4):?>
+							selected <?php endif;?>>
+							<?php echo $this->_translate(144)?>
+						</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(136)?></td>
+				<td><input value="<?php echo (int) @$this->transfer->StepNo;?>"
+					name="StepNo" /></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->_translate(132)?></td>
+				<td><textarea name="Value" cols="80" rows="7" id="szRegx">
+						<?php echo @$this->transfer->Value?>
+					</textarea></td>
+			</tr>
+		</table>
+	</div>
+</form>

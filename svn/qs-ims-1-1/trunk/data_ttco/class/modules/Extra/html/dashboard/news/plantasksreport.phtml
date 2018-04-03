@@ -1,0 +1,75 @@
+<script>
+    $(document).ready(function(){
+        $('#prdate').keypress(function (e) {
+            if (e.which == 13) {
+                loadPlanTasksReport();
+                return false;    //<---- Add this line
+            }
+        });
+
+        $('#prdate').change(function ()
+        {
+            loadPlanTasksReport();
+        });
+    });
+</script>
+
+<div class="box_das2">
+    <div class="inside_das2 " id="">
+        <div class="dash_box_heading">
+            <div class="fl" style="line-height: 31px;">
+                Báo cáo công việc sửa chữa hàng ngày
+            </div>
+
+            <div class="fr" style="padding: 5px 5px;">
+                <?php echo $this->views->Report->Datepicker('prdate', $this->date);?>
+            </div>
+        </div>
+
+        <div style="clear: both; width: 100%">
+
+        </div>
+
+        <div style="clear: both; border-top: 1px #cccccc dotted; padding-top: 5px;" id=""  class="dash_box_content">
+            <?php foreach($this->news as $item):?>
+
+                <?php
+                $status = '';
+                if($item->Status == 1)
+                {
+                    $status =  'Soạn thảo';
+                }
+                elseif($item->Status == 2)
+                {
+                    $status =  'Thực hiện';
+                }
+                elseif($item->Status == 3)
+                {
+                    $status =  'Hủy';
+                }
+                ?>
+
+                <div style="border-bottom: 1px #ccc dotted; padding-bottom: 5px;">
+                    <p style="padding-left: 5px; margin-bottom: 4px;">
+                        <i><b style="font-size: 13px;">- <?php echo $item->DeptName;?> (<?php echo Qss_Lib_Date::mysqltodisplay($item->Ngay);?> ):</b></i>
+                        <?php echo $item->NoiDung;?>
+                    </p>
+
+
+
+                    <p style="padding-left: 5px;">
+                        &gt;&gt;&nbsp;<b><i>TG thực hiện:</i></b> <?php echo $item->ThoiGianThucHien.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';?>
+                        &gt;&gt;&nbsp;<b><i>TG dừng máy:</i></b>  <?php echo $item->ThoiGianDungMay.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';?>
+                        &gt;&gt;&nbsp;<b><i>Tình trạng:</i></b>  <?php echo $status;?>
+                    </p>
+
+                    <p style="padding-left: 5px;">
+                        &gt;&gt;&nbsp;<b><i>Kết quả:</i></b> <?php echo $item->KetQua;?>
+                    </p>
+
+                </div>
+
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>

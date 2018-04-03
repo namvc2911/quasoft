@@ -1,0 +1,22 @@
+<select name="<?php echo $this->id;?>" id="<?php echo $this->id;?>">
+        <option value=""> --- <?php echo $this->_translate(3)?> --- </option>
+        <option value="1"> <?php echo $this->_translate(4)?> </option>
+        <option value="2"> <?php echo $this->_translate(5)?> </option>
+        <option value="3"> <?php echo $this->_translate(6)?> </option>
+        <option value="4"> <?php echo $this->_translate(7)?> </option>
+        <option value="5"> <?php echo $this->_translate(8)?> </option>
+        <option value="6"> <?php echo $this->_translate(9)?> </option>
+        <option value="7"> <?php echo $this->_translate(10)?> </option>
+        <option value="8"> <?php echo $this->_translate(11)?> </option>
+        <option value="9"> <?php echo $this->_translate(12)?> </option>
+        <option value="10"> <?php echo $this->_translate(13)?></option>
+        <option value="11"> <?php echo $this->_translate(14)?> </option>
+        <option value="12"> <?php echo $this->_translate(15)?> </option>
+</select>
+
+<script>
+$(document).ready(function(){
+    var monthNo  = <?php echo (int)date('m');?>;
+    $('#<?php echo $this->id;?>').val(monthNo);
+});
+</script>

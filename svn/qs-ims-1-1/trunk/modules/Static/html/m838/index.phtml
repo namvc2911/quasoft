@@ -1,0 +1,305 @@
+<script src="/js/common.js"></script>
+
+<script>
+    var m838 = {
+        changeGeneralStatus : function(ifid, deptid, stepno, userid, comment)
+        {
+            if(stepno == '')
+            {
+                qssAjax.alert(Language.translate('SELECT_ACTION'));
+                return;
+            }
+
+            var url  = sz_BaseUrl + '/user/form/request';
+            var data = {ifids:ifid,deptids:deptid,stepno:stepno,userid:userid,comment:comment};
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != ''){
+                    qssAjax.n(jreturn.message,function(){
+                        m838.edit(ifid);
+                    });
+                }
+                else{
+                    m838.edit(ifid);
+                }
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+            $('.dropdown-content').hide();
+        },
+
+        changeDetailStatus : function(generalIFID, stepno, userid)
+        {
+            var ifid   = '';
+            var deptid = '';
+
+
+            $('.OKeHoachChiTiet_IFID').not(':disabled').each(function(){
+                ifid += (ifid != '')?',':'';
+                ifid += $(this).val();
+            });
+
+            $('.OKeHoachChiTiet_DeptID').not(':disabled').each(function(){
+                deptid += (deptid != '')?',':'';
+                deptid += $(this).val();
+            });
+
+
+            if(stepno == '')
+            {
+                qssAjax.alert(Language.translate('SELECT_ACTION'));
+                return;
+            }
+
+            var url  = sz_BaseUrl + '/user/form/request';
+            var data = {ifids:ifid,deptids:deptid,stepno:stepno,userid:userid,comment:''};
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != ''){
+                    qssAjax.n(jreturn.message,function(){
+                        m838.edit(generalIFID);
+                    });
+                }
+                else{
+                    m838.edit(generalIFID);
+                }
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+            $('.dropdown-content').hide();
+        },
+
+        deleteDetail : function(generalIFID)
+        {
+            qssAjax.confirm(Language.translate('CONFIRM_DELETE'),function(){
+                var ifid   = [];
+                var deptid = [];
+                var i= 0;
+
+                $('.OKeHoachChiTiet_IFID').not(':disabled').each(function(){
+                    ifid[i] = $(this).val();
+                    i++;
+                });
+
+                i= 0;
+                $('.OKeHoachChiTiet_DeptID').not(':disabled').each(function(){
+                    deptid[i] = $(this).val();
+                    i++;
+                });
+
+                var url = sz_BaseUrl + '/user/form/delete';
+                var data = {
+                    ifid : ifid,
+                    deptid : deptid
+                };
+                qssAjax.call(url, data, function(jreturn) {
+                    m838.edit(generalIFID);
+                }, function(jreturn) {
+                    qssAjax.alert(jreturn.message);
+                });
+            });
+        },
+
+        filter : function(year)
+        {
+            var data = {year:year};
+            var url  = sz_BaseUrl + '/static/m838/general/index';
+
+            $.cookie('m838_year', year, {path:'/'});
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#m838_wrap').html(jreturn);
+                m838.resetViewHeight();
+            });
+        },
+
+        edit : function(ifid)
+        {
+            var data = {ifid:ifid};
+            var url  = sz_BaseUrl + '/static/m838/detail/index';
+
+            // Set lai nam theo nam dang loc, va do cao cua view truoc do
+            // De sau nay back lai con lay lai nam va do cao nay de xu ly
+            m838_year = parseInt($('#year').val());
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#m838_wrap').html(jreturn);
+
+                m838.showGeneral(ifid);
+                m838.listDetail(ifid);
+                m838.resetViewHeight();
+            });
+        },
+
+        delete : function(ifid)
+        {
+            var data = {ifid:ifid};
+            var url  = sz_BaseUrl + '/static/m838/general/delete';
+
+            qssAjax.confirm('Bạn có muốn xóa bản ghi này không?', function () {
+                qssAjax.call(url, data, function(jreturn) {
+                    if(jreturn.message != '')
+                    {
+                        qssAjax.alert(jreturn.message);
+                    }
+
+                    m838.filter();
+                }, function(jreturn) {
+                    qssAjax.alert(jreturn.message);
+                });
+            });
+        },
+
+        listDetail : function(ifid)
+        {
+            var data = {ifid:ifid};
+            var url  = sz_BaseUrl + '/static/m838/detail/show';
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#m838_detail_list').html('');
+                $('#m838_detail_list').html(jreturn);
+            });
+        },
+
+        showGeneral : function(ifid)
+        {
+            var data = {ifid:ifid};
+            var url  = sz_BaseUrl + '/static/m838/detail/general';
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#m838_general_edit').html(jreturn);
+            });
+        },
+
+        saveGeneral : function()
+        {
+            var url  = sz_BaseUrl + '/static/m838/general/save';
+            var data = $('#m838_general_form').serialize();
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != '')
+                {
+                    qssAjax.alert(jreturn.message);
+                }
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+
+        },
+
+        back : function()
+        {
+            var data = {year: $.cookie('m838_year')};
+            var url  = sz_BaseUrl + '/static/m838/general/index';
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#m838_wrap').html(jreturn);
+                m838.resetViewHeight();
+            });
+        },
+
+        resetViewHeight : function()
+        {
+            var header_menu   = $('#header-menu').height();
+            var nav_menu      = $('.navmenutab').height();
+            var toolbar       = $('#horizontal-toolbar').height();
+            var view          = $('#view').height();
+            var window_height = $(window).height();
+            var other_padding = 30;
+            var rest          = window_height - header_menu - nav_menu - toolbar - other_padding;
+
+            $('#view').css({'height': rest + 'px'});
+        },
+
+        plan : function(ifid, ioid, start, end)
+        {
+            var url  = sz_BaseUrl + '/static/m838/detail/plan';
+            var data = {ifid:ifid, ioid:ioid, start: start, end: end};
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#qss_trace').dialog('close');
+                $('#qss_trace').html('');
+                $('#qss_trace').html(jreturn);
+                $('#qss_trace').dialog({width: 900, height: 400});
+            });
+        },
+
+        failure : function(ifid, ioid, start, end)
+        {
+            var url  = sz_BaseUrl + '/static/m838/detail/failure';
+            var data = {ifid:ifid, ioid: ioid, start: start, end: end};
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#qss_trace').dialog('close');
+                $('#qss_trace').html('');
+                $('#qss_trace').html(jreturn);
+                $('#qss_trace').dialog({width: 900, height: 400});
+            });
+        },
+
+        createDetailFromFailure : function(ifid)
+        {
+            var url  = sz_BaseUrl + '/static/m838/detail/createfromfailure';
+            var data = $('#m838_failure_param').serialize();
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != '')
+                {
+                    qssAjax.alert(jreturn.message);
+                }
+
+                $('#qss_trace').dialog('close');
+                m838.listDetail(ifid)
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+        },
+
+        createDetailFromPlan : function(ifid)
+        {
+            var url  = sz_BaseUrl + '/static/m838/detail/createfromplan';
+            var data = $('#m838_plans').serialize();
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != '')
+                {
+                    qssAjax.alert(jreturn.message);
+                }
+
+                $('#qss_trace').dialog('close');
+                m838.listDetail(ifid)
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+        },
+
+        createOrder : function(ifid)
+        {
+            var url  = sz_BaseUrl + '/static/m838/detail/workorder';
+            var data = {ifid:ifid};
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != '')
+                {
+                    qssAjax.alert(jreturn.message);
+                }
+
+                m838.edit(ifid)
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+        }
+
+
+    };
+
+
+</script>
+
+<div id="m838_wrap">
+
+</div>
+
+<div id="qss_trace"></div>
+
+<script>m838.filter();</script>

@@ -1,0 +1,59 @@
+<div id="horizontal-toolbar" class="horizontal-toolbar">
+	<button id="btnDETAIL" type="button" class="btn btn_main_top" disabled
+		onclick="rowTrace()">
+		<?php echo $this->_translate(7)?>
+	</button>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<table class="grid" cellspacing="0">
+		<tr>
+			<th style="border-left: 1px solid rgb(204, 204, 204);">STT</th>
+			<th><?php echo $this->_translate(2);?></th>
+			<th><?php echo $this->_translate(3);?></th>
+			<th><?php echo $this->_translate(4);?></th>
+			<th><?php echo $this->_translate(5);?></th>
+			<th>Logs</th>
+			<th>Người thực hiện</th>
+			<th>Ngày thực hiện</th>
+		</tr>
+		<?php
+		$i = 1;
+		foreach ($this->forms as $form)
+		{
+			$rights = @$form->Rights?@$form->Rights:1;
+			?>
+		<tr onclick="rowCLK(this);" ondblclick="rowTrace();"
+			status="<?php echo $form->Status?>" 
+			id="<?php echo $form->IFID?>"
+			rights="<?php echo $rights?>"
+			deptid="<?php echo $form->DepartmentID?>" <?php if ( !$form->Accepted )echo 'style="font-weight:600"';?>>
+			<td class="nocount"><?php
+			echo $i?>
+			</td>
+			<td><?php echo $form->FormCode?></td>
+			<td><?php echo $form->Name?></td>
+			<td><?php echo date('d-m-Y',$form->SDate)?></td>
+			<td class="<?php if(!$form->Status) echo 'done'; elseif($form->Error) echo 'error'; else echo 'data';?>"
+				title="<?php if($form->Error) echo $form->ErrorMessage;?>">
+				<?php echo $form->SName?>
+			</td>
+			<td>
+				<?php echo $form->Logs?>
+			</td>
+			<td>
+				<?php echo $form->LastUser?>
+			</td>
+			<td>
+				<?php echo date('d-m-Y',$form->Date)?>
+			</td>
+		<tr>
+		<?php
+		$i ++;
+		}
+		?>
+	
+	</table>
+</div>
+<div
+	id="qss_trace" title="<?php echo $this->_translate(6);?>"></div>

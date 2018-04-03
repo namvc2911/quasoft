@@ -1,0 +1,86 @@
+<script>
+    function printPreview()
+    {
+        var err   = '', url, data;
+        var start = $('#start').val();
+        var end   = $('#end').val();
+
+        var item      = $('#item').val();
+        var warehouse = $('#warehouse').val();
+
+        err += common_checkEmpty(start, '<?php echo $this->_translate(8) ?>');
+        err += common_checkEmpty(end, '<?php echo $this->_translate(9) ?>');
+     
+       
+
+        if(err)
+        {
+            qssAjax.alert(err);
+            return;
+        }
+        else
+        {
+            url  = '/static/m088/show';
+            data = $('#report').serialize();
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#print-area').html(jreturn);
+                // Viet trong $this->views->Report->PrintToolbar()
+                removePrintToolbarDisabled();
+            });
+        }
+    }
+</script>
+
+<div>
+    <div class="clear"></div>
+    <div id="view">
+        <div class="line-hr">
+            <span><?php echo Qss_Lib_System::getReportTitle('M088');?> </span>
+        </div>
+        <form id="report" method="get" action="/static/m088/show">
+            <table class="detail">
+                <tr>
+                    <th width="20%" class="report-param-label"><?php echo $this->_translate(8) ?>
+                    </th>
+                    <td>
+                        
+<?php
+
+
+        $id = 'department';
+        $getDataObject = array('OPhongBan' => array('MaPhongBan', 'TenPhongBan'));
+        $getFields = array('num' => 2,
+        'objects' => array('OPhongBan' => array(
+        'id' => 'IOID'
+        , 'display1' => 'MaPhongBan'
+        , 'display2' => 'TenPhongBan')));
+
+        ?> <?php echo $this->views->Report->ListBox($id, $getDataObject, $getFields); ?>
+
+                        
+                    </td>
+                </tr>
+                <tr>
+                    <th width="20%" class="report-param-label"><?php echo $this->_translate(9) ?>
+                    </th>
+                    <td> <input type="checkbox"
+                    name="daNghi" value="1" checked /> <?php echo $this->_translate(5) ?>
+                    <input type="checkbox" name="dangLamViec" value="1" /> 
+                    <?php echo $this->_translate(2) ?> <input type="checkbox" name="moiLamViec"
+                    value="1" />  <?php echo $this->_translate(3) ?> </td>
+                </tr>
+
+              
+
+             
+            </table>
+        </form>
+        <hr>
+        <?php echo $this->views->Report->PrintToolbar(); ?>
+        <div id="print-content">
+            <div id="print-area"></div>
+        </div>
+    </div>
+</div>
+

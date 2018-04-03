@@ -1,0 +1,75 @@
+<?php
+$last = Qss_Lib_Util::formatMoney($this->last);
+$last_to_total = Qss_Lib_Util::formatMoney($this->last * $this->qty);
+$avg  = Qss_Lib_Util::formatMoney($this->avg);
+$avg_to_total = Qss_Lib_Util::formatMoney($this->avg * $this->qty);
+?>
+
+<script>
+//sop = select output price
+
+function outputPrice_set_price()
+{
+	var outputPrice_radio = $('input[name=outputPrice_price]:checked').val();
+	if(outputPrice_radio == 1)
+	{
+		$('input#ODanhSachXuatKho_DonGia').val('<?php echo $last;?>');
+		$('tr#<?php echo $this->ioid;?>').find('td#<?php echo $this->priceid;?>').text('<?php echo $last;?>');
+		$('tr#<?php echo $this->ioid;?>').find('td#<?php echo $this->priceid;?>').attr('value', '<?php echo $last;?>');
+		$('tr#<?php echo $this->ioid;?>').find('td#<?php echo $this->priceid;?>').find('textarea').val('<?php echo $last;?>');		
+		$('input#ODanhSachXuatKho_ThanhTien').val('<?php echo $last_to_total;?>');
+		$('tr#<?php echo $this->ioid;?>').find('td#<?php echo $this->totalid;?>').text('<?php echo $last_to_total;?>');
+		$('tr#<?php echo $this->ioid;?>').find('td#<?php echo $this->totalid;?>').attr('value', '<?php echo $last_to_total;?>');
+	}
+	else
+	{
+		$('input#ODanhSachXuatKho_DonGia').val('<?php echo $avg;?>');
+		$('tr#<?php echo $this->ioid;?>').find('td#<?php echo $this->priceid;?>').text('<?php echo $avg;?>');
+		$('tr#<?php echo $this->ioid;?>').find('td#<?php echo $this->priceid;?>').attr('value','<?php echo $avg;?>');
+		$('tr#<?php echo $this->ioid;?>').find('td#<?php echo $this->priceid;?>').find('textarea').val('<?php echo $last;?>');			
+		$('input#ODanhSachXuatKho_ThanhTien').val('<?php echo $avg_to_total;?>');	
+		$('tr#<?php echo $this->ioid;?>').find('td#<?php echo $this->totalid;?>').text('<?php echo $avg_to_total;?>');
+		$('tr#<?php echo $this->ioid;?>').find('td#<?php echo $this->totalid;?>').attr('value', '<?php echo $avg_to_total;?>');
+		
+	}
+	
+	
+	outputPrice_close();
+}
+
+function outputPrice_close()
+{
+	$('#qss_combo').dialog('close');
+}
+</script>
+
+<div id="outputPrice_wrap">
+	<table border="0" style="width: 200px;">
+		<tr class="left">
+			<th><label onclick="outputPrice_set_price()" for="outputPrice_avg">Giá
+					cuối cùng:</label>
+			</th>
+			<td><?php echo $last;?></td>
+			<td><input onclick="outputPrice_set_price()" type="radio"
+				id="outputPrice_avg" name="outputPrice_price" value="1" />
+			</td>
+		</tr>
+
+		<tr class="left">
+			<th><label onclick="outputPrice_set_price()" for="outputPrice_last">Giá
+					bình quân: </label></th>
+			<td><?php echo $avg;?></td>
+			<td><input onclick="outputPrice_set_price()" type="radio"
+				id="outputPrice_last" name="outputPrice_price" value="2" />
+			</td>
+		</tr>
+
+
+	</table>
+
+	<p>
+		<!--		<button onclick="outputPrice_set_price()" class="btn-custom" type="button"> Thiết lập </button>-->
+		<!--<button onclick="outputPrice_close()" class="btn-custom" type="button"> Đóng </button>-->
+	</p>
+</div>
+<!-- end #outputPrice_22102014_wrap -->

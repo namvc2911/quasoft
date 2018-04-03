@@ -1,0 +1,49 @@
+<table class="grid_navigator">
+	<tr>
+		<td align="center" style="border-right: 0; width: 100px">
+		</td>
+		<td align="right"><?php echo $this->_translate(26,'Nhóm theo')?>: <select id="qss_object_groupby"
+			onchange="importSearch('<?php echo $this->object->FormCode;?>','<?php echo $this->object->i_IFID;?>','<?php echo $this->object->intDepartmentID;?>','<?php echo $this->object->ObjectCode;?>');">
+			<option value="0"></option>
+			<option value="-2" style="color:green" <?php
+			if ( $this->groupby == -2)
+			echo 'selected';?>><?php echo $this->_translate(29,'Người thực hiện')?></option>
+			<?php foreach ( $this->fields as $field):	?>
+			<option value="<?php echo $field->FieldCode?>"
+			<?php
+			if ( $field->FieldCode == $this->groupby )
+			echo 'selected';
+			?>><?php
+			echo $field->szFieldName;
+			?></option>
+			<?php endforeach;?>
+		</select> <?php echo $this->_translate(30,'Trang')?>: <select id="qss_object_pageno" style="width: 50"
+			onchange="importSearch('<?php echo $this->object->FormCode;?>','<?php echo $this->object->i_IFID;?>','<?php echo $this->object->intDepartmentID;?>','<?php echo $this->object->ObjectCode;?>');">
+			<?php
+			for ($i = 1; $i <= $this->pagecount; $i ++):?>
+			<option
+			<?php
+			if ( $i == $this->currentpage )
+			echo 'selected';
+			?>><?php
+			echo $i;
+			?></option>
+			<?php endfor;?>
+		</select> / 1 <?php echo $this->_translate(28,'Hiển thị')?>: <select id="qss_object_perpage"
+			style="width: 100;"
+			onchange="importSearch('<?php echo $this->object->FormCode;?>','<?php echo $this->object->i_IFID;?>','<?php echo $this->object->intDepartmentID;?>','<?php echo $this->object->ObjectCode;?>');">
+			<?php
+			$arr = array(10, 20, 50, 100);
+			foreach ($arr as $val):?>
+			<option
+			<?php
+			if ( $val == $this->limit )
+			echo 'selected';
+			?>><?php
+			echo $val;
+			?></option>
+			<?php endforeach;?>
+		</select></td>
+	</tr>
+</table>
+

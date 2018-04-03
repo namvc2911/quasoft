@@ -1,0 +1,75 @@
+<div id="qss_attach">
+<table class="grid_navigator">
+      <tr>
+        <td align="center" style="border-right: 0pt none; width: 100px;"></td>
+        <td align="right"><?php echo $this->_translate(8)?>
+          <select onchange="rowSearch();" id="qss_form_groupby">
+            <option value="0"/>
+            <option <?php if($this->groupby == 2) echo 'selected'?> value="2"><?php echo $this->_translate(2)?></option>
+            <option <?php if($this->groupby == 3) echo 'selected'?> value="3"><?php echo $this->_translate(3)?></option>
+            <option <?php if($this->groupby == 4) echo 'selected'?> value="4"><?php echo $this->_translate(4)?></option>
+            <option <?php if($this->groupby == 5) echo 'selected'?> value="5"><?php echo $this->_translate(5)?></option>
+          </select>
+          <?php echo $this->_translate(9)?>
+          <select style="" onchange="rowSearch();" id="qss_form_pageno">
+          <?php for($i = 1;$i <= ceil($this->recordcount/$this->limit);$i++):?>
+            <option <?php if($i == $this->currentpage) echo 'selected';?>><?php echo $i?></option>
+          <?php endfor;?>
+          </select>
+          / <?php echo ceil($this->recordcount/$this->limit)?> <?php echo $this->_translate(10)?>
+          <select onchange="rowSearch();" style="" id="qss_form_perpage">
+            <option <?php if($this->limit == 10) echo 'selected'?>>10</option>
+            <option <?php if($this->limit == 20) echo 'selected'?>>20</option>
+            <option <?php if($this->limit == 50) echo 'selected'?>>50</option>
+            <option <?php if($this->limit == 100) echo 'selected'?>>100</option>
+          </select></td>
+      </tr>
+</table>
+<table cellspacing="0" class="grid">
+	<tr>
+		<th class="nocount">STT</th>
+		<th><a href="#!" onclick="rowSort(1)"><?php echo $this->_translate(1)?> <?php if($this->orderfield == 1):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="rowSort(2)"><?php echo $this->_translate(2)?> <?php if($this->orderfield == 2):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="rowSort(3)"><?php echo $this->_translate(3)?> <?php if($this->orderfield == 3):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="rowSort(4)"><?php echo $this->_translate(4)?> <?php if($this->orderfield == 4):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="rowSort(5)"><?php echo $this->_translate(5)?> <?php if($this->orderfield == 5):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="rowSort(6)"><?php echo $this->_translate(6)?> <?php if($this->orderfield == 6):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+		<th><a href="#!" onclick="rowSort(7)"><?php echo $this->_translate(7)?> <?php if($this->orderfield == 7):?> <img border="0"
+			src="../../images/<?php echo ($this->ordertype=='ASC')?'up':'down';?>.gif" /> <?php endif;?> </a></th>
+	</tr>
+	<?php
+	$group = null;
+	$i=1;
+	foreach ($this->documents as $item)
+	{
+		?>
+	<?php if(isset(Qss_Model_Document::$arrField[$this->groupby])):?>
+      	<?php if($group != (($this->groupby == 3 || $this->groupby == 4)?Qss_Lib_Date::mysqltodisplay($item->{Qss_Model_Document::$arrField[$this->groupby]}):$item->{Qss_Model_Document::$arrField[$this->groupby]})):?>
+      	<tr>
+			<td class="groupby" colspan="11"><?php if($this->groupby == 3 || $this->groupby == 4) echo Qss_Lib_Date::mysqltodisplay($item->{Qss_Model_Document::$arrGroup[$this->groupby]}); else echo $item->{Qss_Model_Document::$arrGroup[$this->groupby]};?></td>
+		</tr>
+      	<?php endif;?>
+      <?php $group = (($this->groupby == 3 || $this->groupby == 4)?Qss_Lib_Date::mysqltodisplay($item->{Qss_Model_Document::$arrField[$this->groupby]}):$item->{Qss_Model_Document::$arrField[$this->groupby]})?>
+      <?php endif;?>	
+	<tr rights="63" id="<?php echo $item->DID;?>" onclick="rowCLK(this);" ondblclick="rowEdit()">
+		<td class="nocount"><?php echo $i?></td>
+		<td><?php echo $item->Name?></td>
+		<td><?php echo $item->UserName?></td>
+		<td><?php echo  date('d-m-Y H:i:s',strtotime($item->CDate))?></td>
+		<td><?php echo $item->Modify?date('d-m-Y H:i:s',strtotime($item->Modify)):''?></td>
+		<td><?php echo $item->Folder?></td>
+		<td class="center"><a href="#!" onclick="downloadDoc(<?php echo $item->DID?>)"><span title="tải về" class="<?php echo $item->Ext?> unknown">&nbsp;</span></a></td>
+		<td class="right"><?php echo number_format($item->Size/1000,0,'.',',')?> KB</td>
+	</tr>
+	<?php
+	$i++;
+	}
+	?>
+</table>
+</div>

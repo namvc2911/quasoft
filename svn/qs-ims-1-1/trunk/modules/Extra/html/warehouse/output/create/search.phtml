@@ -1,0 +1,157 @@
+<script>
+<!--
+// js function
+//-->
+</script>
+<?php
+// cai dat
+$totalCol = 11;
+?>
+
+<table cellspacing="0" cellpadding="0" width="100%" class="borderX"
+	id="">
+	<tr class="bggrey center">
+		<th width="2%">
+			<!-- Chọn --> <input type="checkbox" class="checkbox width_50"
+			onclick="checkAllLine(this)" /></th>
+		<th width="8%">
+			<!-- Ngày --> <?php echo $this->_translate(14);?></th>
+		<th width="8%">
+			<!-- Mã đối tác --> <?php echo $this->_translate(12);?></th>
+		<th width="15%">
+			<!-- Tên đối tác --> <?php echo $this->_translate(13);?></th>
+		<th width="8%">
+			<!-- Mã mặt hàng --> <?php echo $this->_translate(6);?>
+		</th>
+		<th width="15%">
+			<!-- Tên mặt hàng --> <?php echo $this->_translate(7);?>
+		</th>
+		<th width="10%">
+			<!-- Thuộc tính --> <?php echo $this->_translate(8);?>
+		</th>
+		<th width="10%">
+			<!-- Kho --> <?php echo $this->_translate(9);?>
+		</th>
+		<th width="8%">
+			<!-- Đơn vị tính --> <?php echo $this->_translate(10);?>
+		</th>
+		<th width="8%">
+			<!-- Số lượng --> <?php echo $this->_translate(11);?>
+		</th>
+		<th width="8%">
+			<!-- Đơn giá --> <?php echo $this->_translate(15);?>
+		</th>
+		<th width="8%">
+			<!-- Tham chiếu --> <?php echo $this->_translate(35);?>
+		</th>
+	</tr>
+
+	<?php if(count((array)$this->search)): // Kiem tra so luong dong tim kiem?>
+	<?php foreach ($this->search as $item): // Danh sach tim kiem?>
+
+	<?php
+	// so sanh ngay thang, lay mau canh bao thich hop cho dong
+	$lineColor   = '';
+	$compareDate = Qss_Lib_Date::compareTwoDate($item->Ngay, date('d-m-Y'));
+	$disabled    = 'disabled'; // Chua su dung, in vao cac disabled_input
+	if($compareDate == 0)
+	{
+		$lineColor = 'bgorange';
+	}
+	elseif($compareDate == -1)
+	{
+		$lineColor = 'bgred';
+	}
+
+	// Neu da chon thi to mau luon
+	if($item->TranIOID)
+	{
+		$lineColor = 'bgyellow';
+		$disabled  = 'disabled';// Chua su dung, in vao cac disabled_input
+	}
+	?>
+
+	<tr class="search_line <?php echo $lineColor?>">
+		<input type="hidden" name="itemCode[]" class="disabled_input"
+			value="<?php echo $item->MaSP?>" disabled />
+		<input type="hidden" name="itemUOM[]" class="disabled_input"
+			value="<?php echo $item->DonViTinh?>" disabled />
+		<input type="hidden" name="refItem[]" class="disabled_input"
+			value="<?php echo $item->Ref_MaSP?>" disabled />
+		<input type="hidden" name="attributeCode[]" class="disabled_input"
+			value="<?php echo $item->ThuocTinh;?>" disabled />
+		<input type="hidden" name="refAttribute[]" class="disabled_input"
+			value="<?php echo (int)$item->Ref_ThuocTinh;?>" disabled />
+		<input type="hidden" name="qty[]" class="disabled_input"
+			value="<?php echo $item->SoLuong;?>" disabled />
+		<input type="hidden" name="warehouse[]" class="disabled_input"
+			value="<?php echo $item->Kho;?>" disabled />
+		<input type="hidden" name="description[]" class="disabled_input"
+			value="<?php echo $item->MoTa;?>" disabled />
+		<!-- Dong don hang IOID -->
+		<input type="hidden" name="orderLine[]" class="disabled_input"
+			value="<?php echo $item->OrderIOID?>" disabled />
+		<!-- Hang doi IOID -->
+		<input type="hidden" name="stackLine[]" class="disabled_input"
+			value="<?php echo $item->IOID?>" disabled />
+		<input type="hidden" name="module[]" class="disabled_input"
+			value="<?php echo $item->Module?>" disabled />
+		<input type="hidden" name="price[]" class="disabled_input"
+			value="<?php echo $item->DonGia?>" disabled />
+		<input type="hidden" name="stackIFID[]" class="disabled_input"
+			value="<?php echo $item->IFID?>" disabled />
+		<input type="hidden" class="line_color_class"
+			value="<?php echo $lineColor;?>" />
+
+
+		<!-- Trang thai luu tru -->
+		<!-- <input type="hidden" name="itemCode[]" class="disabled_input" value="<?php echo $item->MaSP?>" disabled/> -->
+		<!-- SoLo SoSerial SoLuong Zone Bin -->
+
+		<td class="center">
+			<!-- Chọn --> <input type="checkbox" class="checkbox width_50"
+			onclick="checkLine(this)"
+	<?php if($item->TranIOID) echo 'checked disabled'?> />
+		</td>
+		<td class="center">
+			<!-- Ngày --> <?php echo Qss_Lib_Date::mysqltodisplay($item->Ngay);?>
+		</td>
+		<td class="<?php echo $item->ThuocTinh?'left':'center';?>">
+			<!-- Mã đối tác --> <?php echo $item->MaDoiTac?$item->MaDoiTac:'-';?>
+		</td>
+		<td class="<?php echo $item->ThuocTinh?'left':'center';?>">
+			<!-- Tên đối tác --> <?php echo $item->TenDoiTac?$item->TenDoiTac:'-';?>
+		</td>
+		<td class="left">
+			<!-- Mã mặt hàng --> <?php echo $item->MaSP?>
+		</td>
+		<td class="left">
+			<!-- Tên mặt hàng --> <?php echo $item->TenSP?>
+		</td>
+		<td class="<?php echo $item->ThuocTinh?'left':'center';?>">
+			<!-- Thuộc tính --> <?php echo $item->ThuocTinh?$item->ThuocTinh:'-'?>
+		</td>
+		<td class="<?php echo $item->Kho?'left':'center';?>">
+			<!-- Kho --> <?php echo $item->Kho?$item->Kho:'-'?>
+		</td>
+		<td class="left">
+			<!-- Đơn vị tính --> <?php echo $item->DonViTinh?>
+		</td>
+		<td class="right">
+			<!-- Số lượng --> <?php echo $item->SoLuong?>
+		</td>
+		<td class="<?php echo $item->DonGia?'right':'center';?>">
+			<!-- Đơn giá --> <?php echo $item->DonGia?Qss_Lib_Util::formatMoney($item->DonGia):'-'?>
+		</td>
+		<td class="<?php echo $item->MoTa?'left':'center';?>">
+			<!-- Tham chiếu--> <?php echo $item->MoTa?$item->MoTa:'-'?>
+		</td>
+	</tr>
+	<?php endforeach;// Danh sach tim kiem ?>
+	<?php else: // Kiem tra so luong dong tim kiem?>
+	<tr class="bold center">
+		<td colspan="<?php echo $totalCol?>"><?php echo $this->_translate(38);?>
+		</td>
+	</tr>
+	<?php endif; // Kiem tra so luong dong tim kiem?>
+</table>

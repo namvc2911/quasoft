@@ -1,0 +1,206 @@
+<style>
+.now_16 {
+	background: url("/images/status/warning_16.png");
+	width: 16px;
+	height: 16px;
+}
+
+.duesoon_16 {
+	background: url("/images/status/warning_16.png");
+	width: 16px;
+	height: 16px;
+}
+
+.normal_16 {
+	background: url("/images/status/normal_16.png");
+	width: 16px;
+	height: 16px;
+}
+
+.overdue_16 {
+	background: url("/images/status/Block_16.png");
+	width: 16px;
+	height: 16px;
+}
+
+.question_16 {
+	background: url("/images/status/question_16.png");
+	width: 16px;
+	height: 16px;
+}
+
+.margin_left_2 {
+	margin-left: 2px;
+}
+</style>
+
+<?php
+$status[0] = $this->_translate(11);
+$status[1] = $this->_translate(12);
+$status[2] = $this->_translate(8);
+$status[3] = $this->_translate(9);
+$status[4] = $this->_translate(10);
+$excel_col = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$row       = 2;
+$totalCol  = 6;
+
+$widthPx   = array(1,1,1,1,1,1);
+$widthEx   = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($widthPx);
+$widthPx   = Qss_Lib_Report::changeWidthToFitScreen($widthPx);
+
+
+$subTitle       = array();
+$subTitleStr    = '';
+
+if($this->locationIOID)
+{
+	$subTitle[] = ' '.$this->_translate(120).':  ' .$this->location;
+}
+
+if($this->eqGroupIOID )
+{
+	$subTitle[] = ' '.$this->_translate(121).': ' .$this->eqGroup ;
+}
+
+if($this->eqTypeIOID  )
+{
+	$subTitle[] = ' '.$this->_translate(122).': ' .$this->eqType;
+}
+
+if($this->eqIOID     )
+{
+	$subTitle[] = ' '.$this->_translate(123).':  ' .$this->eq;
+}
+
+if($this->costcenterIOID     )
+{
+	$subTitle[] = ' '.$this->_translate(124).':  ' .$this->costcenter;
+}
+
+$subTitleStr         .= implode(' - ', $subTitle);
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+
+<div class="portrait">
+	<excel orientation="portrait" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+
+	<div id="head_print">
+	<?php echo $this->views->Common->Portrait() ?>
+
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $this->_translate(1) ?></xls>
+			</h2>
+		</center>
+		<?php $row++ ?>
+
+		<center>
+			<h2>
+				<xls row="<?php echo $row ?>" column="A"
+					column-merge="<?php echo $excel_col[$totalCol] ?>" font-size="12"
+					wrap-text="1" h-align="center" v-align="center"> <?php echo $subTitleStr ?></xls>
+			</h2>
+		</center>
+	</div>
+	<?php $row++ ?>
+
+	<div id="container">
+		<table width="" cellpadding="0" cellspacing="0" class="border"
+			border="1">
+			<tr class="bggrey center">
+			<?php $begin = 0; ?>
+				<th width="<?php echo $widthPx[$begin];?>px">
+					<!-- Trang thai --> <xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(2) ?></xls>
+				</th>
+
+				<th width="<?php echo $widthPx[$begin];?>px">
+					<!-- Ma thiet bi --> <xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(3) ?></xls>
+				</th>
+
+				<th width="<?php echo $widthPx[$begin];?>px">
+					<!-- Ten thiet bi --> <xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(4) ?></xls>
+				</th>
+
+				<th width="<?php echo $widthPx[$begin];?>px">
+					<!-- Nhom thiet bi --> <xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(5) ?></xls>
+				</th>
+
+				<th width="<?php echo $widthPx[$begin];?>px">
+					<!-- Hang bao hanh --> <xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(6) ?></xls>
+				</th>
+
+				<th width="<?php echo $widthPx[$begin];?>px">
+					<!-- Han bao hanh --> <xls row="<?php echo $row ?>"
+						width="<?php echo $widthEx[$begin];?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1" bold="1"> <?php echo $this->_translate(7) ?></xls>
+				</th>
+			</tr>
+			<?php $row++ ?>
+
+
+			<?php ?>
+			<?php foreach ($this->report as $val): ?>
+			<tr>
+			<?php $begin = 0; ?>
+				<td>
+					<div class="<?php echo $val->EClass; ?> fl  margin_left_2">&nbsp;</div>
+					<div class="fl margin_left_2">
+						<xls row="<?php echo $row ?>"
+							column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+							h-align="left" v-align="center" border="1"> <?php echo $status[$val->EStatus]; ?></xls>
+					</div>
+				</td>
+
+				<td class="left"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $val->MaThietBi; ?></xls>
+				</td>
+
+				<td class="left"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $val->TenThietBi; ?></xls>
+				</td>
+
+				<td class="left"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $val->NhomThietBi; ?></xls>
+				</td>
+
+				<td class="left"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="left" v-align="center" border="1"> <?php echo $val->HangBaoHanh; ?></xls>
+				</td>
+
+				<td class="center"><xls row="<?php echo $row ?>"
+						column="<?php echo $excel_col[++$begin] ?>" wrap-text="1"
+						h-align="center" v-align="center" border="1"> <?php echo Qss_Lib_Date::mysqltodisplay($val->HanBaoHanh); ?></xls>
+				</td>
+			</tr>
+			<?php $row++ ?>
+			<?php endforeach; ?>
+		</table>
+	</div>
+</div>

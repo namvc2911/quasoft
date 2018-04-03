@@ -1,0 +1,286 @@
+<style>
+<!--
+#requestforequip_createequipworking_title {
+	
+}
+
+#requestforequip_createequipworking_table {
+	
+}
+-->
+</style>
+
+<script
+	type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript">
+<!--
+$(document).ready(function(){
+    $('.datepicker').each(function(){
+            $(this).datepicker({ dateFormat: "dd-mm-yy" });
+    });
+});
+
+/**
+ * Luu lai lich dieu dong
+ */
+function save()
+{
+	var data = $('#requestforequip_createequipworking_form').serialize();
+	var url = sz_BaseUrl + '/maintenance/requestforequip/createequipworking/save'; 
+
+	qssAjax.call(url, data, function(jreturn){
+		if(jreturn.message != ''){
+			qssAjax.alert(jreturn.message);
+		}
+		// $('#qss_trace').dialog('close');
+	}, function(jreturn){
+		qssAjax.alert(jreturn.message);		
+	}); 	
+}
+
+/**
+ * Thay doi so luong 0/12
+ */
+function change(ele)
+{
+	var findID = $(ele).attr('rfeioid');
+	var qty    = parseFloat($(ele).attr('total'));
+	var total  = 0; // so thiet bi chon cho dong 
+
+	// Dem tong so luong da lay cho dong chi tiet yeu cau dieu dong
+	$('.requestforequip_createequipworking_num_' + findID).each(function(){
+	    if($(this).val() == 1)
+	    {
+		    total += 1;
+	    }
+	});
+
+	// Dien so luong da dieu dong
+	$('#requestforequip_createequipworking_num_' + findID).text(total);
+
+
+	// Hien thi mau doi voi loai thay doi
+	$('#requestforequip_createequipworking_num_' + findID).removeClass('red green bold');
+	if(total > qty)
+	{
+		$('#requestforequip_createequipworking_num_' + findID).addClass('red bold');
+	} 
+	else if(total == qty)
+	{
+		$('#requestforequip_createequipworking_num_' + findID).addClass('green bold');
+	}	
+}
+//-->
+</script>
+
+<?php
+// INIT
+$total_col = 9; // tong so cot
+$i         = 0;  // STT cua dong
+?>
+
+<div
+	id="requestforequip_createequipworking_wrap">
+	<div id="requestforequip_createequipworking_title">
+		<h2>
+			<!-- Yeu cau dieu dong ABC.xyz -->
+		<?php echo $this->_translate(14);  // Yêu cầu điều động ?>
+		<?php echo $this->DocNo;?>
+		</h2>
+	</div>
+	<!-- END requestforequip_createequipworking_title -->
+
+	<div id="requestforequip_createequipworking_table">
+		<form id="requestforequip_createequipworking_form">
+			<table class="border" cellpadding="0" cellspacing="0" border="0">
+				<!-- TITLE -->
+				<tr>
+					<!-- <th> <?php echo $this->_translate(1);  // STT           ?> </th> -->
+					<th><?php echo $this->_translate(10); // Chon          ?>
+					</th>
+					<th><?php echo $this->_translate(2);  // Thiet bi      ?>
+					</th>
+					<th><?php echo $this->_translate(3);  // Khu vuc       ?>
+					</th>
+					<th><?php echo $this->_translate(4);  // Lich lam viec ?>
+					</th>
+					<th><?php echo $this->_translate(5);  // Du an         ?>
+					</th>
+					<th><?php echo $this->_translate(6);  // Tho van hanh  ?>
+					</th>
+					<th><?php echo $this->_translate(7);  // Bat dau       ?>
+					</th>
+					<th><?php echo $this->_translate(8);  // Ket thuc      ?>
+					</th>
+					<th><?php echo $this->_translate(9);  // PhieuyeuCau   ?>
+					</th>
+
+				</tr>
+
+				<!-- CONTENT: Hien thi dieu dong thanh tung dong -->
+				<?php foreach($this->report as $item)://In bao cao ?>
+
+				<!-- SUB TITLE: Hien thi loai thiet bi theo hinh cay -->
+				<tr class="bggrey">
+					<th colspan="<?php echo $total_col;?>"
+						class="tree_open tree_level_<?php echo $item['Level'];?>">
+						<!-- 1. Máy mài (YC: 0/12 Cái) từ 01-01-2000 đến 01-02-2000 --> <?php echo ++$i;?>.
+						<?php echo $item['EqType'];?> <?php echo $this->_translate(11); // Yeu cau ?>
+						(<!-- <span id="requestforequip_createequipworking_num_<?php echo $item['RFEDIOID']; // Yeu cau dd IOID?>">0</span>/  -->
+						<?php echo $item['Qty']?> <?php echo $item['UOM']?>) <?php echo $this->_translate(12); // Tu ?>
+						<?php echo $item['Start'];?> <?php echo $this->_translate(13); // Den ?>
+						<?php echo $item['End'];?>
+					</th>
+				</tr>
+
+
+				<!-- Cac thiet bi truc thuoc loai thiet bi o level hien tai -->
+				<?php  $j = 0; // STT cua thiet bi trong tung loai thiet bi ?>
+				<?php if(count((array)$item['Equips'])): //Kiem tra neu co thiet bi truc thuoc loai thiet bi thi moi in ra?>
+				<?php foreach($item['Equips'] AS $eq):// In danh sach thiet bi truc thuoc loai thiet bi?>
+				<?php
+				$disabled    = (!$eq['Transferred'] || $eq['Disable'])?' disabled ':' '; // disable input tren dong
+				$disableTick = $eq['Disable']?' disabled ':'';
+				$trBg        = $eq['Transferred']?' bgyellow ':'  ';// mau cua tung dong (tr)
+				$checked     = $eq['Transferred']?' checked ':'';
+				$checkVal    = $eq['Transferred']?1:0;
+				?>
+
+				<tr class="<?php echo $trBg;?>">
+					<!-- 
+                    <td> 
+                        <?php echo ++$j  // STT  ?> 
+                    </td>
+                     -->
+
+					<td>
+						<!-- Chon --> <input type="checkbox" <?php echo $checked;?>
+						class="requestforequip_createequipworking_line_checkbok"
+						onclick="common_check_table_line(this, '.requestforequip_createequipworking_line_checkbok_val'); change(this);"
+						rfeioid="<?php echo $item['RFEDIOID']; // Yeu cau dd IOID?>"
+						total="<?php echo $item['Qty']; // So luong ?>" /> <input
+						type="hidden"
+						class="requestforequip_createequipworking_line_checkbok_val requestforequip_createequipworking_num_<?php echo $item['RFEDIOID']; // Yeu cau dd IOID?>"
+						value="<?php echo $checkVal;?>" <?php echo $disableTick;?>
+						name="tick[]" />
+					</td>
+
+					<td>
+						<!-- Thiet bi --> <?php echo $eq['Code'] . ' - ' . $eq['Name'];  // Thiet bi ?>
+
+						<!-- Ma thiet bi --> <input class="table_line_disabled"
+						type="hidden" <?php echo $disabled;?>
+						value="<?php echo $eq['Code'];?>" name="EqCode[]" /> <!-- Ten thiet bi -->
+						<input class="table_line_disabled" type="hidden"
+						<?php echo $disabled;?> value="<?php echo $eq['Name'];?>"
+						name="EqName[]" /> <!-- IOID thiet bi --> <input
+						class="table_line_disabled" type="hidden" <?php echo $disabled;?>
+						value="<?php echo $eq['IOID'];?>" name="EqIOID[]" /> <!-- IOID dieu dong thiet bi neu co -->
+						<input class="table_line_disabled" type="hidden"
+						<?php echo $disabled;?> value="<?php echo $eq['EWIOID'];?>"
+						name="EWIOID[]" /> <!-- IFID dieu dong thiet bi neu co --> <input
+						class="table_line_disabled" type="hidden" <?php echo $disabled;?>
+						value="<?php echo $eq['EWIFID'];?>" name="EWIFID[]" />
+					</td>
+
+					<td>
+						<!-- Khu vuc --> <select class="table_line_disabled"
+					<?php echo $disabled;?> name="LocationIOID[]">
+						<?php foreach($this->locations as $loc):?>
+							<option value="<?php echo $loc->IOID?>"
+							<?php echo ($loc->IOID == $eq['LocationIOID'])?'selected':''?>>
+								<?php echo str_repeat('&nbsp;', $loc->LEVEL);?>
+								<?php echo $loc->MaKhuVuc;?>
+								-
+								<?php echo @$loc->Ten;?>
+							</option>
+							<?php endforeach; // In danh sach khu vuc theo hinh cay?>
+					</select>
+					</td>
+
+					<td>
+						<!-- Lich lam viec --> <select class="table_line_disabled"
+					<?php echo $disabled;?> name="WorkingCalIOID[]">
+						<?php foreach($this->wcals as $wcal):?>
+							<option value="<?php echo $wcal->IOID?>"
+							<?php echo ($wcal->IOID == $eq['WorkingCalIOID'])?'selected':''?>>
+								<?php echo $wcal->TenLich;?>
+							</option>
+							<?php endforeach; // In danh sach khu vuc theo hinh cay?>
+					</select>
+					</td>
+
+					<td>
+						<!-- Du An --> <?php
+						$id            = 'ProjectIOID[]';
+						$getDataObject = array('ODuAn'=>array('MaDuAn', 'TenDuAn'));
+						$getFields     = array('num'=>2,
+    											   'objects'=>array('ODuAn'=>array(
+    																		'id'=>'IOID'
+    																		,'display1'=>'MaDuAn'
+    																		,'display2'=>'TenDuAn')) );
+    																		$selectedID   = $eq['ProjectIOID'];
+    																		$selectedText = $eq['ProjectCode'] .' - '.$eq['ProjectName'];
+    																		$extend       = ' class="table_line_disabled" ';
+    																		$extend      .= $disabled;
+
+    																		echo $this->views->Report->ListBox(
+    																		$id, getDataObject, getFields, array(), array(), $extend, $selectedID, $selectedText
+    																		);
+    																		?>
+					</td>
+
+					<td>
+						<!-- Nhan vien --> <?php
+						$id            = 'EmplIOID[]';
+						$getDataObject = array('ODanhSachNhanVien'=>array('MaNhanVien', 'TenNhanVien'));
+						$getFields     = array('num'=>2,
+    											   'objects'=>array('ODanhSachNhanVien'=>array(
+    																		'id'=>'IOID'
+    																		,'display1'=>'MaNhanVien'
+    																		,'display2'=>'TenNhanVien')) );
+    																		$selectedID   = $eq['EmployeeIOID'];
+    																		$selectedText = $eq['EmployeeIOID']?$eq['EmployeeCode'] .' - '.$eq['EmployeeName']:'';
+    																		$extend       = ' class="table_line_disabled" ';
+    																		$extend      .= $disabled;
+
+    																		echo $this->views->Report->ListBox(
+    																		$id, getDataObject, getFields, array(), array(), $extend, $selectedID, $selectedText
+    																		);
+    																		?>
+					</td>
+
+					<td>
+						<!-- Bat dau --> <input class="table_line_disabled datepicker"
+						type="text" <?php echo $disabled;?>
+						value="<?php echo $eq['Start'];  // Bat dau  ?>" name="start[]" />
+					</td>
+
+					<td>
+						<!-- Ket thuc --> <input class="table_line_disabled datepicker"
+						type="text" <?php echo $disabled;?>
+						value="<?php echo $eq['End'];  // Ket thuc  ?>" name="end[]" />
+					</td>
+
+					<td>
+						<!-- Phieu yeu cau --> <input
+						class="table_line_disabled datepicker" type="text"
+						<?php echo $disabled;?>
+						value="<?php echo $eq['DocNo'];  // Note  ?>" name="note[]" />
+					</td>
+				</tr>
+				<?php endforeach; // END In danh sach thiet bi truc thuoc loai thiet bi?>
+				<?php endif; // End kiem tra neu co thiet bi truc thuoc loai thiet bi thi moi in ra?>
+				<?php endforeach; // End In bao cao?>
+			</table>
+		</form>
+	</div>
+	<!-- END requestforequip_createequipworking_table -->
+
+	<div>
+		<button class="btn-custom">
+		<?php echo $this->_translate(15); // Cap nhat ?>
+		</button>
+	</div>
+</div>
+<!-- END #requestforequip_createequipworking_wrap -->

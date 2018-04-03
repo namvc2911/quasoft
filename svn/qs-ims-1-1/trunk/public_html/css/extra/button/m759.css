@@ -1,0 +1,676 @@
+
+ul {
+	list-style:none;
+	margin:0; padding:0;
+}
+.cal_view {
+	
+}	
+.cal_view .extra-button{
+	display: block;
+	min-width: 60px;
+	height: 18px;
+	position: relative;
+	float:left;
+	background-color: yellow;
+	border:1px solid #ccc;
+	border-radius: 4px;
+	top:2px;
+	cursor: pointer;
+	padding-left:3px;
+	padding-top:3px;
+	padding-right:3px;
+	margin-left:50px;
+	text-align:center;
+}	
+.cal_cols_holiday {
+	background-color:#eee;
+}
+
+.info_top {
+	color:#333;	
+}
+/*--- begin grid ---*/
+.cal_select{
+	float:left;
+	width:235px;
+	margin-left:-100%;
+}
+.cal_content_wrap{
+	float:left;
+	width:100%;
+	margin-bottom:10px;
+	
+}
+.cal_content {
+	margin-left:235px;
+}
+
+/* Begin cal content*/
+.cal_content_title {
+	display:inline-block;
+}
+.cal_content_title_arrow {
+	line-height:22px;
+	float:left;
+}
+.cal_content_title_arrow img {
+	cursor:pointer;
+	width:22px;
+}
+.cal_content_title_info {
+	font-size:16px;
+	padding:0px 3px 0px 3px;
+	font-weight:bold;
+	line-height:22px;
+	float:left;
+	color:#333;
+}
+.cal_content_grid {
+	background:#fff;
+	display:table;
+	width:100%;
+}
+.cal_content_grid .rows {
+	display:table-row;
+	border-bottom:1px solid #ccc;
+	border-left:1px solid #ccc;
+	border-right:2px solid #ccc;
+	font-size:11px;
+	line-height:30px;	
+	color:#303030;
+}
+
+
+.cal_content_grid .rows:first-child {
+	border-top:1px solid #ccc;
+	font-weight:bold;
+	background-color:#DFDFDF !important;
+	font-size:12px;
+	line-height:18px;
+}
+.cal_content_grid .cols {
+	margin-right:-1px;
+	border-left:1px solid #ccc;
+	float:left;
+	text-align:center;
+	display:table-cell;
+	z-index:100;
+}
+.cal_content_grid .cols:first-child {
+	margin-left:-1px;
+	border-right:1px solid #ccc;
+}
+
+.cal_content_grid .cols_employee {
+	width:20%;
+}
+.cal_content_grid .cols_workcenter {
+	text-align: left;
+	width:20%;
+}
+/*   28 columns*/
+.cal_content_grid .cols_28 {
+	width:2.857142%;
+}
+
+/*   29 columns*/
+.cal_content_grid .cols_29 {
+	width:2.7586206%;
+}
+
+/*   30 columns*/
+.cal_content_grid .cols_30 {
+	width:2.666666%;
+}
+
+/*   31 columns*/
+.cal_content_grid .cols_31 {
+	width:2.580645%;
+}
+/*--- end grid ---*/
+
+/* begin cal content month */
+.cal_content_month .event_parent {
+	position: relative;
+	height:0px;
+	top:5px;
+}
+.cal_content_month .event_parent .event {
+	width:100%;
+	position: relative;
+	z-index:2;
+	line-height:20px;
+	height:20px;
+	border:1px #ccc solid;
+	cursor:pointer;
+	overflow:hidden;
+}
+.cal_content_month .event_parent .leftArrow{
+	background: url(../images/calendar/cal_continue.PNG) no-repeat;
+	width:8px;
+	height:20px;
+	position: absolute;
+	left:0px;
+	top:0px;
+	z-index:500;
+}
+
+.cal_content_month .event_parent .leftCheckbox{
+	background: url(../images/calendar/cal_continue.PNG) no-repeat;
+	width:8px;
+	height:20px;
+	position: absolute;
+	left:10px;
+	top:-2px;
+	z-index:500;
+}
+
+.cal_content_month .event_parent .rightArrow{
+	background: url(../images/calendar/cal_continue.PNG) no-repeat;
+	width:8px;
+	height:20px;
+	position: absolute;
+	right:0px;
+	top:0px;
+	z-index:500;
+}
+/* end cal content month */
+
+/* begin cal content day */
+.cal_content_day .event_parent {
+	position: relative;
+	height:0px;
+	top:5px;
+}
+
+.cal_content_day .event_parent .event {
+	width:100%;
+	position: relative;
+	/* z-index:5000; */
+	line-height:20px;
+	height: 20px;
+	border:1px #ccc solid;
+	cursor:pointer;
+	overflow:hidden;
+}
+
+.cal_content_day .event_parent .leftArrow{
+	background: url(../images/calendar/cal_continue.PNG) no-repeat;
+	width:8px;
+	height:20px;
+	position: absolute;
+	left:0px;
+	top:0px;
+	z-index:500;
+}
+
+.cal_content_day .event_parent .leftCheckbox{
+	background: url(../images/calendar/cal_continue.PNG) no-repeat;
+	width:8px;
+	height:20px;
+	position: absolute;
+	left:10px;
+	top:-2px;
+	z-index:500;
+}
+
+.cal_content_day .event_parent .rightArrow{
+	background: url(../images/calendar/cal_continue.PNG) no-repeat;
+	width:8px;
+	height:20px;
+	position: absolute;
+	right:0px;
+	top:0px;
+	z-index:500;
+}
+/* end cal content day*/
+
+/* begin cal content week */
+.cal_content_week .event_parent {
+	position: relative;
+	height:0px;
+	top:5px;
+}
+
+.cal_content_week .event_parent .event {
+	width:100%;
+	position: relative;
+	/* z-index:5000; */
+	line-height:15px;
+	height: 31px;
+	border:1px #ccc solid;
+	cursor:pointer;
+	overflow:hidden;
+}
+.cal_content_week .event_parent .event span{
+	display: block;
+	float: left;
+	width: 300%;
+} 
+
+
+.cal_content_week .event_parent .leftArrow{
+	background: url(../images/calendar/cal_continue.PNG) no-repeat;
+	width:8px;
+	height:20px;
+	position: absolute;
+	left:0px;
+	top:0px;
+	z-index:500;
+}
+
+.cal_content_week .event_parent .leftCheckbox{
+	background: url(../images/calendar/cal_continue.PNG) no-repeat;
+	width:8px;
+	height:20px;
+	position: absolute;
+	left:10px;
+	top:-2px;
+	z-index:500;
+}
+
+.cal_content_week .event_parent .rightArrow{
+	background: url(../images/calendar/cal_continue.PNG) no-repeat;
+	width:8px;
+	height:20px;
+	position: absolute;
+	right:0px;
+	top:0px;
+	z-index:500;
+}
+
+/* end cal content week */
+
+/* begin cal content year */
+.cal_content_year .event_parent {
+	position: relative;
+	height:0px;
+	top:5px;
+}
+
+.cal_content_year .event_parent .event {
+	width:100%;
+	position: relative;
+	/* z-index:5000; */
+	line-height:20px;
+	height: 20px;
+	border:1px #ccc solid;
+	cursor:pointer;
+	overflow:hidden;
+}
+
+.cal_content_year .event_parent .leftArrow{
+	background: url(../images/calendar/cal_continue.PNG) no-repeat;
+	width:8px;
+	height:20px;
+	position: absolute;
+	left:0px;
+	top:0px;
+	z-index:500;
+}
+
+.cal_content_year .event_parent .leftCheckbox{
+	background: url(../images/calendar/cal_continue.PNG) no-repeat;
+	width:8px;
+	height:20px;
+	position: absolute;
+	left:10px;
+	top:-2px;
+	z-index:500;
+}
+
+.cal_content_year .event_parent .rightArrow{
+	background: url(../images/calendar/cal_continue.PNG) no-repeat;
+	width:8px;
+	height:20px;
+	position: absolute;
+	right:0px;
+	top:0px;
+	z-index:500;
+}
+
+/* end cal content year */
+/* end cal content*/
+
+/* begin cal_select filter */
+.cal_select .filter {
+	margin-top:12px;
+}
+.cal_select .filter .name {
+	
+}
+.cal_select .filter .name  .title{
+	text-align:left;
+	font-size:12px;
+	color:#F63;
+	font-weight:bold;
+	background:transparent;
+}
+.cal_select .filter .name  .select{
+	padding:5px;
+}
+.cal_select .filter .name  .select ul {
+	
+}
+.cal_select .filter .name  .select ul li{
+	color:#333;
+	font-weight:bold;
+}
+.cal_select .filter .form {
+	
+}
+.cal_select .filter .form  .title{
+	text-align:left;
+	font-size:12px;
+	color:#F63;
+	font-weight:bold;
+	background:transparent;
+}
+.cal_select .filter .form  .select{
+	padding:5px;
+}
+.cal_select .filter .form  .select ul {
+	
+}
+.cal_select .filter .form  .select ul li{
+	color:#333;
+	font-weight:bold;
+}
+/* end cal_select filter*/
+
+/*begin month select calendar*/
+.cal_select_month {
+	font-size: 10px;
+	font-family: Arial;
+	background-color:#ccc;
+	width:231px;
+	height:181px;
+}
+.cal_select_month .info {
+	font-size: 12px;
+	font-weight: bold;
+	padding:3px 3px 0 3px;
+	
+}
+.cal_select_month .info .arow_top {
+	float:left;
+	line-height:30px;
+}
+.cal_select_month .info .info_top {
+	float:left;
+	width:190px;
+	text-align:center;
+	line-height:25px;
+}
+.cal_select_month .month ul li {
+	display: block;
+	float: left;
+	height: 35px;
+	line-height: 35px;
+	margin: 1px;
+	text-align: center;
+	width: 75px;
+	font-weight:bold;
+	background-color: #fff;
+	cursor:pointer;
+}
+.cal_select_month .month ul li:hover {
+	background-color: #EEE;
+}
+.cal_select_month .month .selected {
+	background: #81B5CF;
+}
+.cal_select_month .month .current {
+	background: #EEE;
+}
+.cal_select_month .row .normal, .cal_select_month.row .current, .cal_select_month .row .owner ,  .cal_select_month.row .both {
+	height:30px;
+	width:30px;
+	float:left;
+	margin:1px;
+	display:block;
+	background: #fff;
+}
+/*end month select calendar*/
+
+/*begin year select calendar*/
+.cal_select_year {
+	font-size: 10px;
+	font-family: Arial;
+	background-color:#ccc;
+	width:231px;
+	height:144px;
+}
+.cal_select_year .info {
+	font-size: 12px;
+	font-weight: bold;
+	padding:3px 3px 0 3px;
+	
+}
+.cal_select_year .info .arow_top {
+	float:left;
+	line-height:30px;
+}
+.cal_select_year .info .info_top {
+	float:left;
+	width:190px;
+	text-align:center;
+	line-height:25px;
+}
+.cal_select_year .month ul li {
+	display: block;
+	float: left;
+	height: 35px;
+	line-height: 35px;
+	margin: 1px;
+	text-align: center;
+	width: 75px;
+	font-weight:bold;
+	background-color: #fff;
+	cursor:pointer;
+}
+.cal_select_year .month ul li:hover {
+	background-color:#eee;	
+}
+.cal_select_year .month .selected {
+	background: #81B5CF;	
+}
+.cal_select_year .month .current {
+	background: #EEE;	
+}
+.cal_select_year .row .normal, .cal_select_year.row .current, .cal_select_year .row .owner ,  .cal_select_year.row .both {
+	height:30px;
+	width:30px;
+	float:left;
+	margin:1px;
+	display:block;
+	background: #fff;
+}
+
+/*.cal_select_year td {
+	height: 33px;
+	width: 33px;
+	border: 1px solid;
+	border-color: black;
+}*/
+/*end year select calendar*/
+
+/*begin week select calendar*/
+.cal_select_week {
+	font-size: 10px;
+	font-family: Arial;
+	background-color:#ccc;
+	width:231px;
+	height:231px;
+}
+.cal_select_week .weekday ul li {
+	display: block;
+	float: left;
+	height: 30px;
+	line-height: 35px;
+	margin: 1px;
+	text-align: center;
+	width: 30px;
+	font-weight:bold;
+	background: #fff;
+}
+.cal_select_week .row .empty, .cal_select_week .row .normal, .cal_select_week .row .sat, .cal_select_week .row .sun, .cal_select_week .row .today, .cal_select_week .row .vacation, .cal_select_week .row .owner ,  .cal_select_week .row .both {
+	height:30px;
+	width:30px;
+	float:left;
+	margin:1px;
+	display:block;
+	background: #fff;
+}
+
+/*.cal_select_week .row .today {background: #EEE;}
+.cal_select_week .row .owner { background-position:0 -30px}
+.cal_select_week .row .both {background-position:0 -74px}
+.cal_select_week .row .vacation {background-position:0 -148px}
+.cal_select_week .row .normal:hover, .cal_select_week .row .sun:hover, .cal_select_week .row .sat:hover {
+	background: #EEE;/*#FFF8DC; #F5F5DC; #F0F8FF;
+}*/
+.cal_select_week .row .normal:hover, .cal_select_week .row .sun:hover, .cal_select_week .row .sat:hover {
+	background: #EEE;
+}
+.cal_select_week .row .selected {
+	background: #81B5CF;
+}
+
+.cal_select_week .row .selectedWeek {
+	background: #81B5CF;
+}
+
+.cal_select_week .row:hover .hoverWeek {
+	background: #EEE;
+}
+
+.cal_select_week .row .vacation {
+	background: red;
+	color: #fff;
+}
+.cal_select_week .row .empty {
+	/*background-color:#ccc !important;*/
+	border:none;
+	width:30px
+}
+/*.cal_select_week td {
+	height: 33px;
+	width: 33px;
+	border: 1px solid;
+	border-color: black;
+}*/
+.cal_select_week .mid_lich, .day .mid_lich {
+	
+}
+/*.day-sat .mid_lich , .day-sun .mid_lich{
+	background:url("/images/calendar/bg_mid_lich_event.jpg") repeat-y top left;
+	}
+.day-vacation .mid_lich {
+	background:url("/images/calendar/bg_mid_lich_vacation.jpg") repeat-y top left;
+	}	*/
+.cal_select_week .weekday {
+	padding:0 4px 0 3px;
+}
+.day  .mid_lich, .day-sat  .mid_lich , .day-sun  .mid_lich, .day-vacation  .mid_lich {padding:0 10px}
+.cal_select_week .row {
+	padding:0 3px;
+}
+.cal_select_week .row .today {
+	background-color: #EEE;
+}
+/*.cal_select_week .weekday td {
+	text-align: center;
+	font-weight: bold;
+	cursor: default;
+	background-color: #D5D5D5;
+	border-top: 1px solid;
+	border-right: 0px solid;
+	border-color: black;
+}*/
+.cal_select_week .weekday .sat {
+	text-align: center;
+	font-weight: bold;
+	cursor: default;
+	background-color: #fff;
+}
+.cal_select_week .sat {
+	color: red;
+	border-top: 0px;
+}
+.cal_select_week .sun {
+	color: red;
+	border-top: 0px;
+	border-right: 0px;
+}
+/*.cal_select_week .onwer {
+	background-color: navy;
+	color: white;
+}
+.cal_select_week .both {
+	color: white;
+	background-image: url('/images/calendar/both.png');
+	background-repeat: no-repeat;
+}*/
+.cal_select_week .solar {
+	text-align: left;
+	line-height:16px;
+	padding-left:3px;
+	font-weight:bold;
+}
+.cal_select_week .lunar {
+	text-align: right;
+	padding-right:3px;
+	line-height:16px;
+}
+.cal_select_week .empty {
+	cursor: default;
+	border-top: 0px;
+	border-right: 0px;
+}
+.cal_select_week .info {
+	font-size: 12px;
+	font-weight: bold;
+	padding:3px 3px 0 3px;
+}
+.cal_select_week .info .arow_top {
+	float:left;
+	line-height:30px;
+}
+.cal_select_week .info .info_top {
+	float:left;
+	width:190px;
+	text-align:center;
+	line-height:25px;
+}
+/*.cal_select_week .info td {
+	border: 0px;
+	text-align: center;
+}*/
+.cal_select_week .info a {
+	text-decoration: none;
+	color: black;
+}
+.cal_select_week .info a:hover {
+	text-decoration: none;
+	color: #ccc;
+}
+.cal_select_week .normal, .sun, .sat, .vacation, .onwer, .both, .today {
+	cursor: pointer;
+	border-top: 0px;
+	border-right: 0px;
+}
+/*end week select calendar*/
+
+
+span.icon_vacation {
+	display:inline-block;
+	background: url("/images/calendar/icon_ltt.gif") no-repeat 0 -170px;
+	width:16px; height:16px}
+.cal_droppable{
+	background-color: #58a;
+}
+.rows_workorder{
+	background-color: #fdc;
+}

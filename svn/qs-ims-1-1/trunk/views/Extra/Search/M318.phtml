@@ -1,0 +1,29 @@
+<?php
+$id = 'filter_phongban';
+$getDataObject = array('OPhongBan' => array('MaPhongBan', 'TenPhongBan'));
+$getFields = array('num' => 2,
+    'objects' => array('OPhongBan' => array(
+        'id' => 'IOID'
+    , 'display1' => 'MaPhongBan'
+    , 'display2' => 'TenPhongBan')));
+$placeHolder = 'Chọn phòng ban';
+
+?>
+
+
+<div class="fl">
+    <?php
+    echo $this->views->Report->ListBox(
+        $id
+        , $getDataObject
+        , $getFields
+        , array()
+        , array()
+        , ' onchange="rowSearch(\'M318\');" '
+        , $this->selectedTextPhongBan
+        , $this->selectedPhongBan
+        , $placeHolder
+    );
+    ?>
+</div>
+

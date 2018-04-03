@@ -1,0 +1,133 @@
+<style>
+    .form
+    {
+        margin-left: 20px;
+        clear: both;
+    }
+
+    .form_title
+    {
+        float: left;
+        width: 150px;
+        vertical-align: middle;
+    }
+
+    .form_edit
+    {
+        float: left;
+    }
+
+    .form_edit textarea, .object_edit textarea
+    {
+        width: 500px;
+        height: 150px;
+    }
+
+    .objects
+    {
+        margin-left: 40px;
+        clear: both;
+    }
+
+    .object_title
+    {
+        float: left;
+        width: 150px;
+        vertical-align: middle;
+    }
+
+    .object_edit
+    {
+        float: left;
+    }
+
+    .fields
+    {
+        margin-left: 60px;
+        clear: both;
+    }
+
+    .field_title
+    {
+        float: left;
+        width: 150px;
+        vertical-align: middle;
+    }
+
+    .field_edit
+    {
+        float: left;
+    }
+
+    .field_edit textarea
+    {
+        width: 500px;
+        height: 18px;
+        line-height: 18px;
+    }
+
+    .form, .object, .field
+    {
+        margin: 10px 0px;;
+    }
+
+    .object
+    {
+        border-top: 1px #bbb solid;
+        padding-top: 10px;
+    }
+
+</style>
+
+<script>
+    var help = {
+        edit : function()
+        {
+            var url  = sz_BaseUrl + '/user/help/edit';
+            var data = {module: $('#module').val() };
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#help_edit_form').html(jreturn);
+            });
+        },
+
+        save : function()
+        {
+            var data = $('#help_edit_form').serialize();
+            var url  = sz_BaseUrl + '/user/help/save';
+
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != '')
+                {
+                    qssAjax.alert(jreturn.message);
+                }
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+        }
+    };
+
+    $(document).ready(function(){
+        $('#module').keypress(function(e){
+            if(e.keyCode == 13) {
+                help.edit();
+            }
+        });
+    });
+</script>
+
+<div class="clear"></div>
+
+<div id="horizontal-toolbar" class="horizontal-toolbar clearfix">
+    <input type="text" id="module" placeholder="Nhập mã module">
+
+    <button type="button" class="btn btn-custom" onclick="help.edit();"> Tìm </button>
+    <button type="button" id="btnSAVE" class="btn btn-custom" onclick="help.save()" id="btn"> Cập nhật </button>
+</div>
+
+<div id="view">
+    <form id="help_edit_form">
+
+    </form>
+</div>

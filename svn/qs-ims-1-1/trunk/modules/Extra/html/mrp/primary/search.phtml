@@ -1,0 +1,360 @@
+<?php
+$oldIssueDate     = '';
+$oldDeliveryDate  = '';
+$oldAttr          = '';
+$oldItemLine      = 0; // giup xac dinh cac san pham da in, tranh trung lap
+$lineNo           = 1; // Dong so
+$khauTruKho       = array();
+?>
+
+
+
+<table cellpadding="0" cellspacing="0" class="borderX" width="100%"
+	id="mrp_primary_table">
+	<tbody>
+		<tr class="bggrey">
+			<th width="5%" class="center">STT</th>
+			<th width="10%" class="center">Ngày BĐ</th>
+			<th width="10%" class="center">Ngày KT</th>
+			<th width="15%" class="center">Mã MH</th>
+			<th width="15%" class="center">Tên MH</th>
+			<th width="15%" class="center">Thuộc tính</th>
+			<th width="15%" class="center">Thiết kế</th>
+			<th width="5%" class="center">ĐVT</th>
+			<th width="5%" class="center">SL</th>
+			<th width="5%" class="center">SLSX</th>
+			<th width="5%" class="center">SL Mua</th>
+			<th width="5%" class="center">Khấu trừ kho</th>
+			<th width="5%" class="center">Kho</th>
+		</tr>
+
+		<?php if($this->hasDetailReq): // Neu co chi tiet yeu cau?>
+		<?php if($this->dateError == -1):?>
+		<tr>
+			<th class="center" colspan="11">Ngày bắt đầu sản xuất nhỏ hơn ngày
+				xuất hàng sớm nhất, bạn cần chỉnh lại ngày bắt đầu sản xuất.</th>
+		</tr>
+		<?php else: // Nếu ngày xuát hàng đầu tiên bằng hoặc lớn hơn ngày bắt đầu	?>
+		<?php foreach ($this->searchItem as $item):?>
+		<?php if($oldIssueDate != $item->NgayXuatHang): // In ngay xuat hang khong trung lap?>
+		<?php $makerClass = "date-{$item->NgayXuatHang}"; ?>
+
+		<?php if($oldIssueDate): // In nut kiem tra du lieu?>
+		<tr class="<?php echo "control-button-{$item->NgayXuatHang}"?>">
+			<td colspan="11">
+				<button type="button" class="btn-custom"
+					onclick="validateGeneralItems('<?php echo $oldIssueDate?>', <?php echo $lineNo?>)">
+					Kiểm tra</button>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="11">
+				<div id="<?php echo "group-{$oldIssueDate}"?>"
+					style="width: 50%; float: right;"></div>
+			</td>
+		</tr>
+
+		<?php if($this->lamLai == 0):?>
+		<tr style="display: none;">
+			<td><script type="text/javascript">getOldGeneralPlan('<?php echo $oldIssueDate?>');</script>
+			</td>
+		</tr>
+		<?php endif;// Neu ko lam lai in gia tri cu?>
+		<?php endif; // In nut kiem tra du lieu ?>
+
+		<tr id="<?php echo "heading-{$item->NgayXuatHang}"?>">
+			<th colspan="11" class="<?php echo "group-{$item->NgayXuatHang}"?>">
+			<?php echo Qss_Lib_Date::mysqltodisplay($item->NgayXuatHang);?> <?php $beginDate = ($lineNo == 1)?$this->startDate:$oldIssueDate; ?>
+				<input type="hidden" name="finishDate"
+				value="<?php echo $item->NgayXuatHang;?>"
+				class="<?php echo $makerClass?>" /> <input type="hidden"
+				name="beginDate" value="<?php echo $beginDate;?>"
+				class="<?php echo $makerClass?>" /> <input type="hidden"
+				name="markerClass" id="marker_class"
+				value="<?php echo $makerClass?>" class="<?php echo $makerClass?>" />
+				<input type="hidden" name="markerGroupID" id=""
+				value="<?php echo $item->NgayXuatHang?>"
+				class="<?php echo $makerClass?>" /> <input type="hidden"
+				name="mainIssueDate" value="<?php echo $item->NgayXuatHang;?>"
+				class="<?php echo $makerClass?>" />
+			</th>
+		</tr>
+		<?php endif;?>
+
+
+
+		<?php if($oldItemLine != $item->Ref_MaSP ||
+		($oldItemLine == $item->Ref_MaSP && $oldAttr != $item->Ref_ThuocTinh) ||
+		($oldItemLine == $item->Ref_MaSP && $oldAttr == $item->Ref_ThuocTinh
+		&& $oldIssueDate != $item->NgayXuatHang)
+		//||($oldItemLine == $item->Ref_MaSP && $oldAttr == $item->Ref_ThuocTinh && $oldIssueDate == $item->NgayXuatHang && $oldDeliveryDate != $item->NgayGiaoHang)
+		):?>
+
+		<?php
+		$datMua          = @$this->datMua[$item->Ref_MaSP][$item->Ref_ThuocTinh]?
+		$this->inventory[$item->Ref_MaSP][$item->Ref_ThuocTinh]:0;
+		$datSanXuat      =  @$this->datSanXuat[$item->Ref_MaSP][$item->Ref_ThuocTinh]?
+		$this->inventory[$item->Ref_MaSP][$item->Ref_ThuocTinh]:0;
+		$warehouse       = @$this->inventory[$item->Ref_MaSP][$item->Ref_ThuocTinh]?
+		$this->inventory[$item->Ref_MaSP][$item->Ref_ThuocTinh]:0;
+		$codeDongSanPham = $item->Ref_MaSP.'_'.$item->Ref_ThuocTinh;
+		$tempWarehouse   = isset($khauTruKho[$codeDongSanPham])?$khauTruKho[$codeDongSanPham]:$warehouse;
+		$absKhauTru      = abs($tempWarehouse - $item->SoLuong);
+		$defaultKhauTru  = ($absKhauTru == $item->SoLuong)?0:$absKhauTru;
+		$khauTruKho[$codeDongSanPham] = $tempWarehouse - $defaultKhauTru;
+		?>
+
+		<tr class="<?php echo "line-{$item->NgayXuatHang}";?>">
+			<td class="center"><?php echo $lineNo;//$tempWarehouse;?> <!-- Lay parent truyen len de xac dinh children va in ra parent  -->
+			<?php // @Note: lineNo duoc su dung lam key cua mang bom chua tat ca cac bom cua mot san pham vi vay ko xoa line no nay di?>
+				<input type="hidden" name="lineNo[]" id=""
+				class="<?php echo $makerClass?>" value="<?php echo $lineNo;?>" /> <input
+				type="hidden" name="no[]" id="" class="<?php echo $makerClass?>"
+				value="<?php echo $lineNo;?>" /> <input type="hidden"
+				name="issueDate[]" id="" class="<?php echo $makerClass?>"
+				value="<?php echo $item->NgayXuatHang;?>" /> <input type="hidden"
+				name="deliveryDate[]" id="" class="<?php echo $makerClass?>"
+				value="<?php echo $item->NgayKetThuc;?>" /> <input type="hidden"
+				name="eDate[]" id="" class="<?php echo $makerClass?>"
+				value="<?php echo $item->NgayKetThuc;?>" /> <input type="hidden"
+				name="sDate[]" id="" class="<?php echo $makerClass?>"
+				value="<?php echo $item->NgayBatDau;?>" /> <input type="hidden"
+				name="refItem[]" id="" class="<?php echo $makerClass?>"
+				value="<?php echo $item->Ref_MaSP;?>" /> <input type="hidden"
+				name="itemCode[]" id="" class="<?php echo $makerClass?>"
+				value="<?php echo $item->MaSP;?>" /> <input type="hidden"
+				name="itemName[]" id="" class="<?php echo $makerClass?>"
+				value="<?php echo $item->TenSP;?>" /> <input type="hidden"
+				name="refAttributes[]" id=""
+				class="ref_attributes <?php echo $makerClass?>"
+				value="<?php echo $item->Ref_ThuocTinh;?>" /> <input type="hidden"
+				name="refAttributesReal[]" id=""
+				class="real_ref_attributes <?php echo $makerClass?>"
+				value="<?php echo $item->Ref_ThuocTinh;?>" /> <input type="hidden"
+				name="attributes[]" id="" class="<?php echo $makerClass?>"
+				value="<?php echo $item->ThuocTinh;?>" /> <input type="hidden"
+				name="uom[]" id="" class="<?php echo $makerClass?>"
+				value="<?php echo $item->DonViTinh;?>" /> <input type="hidden"
+				name="qty[]" id="" class="<?php echo $makerClass?>"
+				value="<?php echo $item->SoLuong;?>" /> <input type="hidden"
+				name="manufacturing[]" id="" class="<?php echo $makerClass?>"
+				value="<?php echo $item->SanXuat;?>" /> <input type="hidden"
+				name="purchase[]" id="" class="<?php echo $makerClass?>"
+				value="<?php echo $item->MuaVao;?>" /> <input type="hidden"
+				name="parentQty[]" id="" class="<?php echo $makerClass?>" value="0" />
+				<input type="hidden" name="hasBOM[]" id=""
+				class="<?php echo $makerClass?>" value="0" /> <input type="hidden"
+				name="hasChildren[]" id="" class="<?php echo $makerClass?>"
+				value="0" /> <input type="hidden" name="directlyUnder[]" id=""
+				class="<?php echo $makerClass?>" value="0" /> <input type="hidden"
+				name="level[]" id="" class="<?php echo $makerClass?>" value="1" /> <input
+				type="hidden" name="bom[]" id=""
+				class="<?php echo $makerClass?> bom_name" value="" /> <input
+				type="hidden" name="parentManuQty[]"
+				class="<?php echo $makerClass?>"
+				value="<?php echo $item->SoLuong;?>" /> <input type="hidden"
+				name="currentLevel" id="current_level" value="1"
+				class="<?php echo $makerClass?>" /> <!-- Xac dinh level hien tai  -->
+				<input type="hidden" name="endValidation"
+				id="end-validation-<?php echo $item->NgayXuatHang?>"
+				class="end_validation" value="0" class="<?php echo $makerClass?>" />
+				<!-- Xac dinh ket thuc viec lay children  --> <input type="hidden"
+				name="warehouse[]" id="" value="<?php echo $warehouse?>"
+				class="<?php echo $makerClass?>" /> <input type="hidden"
+				name="assembly[]" id="" value=""
+				class="assembly <?php echo $makerClass?>" /> <input type="hidden"
+				name="khioid[]" value="<?php echo $item->KHIOID;?>"
+				class="<?php echo $makerClass?>" />
+			</td>
+			<td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item->NgayBatDau);?>
+			</td>
+			<td class="center"><?php echo Qss_Lib_Date::mysqltodisplay($item->NgayKetThuc);?>
+			</td>
+			<td class="left"><?php echo $item->MaSP;?>
+			</td>
+			<td class="left"><?php echo $item->TenSP;?>
+			</td>
+
+			<?php if($item->ThuocTinh):?>
+			<td class="left"><?php echo $item->ThuocTinh;?>
+			</td>
+			<?php else:?>
+			<td class="center">-</td>
+			<?php endif;?>
+			<td class="center"><?php if(isset($this->bomArray[$item->Ref_MaSP][$item->Ref_ThuocTinh])): // In bom neu co?>
+			<?php $bomArray = '';?> <!-- Truong hop co bom co san xuat va co bom nhung ko san xuat -->
+				<select name="refBom[]"
+				class="bom-<?php echo $item->NgayXuatHang?> 
+                        width_100 <?php echo $makerClass?>"
+				lineno="<?php echo $lineNo?>" onchange="fillBomName(this)"
+				<?php if(!$item->SanXuat){echo 'disabled';}?>>
+					<option value="" names="" all="0" assembly="">Chọn</option>
+					<?php foreach ($this->bomArray[$item->Ref_MaSP][$item->Ref_ThuocTinh] as $key=>$val):?>
+					<option value="<?php echo $key?>"
+						assembly="<?php echo $val['Assembly']?>"
+						names="<?php echo $val['BomName']?>"
+						all="<?php echo $val['All']?>">
+						<?php echo $val['BomName']?>
+					</option>
+
+					<?php
+					// Luu mang bom cha de hien thi trong con
+					$bomArray .= '<input type="hidden" name="refBomArray['.$lineNo.'][Id][]" class="'.$makerClass.'" value="'.$key.'"/>';
+					$bomArray .= '<input type="hidden" name="refBomArray['.$lineNo.'][Name][]" class="'.$makerClass.'" value="'.$val['BomName'].'"/>';
+					?>
+					<?php endforeach;?>
+					<?php echo $bomArray;?>
+			</select> <?php if(!$item->SanXuat):?> <input type="hidden"
+				name="refBom[]" value="0" class="<?php echo $makerClass?>" /> <?php endif;?>
+				<?php else: // Neu khong co bom in ra khong co ?> <span class="red">Không
+					có!<?php //echo $this->_translate(100);?> </span> <input
+				type="hidden" name="refBom[]" value="0"
+				class="<?php echo $makerClass?>" /> <?php endif;?>
+			</td>
+			<td class="left"><?php echo $item->DonViTinh;?>
+			</td>
+
+			<?php
+			// Xử lý in số lượng sản phẩm mua vào và sản xuất
+			// Nếu cùng mua vào và sản xuất ưu tiên sản xuất
+			// Nếu từng cái in số lượng vào cái có, còn lại in 0
+			// Nếu sản phẩm không mua cũng không sản xuất thông báo chưa cấu hính sản phẩm
+			// Thực hiện: b1 set giá trị ban đầu cho hai loại số lượng
+			$purchaseQty = 0;
+			$enabledPurchaseQty = false;
+			$productionQty = 0;
+			$enabledProductionQty = false;
+			$hasBom = 0;
+			$readonly = '';
+			$defaultQty = $item->SoLuong;
+
+			if($item->MuaVao && $item->SanXuat)
+			{
+				$productionQty = $item->SoLuong - $defaultKhauTru;
+				$enabledPurchaseQty = true;
+				$enabledProductionQty = true;
+				$hasBom = 1;
+			}
+			elseif($item->MuaVao)
+			{
+				$purchaseQty = $item->SoLuong - $defaultKhauTru;
+				$enabledPurchaseQty = true;
+				if($defaultKhauTru == 0)
+				{
+					$readonly = 'readonly';
+				}
+			}
+			elseif($item->SanXuat)
+			{
+				$productionQty = $item->SoLuong - $defaultKhauTru;
+				$enabledProductionQty = true;
+
+				if($defaultKhauTru == 0)
+				{
+					$readonly = 'readonly';
+				}
+			}
+
+			// Xử lý đơn hàng nếu sản phẩm không mua và sản xuất
+			// End Xử lý in số lượng
+			?>
+
+			<td class="right"><?php echo $item->SoLuong;?></td>
+
+
+			<?php if($enabledProductionQty): // In so luong san xuat?>
+			<td><input type="text" name="productionQty[]"
+				value="<?php echo $productionQty?>"
+				onchange="changeQtyOfGeneralLine(this,<?php echo $defaultQty?>, 1)"
+				class="production_qty_box width_50 <?php echo $makerClass?> <?php echo $readonly?>"
+				<?php echo $readonly?> />
+			</td>
+			<?php else:?>
+			<td class="center"><input type="hidden" name="productionQty[]"
+				value="0" class="width_50 <?php echo $makerClass?>" /> <?php if(!$enabledProductionQty && !$enabledPurchaseQty):?>
+				- <?php else:?> - <?php endif;?>
+			</td>
+			<?php endif; // In so luong san xuat?>
+
+
+			<!-- So luong mh -->
+			<?php if($enabledPurchaseQty): // In so luong mua hang?>
+			<td class=""><input type="text" name="purchaseQty[]"
+				value="<?php echo $purchaseQty?>"
+				onchange="changeQtyOfGeneralLine(this,<?php echo $defaultQty?>, 2)"
+				class="purchase_qty_box width_50 <?php echo $makerClass?> <?php echo $readonly?>"
+				<?php echo $readonly;?> />
+			</td>
+			<?php else:?>
+			<td class="center"><input type="hidden" name="purchaseQty[]"
+				value="0" class="width_50 <?php echo $makerClass?>" /> <?php if(!$enabledProductionQty && !$enabledPurchaseQty):?>
+				- <?php else:?> - <?php endif;?>
+			</td>
+			<?php endif; // In so luong mua hang?>
+
+			<td class=""><input type="text" name="stockUsedQty[]"
+				value="<?php echo $defaultKhauTru?>"
+				class="width_50 <?php echo "{$makerClass} SUQ_{$codeDongSanPham}"?>
+                    <?php if($defaultKhauTru ==0) echo 'readonly';?>"
+				onchange="changeQtyAvailable(this)"
+				marker="SUQ_<?php echo $codeDongSanPham?>"
+				defaultQty="<?php echo $defaultKhauTru;?>"
+				warehouseQty="<?php echo $warehouse;?>"
+				<?php if($defaultKhauTru ==0) echo 'readonly';?> />
+			</td>
+
+			<td class="right warehouse_marker_SUQ_<?php echo $codeDongSanPham?>">
+			<?php echo $warehouse;//"{$defaultKhauTru}/{$warehouse}" ?>
+			</td>
+		</tr>
+
+		<?php $lineNo++;?>
+		<?php endif; // Kiem tra in san pham ko trung lap?>
+
+		<?php
+		$oldItemLine = $item->Ref_MaSP; // Luu lai gia tri da in, tranh trung lap
+		$oldIssueDate = $item->NgayXuatHang;
+		//$oldDeliveryDate = $item->NgayGiaoHang;
+		$oldAttr = $item->Ref_ThuocTinh;
+		?>
+		<?php endforeach;?>
+
+		<tr class="<?php echo "control-button-{$oldIssueDate}"?>">
+			<td colspan="11">
+				<button type="button" class="btn-custom"
+					onclick="validateGeneralItems('<?php echo $oldIssueDate?>', <?php echo $lineNo?>)">
+					Kiểm tra</button>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="11">
+				<div id="<?php echo "group-{$oldIssueDate}"?>"
+					style="width: 50%; float: right;"></div></td>
+		</tr>
+
+		<?php if($this->lamLai == 0):?>
+		<tr style="display: none;">
+			<td><script type="text/javascript">
+                    getOldGeneralPlan('<?php echo $oldIssueDate?>');
+            </script>
+			</td>
+		</tr>
+		<?php endif;// Neu ko lam lai in gia tri cu?>
+		<?php endif;// kết  thúc kiểm tra ngày xuất hàng đầu tiên với ngày bắt đầu?>
+
+		<?php else: // Không có kế hoạch giao?>
+		<tr>
+			<th class="center" colspan="11">Bạn cần tạo kế hoạch giao hàng trước
+				khi xử lý!</th>
+		</tr>
+		<?php endif; // Kết thúc kiểm tra có kế hoạch giao?>
+	</tbody>
+	<tfoot style="display: none;">
+		&nbsp;
+		<script type="text/javascript">
+                <!--
+                $('#save_item_plan_button').remove();
+                //-->
+        </script>
+	</tfoot>
+</table>

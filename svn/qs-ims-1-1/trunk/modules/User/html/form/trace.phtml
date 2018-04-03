@@ -1,0 +1,170 @@
+<script type="text/javascript">
+<!--
+function changeDepartment(){
+	var url = sz_BaseUrl + '/user/form/change/department';
+	var data = {ifid:<?php echo $this->form->i_IFID?>,deptid:$('#DetparmentID').val()};
+	qssAjax.call(url, data, function(jreturn) {
+		$('#qss_trace').dialog('close');
+	}, function(jreturn) {
+			qssAjax.alert(jreturn.message);
+	});
+}
+//-->
+</script>
+<?php
+$arrCount = array(1=>'meeting',2=>'call',3=>'email',4=>'task',5=>'event',6=>'other');
+$arrStatus = array(0=>'chưa bắt đầu',1=>'đang thực hiện',2=>'hoàn thành',3=>'hủy');
+?>
+<div class="line-hr">
+	<span><?php echo $this->_translate(80)?> </span>
+</div>
+<table class="detail">
+	<tr>
+		<th><?php echo $this->_translate(29)?>:</th>
+		<td><?php echo $this->user->szUserName?></td>
+		<th><?php echo $this->_translate(47)?>:</th>
+		<td><?php echo $this->views->Common->TreeCombo($this->departments,'DetparmentID',$this->dept->intDepartmentID)?><button onclick="changeDepartment()">Cập nhật</button></td>
+	</tr>
+	<tr>
+		<th><?php echo $this->_translate(78)?>:</th>
+		<td><?php echo date('d-m-Y: H:m',$this->form->startDate)?></td>
+		<th><?php echo $this->_translate(31)?>:</th>
+		<td><?php echo $this->status?></td>
+	</tr>
+	<tr>
+		<th><?php echo $this->_translate(79)?>:</th>
+		<td><?php echo $this->form->lastModify?date('d-m-Y: H:m',$this->form->lastModify):''?>
+		</td>
+		<th><?php if($this->history):?> <?php echo $this->_translate(94)?>: <?php endif;?>
+		</th>
+		<td><?php if($this->history):?><a target="_blank"
+			href="/user/form/detail?ifid=<?php echo $this->history->IFID?>&deptid=<?php echo $this->history->DepartmentID?>"><?php echo $this->history->Name?>
+		</a> <?php endif;?></td>
+	</tr>
+</table>
+<?php if(count($this->traces)):?>
+<div class="line-hr">
+	<span><?php echo $this->_translate(81)?> </span>
+</div>
+<table class="detail">
+<?php foreach ($this->traces as $item):?>
+	<tr>
+		<td><span class="notify_time"><?php echo date('d-m-Y: H:m',$item->Date)?>
+		</span> <span class="green"><?php echo $item->UserName?> </span>
+		</td>
+		<td><span class="italic"><?php echo $item->Logs?> </span>
+		</td>
+		<td>
+			<?php if(file_exists(QSS_DATA_DIR.'/documents/'.$item->FTID.'.xlsx')):?>
+				<span class="bold">
+					<a target="new" href="#" onclick="downloadFile('<?php echo $item->FTID.'.xlsx';?>'); return false;">Tải về</a>
+				</span>
+			<?php endif;?>
+		</td>
+	</tr>
+	<?php endforeach;?>
+</table>
+	<?php endif;?>
+
+
+	<?php if(count($this->readers)):?>
+<div class="line-hr">
+	<span><?php echo $this->_translate(82)?> </span>
+</div>
+
+<table class="detail">
+	<?php $i = 0;?>
+	<?php foreach ($this->readers as $item):?>
+	<tr>
+		<td><?php echo $item->UserName?></td>
+		<td><span class="notify_time"><?php echo $this->_translate(93)?> <?php echo date('H:i',$item->Time)?>
+		<?php echo $this->_translate(92)?> <?php echo Qss_Lib_Date::mysqltodisplay($item->Date)?>
+		</span></td>
+		<?php $i++;?>
+		<?php if($i == 3):?>
+	</tr>
+
+	<?php $i = 0;?>
+	<?php endif;?>
+	<?php endforeach;?>
+
+</table>
+	<?php endif;?>
+
+	<?php if(count($this->transfer)):?>
+<div class="line-hr">
+	<span><?php echo $this->_translate(105)?> </span>
+</div>
+
+<table class="detail">
+<?php $i = 0;?>
+<?php foreach ($this->transfer as $item):?>
+	<tr>
+		<td><?php echo $item->BashName?></td>
+		<td><?php echo $item->UserName?></td>
+		<td><span class="notify_time"><?php echo $this->_translate(93)?> <?php echo date('H:i',$item->Time)?>
+		<?php echo $this->_translate(92)?> <?php echo Qss_Lib_Date::mysqltodisplay($item->LastRun)?>
+		</span></td>
+		<td title="<?php echo $item->Message?>" <?php if(!$item->ToIFID):?>
+			class="error" <?php endif;?>><?php if($item->ToIFID):?> <a
+			target="_blank"
+			href="/user/form/detail?ifid=<?php echo $item->ToIFID?>&deptid=<?php echo $item->deptid?>"><?php echo $item->ToName?>
+		</a> <?php else:?> <?php echo $item->ToName?> <?php endif;?></td>
+		<?php $i++;?>
+	</tr>
+	<?php endforeach;?>
+</table>
+	<?php endif;?>
+
+<?php $sid = 0?>
+<?php foreach ($this->approvers as $item):?>
+	<?php if($sid != $item->SID):?>
+		<div class="line-hr">
+			<span><?php echo $item->StepName?> (<?php switch ($item->intStepType):
+case 1:?> Phê duyệt tuần tự <?php break;?> <?php case 2:?> Tất cả được
+		duyệt <?php break;?> <?php case 3:?> Phê duyệt cuối cùng <?php break;?>
+		<?php case 4:?> Phê duyệt bất kỳ <?php break;?> <?php endswitch;?> )</span>
+		</div>
+	<?php endif;?>
+	<table class="detail">
+	<tr>
+		<td width="5%"><input type="checkbox" disabled="disabled" <?php if($item->StepNo):?> checked <?php endif;?>></td>
+		<td width="40%">
+		<?php if($item->StepNo):?> 
+			<span class="green"><?php echo $item->Name?> đã duyệt</span> 
+			(<?php echo $item->UserName?>)
+		<?php else:?> 
+			<span class="<?php if(!$this->ok):?>red<?php endif;?>"><?php echo $item->Name?> chưa duyệt</span> 
+		<?php endif;?>
+		</td>
+	</tr>
+	</table>
+	<?php $sid = $item->SID;?>
+	<?php endforeach;?>
+
+<div class="line-hr">
+	<span><?php echo $this->_translate(83)?> </span>
+</div>
+<table>
+	<tr>
+		<td width="100" valign="top"><textarea id="comment" name="comment"
+				rows="2" cols="40"
+				onkeydown="saveComment(event,'<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $this->cuser->user_id?>')"></textarea>
+			<br /> <span class="notify_time"><?php echo $this->_translate(84)?> </span>
+		</td>
+		<td>
+			<table class="detail">
+			<?php foreach ($this->comments as $item):?>
+				<tr>
+					<td width="130" valign="top"><?php echo $item->UserName?></td>
+					<td><?php echo $item->Comment?> <span class="notify_time">(<?php echo $this->_translate(93)?>
+					<?php echo date('H:i',$item->Time)?> <?php echo $this->_translate(92)?>
+					<?php echo Qss_Lib_Date::mysqltodisplay($item->Date)?>)</span></td>
+				</tr>
+				<?php endforeach;?>
+			</table>
+		</td>
+	</tr>
+
+</table>
+

@@ -1,0 +1,125 @@
+<?php
+$forms = Qss_Model_Db::Table('qsforms');
+$forms->orderby('FormCode');
+?>
+
+<script>
+	function printPreview()
+	{
+		var start = $('#start').val();
+		var end   = $('#end').val();
+		var msg   = '';
+		msg += common_checkEmpty(start, '<?php echo $this->_translate(23) ?>');
+
+		if(msg)
+		{
+			qssAjax.alert(msg);
+			return;
+		}
+		else
+		{
+			var url = sz_BaseUrl + '/static/m786/show';
+			var data = $('#report').serialize();
+			qssAjax.getHtml(url, data, function(jreturn) {
+				$('#print-area').html(jreturn);
+				removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+			});
+		}
+	}
+</script>
+
+<div>
+	<div class="clear"></div>
+	<div id="view">
+		<div class="line-hr">
+			<span><?php echo $this->_translate(1) ?> </span>
+		</div>
+		<form id="report" method="get" action="/static/m786/show">
+			<table class="detail">
+				<!-- NGAY BAT DAU -->
+				<tr>
+					<th width="20%" class="report-param-label"><?php echo $this->_translate(23) ?><span
+							class="bold red">(*)</span>
+					</th>
+					<td><?php echo $this->views->Report->Datepicker('start', date('d-m-Y',strtotime("-1 year", time()))); ?></td>
+				</tr>
+
+				<!-- NHOM THIET BI -->
+				<tr>
+					<th width="20%" class="report-param-label"><?php echo $this->_translate(21)?>
+					</th>
+					<td><?php
+						$id            = 'group';
+						$getFields     = array('num'=>2,
+							'objects'=>array('ONhomThietBi'=>array(
+								'id'=>'IOID'
+							,'display1'=>'LoaiThietBi'
+							)) );
+						?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+
+				</tr>
+
+				<?php
+				if(Qss_Lib_Extra::checkFieldExists('ODanhSachThietBi'
+					, 'Ref_LoaiThietBi')):
+					?>
+					<!-- LOAI THIET BI -->
+					<tr>
+						<th width="20%" class="report-param-label"><?php echo $this->_translate(20)?>
+						</th>
+						<td><?php
+							$id            = 'type';
+							$getFields     = array('num'=>2,
+								'objects'=>array('OLoaiThietBi'=>array(
+									'id'=>'IOID'
+								,'display1'=>'TenLoai'
+								)) );
+							?> <?php echo $this->views->Report->ComboBox($id,$getFields);?>
+						</td>
+					</tr>
+				<?php endif;?>
+
+				<!-- THIET BI -->
+				<tr>
+					<th width="20%" class="report-param-label"><?php echo $this->_translate(22)?>
+					</th>
+					<td><?php
+						$id            = 'equip';
+						$getDataObject = array('ODanhSachThietBi'=>array('MaThietBi', 'LoaiThietBi'));
+						//,'OKhuVuc'=>array('MaKhuVuc','Ten')
+						$getFields     = array('num'=>2,
+							'objects'=>array('ODanhSachThietBi'=>array(
+								'id'=>'IOID'
+							,'display1'=>'MaThietBi'
+							,'display2'=>'LoaiThietBi')) );
+						$getLookupFilter = array( array('id'=>'group'
+						, 'refField'=>array('ODanhSachThietBi'=>'Ref_NhomThietBi') // Nhom TB
+						, 'required'=>0)
+						, array('id'=>'type'
+							, 'refField'=>array('ODanhSachThietBi'=>'Ref_LoaiThietBi') // Loai TB
+							, 'required'=>0));
+						?> <?php echo $this->views->Report->ListBox($id, $getDataObject,$getFields, $getLookupFilter);?>
+					</td>
+				</tr>
+
+				<!-- Vat tu -->
+				<tr>
+					<th width="20%" class="report-param-label">&nbsp;
+					</th>
+					<td>
+						<input type="checkbox" name="alert[]" id="checkbox" value="1"  style="height: 12px;"/>
+						<span class="bgyellow bold" style="display: inline-block; line-height: 18px; width: 65px;  text-align: center;"><?php echo $this->_translate(30)?></span>
+						<input type="checkbox" name="alert[]" id="checkbox" value="2" style="height: 12px;"/>
+						<span class="bgpink bold" style="display: inline-block; line-height: 18px; width: 65px; text-align: center;"><?php echo $this->_translate(31)?></span>
+					</td>
+				</tr>
+			</table>
+		</form>
+		<hr>
+		<?php echo $this->views->Report->PrintToolbar(); ?>
+		<div id="print-content">
+			<div id="print-area"></div>
+		</div>
+	</div>
+</div>
+

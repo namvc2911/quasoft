@@ -1,0 +1,117 @@
+<?php
+$widthArr   = array(0.8,4, 2, 2, 2, 2, 1.5, 2, 2, 2, 4);
+$totalCol   = count($widthArr);
+$excelWidth = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($widthArr, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+$widthArr   = Qss_Lib_Report::changeWidthToFitScreen($widthArr, Qss_Lib_Extra_Const::PRINT_TYPE_LANDSCAPE);
+$old        = '';
+$i          = 1;
+?>
+
+<div class="landscape">
+	<div id="head_print">
+		<?php echo $this->views->Common->Landscape()?>
+		<h2 class="center">
+			DANH SÁCH THIẾT BỊ - LIST OF EQUIPMENT
+		</h2>
+	</div>
+
+	<div id="container">
+		<table width="" cellpadding="0" cellspacing="0" class="border" border="1">
+			<tr class="bggrey center">
+				<?php $begin = 0;?>
+				<th width="<?php echo $widthArr[$begin++];?>px">TT <br/>
+					No</th>
+				<th width="<?php echo $widthArr[$begin++];?>px">Tên thiết bị <br/>
+					Equipment name</th>
+				<th width="<?php echo $widthArr[$begin++];?>px">Serial/Type</th>
+
+				<th width="<?php echo $widthArr[$begin++];?>px">Model</th>
+
+				<th width="<?php echo $widthArr[$begin++];?>px">Mã tài sản <br/>
+					ID</th>
+				<th width="<?php echo $widthArr[$begin++];?>px">Trạng thái <br/>
+					Status</th>
+
+				<th width="<?php echo $widthArr[$begin++];?>px">Xuất xứ <br/>
+					Origin</th>
+				<th width="<?php echo $widthArr[$begin++];?>px">Nơi lắp đặt <br/>
+					Location</th>
+				<th width="<?php echo $widthArr[$begin++];?>px">Ngày đưa vào sử dụng <br/>
+					Date of use</th>
+				<th width="<?php echo $widthArr[$begin++];?>px">Người quản lý <br/>
+					Controlled by</th>
+
+				<th width="<?php echo $widthArr[$begin++];?>px">Ghi chú <br/>
+					Remark</th>
+			</tr>
+
+			<?php foreach ($this->eqs as $item):?>
+				<?php if($old != $item->TitleCode):?>
+					<?php
+						$groupTitle =  '';
+						$groupTitle .= $item->TitleName;
+						$groupTitle .= ($item->TitleCode && $item->TitleName)?" - {$item->TitleCode}":$item->TitleCode;
+						$groupTitle = $groupTitle?$groupTitle:$this->_translate(26);
+					?>
+
+					<tr>
+						<td colspan="<?php echo $totalCol;?>"
+							class="bold">
+							<?php echo $groupTitle;?>
+						</td>
+					</tr>
+				<?php endif;?>
+
+				<?php $old = $item->TitleCode;?>
+
+				<tr>
+					<td class="center"">
+					<?php echo $i++;?>
+					</td>
+
+					<td class="left">
+						<?php echo $item->TenThietBi;?>
+					</td>
+
+					<td class="left">
+						<?php echo $item->MaThietBi;?>
+					</td>
+
+					<td class="left">
+						<?php echo $item->Model;?>
+					</td>
+
+					<td class="left">
+						<?php echo $item->MaTaiSan;?>
+					</td>
+
+					<td class="center">
+						<?php echo $this->arrStatus[(int)$item->TrangThai];?>
+					</td>
+
+					<td class="left">
+						<?php echo $item->XuatXu;?>
+					</td>
+
+					<td class="left">
+						<?php echo $item->MaKhuVuc;?>
+					</td>
+
+
+
+					<td class="center">
+						<?php echo $item->NgayDuaVaoSuDung;?>
+					</td>
+
+					<td class="center">
+						<?php echo $item->TenNhanVien;?>
+					</td>
+
+					<td class="left">
+						&nbsp;
+					</td>
+				</tr>
+			<?php endforeach;?>
+		</table>
+	</div>
+</div>

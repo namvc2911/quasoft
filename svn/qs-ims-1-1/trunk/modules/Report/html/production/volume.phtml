@@ -1,0 +1,48 @@
+<script>
+function printPreview(){
+	var ngay = $('#date').val();
+	if(ngay == '')	{
+		qssAjax.alert('<?php echo $this->_translate(1)?>');
+		return;
+	}
+
+//	$('#report').submit(function() {
+//        window.open('', 'formpopup', 'statusbar=no,resizable=yes,scrollbars=yes, addressbar=no,maximize=yes');
+//        this.target = 'formpopup';
+//    });
+//	$('#report').submit();
+	 var url = sz_BaseUrl + '/report/production/volume1';
+		var data = $('#report').serialize();
+		qssAjax.getHtml(url, data, function(jreturn) {
+			$('#print-area').html(jreturn);
+                        removePrintToolbarDisabled(); // Viet trong $this->views->Report->PrintToolbar()
+		});
+}
+</script>
+
+
+<div class="clear"></div>
+<div id="view">
+	<div class="line-hr">
+		<span><?php echo $this->_translate(2)?> </span>
+	</div>
+	<form id="report" method="post" action="/report/production/volume1">
+		<table class="detail">
+			<tr>
+				<th width="20%" class="report-param-label">
+					<!-- Ngày  --> <?php echo $this->_translate(4)?></th>
+				<td><?php echo $this->views->Report->Datepicker('date', date('d-m-Y'));?><span
+					class="bold red">(*)</span></td>
+			</tr>
+
+		</table>
+	</form>
+	<p>
+	
+	
+	<hr>
+	<?php echo $this->views->Report->PrintToolbar();?>
+	<div id="print-content">
+		<div id="print-area"></div>
+	</div>
+</div>

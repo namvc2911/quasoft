@@ -1,0 +1,180 @@
+<?php
+$begin   = 0;
+$widths  = array(5.29, 27.14, 14.86, 9, 9.14, 9.14, 10.86, 55.71);
+$fitHtml = Qss_Lib_Report::changeWidthToFitScreen($widths);
+$stt     = 1;
+?>
+
+<script>
+    function excelRender()
+    {
+        $('#report').submit();
+    }
+</script>
+
+<form id="report" method="get" action="/print/m412/normalexcel">
+    <input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" />
+
+    <div class="portrait">
+        <excel
+            orientation="<?php echo Qss_Lib_Extra_Const::REPORT_ORIENTATION_PORTRAIT; ?>"
+            font-name="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_NAME; ?>"
+            font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_SIZE; ?>"
+            margin-left="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_LEFT; ?>"
+            margin-right="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_RIGHT; ?>"
+            margin-top="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_TOP; ?>"
+            margin-bottom="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_BOTTOM; ?>" />
+
+        <h1 class="center">
+            PHIẾU YÊU CẦU MUA VẬT TƯ
+        </h1>
+
+        <table cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td class="bold" style="width: 50%;">
+                    Người đề Nghị: <?php echo $this->main->NguoiDeNghi;?>
+                </td>
+
+                <td class="bold" style="width: 50%;">
+                    Ngày đề nghị: <?php echo Qss_Lib_Date::mysqltodisplay($this->main->Ngay);?>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="bold" style="width: 50%;">
+                    Mục đích sử dụng: <?php echo $this->main->MucDich;?>
+                </td>
+
+                <td class="bold red" style="width: 50%;">
+                    Ngày cần về tại AN PHÁT: <?php echo Qss_Lib_Date::mysqltodisplay($this->main->NgayCanCo);?>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="bold" style="width: 50%;">
+                    Số đề nghị: <?php echo $this->main->SoPhieu;?>
+                </td>
+
+                <td class="bold" style="width: 50%;">
+
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2">
+                    Phòng mua hàng - Công ty CP nhựa và MTX An Phát
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2">
+                    Hiện nay, <?php echo $this->main->DonViYeuCau;?> cần một số vật tư. Đề nghị lãnh đạo công ty xem xét và cho mua các vât tư, thiết bị cụ thể theo danh sách như sau:
+                </td>
+            </tr>
+        </table>
+
+        <table cellpadding="0" cellspacing="0" border="0" class="border">
+            <tr class="bggrey">
+                <th class="center" style="width: <?php echo $fitHtml[$begin++];?>px">
+                    STT
+                </th>
+
+                <th class="center" style="width: <?php echo $fitHtml[$begin++];?>px">
+                    Name
+                </th>
+
+                <th class="center" style="width: <?php echo $fitHtml[$begin++];?>px">
+                    Model
+                </th>
+
+                <th class="center" style="width: <?php echo $fitHtml[$begin++];?>px">
+                    Xuất xứ/ hãng
+                </th>
+
+                <th class="center" style="width: <?php echo $fitHtml[$begin++];?>px">
+                    Unit
+                </th>
+
+                <th class="center" style="width: <?php echo $fitHtml[$begin++];?>px">
+                    Factory
+                </th>
+
+                <th class="center" style="width: <?php echo $fitHtml[$begin++];?>px">
+                    Qty
+                </th>
+
+                <th class="center" style="width: <?php echo $fitHtml[$begin++];?>px">
+                    Picture
+                </th>
+            </tr>
+            <?php foreach($this->sub as $item):?>
+                <tr class="">
+                    <td class="center" >
+                        <?php echo $stt++;?>
+                    </td>
+
+                    <td class="left" >
+                        <?php echo $item->TenSP;?>
+                    </td>
+
+                    <td class="left" >
+                        <?php echo $item->Model;?>
+                    </td>
+
+                    <td class="left" >
+                        <?php echo $item->XuatXu;?>
+                    </td>
+
+                    <td class="left" >
+                        <?php echo $item->DonViTinh;?>
+                    </td>
+
+                    <td class="left" >
+                        <?php echo $item->NhaMay;?>
+                    </td>
+
+                    <td class="right" >
+                        <?php echo Qss_Lib_Util::formatNumber($item->SoLuong);?>
+                    </td>
+
+                    <td class="center" >
+                        <?php if($item->Anh):?>
+                            <img id="<?php echo $item->Anh;?>" src="/user/field/picture?file=<?php echo $item->Anh;?>" width="200">
+                        <?php endif;?>
+                    </td>
+                </tr>
+            <?php endforeach;?>
+        </table>
+
+        <br/>
+        <br/>
+
+        <table style="width: 100%" cellspacing="0" cellpadding="0">
+            <tr>
+                <td style="width: 50%;" class="center bold">PHÒNG KỸ THUẬT</td>
+                <td style="width: 50%;" class="center bold">LÃNH ĐẠO CÔNG TY</td>
+            </tr>
+
+            <tr class="bold">
+                <td class="center">&nbsp;</td>
+                <td class="center">&nbsp;</td>
+            </tr>
+
+            <tr class="bold">
+                <td class="center">&nbsp;</td>
+                <td class="center">&nbsp;</td>
+            </tr>
+
+            <tr class="bold">
+                <td class="center">&nbsp;</td>
+                <td class="center">&nbsp;</td>
+            </tr>
+
+            <tr class="bold">
+                <td class="center bold"><?php echo @$this->step2Appr->TitleName;?></td>
+                <td class="center bold"><?php echo @$this->step3Appr->TitleName;?></td>
+            </tr>
+        </table>
+    </div>
+</form>
+

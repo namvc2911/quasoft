@@ -1,0 +1,174 @@
+<?php
+$widths = array(4, 4, 3, 5, 5, 3, 3, 3, 1, 3, 3, 3, 7, 1);
+$cols   = count($widths);
+$fit    = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+$stt    = 0;
+$oldNhanVien = '';
+$oldTaiSan   = '';
+?>
+
+<script>
+    $(document).ready(function() {
+        <?php if($this->new):?>
+            $('.nhanVienMoi').val('<?php echo $this->newStr;?>');
+            $('input[name="nhanVienMoi[]"]').val('<?php echo $this->new;?>');
+        <?php endif;?>
+
+
+    });
+</script>
+
+<div class="">
+    <table cellpadding="0" cellspacing="0" class="border_table_none_bg" border="0" id="m182HandOver_opmi_box" style="table-layout: fixed;" style="width: 90%">
+        <?php $begin = 0;?>
+        <!-- Tieu de -->
+        <tr>
+            <th style="width: <?php echo $fit[$begin++];?>%;"> STT </th>
+            <th style="width: <?php echo $fit[$begin++];?>%;"> Mã TS </th>
+            <th style="width: <?php echo $fit[$begin++];?>%;"> Tên TS </th>
+            <th style="width: <?php echo $fit[$begin++];?>%;"> Số bàn giao </th>
+            <th style="width: <?php echo $fit[$begin++];?>%;"> Loại </th>
+            <th style="width: <?php echo $fit[$begin++];?>%;"> ĐVT </th>
+            <th style="width: <?php echo $fit[$begin++];?>%;"> SL còn lại</th>
+            <th style="width: <?php echo $fit[$begin++];?>%;"> SL </th>
+            <th style="width: <?php echo $fit[$begin++];?>%;"> Hỏng </th>
+            <th style="width: <?php echo $fit[$begin++];?>%;"> Đơn giá </th>
+            <th style="width: <?php echo $fit[$begin++];?>%;"> TG đã sử dụng (tháng) </th>
+            <th style="width: <?php echo $fit[$begin++];?>%;"> % bị KH </th>
+            <th style="width: <?php echo $fit[$begin++];?>%;"> NV mới </th>
+            <th style="width: <?php echo $fit[$begin++];?>%;">
+                <input type="checkbox" onclick="common_check_all_table_line(this, '.cwpo_line_checkbok', '.cwpo_line_checkbok_val')" id="m183_clawback_checkall"/>
+            </th>
+        </tr>
+
+        <?php $i = 0;?>
+        <?php foreach($this->assets as $item):?>
+            <?php if($oldNhanVien != $item->MaNhanVien):?>
+                <tr common_no_check="1" class="bggrey">
+                    <td class="left tree_level_1 bold" colspan="<?php echo $cols;?>" >
+                        <div class="fl left" style="width: 80px;"><?php echo $item->MaNhanVien;?></div>
+                        <div class="fl left" ><?php echo $item->TenNhanVien;?></div>
+                    </td>
+                </tr>
+                <?php $stt = 0;?>
+            <?php endif;?>
+
+            <?php /*if($oldNhanVien != $item->MaNhanVien || $oldTaiSan != $item->MaTaiSan):?>
+                <tr common_no_check="1" class="bggrey">
+                    <td class="bold left tree_level_2" colspan="<?php echo $cols;?>" >
+                        <div class="fl left" style="width: 80px;"><?php echo $item->MaTaiSan;?></div>
+                        <div class="fl left" ><?php echo $item->TenTaiSan;?></div>
+                    </td>
+                </tr>
+            <?php endif;*/?>
+
+            <?php $oldNhanVien = $item->MaNhanVien;?>
+            <?php $oldTaiSan   = $item->MaTaiSan;?>
+
+
+            <?php $maker = ($this->type == 3)?'marker_check':''; ?>
+            <tr>
+                <td class="center <?php echo $maker;?> tree_level_2">
+                    <?php echo ++$stt;?>
+                </td>
+
+
+
+                <td class="left <?php echo $maker;?>">
+                    <?php echo $item->MaTaiSan;?>
+                </td>
+
+                <td class="left <?php echo $maker;?>">
+                    <?php echo $item->TenTaiSan;?>
+                </td>
+
+                <td class="left <?php echo $maker;?>">
+                    <a href="/user/form/edit?ifid=<?php echo $item->IFID_M182;?>&deptid=<?php echo $this->deptid;?>" target="_blank">&nbsp;<?php echo $item->SoPhieuBanGiao;?></a>
+
+                </td>
+
+                <td class="left <?php echo $maker;?>">
+                    <select class="table_line_disabled"  name="loai[]" <?php echo ($this->type == 3)?'':'disabled'?> style="width: 120px">
+                        <?php foreach($this->types as $key=>$val):?>
+                            <option value="<?php echo $key;?>"
+                                <?php echo $this->type && $this->type==$key?'selected':'';?>
+                            >
+                                <?php echo $val;?>
+                            </option>
+                        <?php endforeach;?>
+                    </select>
+                </td>
+
+                <td class="left <?php echo $maker;?>">
+                    <?php echo $item->DonViTinh;?>
+                </td>
+
+                <td class="right <?php echo $maker;?>">
+                    <?php echo Qss_Lib_Util::formatNumber($item->SoLuongConLai);?>
+                </td>
+
+                <td class="center <?php echo $maker;?>">
+                    <input type="text" class="table_line_disabled right" name="soLuong[]" size="5" value="<?php echo Qss_Lib_Util::formatNumber($item->SoLuongConLai);?>" <?php echo ($this->type == 3)?'':'disabled'?>>
+                </td>
+
+                <td class="center <?php echo $maker;?>">
+                    <input type="checkbox" class="table_line_disabled " <?php echo ($this->type == 3)?'':'disabled'?>  value="1" onclick="
+                        if($(this).is(':checked'))
+                        {
+                            $(this).parent().find('.defect_input').val(1);
+                        }
+                        else
+                        {
+                            $(this).parent().find('.defect_input').val(0);
+                        }
+
+                    " <?php echo ($this->type == 3)?'':'disabled'?>/>
+                    <input type="hidden" class="table_line_disabled defect_input" name="hong[]" value="0" <?php echo ($this->type == 3)?'':'disabled'?>/>
+                </td>
+
+                <td class="left <?php echo $maker;?>">
+                    <input type="text" class="table_line_disabled right" name="donGia[]" size="5" value="<?php echo $item->DonGia/1000;?>" <?php echo ($this->type == 3)?'':'disabled'?>>
+                </td>
+
+                <td class="left <?php echo $maker;?>">
+                    <input type="text" class="table_line_disabled right" name="thoiGianDaSuDung[]" size="5" value="<?php echo Qss_Lib_Util::formatNumber($item->ThoiGianDaSuDungKhiThuHoi);?>" <?php echo ($this->type == 3)?'':'disabled'?>>
+                </td>
+
+                <td class="left <?php echo $maker;?>">
+                    <input type="text" class="table_line_disabled right" name="phanTramKhauHao[]" size="5" value="<?php echo Qss_Lib_Util::formatNumber($item->PhanTramKhauHaoConLai);?>" <?php echo ($this->type == 3)?'':'disabled'?>>
+                </td>
+
+
+
+                <td class="left <?php echo $maker;?>">
+                    <?php echo $this->views->Report->SimpleListBox('NhanVien'.$i, '/button/m183/employees/', 'style="width:150px;"  class="table_line_disabled nhanVienMoi" '.(($this->type == 3)?'':'disabled'), 'nhanVienMoi[]');?>
+                </td>
+
+                <td class="center <?php echo $maker;?>">
+                    <?php $disabledIfTypeNotEqualThree = ($this->type == 3)?'':'disabled'; ?>
+                    <input type="checkbox" class="cwpo_line_checkbok " onclick="common_check_table_line(this, '.cwpo_line_checkbok_val')" <?php echo ($this->type == 3)?'checked':'';?>>
+                    <input type="hidden" class="table_line_disabled cwpo_line_checkbok_val" name="CheckBox[]"  value="<?php echo ($this->type == 3)?'1':'0';?>">
+
+                    <input class="table_line_disabled" type="hidden" value="<?php echo $item->Ref_PhieuBanGiao;?>" name="phieuBanGiao[]" <?php echo $disabledIfTypeNotEqualThree;?>>
+                    <input class="table_line_disabled" type="hidden" value="<?php echo $item->Ref_MaNhanVien;?>" name="nhanVien[]" <?php echo $disabledIfTypeNotEqualThree;?>>
+                    <input class="table_line_disabled" type="hidden" value="<?php echo $item->Ref_TaiSan;?>" name="taiSan[]" <?php echo $disabledIfTypeNotEqualThree;?>>
+                    <input class="table_line_disabled" type="hidden" value="<?php echo $item->Ref_DonViTinh;?>" name="donViTinh[]" <?php echo $disabledIfTypeNotEqualThree;?>>
+                    <input class="table_line_disabled" type="hidden" value="<?php echo $item->Ref_NhaMay;?>" name="nhaMay[]" <?php echo $disabledIfTypeNotEqualThree;?>>
+                    <input class="table_line_disabled" type="hidden" value="<?php echo $item->Ref_BoPhan;?>" name="boPhan[]" <?php echo $disabledIfTypeNotEqualThree;?>>
+
+                    <input class="table_line_disabled" type="hidden" value="<?php echo $item->Ref_NhaMayHienTai;?>" name="nhaMayHienTai[]" <?php echo $disabledIfTypeNotEqualThree;?>>
+                    <input class="table_line_disabled" type="hidden" value="<?php echo $item->Ref_BoPhanHienTai;?>" name="boPhanHienTai[]" <?php echo $disabledIfTypeNotEqualThree;?>>
+                    <input class="table_line_disabled" type="hidden" value="<?php echo Qss_Lib_Util::formatNumber($item->SoLuongConLai);?>" name="soLuongConLai[]" <?php echo $disabledIfTypeNotEqualThree;?>>
+                </td>
+            </tr>
+            <?php $i++;?>
+        <?php endforeach;?>
+    </table>
+</div>
+
+<div class="clear">&nbsp;</div>
+<br/>
+
+<div class="fr">
+    <button class="btn btn_main_top" onclick="m1883_clawback.save();" type="button"> Chọn tài sản thu hồi </button>
+</div>

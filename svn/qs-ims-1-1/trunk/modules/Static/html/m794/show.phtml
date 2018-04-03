@@ -1,0 +1,221 @@
+<?php
+$excel_col   = array_flip(Qss_Lib_Const::$EXCEL_COLUMN);
+$bg          = "#EEEEEE";
+$row         = 2;
+$totalColumn = 4;
+$columnWidth = array(1, 3, 3, 3);
+$excelWidth  = Qss_Lib_Report::convertPxColumnWidthToExcelWidth($columnWidth);
+$fitScreen   = Qss_Lib_Report::changeWidthToFitScreen($columnWidth);
+
+$title       = $this->_translate(20) . ' ' . date('d-m-Y');
+$title       = mb_convert_case($title , MB_CASE_UPPER, "UTF-8");
+$months      = $this->months;
+$years       = count($this->nYears);
+$fTotalDiff  = 0;
+$tinhKhauHao = '';
+
+if($this->eq)
+{
+    switch ($this->eq->TinhKhauHao)
+    {
+        case 1: $tinhKhauHao = 'Khấu hao theo thời gian'; break;
+        case 2: $tinhKhauHao = 'Khấu hao theo chỉ số hoạt động'; break;
+        case 3: $tinhKhauHao = 'Khấu hao phần trăm số dư giảm dần'; break;
+    }
+}
+
+?>
+
+<form id="excel" method="post" action="/report/index/excel" target="new">
+	<input type="hidden" id="content" name="content" value="">
+</form>
+<div class="portrait">
+	<excel orientation="portrait" font-name="Arial" font-size="9"
+		margin-left="0.5" margin-right="0.5" margin-top="0.75"
+		margin-bottom="0.75" />
+
+	<div id="head_print">
+	<?php echo $this->views->Common->Portrait() ?>
+
+		<center>
+			<h2>
+			<?php echo $title?>
+			</h2>
+		</center>
+	</div>
+	<?php $row++ ?>
+
+	<div id="container">
+
+		<br />
+		<div id="general_box">
+			<div class="title">
+				<h3>Thông tin chung</h3>
+			</div>
+
+			<div class="content" style="font-size: 13px;">
+
+                <p>
+                    <b>Mã tài sản:</b>
+                    <?php echo ($this->eq)?$this->eq->MaTaiSan:'All';?>
+                </p>
+
+				<p>
+					<b>Mã thiết bị:</b>
+					<?php echo ($this->eq)?$this->eq->MaThietBi:'All';?>
+				</p>
+
+				<p>
+					<b>Tên thiết bị:</b>
+					<?php echo ($this->eq)?$this->eq->TenThietBi:'All';?>
+				</p>
+
+				<p>
+					<b>Ngày đưa vào sử dụng:</b>
+					<?php echo ($this->eq)?Qss_Lib_Date::mysqltodisplay($this->eq->NgayDuaVaoSuDung):'All';?>
+				</p>
+
+				<p>
+					<b>Nguyên giá:</b>
+					<?php Qss_Lib_Util::formatMoney($this->nguyenGia);?>
+					VNĐ
+				</p>
+
+				<p>
+					<b>Giá trị thanh lý:</b>
+					<?php echo Qss_Lib_Util::formatMoney($this->thanhLy);?>
+					VNĐ
+				</p>
+
+				<p>
+					<b>Cách tính khấu hao:</b>
+					<?php echo ($this->eq)?$tinhKhauHao:'All';?>
+				</p>
+
+				<p>
+					<b>Giá trị:</b>
+					<?php echo ($this->eq)?$this->eq->GiaTri:'All';?>
+				</p>
+
+				<p>
+					<b>Số lần bảo trì:</b>
+					<?php echo @(int)$this->woInfo->NumOfMaintain;?>
+				</p>
+
+				<p>
+					<b>Số lần sự cố:</b>
+					<?php echo @(int)$this->woInfo->NumOfBreak;?>
+				</p>
+
+				<p>
+					<b>Số lần sự cố trung bình tháng:</b>
+					<?php echo $months?@(int)$this->woInfo->NumOfBreak/$months:0;?>
+				</p>
+			</div>
+		</div>
+		<!-- #general_box -->
+
+		<br />
+		<div id="depreciation_box">
+			<div class="title">
+				<h3>Khấu hao</h3>
+			</div>
+
+			<div class="content">
+				<table cellspacing="0" cellpadding="0" border="0" id="" class=""
+					style="width: 500px;">
+					<?php foreach ($this->years as $year): // in report?>
+					<?php $year = (int)$year;?>
+					<?php $begin = 0; ?>
+					<tr>
+						<!-- nam -->
+						<td class="center" style="width: 200px;"><?php echo $year;?>
+						</td>
+
+						<!-- Gia tri khau hao hang nam -->
+						<?php $fDiff = isset($this->de[$year]['Diff'])?$this->de[$year]['Diff']:0;?>
+						<?php $fTotalDiff += $fDiff;?>
+						<td class="right" style="width: 300px;"><?php echo Qss_Lib_Util::formatMoney($fDiff);?>
+						</td>
+
+
+					</tr>
+					<?php endforeach;// Print Equip?>
+					<tr style="border-top: 1px solid #000">
+						<!-- nam -->
+						<td class="left">Tổng khấu hao:</td>
+
+						<!-- Gia tri khau hao hang nam -->
+						<td class="right"><?php echo Qss_Lib_Util::formatMoney($fTotalDiff);?>
+						</td>
+					</tr>
+
+					<tr>
+						<!-- nam -->
+						<td class="left">Còn lại:</td>
+
+						<!-- Gia tri khau hao hang nam -->
+						<td class="right"><?php echo Qss_Lib_Util::formatMoney(($this->deVal - $fTotalDiff));?>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<!-- #depreciation_box -->
+
+		<br />
+		<div id="cost_box">
+			<div class="title">
+				<h3>Chi phí bảo trì</h3>
+			</div>
+
+			<?php $fTotalDiff = 0;?>
+			<div class="content">
+				<table cellspacing="0" cellpadding="0" border="0" id="" class=""
+					style="width: 500px;">
+					<?php foreach ($this->years as $year): // in report?>
+					<?php $year = (int)$year;?>
+					<?php $begin = 0; ?>
+					<tr>
+						<!-- nam -->
+						<td class="center" style="width: 200px;"><?php echo $year;?>
+						</td>
+
+						<!-- Gia tri khau hao hang nam -->
+						<?php $fDiff = isset($this->cost[$year])?$this->cost[$year]:0;?>
+						<?php $fTotalDiff += $fDiff;?>
+						<td class="right" style="width: 300px;"><?php echo Qss_Lib_Util::formatMoney($fDiff);?>
+						</td>
+
+
+					</tr>
+					<?php endforeach;// Print Equip?>
+					<tr style="border-top: 1px solid #000">
+						<!-- nam -->
+						<td class="left">Tổng chi phí:</td>
+
+						<!-- Gia tri khau hao hang nam -->
+						<td class="right"><?php echo Qss_Lib_Util::formatMoney($fTotalDiff);?>
+						</td>
+					</tr>
+
+					<tr>
+						<!-- nam -->
+						<td class="left">Chi phí trung bình năm:</td>
+
+						<!-- Gia tri khau hao hang nam -->
+						<td class="right"><?php echo Qss_Lib_Util::formatMoney(($fTotalDiff/$years));?>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<!-- #cost_box -->
+
+
+
+		<br />
+
+
+	</div>
+</div>

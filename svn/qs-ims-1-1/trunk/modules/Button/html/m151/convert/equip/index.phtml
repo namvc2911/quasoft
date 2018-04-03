@@ -1,0 +1,121 @@
+<script>
+    var m151_convert_equip = {
+        show : function () {
+            var url  = sz_BaseUrl + '/button/m151/convert/equip/show';
+            var data = $('#M151_Convert_Equip_Form').serialize();
+
+            qssAjax.getHtml(url, data, function(jreturn) {
+                $('#M151_Convert_Equip_ShowTable').html(jreturn);
+            });
+        },
+
+        save : function () {
+            var url  = sz_BaseUrl + '/button/m151/convert/equip/save' ;
+            var data = $('#M151_Convert_Equip_Form').serialize();
+
+            qssAjax.call(url, data, function(jreturn) {
+                if(jreturn.message != '') {
+                    qssAjax.notice(jreturn.message);
+                }
+                m151_convert_equip.show();
+                rowSearch('M151');
+            }, function(jreturn) {
+                qssAjax.alert(jreturn.message);
+            });
+        },
+
+        filter : function (ele) {
+                if($(ele).is(':checked')) {
+                    $('.m151_convert_equip_hidden').val(0);
+                    $('.m151_convert_equip_checkbox').attr('checked', false);
+
+                    $(ele).parent().find('.m151_convert_equip_hidden').val(1);
+                    $(ele).parent().find('.m151_convert_equip_checkbox').attr('checked', true);
+                }
+                else {
+                    (ele).parent().find('.m151_convert_equip_hidden').val(0);
+                }
+
+                m151_convert_equip.show();
+        }
+    }
+
+    $(document).ready(function () {
+        m151_convert_equip.show();
+    });
+</script>
+
+<form id="M151_Convert_Equip_Form">
+    <div class="popup_wrap">
+        <div class="popup_header">
+            <table class="detail" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td class="left">
+                        <div class="overflow">
+                            <div class="fl">
+                                <!-- TB chưa có mã TS -->
+                                <span>
+                                    <input type="checkbox"  id="no_asset_code" checked class="m151_convert_equip_checkbox" onclick="m151_convert_equip.filter(this)">
+                                    <input type="hidden" value="1" name="M151_Convert_Equip_NoAssetCode" id="no_asset_code_hidden" class="m151_convert_equip_hidden"/>
+                                    <label for="no_asset_code">Chưa gắn mã tài sản</label>
+                                </span>
+
+                                <!-- TB có mã TS khác -->
+                                <span>
+                                    <input type="checkbox"  id="not_in_assets" class="m151_convert_equip_checkbox" onclick="m151_convert_equip.filter(this)">
+                                    <input type="hidden" value="0" name="M151_Convert_Equip_NotInAssets" id="not_in_assets_hidden" class="m151_convert_equip_hidden"/>
+                                    <label for="not_in_assets">Chưa tạo tài sản</label>
+                                </span>
+
+
+                                <?php /*
+                                <span>
+                                    <input type="checkbox"  id="duplicateAssetCode" class="m151_convert_equip_checkbox" onclick="m151_convert_equip.filter(this)">
+                                    <input type="hidden" value="0" name="M151_Convert_Equip_duplicateAssetCode" id="duplicateAssetCode_hidden" class="m151_convert_equip_hidden"/>
+                                    <label for="duplicateAssetCode">Mã tài sản trùng lặp</label>
+                                </span>
+                                */?>
+                            </div>
+
+                            <div class="fr">
+                                Trang:
+                                <a title="Trang trước" class="bold" href="#"
+                                   onclick="$('#M151_Convert_Equip_PageNo').val('1'); m151_convert_equip.show();"
+                                    id="M151_Convert_Equip_Prev">&lt;&lt;</a>
+                                <input id="M151_Convert_Equip_PageNo" name="M151_Convert_Equip_PageNo"
+                                       onchange="m151_convert_equip.show();"
+                                       style="width: 20px !important; text-align: center;" value="1">/
+                                <span id="M151_Convert_Equip_TotalPage">1</span>
+                                <a title="Trang sau" class="bold" href="#"
+                                   onclick="$('#M151_Convert_Equip_PageNo').val('1'); m151_convert_equip.show();"
+                                   id="M151_Convert_Equip_Next">&gt;&gt;</a>
+                                Hiển thị: <select id="M151_Convert_Equip_Display"
+                                                name="M151_Convert_Equip_Display" style="width: 100;"
+                                                  onchange="m151_convert_equip.show();;">
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option selected="" value="20">20</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                                Tổng số: <span id="M151_Convert_Equip_Total">1</span>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="popup_content">
+            <div id="M151_Convert_Equip_ShowTable">
+
+            </div>
+
+            <div class="overflow" style="padding-top: 10px;">
+                <div class="fr">
+                    <button type="button" class="btn" onclick="m151_convert_equip.save()"> Chuyển thiết bị sang tài sản </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

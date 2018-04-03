@@ -1,0 +1,71 @@
+<form id="qss_form" method="post">
+	<input type="hidden" name="id"
+		value="<?php echo (int)@$this->bash->BID?>" />
+	<div id="horizontal-toolbar" class="horizontal-toolbar">
+		<div id="btnSAVE" onclick="bashSave()" class="btn_main_top"
+			title="<?php echo $this->_translate(34,'Cập nhật')?>">
+			<a class="icon-32-save" href="#"></a>
+		</div>
+		<div onclick="rowBack()" class="btn_main_top"
+			title="<?php echo $this->_translate(32,'Trở lại')?>">
+			<a class="icon-32-back" href="#"></a>
+		</div>
+	</div>
+	<div class="clear"></div>
+	<div id="view">
+		<div id="item-actions">
+			<ul>
+				<li class="item-action active"><a href="#"><span>Kết chuyển tự động</span>
+				</a>
+				</li>
+			</ul>
+		</div>
+		<table class="detail">
+			<tr>
+				<th width="150">Tên</th>
+				<td><input type="text" id="name" name="name"
+					value="<?php echo @$this->bash->BashName?>" style="width: 200px"></td>
+			</tr>
+			<tr>
+				<th width="150">Kết chuyển từ mô đun</th>
+				<td><select style="width: 200px;" name="fromfid">
+						<option value=""></option>
+						<?php foreach ($this->forms as $item):?>
+						<?php if(!$item->class):?>
+						<option
+						<?php if(@$this->bash->FID == $item->FID) echo 'selected'?>
+							value="<?php echo $item->FID?>">
+							<?php echo $item->Name?>
+						</option>
+						<?php endif;?>
+						<?php endforeach;?>
+				</select></td>
+			</tr>
+			<tr>
+				<th width="150">Kết chuyển đến mô đun</th>
+				<td><select style="width: 200px;" name="tofid">
+						<option value=""></option>
+						<?php foreach ($this->forms as $item):?>
+						<?php if(!$item->class):?>
+						<option
+						<?php if(@$this->bash->ToFID == $item->FID) echo 'selected'?>
+							value="<?php echo $item->FID?>">
+							<?php echo $item->Name?>
+						</option>
+						<?php endif;?>
+						<?php endforeach;?>
+				</select></td>
+			</tr>
+			<tr>
+				<th width="150">Bước</th>
+				<td><input type="text" id="step" name="step"
+					value="<?php echo @$this->bash->Step?>" style="width: 50px"></td>
+			</tr>
+			<tr>
+				<th width="150">Hoạt động</th>
+				<td><input type="checkbox" id="active" name="active" value="1"
+				<?php if(@$this->bash->Active):?> checked <?php endif;?>></td>
+			</tr>
+		</table>
+	</div>
+</form>

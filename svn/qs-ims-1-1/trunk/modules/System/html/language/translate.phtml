@@ -1,0 +1,57 @@
+<div id="horizontal-toolbar" class="horizontal-toolbar">
+	<div id="Update" onClick="translationSave('<?php echo $this->id?>')"
+		title="<?php echo $this->_translate(34)?>" class="btn_main_top">
+		<a href="#" class="icon-32-save"></a>
+	</div>
+</div>
+<div class="clear"></div>
+<div id="view">
+	<div id="item-actions">
+		<ul>
+			<li class="item-action active"><a href="#1"><span><?php echo $this->_translate(115)?>
+				</span> </a></li>
+		</ul>
+	</div>
+	<div>
+		<form method="post" id="qss_form">
+			<table class="detail">
+				<tr>
+					<th>ID</th>
+					<td><input type="text" value="<?php echo $this->id?>" name="ID" />
+					</td>
+				</tr>
+				<?php foreach($this->languages as $language):?>
+				<tr>
+					<th><?php echo $language->Name?></th>
+					<td><input type="text" style="width: 400px"
+						value="<?php echo @$this->data[$language->Code]?>"
+						name="Text_<?php echo $language->Code?>" /></td>
+				</tr>
+				<?php endforeach;?>
+			</table>
+		</form>
+	</div>
+	<div id="qss_form_list">
+		<table class="grid">
+			<tr>
+				<th>ID</th>
+				<th><?php echo $this->_translate(7)?></th>
+				<th><?php echo $this->_translate(105)?></th>
+				<th><?php echo $this->_translate(13)?></th>
+				<th><?php echo $this->_translate(14)?></th>
+			</tr>
+			<?php foreach ($this->list as $item):?>
+			<tr>
+				<td><?php echo $item->ID?></td>
+				<td><?php echo $item->Language?></td>
+				<td><?php echo $item->Text?></td>
+				<td><a
+					href="/system/language/$this->_translate?id=<?php echo $item->ID?>"><?php echo $this->_translate(13)?>
+				</a></td>
+				<td><a href="#1" onclick="translationDelete(<?php echo $item->ID?>)"><?php echo $this->_translate(14)?>
+				</a></td>
+			</tr>
+			<?php endforeach;?>
+		</table>
+	</div>
+</div>

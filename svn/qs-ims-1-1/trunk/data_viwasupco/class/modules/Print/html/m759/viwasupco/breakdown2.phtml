@@ -1,0 +1,272 @@
+<script>
+    function excelRender() {
+        $('#report').submit();
+    }
+</script>
+
+<form id="report" method="post" action="/print/m759/viwasupco/breakdownexcel">
+    <input type="hidden" name="popup" value="1" />
+    <input type="hidden" name="ifid" value="<?php echo $this->ifid;?>" />
+
+    <div class="portrait">
+        <excel
+            orientation="portrait"
+            font-name="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_NAME; ?>"
+            font-size="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_FONT_SIZE; ?>"
+            margin-left="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_LEFT; ?>"
+            margin-right="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_RIGHT; ?>"
+            margin-top="1.5"
+            margin-bottom="<?php echo Qss_Lib_Extra_Const::REPORT_EXCEL_MARGIN_BOTTOM; ?>" />
+
+        <!-- REPORT TITLE -->
+        <!-- REPORT TITLE -->
+        <div id="head_print">
+
+
+            <div>
+                <!-- Số biểu mẫu -->
+                <div id="portrait-company-header">
+                    <div style="width:100%">
+                        <p class="right">
+                            B02.QT03.BTSC
+                        </p>
+                    </div>
+                    <br/>
+                </div>
+                <div class="clear">&nbsp;</div>
+
+                <div class="overflow" style="font-size: 16px; line-height: 28px; overflow: hidden; width: 100%">
+                    <div class="fl center" style="width: 50%">
+                        <b>
+                            CÔNG TY CỔ PHẦN ĐẦU TƯ NƯỚC SẠCH SÔNG ĐÀ
+                        </b>
+                        <br/>
+
+                        <b>
+                            <u>
+
+                                BỘ PHẬN…………………
+                            </u>
+                        </b>
+                        <br/>
+
+
+                        <b>
+                                Số:…….20…/BBSCTB
+                        </b>
+                        <br/>
+
+
+                    </div>
+
+                    <div class="fr center" style="width: 40%">
+                        <b>
+                            CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
+                        </b>
+                        <br/>
+
+                        <b>
+                            <u>
+                                Độc Lập – Tự Do – Hạnh Phúc
+                            </u>
+                        </b>
+                        <br/>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div id="container">
+            <div>
+                <br/>
+                <h2 class="bold center">
+                    BIÊN BẢN SỰ CỐ THIẾT BỊ
+                </h2>
+
+                <p class="bold center">
+                    Số phiếu : <?php echo @$this->OPhieuBaoTri->SoPhieu;?>
+                    - Khu vực: <?php echo mb_strtolower(@$this->OKhuVuc->Ten, 'utf8');?> (<?php echo @$this->OKhuVuc->MaKhuVuc;?>)
+                    - Thiết bị:  <?php echo mb_strtolower(@$this->OPhieuBaoTri->TenThietBi, 'utf8');?> (<?php echo @$this->OPhieuBaoTri->MaThietBi;?>)
+                </p>
+                <br/>
+
+                <div class="bold">
+                    I. Thời gian - địa điểm:
+                </div>
+                <br/>
+
+                <div class="">
+                    Vào lúc:
+                    <span style="width: 30px; display: inline-block; border-bottom: 1px dotted #000; text-align: center;"><?php echo $this->StartTime?$this->StartDate->format('H'):'&nbsp;';?></span>
+                    giờ <span style="width: 30px; display: inline-block; border-bottom: 1px dotted #000; text-align: center;"><?php echo $this->StartTime?$this->StartDate->format('i'):'&nbsp;';?></span>
+                    ngày <span style="width: 30px; display: inline-block; border-bottom: 1px dotted #000; text-align: center;"><?php echo $this->StartDate?$this->StartDate->format('d'):'&nbsp;';?></span>
+                    / <span style="width: 30px; display: inline-block; border-bottom: 1px dotted #000; text-align: center;"><?php echo $this->StartDate?$this->StartDate->format('m'):'&nbsp;';?></span>
+                    / <span style="width: 30px; display: inline-block; border-bottom: 1px dotted #000; text-align: left;"><?php echo $this->StartDate?$this->StartDate->format('Y'):'20';?></span>
+                </div>
+                <br/>
+
+                <div class="overflow">
+                    <span style="float: left; width: 20%" class="bold">Địa điểm:</span>
+                    <span style="float: left; width: 80%; border-bottom: 1px dashed #000;"><?php echo @$this->OKhuVuc->Ten;?> </span>
+                </div>
+                <br/>
+
+                <div class="clear">&nbsp;</div>
+
+                <div class="bold">
+                    II. Thành phần tham dự :
+                </div>
+                <br/>
+
+                <div class="bold">
+                    1. Đại diện Ban chức năng:
+                </div>
+                <br/>
+
+                <div class="overflow">
+                    <div class="fl">- Ông(bà): ......................................... </div>
+                    <div class="fr">Chức vụ: ...............................</div>
+                </div>
+                <br/>
+
+                <div class="clear">&nbsp;</div>
+
+                <div class="overflow">
+                    <div class="fl">- Ông(bà): ......................................... </div>
+                    <div class="fr">Chức vụ: ...............................</div>
+                </div>
+
+
+                <div class="clear">&nbsp;</div>
+                <br/>
+
+                <div class="bold">
+                    2. Đại diện Đội BT-SC:
+                </div>
+                <br/>
+
+                <div class="overflow">
+                    <div class="fl">- Ông(bà): ......................................... </div>
+                    <div class="fr">Chức vụ: ...............................</div>
+                </div>
+                <div class="clear">&nbsp;</div>
+                <br/>
+
+
+                <div class="overflow">
+                    <div class="fl">- Ông(bà): ......................................... </div>
+                    <div class="fr">Chức vụ: ...............................</div>
+                </div>
+                <div class="clear">&nbsp;</div>
+                <br/>
+
+                <div class="bold">
+                    3. Đại diện Đơn vị sản xuất:
+                </div>
+                <br/>
+
+                <div class="overflow">
+                    <div class="fl">- Ông(bà): ......................................... </div>
+                    <div class="fr">Chức vụ: ...............................</div>
+                </div>
+                <div class="clear">&nbsp;</div>
+                <br/>
+
+                <div class="overflow">
+                    <div class="fl">- Ông(bà): ......................................... </div>
+                    <div class="fr">Chức vụ: ...............................</div>
+                </div>
+                <div class="clear">&nbsp;</div>
+                <br/>
+
+                <div class="bold">
+                    III. Nội dung:
+                </div>
+                <br/>
+
+                <div class="">
+                    1. Mô tả sự cố:
+                </div>
+                <br/>
+
+                <div class="line">
+                    &nbsp;<?php echo @$this->OYeuCauBaoTri->MoTa;?>
+                </div>
+                <br/>
+
+                <div class="line">
+                    &nbsp;
+                </div>
+                <br/>
+
+
+                <div class="">
+                    2. Nguyên Nhân:
+                </div>
+                <br/>
+
+                <div class="line">
+                    <?php if($this->IForm && !in_array($this->IForm->Status, array(1,2))):?>
+                    <?php echo @$this->OPhieuBaoTri->NguyenNhanSuCo;?>
+                    <?php endif;?>
+                </div>
+                <br/>
+
+                <div class="line">
+                    &nbsp;
+                </div>
+                <br/>
+
+                <div class="line">
+                    &nbsp;
+                </div>
+                <br/>
+
+                <div class="">
+                    3. Kết luận – hướng xử lý:
+                </div>
+                <br/>
+
+                <div class="line">
+                    <?php if($this->IForm && !in_array($this->IForm->Status, array(1,2))):?>
+                    <?php echo @$this->OPhieuBaoTri->XuLy;?>
+                    <?php endif;?>
+                </div>
+                <br/>
+
+                <div class="line">
+                    &nbsp;
+                </div>
+                <br/>
+
+
+                <div class="right">
+                    Hoà Bình, ngày … tháng … năm ….
+                </div>
+                <br/>
+
+                <table cellpadding="0" cellspacing="0" border="0">
+
+
+                    <tr>
+                        <td style="width:33%;" class="center bold">BAN CHỨC NĂNG </td>
+                        <td style="width:33%;" class="center bold">ĐƠN VỊ SẢN XUẤT</td>
+                        <td style="width:33%;" class="center bold">ĐỘI BTSC&XD</td>
+                    </tr>
+                </table>
+
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+
+

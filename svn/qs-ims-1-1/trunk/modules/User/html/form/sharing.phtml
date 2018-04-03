@@ -1,0 +1,121 @@
+<form method="post" id="form_sharing">
+	<input type="hidden" value="4" name="epStatus">
+	<table class="grid" width="500" border="0">
+		<tr>
+			<td colspan="2">
+				<table class="traces">
+					<tr>
+						<th width="200"><?php echo $this->_translate(50)?>
+						</th>
+						<th width="120"><?php echo $this->_translate(55)?>
+						</th>
+						<th width="550"><?php echo $this->_translate(73)?>
+						</th>
+						<th width="50"><?php echo $this->_translate(81)?>
+						</th>
+					</tr>
+					<?php foreach ($this->form->a_fGetSharing() as $data):?>
+					<tr>
+						<td><?php
+						echo $data->UserName?></td>
+						<td><?php
+						echo (($data->Rights & 2) ? $this->_translate(78) : $this->_translate(79) );
+						?></td>
+						<td><?php
+						echo $data->Notes?>&nbsp;</td>
+						<td align="center"><a href="#1"
+							onclick="deleteSharing('<?php echo $this->form->i_IFID?>','<?php echo $this->form->i_DepartmentID?>','<?php echo $data->UID?>')"><?php echo $this->_translate(80)?>
+						</a>
+						</td>
+					</tr>
+					<?php
+					endforeach;
+					?>
+				</table> <br /></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->_translate(75)?>
+			</td>
+			<td><?php if ( !$this->done ):?> <select style="width: 400px;"
+				size="1" name="group_id" id="group_id"
+				onchange="reloadUserGroup(this.value,'user')">
+					<option selected value="0">
+						---
+						<?php echo $this->_translate(38)?>
+						---
+					</option>
+					<?php
+					foreach ($this->groups as $group)
+					:
+					?>
+					<option value="<?php
+			echo $group->GroupID?>">
+			<?php
+			echo $group->GroupName?>
+					</option>
+					<?php
+					endforeach;
+					?>
+			</select> <?php endif;?>
+			</td>
+		</tr>
+		<tr>
+			<td width="206"><?php echo $this->_translate(50)?>
+			</td>
+			<td width="184"><select style="width: 400px;" size="1" name="user"
+				id="user">
+					<option selected value="">
+						---
+						<?php echo $this->_translate(38)?>
+						---
+					</option>
+					<?php
+					foreach ($this->user->a_fGetAllNormal(Qss_Register::get('userinfo')->user_id) as $data)
+					:
+					?>
+					<option value="<?php
+			echo $data->UID?>">
+			<?php
+			echo $data->UserName?>
+					</option>
+					<?php
+					endforeach;
+					?>
+			</select>
+			</td>
+		</tr>
+		<tr>
+			<td width="206"><?php echo $this->_translate(55)?>
+			</td>
+			<td width="184"><select style="width: 200px;" size="1" name="rights"
+				id="rights">
+					<option value="4">
+					<?php echo $this->_translate(76)?>
+					</option>
+					<option value="6">
+					<?php echo $this->_translate(77)?>
+					</option>
+			</select>
+			</td>
+		</tr>
+		<tr>
+			<td><?php echo $this->_translate(73)?>
+			</td>
+			<td><textarea name="note" cols="75" rows="7" id="note"></textarea>
+			</td>
+		</tr>
+	</table>
+</form>
+<hr>
+<center>
+	<button
+		onclick="formSharing('<?php
+					echo $this->form->i_IFID?>','<?php
+					echo $this->form->i_DepartmentID?>');"
+		class="btn-custom">
+		<?php echo $this->_translate(34)?>
+	</button>
+	<button onclick="$('#qss_trace').dialog('close');" class="btn-custom">
+		<?php echo $this->_translate(72)?>
+	</button>
+</center>

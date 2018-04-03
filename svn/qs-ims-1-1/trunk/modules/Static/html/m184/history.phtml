@@ -1,0 +1,96 @@
+<style>
+    .status_color
+    {
+        float: left;
+        padding: 6px;
+        text-align: center;
+        border: 1px #ccc solid;
+    }
+
+    .status_one_color
+    {
+        font-weight: bold;
+        background: yellow;
+    }
+
+    .status_two_color
+    {
+        font-weight: bold;
+        background: pink;
+    }
+
+    .status_text
+    {
+        float: left;
+        padding:6px;
+    }
+</style>
+
+<?php
+    $widths = array(3, 3, 3, 5, 5, 5, 5, 3, 3);
+    $widths = Qss_Lib_Report::changeWidthToFitScreen3($widths);
+?>
+
+<div class="clear status_box">
+    <div class="fl">
+        <div class="status_color status_one_color"> A </div>
+        <div class="status_text"> Bàn giao </div>
+        <div class="status_color status_two_color"> A </div>
+        <div class="status_text"> Thu hồi </div>
+    </div>
+</div>
+
+<div class="clear"></div>
+<br/>
+
+<p class="bold">Tài sản: <?php echo $this->asset->Ma;?> - <?php echo $this->asset->Ten;?></p>
+<br/>
+
+<div class="clear"></div>
+
+
+
+<table cellspacing="0" cellpadding="0" border="0"  class="border_table_none_bg" style="width: 100%">
+    <?php $begin = 0;?>
+    <tr>
+        <th style="width:<?php echo $widths[$begin++];?>%">Số phiếu</th>
+        <th style="width:<?php echo $widths[$begin++];?>%">Loại thu hồi</th>
+        <th style="width:<?php echo $widths[$begin++];?>%">Ngày</th>
+        <th style="width:<?php echo $widths[$begin++];?>%">NV</th>
+        <th style="width:<?php echo $widths[$begin++];?>%">Nhà máy/Bộ phận</th>
+        <th style="width:<?php echo $widths[$begin++];?>%">NV bàn giao</th>
+        <th style="width:<?php echo $widths[$begin++];?>%">Nhà máy/Bộ phận</th>
+        <th style="width:<?php echo $widths[$begin++];?>%">ĐVT</th>
+        <th style="width:<?php echo $widths[$begin++];?>%">SL</th>
+
+    </tr>
+
+
+    <?php foreach ($this->history as $item):?>
+
+        <?php
+            $nv     = $item->MaNhanVien .' - '.$item->TenNhanVien;
+            $nhaMay = $item->NhaMay .'/ '.$item->BoPhan;
+            $nvm    = (@$item->MaNhanVienMoi != '')?$item->MaNhanVienMoi .' - '.$item->TenNhanVienMoi:'';
+        $nhaMayMoi  = (@$item->NhaMayBanGiao != '')?$item->NhaMayBanGiao .'/ '.$item->BoPhanBanGiao:'';
+
+        ?>
+
+        <tr class="<?php echo ($item->TranType == 'RECEIVE')?'bgyellow':'bgpink';?>">
+            <td class="left">
+                <a href="/user/form/edit?ifid=<?php echo ($item->TranType == 'RECEIVE')?$item->IFID_M182:$item->IFID_M183;?>&deptid=<?php echo $this->deptid;?>" target="_blank">
+                    <?php echo $item->SoPhieu;?>
+                </a>
+            </td>
+            <td class="left"> <?php echo ($item->TranType == 'RETURN')?@$this->rType[(int)$item->Loai]:'';?> </td>
+            <td class="center"> <?php echo ($item->TranType == 'RECEIVE')? Qss_Lib_Date::mysqltodisplay($item->NgayBanGiaoChinh):Qss_Lib_Date::mysqltodisplay($item->NgayThuHoiChinh);?> </td>
+
+            <td class="left"> <?php echo $nv;?> </td>
+            <td class="left"> <?php echo $nhaMay;?> </td>
+            <td class="left"> <?php echo $nvm;?> </td>
+            <td class="left"> <?php echo $nhaMayMoi;?> </td>
+            <td class="left"> <?php echo $item->DonViTinh;?> </td>
+            <td class="right"> <?php echo Qss_Lib_Util::formatNumber($item->SoLuong);?> </td>
+        </tr>
+    <?php endforeach; ?>
+</table>

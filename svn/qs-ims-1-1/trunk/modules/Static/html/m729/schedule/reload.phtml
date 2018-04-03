@@ -1,0 +1,64 @@
+<div class="cal_content_wrap">
+	<div class="cal_content">
+	<?php echo $this->content?>
+	</div>
+</div>
+<div class="cal_select">
+<?php echo $this->select?>
+	<div class="filter">
+		<form name="cal_form" id="cal_form">
+			<input type="hidden" id="fid" name="fid"
+				value="<?php echo $this->fid?>"> <input type="hidden" id="type"
+				name="type" value="<?php echo $this->type?>"> <input type="hidden"
+				id="day" name="day" value="<?php echo $this->day?>"> <input
+				type="hidden" id="week" name="week" value="<?php echo $this->week?>">
+			<input type="hidden" id="month" name="month"
+				value="<?php echo $this->month?>"> <input type="hidden" id="year"
+				name="year" value="<?php echo $this->year?>">
+			<div class="name">
+				<div class="title">Chọn Lịch</div>
+				<div class="select">
+					<ul>
+						<li><input type="radio" value="1" name="viewtype" /> Phiếu bảo trì</li>
+						<li><input type="radio" value="0" name="viewtype" /> Công việc</li>
+					</ul>
+				</div>
+			</div>
+			<div class="form">
+				<div class="title">Lọc Dữ Liệu</div>
+				<div class="select">
+					Đơn vị bảo trì <select name="workcenter" style="width: 200px">
+						<option value="0"></option>
+						<?php foreach ($this->workcenters as $item):?>
+						<option <?php if($item->IOID == $this->workcenter):?> selected
+						<?php endif;?> value="<?php echo $item->IOID?>">
+							<?php echo $item->Ten?>
+						</option>
+						<?php endforeach;?>
+					</select> Chịu trách nhiệm bởi: <select name="responseid"
+						style="width: 200px">
+						<option value="0"></option>
+						<?php foreach ($this->employees as $item):?>
+						<option <?php if($item->IOID == $this->responseid):?> selected
+						<?php endif;?> value="<?php echo $item->IOID?>">
+							<?php echo $item->TenNhanVien?>
+						</option>
+						<?php endforeach;?>
+					</select> Thực hiện công việc: <select name="assignid"
+						style="width: 200px">
+						<option value="0"></option>
+						<?php foreach ($this->employees as $item):?>
+						<option <?php if($item->IOID == $this->assignid):?> selected
+						<?php endif;?> value="<?php echo $item->IOID?>">
+							<?php echo $item->TenNhanVien?>
+						</option>
+						<?php endforeach;?>
+					</select>
+				</div>
+			</div>
+			<div class="extra-button">
+				<a onclick="reloadCalendar()" href="#1"><span>Xem lịch</span> </a>
+			</div>
+		</form>
+	</div>
+</div>

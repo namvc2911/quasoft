@@ -1,0 +1,27 @@
+<form id="form_button_m759_employee_plan" method="post">
+<table class="grid">
+<tr>
+	<th class="left"><input type="checkbox" onclick="m759_employee_plan.toggleCheckbox(this)"></th>
+	<th class="left">WO#</th>
+	<th class="left">Equipment#</th>
+	<th class="left">Equipment Name</th>
+	<th class="left">Work center</th>
+	<th class="left">Est. Start</th>
+	<th class="left">Description</th>
+</tr>
+<?php foreach ($this->workorders as $item):?>
+	<tr>
+		<td class="center">
+			<input type="hidden" name="workorder_<?php echo $item->CVIOID?>" value="<?php echo $item->IFID_M759?>">
+			<input type="checkbox" name="task[]" class="workorder" value="<?php echo $item->CVIOID?>">
+		</td>
+		<td><?php echo $item->SoPhieu?></td>
+		<td><?php echo $item->MaThietBi?></td>
+		<td><?php echo $item->TenThietBi?></td>
+		<td><?php echo $item->MaDVBT?></td>
+		<td><?php echo Qss_Lib_Date::mysqltodisplay($item->NgayBatDauDuKien)?></td>
+		<td><?php echo $item->MoTa?></td>
+	</tr>
+<?php endforeach;?>
+</table>
+</form>
